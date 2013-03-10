@@ -1,0 +1,20 @@
+[top]
+
+* tech out reading json strings as python dictionaries.
+
+* draw the map tiles. I like 32x32 blocks.
+
+* flesh out ten levels with tile and objects.
+
+* drink coffee.
+
+* create a list of map tiles that are interactive. 
+  these should enhance level gameplay via solving puzzles.
+
+
+
+[wishlist]
+
+* tracked module music. I have some I wrote, but ideally for this task
+    to work I need to 1) contact modders who would like to offer their
+    work, 2) tech out a module player library. libmikmod is first choice.
