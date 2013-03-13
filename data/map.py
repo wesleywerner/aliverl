@@ -57,7 +57,11 @@ class MapTile(object):
             return self.props[prop_name]
         except:
             return None
-
+    
+    def xy(self):
+        """ Returns (x, y) """
+        return (self.x, self.y)
+        
 class Map(object):
     """ Stores the game map data. """
     
@@ -217,7 +221,8 @@ class Map(object):
         obj.visible = False
     
     def action_object(self, target, is_finger_target=False):
-        """ Queries the target object to do what it's properties define. """
+        """ Queries the target object to do what it's properties define. 
+        We only action map and tile actions here. """
         for action in target.props.keys():
             try:
                 # finger
@@ -227,7 +232,9 @@ class Map(object):
                         self.action_object(f, is_finger_target=True)
                 
                 # (fingered targets only)
-                if is_finger_target and action.startswith('on_finger'):
+                if is_finger_target and \
+                    self.object_by_name('player').xy() != target.xy() and \
+                    action.startswith('on_finger'):
                     finger_actions = target.props[action].split('=')
                     
                     if finger_actions[0].startswith('transmute'):
