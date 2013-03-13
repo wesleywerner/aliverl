@@ -1,6 +1,7 @@
 Alive, the roguelike spec.
 
-## MAP
+MAP
+============
 
 Each level is a BBS computer system you visit.
 
@@ -12,7 +13,7 @@ buttons or events.
 There are 11 wall tiles, each for the four cartesian directions, and
 then for the connectors where walls join into corners or t-junctions.
 
-Tile types:
+### Tile types:
 
 * Walls
 * Gates
@@ -23,8 +24,25 @@ Tile types:
 * Backdoor leads to the next level.
 * Code bank to upgrade your abilities. One-shot per level.
 
+### Tiled map editor notes:
 
-## NPC's / AI's
+* Place static map tiles on a Tile Layer.
+* Place AI, player, doors and such on an Object Layer.
+* Set wall tiles "blocks" bit property in the Tilesets picker.
+    This applies to both map tiles and Objects that use these tiles.
+* Set individual Object properties:
+    * name: used to target when fingering. can have duplicates.
+    * type: door (always blocks), switch. 
+    * fingers: also fingers_1..N. 
+            points to another object to action. will action all 
+            who share the same name.
+    * on_finger: also on_finger_1..N. values include:
+            * transmute=tile_id[, rotate_tile_id, ..N]
+            
+
+
+NPC's / AI's
+============
 
 Non Player Characters use the same  base as the player, 
 allowing our hero to temporarily take control of them. 
@@ -41,7 +59,9 @@ NPC types:
     intruders. They 
 
 
-## CODE
+
+CODE
+============
 
 Using the Tiled map editor, by adding the 'blocks' bit to a tile's properties makes walls in game. The objects layer items will always block a player. They also call back so we known what is happening.
 
@@ -52,3 +72,6 @@ The "action_finger" allows a tile to point to another tile to action instead, wh
 We can have both actions on the same object, effectively expiring and fingering an accomplice. Chainload a few and instant bridge or flooding.
 
 It becomes a npc (ambush) or item (rewards) spawner. 
+
+
+============

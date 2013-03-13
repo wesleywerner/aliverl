@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
+  <image source="alive-tileset.png" width="256" height="832"/>
+ </tileset>
+ <layer name="map" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJytldEKgzAMRbPpIGvtg9183f9/5upD4BoSkzGFg0TS67GllYmIBwXgBGf9y2AG7gmwv0HWOngknTyeg5eRtyTdhBbkVfrtqkYew3PJizybyqt0/H6dF3nqPhm/Bnnasxk5mBf5dcerq1rPH+Zi38fJ03W0HnIvzvii6mzem47zt8F4rK9aX6zP1ld7acSLDb9/9ofMo7ffIi/rjNnvk5N3xfkiXjfA88Ee9NmMd3TA88j0ZM7z7D9g5wu8QQqB
+  </data>
+ </layer>
+</map>

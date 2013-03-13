@@ -117,9 +117,9 @@ class Map(object):
                 obj.visible and \
                 obj.x == nx and obj.y == ny:
                 # commented out: always bump into objects.
-                if obj.prop('blocks'):
-                    if hit_callback is not None:
-                        hit_callback(self, obj)
+                #if obj.prop('blocks'):
+                if hit_callback is not None:
+                    if hit_callback(self, obj):
                         return False
         
         # detect map tile collisions
@@ -157,8 +157,6 @@ class Map(object):
                             (x * self.tile_w, y * self.tile_h), 
                             self.tile_size
                             )
-                if tid in (7, 8):
-                    print(self.tileset_xy(tid))
                 # area in source image
                 area_rect = pygame.Rect(
                                 self.tileset_xy(tid), 
@@ -214,11 +212,60 @@ class Map(object):
         """ Remove an object from the game screen. """
         obj.dirty = True
         obj.visible = False
+    
+    def action_object(self, target, is_finger_target=False):
+        """ Queries the target object to do what it's properties define. """
+        for action in target.props.keys():
+            try:
+                # finger
+                if action.startswith('fingers'):
+                    for f in [ e for e in self.objects 
+                                if e.name == target.props[action] ]:
+                        self.action_object(f, is_finger_target=True)
+                
+                # (fingered targets only)
+                if is_finger_target and action.startswith('on_finger'):
+                    finger_actions = target.props[action].split('=')
+                    
+                    if finger_actions[0].startswith('transmute'):
+                        # value could be 1 value (one-way transmute)
+                        # or a csv list (rotate transmute)
+                        options = finger_actions[1].split(',')
+                        if len(options) == 1:
+                            transmute_id = int(options[0])
+                        else:
+                            print(options)
+                            if str(target.tid) in options:
+                                # rotate the list with the current
+                                # index as offset. 
+                                idx = options.index(str(target.tid)) - 1
+                                transmute_id = int(list(options[idx:] + options[:idx])[0])
+                                print('rotating to idx %s (%s)' % (idx, transmute_id))
+                            else:
+                                # use first index
+                                transmute_id = int(options[0])
+                        target.tid = transmute_id
+                        target.isdirty = True
+#                        del target.props[action]
+                        
+                    elif finger_actions[0].startswith('unblock'):
+                        target.props['blocks'] = 0
+                        
+            except IndexError:
+                print('the tile named %s has a bad property set. \
+                ' % (target.name,) )
         
 def test_hit_callback(mapengine, tile):
     """ Test for hitting blocking objects or tiles. """
     print tile
-    #mapengine.remove_object(tile)
+    mapengine.action_object(tile)
+    
+    # we must return if this hit blocked us
+    try:
+        return mapengine.tile_props(tile.tid)['blocks'] == '1'
+    except KeyError:
+        # defaults missing "blocks" property to non blocking.
+        return False
     
 if __name__ == '__main__':
     
