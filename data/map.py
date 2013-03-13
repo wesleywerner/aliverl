@@ -76,6 +76,12 @@ class Map(object):
         self.per_row = self.data["tilesets"][0]["imagewidth"] / self.tile_w
         self.tileset = pygame.image.load('maps/alive-tileset.png').convert_alpha()
     
+    def object_by_name(self, name):
+        """ Return a tile by name. """
+        search = [ti for ti in self.objects if ti.name == name]
+        if search:
+            return search[0]
+        
     def tileset_xy(self, tid):
         """ Returns (x, y) tileset coordinates for the given tile id. """
         row = (tid-1) / self.per_row
@@ -178,36 +184,33 @@ class Map(object):
                             canvas_size, 
                             0, 32)
             self.object_canvas.set_colorkey((255, 0, 255))
+        # clear 
         self.object_canvas.fill((255, 0, 255))
         for obj in [ e for e in self.objects if e is not None ]:
-            if obj.isdirty:
-                ## clear the last known location
-                #self.object_canvas.fill(
-                                        #(255, 0, 255),
-                                        #pygame.Rect(
-                                            #(obj.last_x * self.tile_w, (obj.last_y-1) * self.tile_h),
-                                            #(self.tile_w, self.tile_h)
-                                        #)
-                                        #)
-                if obj.visible:
-                    # draw the new location
-                    # destination on target surface
-                    dest_rect = pygame.Rect(
-                                (obj.x * self.tile_w, 
-                                (obj.y - 1) * self.tile_h), 
-                                self.tile_size
-                                )
-                    # area in source image
-                    area_rect = pygame.Rect(
-                                    self.tileset_xy(obj.tid), 
-                                    self.tile_size)
-                    # draw the tile on the canvas
-                    self.object_canvas.blit(
-                                    source=self.tileset,
-                                    dest=dest_rect,
-                                    area=area_rect
-                                    )
+            self.draw_object(obj)
+        # draw the player last (z-order fix)
+        self.draw_object(levelmap.object_by_name('player'))
     
+    def draw_object(self, obj):
+        """ draw this object to the object canvas. """
+        if obj.visible:
+            # destination on target surface
+            dest_rect = pygame.Rect(
+                        (obj.x * self.tile_w, 
+                        (obj.y - 1) * self.tile_h), 
+                        self.tile_size
+                        )
+            # area in source image
+            area_rect = pygame.Rect(
+                            self.tileset_xy(obj.tid), 
+                            self.tile_size)
+            # draw the tile on the canvas
+            self.object_canvas.blit(
+                            source=self.tileset,
+                            dest=dest_rect,
+                            area=area_rect
+                            )        
+        
     def remove_object(self, obj):
         """ Remove an object from the game screen. """
         obj.dirty = True
@@ -246,10 +249,6 @@ class Map(object):
                                 transmute_id = int(options[0])
                         target.tid = transmute_id
                         target.isdirty = True
-#                        del target.props[action]
-                        
-                    elif finger_actions[0].startswith('unblock'):
-                        target.props['blocks'] = 0
                         
             except IndexError:
                 print('the tile named %s has a bad property set. \
@@ -302,7 +301,7 @@ if __name__ == '__main__':
                 
             elif event.type == KEYDOWN:
                 if event.key == K_l:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, 1, 0, test_hit_callback)
                 if event.key == K_h:
                     p = levelmap.objects[0]

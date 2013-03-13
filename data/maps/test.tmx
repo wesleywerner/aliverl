@@ -115,10 +115,10 @@
  </tileset>
  <layer name="map" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYELDjGg0CPMCMQcRmBuLmBAWOWzqiDGPC4ccueYh8zmhfgWxWYk0D6YHhEGABYiFiQwXYsMPm12iJJgHAjxY4plYM7C5D587GUgwjxOqHl94k2IeLdxHSnqghvtIwaPuowyLMJCfF0YxAwMAR8oMZw==
+   eJzjYWBgYELDjGg0CPMyEAe4sYgJYZHDpo4Y87hwyJFrHjKfkwHiVxBgJdI8mB6YPhYgFibCXmLdh8suURLN42HAjGdizcBmHrH+IQQ4oTSx4U0IjLqPMjDS3CfCQH5eGAUMDAB/KAIP
   </data>
  </layer>
- <objectgroup name="ai" width="20" height="20">
+ <objectgroup name="objects" width="20" height="20">
   <object name="player" gid="25" x="32" y="192"/>
   <object name="ICE" type="ai" gid="26" x="96" y="96"/>
   <object name="zombie" type="ai" gid="28" x="256" y="96"/>
@@ -182,6 +182,16 @@
   <object name="switch6" type="switch" gid="30" x="0" y="480">
    <properties>
     <property name="fingers" value="door6"/>
+   </properties>
+  </object>
+  <object name="switch_secret" type="switch" gid="23" x="96" y="224">
+   <properties>
+    <property name="fingers" value="secret_door"/>
+   </properties>
+  </object>
+  <object name="secret_door" type="door" gid="2" x="96" y="160">
+   <properties>
+    <property name="on_finger" value="transmute=14"/>
    </properties>
   </object>
  </objectgroup>

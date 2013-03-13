@@ -5,7 +5,7 @@
 
 [top]
 
-* draw the map tiles. I like 32x32 blocks.
+* get the player object into a variable. render it last (z-order)
 
 * flesh out ten levels with tile and objects.
 
