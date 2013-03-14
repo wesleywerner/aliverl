@@ -122,7 +122,7 @@ class Map(object):
         ny = tile.y + y_offset
         
         # out of bounds?
-        if (nx < 0) or (nx > self.width - 2) or \
+        if (nx < 0) or (nx > self.width - 1) or \
             (ny < 1) or (nx > self.height - 1):
                 return False
         
