@@ -121,6 +121,11 @@ class Map(object):
         nx = tile.x + x_offset
         ny = tile.y + y_offset
         
+        # out of bounds?
+        if (nx < 0) or (nx > self.width - 2) or \
+            (ny < 1) or (nx > self.height - 1):
+                return False
+        
         # detect object collisions
         for obj in self.objects:
             if obj is not tile and \
@@ -155,9 +160,9 @@ class Map(object):
                         0, 32)
         self.tile_canvas.set_colorkey((255, 0, 255))
         self.tile_canvas.fill((255, 0, 255))
-        tiledata = [e for e in self.data["layers"] if e["type"] == "tilelayer"][0]["data"]
-        for y in range(self.height - 1):
-            for x in range(self.width - 1):
+        tiledata = [e for e in self.data["layers"] if e["name"] == "map"][0]["data"]
+        for y in range(self.height):
+            for x in range(self.width):
                 # tile index
                 tid = tiledata[x + (y * self.height)]
                 self.tiles[x][y] = MapTile( tid, x, y, 
@@ -311,25 +316,25 @@ if __name__ == '__main__':
                     p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, 1, 0, test_hit_callback)
                 if event.key == K_h:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, -1, 0, test_hit_callback)
                 if event.key == K_j:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, 0, 1, test_hit_callback)
                 if event.key == K_k:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, 0, -1, test_hit_callback)
                 if event.key == K_b:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, -1, 1, test_hit_callback)
                 if event.key == K_n:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, 1, 1, test_hit_callback)
                 if event.key == K_y:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, -1, -1, test_hit_callback)
                 if event.key == K_u:
-                    p = levelmap.objects[0]
+                    p = levelmap.object_by_name('player')
                     levelmap.move_tile(p, 1, -1, test_hit_callback)
                 if event.key == K_ESCAPE:
                     running = False
