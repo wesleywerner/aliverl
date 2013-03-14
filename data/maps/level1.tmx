@@ -120,10 +120,21 @@
  </layer>
  <layer name="map" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJytVNEOgjAQGygYlJmI8Oz//6Vb4JKmsd6hNGkuN7qmuW2ktOIKjOCbfiw8A9sAUZ/B61HYBTMpDIXPD35jMJsxO363nblMj364btXLmcU+5efl9PTqO+dUuaJ+k9DZ+mWr3vysvoQf91E/vvu8vtdvTuvc+q0usB/7o87X6zmX8U79IvZX/PM+bI7qvXGuyD+m1pPw+xV8vjVXA1R5UIN5eJ4VE1AhojkabwbMBlc=
+   eJytVO0KgzAQq5v7MWcFdb7/q65FD0Iwu/MjEI6ruRCu1JRWdMAI/un7whb4CBD1GbzGwlcwk8K7cN7x64PZjNnx+xzMZXr0w3OrXs4s5pSfl9PTq++cU+WK+indRL23P8+P+6t+HfVRv29a95a2usA89nfdr9dzLuNA/SLmK668D9ujem+cK/KPqfUp/M6C77fmaoAqD2owD++zYgIqRDR34wervQY7
   </data>
  </layer>
  <objectgroup name="objects" width="20" height="20">
-  <object name="player" gid="25" x="64" y="512"/>
+  <object name="player" gid="57" x="288" y="320"/>
+  <object name="ICE" type="ai" gid="58" x="384" y="224"/>
+  <object name="door1" type="door" gid="6" x="288" y="384">
+   <properties>
+    <property name="on_finger" value="transmute=14,6"/>
+   </properties>
+  </object>
+  <object name="switch1" type="switch" gid="46" x="352" y="320">
+   <properties>
+    <property name="fingers" value="door1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

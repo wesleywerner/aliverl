@@ -1,0 +1,26 @@
+{ "58": {
+    "tile_id": 58,
+    "name": "ICE",
+    "attack": 1,
+    "health": 2,
+    "speed": 2,
+    "healrate": 2,
+    "stealth": 0,
+    "mana": 5,
+    "manarate": 2,
+    "mode": "patrol",
+    "type": "ai"
+    },
+  "57": {
+    "tile_id": 57,
+    "name": "player",
+    "attack": 1,
+    "health": 2,
+    "speed": 2,
+    "healrate": 2,
+    "stealth": 0,
+    "mana": 5,
+    "manarate": 2,
+    "mode": "idle"
+    }
+}

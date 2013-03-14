@@ -1,48 +1,73 @@
 # See the file COPYING for the license.
-import map
+import sys
 import pygame
 from pygame.locals import *
+from character import Character
+from level import Level
+from objects import LevelObjects
+from bump import Bump
+import trace
 
-class Alive(object):
+class AliveRL(object):
     """ This is where all game state objects live. """
     
     def __init__ (self):
         """ Initialise the game state. """
-        self.map = None
-        self.level = 1
-    
-    def levelup(self):
-        """ Move the state to the next level. """
-        self.level += 1
-        self.map = map.Map('maps/level%s' % (self.level,) )
-        self.map.render()
+        self.level = Level()
+        self.objects = LevelObjects(self.level)
     
 if __name__ == '__main__':
     
-    print('loading map')
-    levelmap = Map('maps/test.map')
-    print('setup pygame')
+    print('start the hamster')
     pygame.init()
-    pygame.display.set_caption('map tech')
+    pygame.display.set_caption('Alive')
     screen = pygame.display.set_mode( (640, 640) )
     clock = pygame.time.Clock()
-    print('render map canvas')
-    levelmap.render()
-    print('running main loop')
+    alive = AliveRL()
     running = True
-    while running:
     
+    # place inside the UI class that renders each loop
+    x = pygame.image.load('images/background.png').convert_alpha()
+    
+    while running:
+        
         # render
+        alive.level.draw_characters(alive.objects.characters)
         clock.tick(30)
-        screen.fill( (0, 0, 0) )
-        screen.blit( levelmap.canvas, (0, 0) )
+        screen.blit(x, (0, 0))
+        screen.blit(alive.level.tile_canvas, (0, 0))
+        screen.blit(alive.level.character_canvas, (0, 0))
         pygame.display.flip()
 
         # handle input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
+
+                if event.key == K_l:
+                    alive.objects.move_character(alive.objects.player,
+                                                1, 0, alive.objects.bump)
+                if event.key == K_h:
+                    alive.objects.move_character(alive.objects.player,
+                                                -1, 0, alive.objects.bump)
+                if event.key == K_j:
+                    alive.objects.move_character(alive.objects.player,
+                                                0, 1, alive.objects.bump)
+                if event.key == K_k:
+                    alive.objects.move_character(alive.objects.player,
+                                                0, -1, alive.objects.bump)
+                if event.key == K_b:
+                    alive.objects.move_character(alive.objects.player,
+                                                -1, 1, alive.objects.bump)
+                if event.key == K_n:
+                    alive.objects.move_character(alive.objects.player,
+                                                1, 1, alive.objects.bump)
+                if event.key == K_y:
+                    alive.objects.move_character(alive.objects.player,
+                                                -1, -1, alive.objects.bump)
+                if event.key == K_u:
+                    alive.objects.move_character(alive.objects.player,
+                                                1, -1, alive.objects.bump)
