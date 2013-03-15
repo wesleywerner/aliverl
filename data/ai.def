@@ -1,16 +1,4 @@
-{ "58": {
-    "tile_id": 58,
-    "name": "ICE",
-    "attack": 1,
-    "health": 2,
-    "speed": 2,
-    "healrate": 2,
-    "stealth": 0,
-    "mana": 5,
-    "manarate": 2,
-    "mode": "patrol",
-    "type": "ai"
-    },
+{
   "57": {
     "tile_id": 57,
     "name": "player",
@@ -22,5 +10,57 @@
     "mana": 5,
     "manarate": 2,
     "mode": "idle"
+    },
+  "58": {
+    "tile_id": 58,
+    "name": "Ice",
+    "attack": 1,
+    "health": 2,
+    "speed": 2,
+    "healrate": 2,
+    "stealth": 0,
+    "mana": 5,
+    "manarate": 2,
+    "mode": "patrol",
+    "type": "ai"
+    },
+  "59": {
+    "tile_id": 59,
+    "name": "Virus",
+    "attack": 1,
+    "health": 2,
+    "speed": 1,
+    "healrate": 2,
+    "stealth": 0,
+    "mana": 5,
+    "manarate": 2,
+    "mode": "patrol",
+    "type": "ai"
+    },
+  "60": {
+    "tile_id": 60,
+    "name": "Zombie",
+    "attack": 1,
+    "health": 2,
+    "speed": 3,
+    "healrate": 2,
+    "stealth": 0,
+    "mana": 5,
+    "manarate": 2,
+    "mode": "patrol",
+    "type": "ai"
+    },
+  "65": {
+    "tile_id": 65,
+    "name": "Punk",
+    "attack": 1,
+    "health": 2,
+    "speed": 1,
+    "healrate": 2,
+    "stealth": 0,
+    "mana": 5,
+    "manarate": 2,
+    "mode": "patrol",
+    "type": "ai"
     }
 }
