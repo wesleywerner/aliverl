@@ -69,7 +69,7 @@ class Level(object):
         self.tile_size = (self.tile_w, self.tile_h)
         self.tile_canvas = None
         self.character_canvas = None
-        self.tiles = [ [None] * self.width for x in xrange(self.height) ]
+        self.tiles = [ [None] * self.height for x in xrange(self.width) ]
         self.per_row = self.data["tilesets"][0]["imagewidth"] / self.tile_w
         self.tileset = pygame.image.load(TILESET).convert_alpha()
         self.render_map()
@@ -117,6 +117,7 @@ class Level(object):
         for y in range(self.height):
             for x in range(self.width):
                 # tile index
+                #trace.write(x, y, self.height)
                 tid = tiledata[x + (y * self.height)]
                 self.tiles[x][y] = MapTile( tid, x, y, 
                                             self.tile_props(tid) )
@@ -150,7 +151,8 @@ class Level(object):
         self.character_canvas.fill((255, 0, 255))
         
         # draw
-        for obj in [ e for e in characters if e.visible]:
+        for obj in [ e for e in characters 
+                    if e.visible and not e.dead]:
             # destination on target surface
             dest_rect = pygame.Rect(
                         (obj.x * self.tile_w, 

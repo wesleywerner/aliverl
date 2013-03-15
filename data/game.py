@@ -52,5 +52,4 @@ if __name__ == '__main__':
                 if event.key == K_ESCAPE:
                     running = False
                 else:
-                    if alive.objects.move_player_phase(event):
-                        alive.objects.move_npc_phase()
+                    alive.objects.move_player_phase(event)

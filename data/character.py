@@ -42,6 +42,7 @@ class Character(object):
         """
         self.name = ''
         self.type = ''
+        self.dead = False
         # apply definition file (overwrites level data for type and name)
         if definition:
             for k, v in definition.items():

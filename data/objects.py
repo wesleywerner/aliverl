@@ -5,6 +5,7 @@ import random
 import json
 from character import Character
 import trace
+from combat import Combat
 
 class LevelObjects(object):
     """ Manages the AI objects on a game level. """
@@ -31,6 +32,7 @@ class LevelObjects(object):
                 try:
                     if char.name == 'player':
                         self.player = char
+                        char.type = 'player'    # in case not set on map
                 except AttributeError:
                     pass
         if self.player is None:
@@ -50,7 +52,7 @@ class LevelObjects(object):
             
         # 2. Combat
         if b.type in ('ai', 'player'):
-            trace.write('Combat between %s and %s' % (a.name, b.name))
+            Combat(a, b)
             return True
                     
         # 1. fire any triggers on the bumpee
@@ -134,15 +136,33 @@ class LevelObjects(object):
             x, y = (-1, -1)
         if event.key == K_u:
             x, y = (1, -1)
-        return self.move_character(self.player, x, y, self.bump)
+        if (x, y) != (0, 0):
+            self.move_character(self.player, x, y, self.bump)
+            self.level.turn += 1
+            self.heal_characters()
+            self.move_npc_phase()
+            return True
+    
+    def heal_characters(self):
+        """ For each turn every character gets a chance to heal. """
+        for npc in [e for e in self.characters 
+                            if e.type in ('player', 'ai')
+                            and not e.dead]:
+            try:
+                if self.level.turn % npc.healrate == 0:
+                    if npc.health < npc.maxhealth:
+                        npc.health += 1
+                        trace.write('%s heals to %s hp' % (npc.name, 
+                                                        npc.health) )
+            except AttributeError as err:
+                trace.error(npc.name)
+                print(err)
         
     def move_character(self, character, x_offset, y_offset, bump_callback):
         """ Moves the character, handles blocking.
         Returns True if moved, False if not.
         calls bump_callback with the Tile we bump into."""
         
-        if character is self.player:
-            self.level.turn += 1
         nx = character.x + x_offset
         ny = character.y + y_offset
         
@@ -154,10 +174,11 @@ class LevelObjects(object):
         # 1. detect object collisions
         for other in self.characters:
             if other is not character and \
-                other.visible and other.xy() == (nx, ny):
-                    if bump_callback is not None:
-                        if bump_callback(character, other):
-                            return False
+            other.visible and not other.dead and \
+            other.xy() == (nx, ny):
+                if bump_callback is not None:
+                    if bump_callback(character, other):
+                        return False
         
         # 2. detect map collisions
         # not too sure why we need to -1 for y :p
@@ -165,13 +186,15 @@ class LevelObjects(object):
         if self.level.tile_blocks((nx, ny-1, )):
             return False
         else:
+            # move
             character.x += x_offset
             character.y += y_offset
             return True
     
     def move_npc_phase(self):
         """ Step each npc character through it's movement phase. """
-        for npc in [e for e in self.characters if e.type == 'ai']:
+        for npc in [e for e in self.characters 
+                    if e.type == 'ai' and not e.dead]:
             if npc is not self.player:
                 try:
                     if self.level.turn % npc.speed == 0:
