@@ -10,15 +10,15 @@ from combat import Combat
 class LevelObjects(object):
     """ Manages the AI objects on a game level. """
     
-    def __init__ (self, level):
+    def __init__ (self, alive):
         """ load definition file as a dictionary. """
-        self.level = level
+        self.alive = alive
         self.definition = json.load(open('ai.def'))
         self.characters = []
         self.player = None
         
         # Loads the characters from the level data
-        for layer in self.level.object_layers():
+        for layer in self.alive.level.object_layers():
             for obj_data in layer['objects']:
                 definition = None
                 try:
@@ -26,7 +26,7 @@ class LevelObjects(object):
                 except KeyError:
                     #trace.error('There is no ai.def entry for tile_id %s.' % (obj_data['gid']) )
                     pass
-                char = Character(obj_data, definition, self.level.tile_size)
+                char = Character(obj_data, definition, self.alive.level.tile_size)
                 self.characters.append(char)
                 trace.write('loaded characters %s (%s)' % (char.name, char.type))
                 try:
@@ -49,10 +49,11 @@ class LevelObjects(object):
             trace.write('Fingering %s' % (b.name, ) )
         else:
             trace.write('Bumping %s and %s' % (a.name, b.name, ) )
+            #self.alive.messages.add('Bumping %s and %s' % (a.name, b.name, ))
             
         # 2. Combat
         if b.type in ('ai', 'player'):
-            Combat(a, b)
+            self.alive.messages.add(Combat(a, b))
             return True
                     
         # 1. fire any triggers on the bumpee
@@ -67,6 +68,7 @@ class LevelObjects(object):
                 # show a message
                 if action.startswith('message'):
                     trace.write(action_value)
+                    self.alive.messages.add(action_value)
 
                 # fingered characters only
                 if is_finger_target and \
@@ -108,12 +110,12 @@ class LevelObjects(object):
             
             except Exception as err:
                 trace.error('Tile "%s" has a malformed property: %s \
-                ' % (target.name, err) )
+                ' % (b.name, err) )
         
         # 3. Blocking map tiles
         try:
             # return if the tileset property blocks
-            return self.level.tile_props(b.tile_id)['blocks']
+            return self.alive.level.tile_props(b.tile_id)['blocks']
         except KeyError:
             return False
     
@@ -138,9 +140,11 @@ class LevelObjects(object):
             x, y = (1, -1)
         if (x, y) != (0, 0):
             self.move_character(self.player, x, y, self.bump)
-            self.level.turn += 1
+            self.alive.level.turn += 1
             self.heal_characters()
             self.move_npc_phase()
+            if self.alive.level.turn % 3 == 0:
+                self.alive.messages.add('')
             return True
     
     def heal_characters(self):
@@ -149,9 +153,11 @@ class LevelObjects(object):
                             if e.type in ('player', 'ai')
                             and not e.dead]:
             try:
-                if self.level.turn % npc.healrate == 0:
+                if self.alive.level.turn % npc.healrate == 0:
                     if npc.health < npc.maxhealth:
                         npc.health += 1
+                        self.alive.messages.add('%s heals to %s hp' % (npc.name, 
+                                                        npc.health))
                         trace.write('%s heals to %s hp' % (npc.name, 
                                                         npc.health) )
             except AttributeError as err:
@@ -167,8 +173,8 @@ class LevelObjects(object):
         ny = character.y + y_offset
         
         # out of bounds?
-        if (nx < 0) or (nx > self.level.width - 1) or \
-            (ny < 1) or (nx > self.level.height - 1):
+        if (nx < 0) or (nx > self.alive.level.width - 1) or \
+            (ny < 1) or (nx > self.alive.level.height - 1):
                 return False
         
         # 1. detect object collisions
@@ -183,7 +189,7 @@ class LevelObjects(object):
         # 2. detect map collisions
         # not too sure why we need to -1 for y :p
         # guess the tile array is a snafu.
-        if self.level.tile_blocks((nx, ny-1, )):
+        if self.alive.level.tile_blocks((nx, ny-1, )):
             return False
         else:
             # move
@@ -197,7 +203,7 @@ class LevelObjects(object):
                     if e.type == 'ai' and not e.dead]:
             if npc is not self.player:
                 try:
-                    if self.level.turn % npc.speed == 0:
+                    if self.alive.level.turn % npc.speed == 0:
                         if npc.mode in ('idle', 'patrol'):  # TODO seperate
                             x, y = (0, 0)
                             # random movements

@@ -8,6 +8,7 @@ from objects import LevelObjects
 from bump import Bump
 import trace
 import audio
+from messages import Messages
 
 class AliveRL(object):
     """ This is where all game state objects live. """
@@ -15,22 +16,25 @@ class AliveRL(object):
     def __init__ (self):
         """ Initialise the game state. """
         self.level = Level()
-        self.objects = LevelObjects(self.level)
+        self.objects = LevelObjects(self)
         self.audio = audio.Audio()
+        self.messages = Messages()
+        
     
 if __name__ == '__main__':
     
     print('starting the hamster')
     pygame.init()
+    pygame.font.init()
     pygame.display.set_caption('Alive')
-    screen = pygame.display.set_mode( (640, 640) )
+    screen = pygame.display.set_mode( (800, 512) )
     clock = pygame.time.Clock()
     alive = AliveRL()
     #alive.audio.playmusic(0)
     running = True
     
     # place inside the UI class that renders each loop
-    x = pygame.image.load('images/background.png').convert_alpha()
+    x = pygame.image.load('images/playscreen.png').convert_alpha()
     
     while running:
         
@@ -38,8 +42,9 @@ if __name__ == '__main__':
         alive.level.draw_characters(alive.objects.characters)
         clock.tick(30)
         screen.blit(x, (0, 0))
-        screen.blit(alive.level.tile_canvas, (0, 0))
-        screen.blit(alive.level.character_canvas, (0, 0))
+        screen.blit(alive.level.tile_canvas, (288, 0))
+        screen.blit(alive.level.character_canvas, (288, 0))
+        screen.blit(alive.messages.canvas, (16, 352))  #(286, 520)
         pygame.display.flip()
         
         # handle input

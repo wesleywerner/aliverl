@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" width="256" height="832"/>
   <tile id="0">
@@ -87,17 +87,22 @@
     <property name="blocks" value="1"/>
    </properties>
   </tile>
+  <tile id="21">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
   <tile id="25">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="26">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="27">
    <properties>
     <property name="blocks" value="1"/>
    </properties>
@@ -112,80 +117,108 @@
     <property name="blocks" value="1"/>
    </properties>
   </tile>
+  <tile id="37">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="53">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="56">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
  </tileset>
- <layer name="map" width="20" height="20">
+ <layer name="background" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYELDjGg0CPMyEAe4sYgJYZHDpo4Y87hwyJFrHjKfkwHiVxBgJdI8mB6YPhYgFibCXmLdh8suURLN42HAjGdizcBmHrH+IQQ4oTSx4U0IjLqPMjDS3CfCQH5eGAUMDAB/KAIP
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
   </data>
  </layer>
- <objectgroup name="objects" width="20" height="20">
-  <object name="door_x" type="door" gid="6" x="288" y="128">
-   <properties>
-    <property name="on_finger_1" value="transmute=14"/>
-   </properties>
-  </object>
-  <object name="switch2" type="switch" gid="30" x="224" y="192">
+ <layer name="map" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJzjYWBgYMKBGXGwYZgXiLkZiAPY1HET0M+JZJcoGfqFiHATse7HpZ+TQv3D2X4uCu0n5DZC9hOjn1L7B1q/CAPu/MuCRw6WpwBBkAIn
+  </data>
+ </layer>
+ <objectgroup name="objects" width="16" height="16">
+  <object name="switch2" type="switch" gid="30" x="224" y="96">
    <properties>
     <property name="fingers" value="door_x"/>
    </properties>
   </object>
-  <object name="door_x" type="door" gid="7" x="224" y="160">
+  <object name="door_x" type="door" gid="7" x="224" y="64">
    <properties>
     <property name="on_finger_1" value="transmute=15,7"/>
    </properties>
   </object>
-  <object name="door3" type="door" gid="6" x="32" y="288">
+  <object name="door3" type="door" gid="6" x="32" y="192">
    <properties>
     <property name="on_finger_1" value="transmute=14,6"/>
    </properties>
   </object>
-  <object name="door4" type="door" gid="6" x="32" y="352">
+  <object name="door4" type="door" gid="6" x="32" y="256">
    <properties>
     <property name="on_finger_1" value="transmute=14"/>
    </properties>
   </object>
-  <object name="door5" type="door" gid="6" x="32" y="416">
+  <object name="door5" type="door" gid="6" x="32" y="320">
    <properties>
     <property name="on_finger_1" value="transmute=14"/>
    </properties>
   </object>
-  <object name="door6" type="door" gid="6" x="32" y="480">
+  <object name="door6" type="door" gid="6" x="32" y="384">
    <properties>
     <property name="on_finger_1" value="transmute=14"/>
    </properties>
   </object>
-  <object name="switch3" type="switch" gid="30" x="64" y="256">
+  <object name="switch3" type="switch" gid="30" x="0" y="160">
    <properties>
     <property name="fingers" value="door3"/>
    </properties>
   </object>
-  <object name="switch4" type="switch" gid="30" x="0" y="320">
+  <object name="switch4" type="switch" gid="30" x="0" y="224">
    <properties>
     <property name="fingers_1" value="door4"/>
     <property name="fingers_2" value="door3"/>
    </properties>
   </object>
-  <object name="switch5" type="switch" gid="30" x="64" y="384">
+  <object name="switch5" type="switch" gid="30" x="32" y="288">
    <properties>
     <property name="fingers" value="door5"/>
+    <property name="message" value="Your push the terminal buttons."/>
    </properties>
   </object>
-  <object name="switch6" type="switch" gid="30" x="0" y="480">
+  <object name="switch6" type="switch" gid="30" x="0" y="384">
    <properties>
     <property name="fingers" value="door6"/>
    </properties>
   </object>
-  <object name="switch_secret" type="switch" gid="23" x="96" y="224">
-   <properties>
-    <property name="fingers" value="secret_door"/>
-   </properties>
-  </object>
-  <object name="secret_door" type="door" gid="2" x="96" y="160">
-   <properties>
-    <property name="on_finger" value="transmute=14"/>
-   </properties>
-  </object>
-  <object name="player" gid="57" x="32" y="64"/>
-  <object name="ICE" type="ai" gid="58" x="96" y="128"/>
+  <object name="player" type="player" gid="57" x="128" y="256"/>
+  <object name="ICE" type="ai" gid="58" x="320" y="320"/>
+  <object name="virus" type="ai" gid="59" x="384" y="256"/>
+  <object name="zombie" type="ai" gid="60" x="288" y="64"/>
  </objectgroup>
 </map>

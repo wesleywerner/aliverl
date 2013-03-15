@@ -6,6 +6,7 @@ class Audio(object):
     def __init__ (self):
         """ Class initialiser """
         self.playlist = [
+            'audio/universalnetwork2_real.xm',
             'audio/kbmonkey-ditty.it'
             ]
     
