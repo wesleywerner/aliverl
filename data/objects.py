@@ -40,7 +40,7 @@ class LevelObjects(object):
     def bump(self, a, b, is_finger_target=False):
         """ Bumps two characters together. 
         This could be a door, a switch, or another AI. """
-        trace.write('BUMP! A = ' + str(a) + '\nB = ' + str(b) + '\nis_finger_target = ' + str(is_finger_target) )
+        trace.write('# BUMP!\n\n \tA = ' + str(a) + '\n\n\tB = ' + str(b) )
 
         # 2. Combat
         if b.type == 'ai':
@@ -51,26 +51,39 @@ class LevelObjects(object):
         # 1. fire any triggers on the bumpee
         for action in b.properties.keys():
             try:
-                # finger
+                action_value = b.properties[action]
+                # finger somebody else
                 if action.startswith('fingers'):
-                    print('action=%s, target=%s' % (action, b.properties[action]))
-                    for f in [ e for e in self.characters 
-                                if e.name == b.properties[action] ]:
+                    for f in [e for e in self.characters if e.name == action_value]:
                         self.bump(a, f, is_finger_target=True)
+                
+                # show a message
+                if action.startswith('message'):
+                    trace.write(action_value)
+
                 # fingered characters only
                 if is_finger_target and \
-                    self.player.xy() != b.xy() and \
-                    action.startswith('on_finger'):
-                    finger_actions = b.properties[action].split('=')
+                            self.player.xy() != b.xy() and \
+                            action.startswith('on_finger'):
                     
-                    if finger_actions[0].startswith('transmute'):
+                    # grab the finger actions
+                    f_acts = action_value.split('=')
+                    
+                    # message from this finger action
+                    if f_acts[0].startswith('message'):
+                        trace.write(f_acts[1])
+                    
+                    if f_acts[0].startswith('give'):
+                        give = f_acts[1].split(' ')
+                        b.properties[give[0]] = ' '.join(give[1:])
+                    
+                    if f_acts[0].startswith('transmute'):
                         # value could be 1 value (one-way transmute)
                         # or a csv list (rotate transmute)
-                        options = finger_actions[1].split(',')
+                        options = f_acts[1].split(',')
                         if len(options) == 1:
                             transmute_id = int(options[0])
                         else:
-                            print(options)
                             if str(b.tile_id) in options:
                                 # rotate the list with the current
                                 # index as offset. 
@@ -81,10 +94,14 @@ class LevelObjects(object):
                                 # use first index
                                 transmute_id = int(options[0])
                         b.tile_id = transmute_id
-                        
-            except IndexError:
-                trace.error('the tile named %s has a bad property set. \
-                ' % (target.name,) )
+
+                # once shots actions (append once to any action)
+                if action.endswith('once'):
+                    del b.properties[action]
+            
+            except Exception as err:
+                trace.error('The tile "%s" has a malformed property: %s \
+                ' % (target.name, err) )
         
 
         
