@@ -45,6 +45,7 @@ class Level(object):
     def __init__ (self):
         """ Load the mapfile. """
         self.level = 1
+        self.turn = 1
         self.data = None
         self.height = 0
         self.width = 0

@@ -3,8 +3,8 @@ TRACE = True
 def write(text):
     """ Writes trace output if enabled. """
     if TRACE:
-        print('\n' + text)
+        print('* %s' % (text, ))
 
 def error(text):
     """ Writes error output. """
-    print('\nERROR: ' + text)
+    print('\n# ERR: ' + text)

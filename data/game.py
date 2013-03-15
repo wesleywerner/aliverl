@@ -7,6 +7,7 @@ from level import Level
 from objects import LevelObjects
 from bump import Bump
 import trace
+import audio
 
 class AliveRL(object):
     """ This is where all game state objects live. """
@@ -15,15 +16,17 @@ class AliveRL(object):
         """ Initialise the game state. """
         self.level = Level()
         self.objects = LevelObjects(self.level)
+        self.audio = audio.Audio()
     
 if __name__ == '__main__':
     
-    print('start the hamster')
+    print('starting the hamster')
     pygame.init()
     pygame.display.set_caption('Alive')
     screen = pygame.display.set_mode( (640, 640) )
     clock = pygame.time.Clock()
     alive = AliveRL()
+    #alive.audio.playmusic(0)
     running = True
     
     # place inside the UI class that renders each loop
@@ -38,36 +41,16 @@ if __name__ == '__main__':
         screen.blit(alive.level.tile_canvas, (0, 0))
         screen.blit(alive.level.character_canvas, (0, 0))
         pygame.display.flip()
-
+        
         # handle input
-        for event in pygame.event.get():
+        #for event in pygame.event.get():
+        event = pygame.event.wait()
+        if event:
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
-
-                if event.key == K_l:
-                    alive.objects.move_character(alive.objects.player,
-                                                1, 0, alive.objects.bump)
-                if event.key == K_h:
-                    alive.objects.move_character(alive.objects.player,
-                                                -1, 0, alive.objects.bump)
-                if event.key == K_j:
-                    alive.objects.move_character(alive.objects.player,
-                                                0, 1, alive.objects.bump)
-                if event.key == K_k:
-                    alive.objects.move_character(alive.objects.player,
-                                                0, -1, alive.objects.bump)
-                if event.key == K_b:
-                    alive.objects.move_character(alive.objects.player,
-                                                -1, 1, alive.objects.bump)
-                if event.key == K_n:
-                    alive.objects.move_character(alive.objects.player,
-                                                1, 1, alive.objects.bump)
-                if event.key == K_y:
-                    alive.objects.move_character(alive.objects.player,
-                                                -1, -1, alive.objects.bump)
-                if event.key == K_u:
-                    alive.objects.move_character(alive.objects.player,
-                                                1, -1, alive.objects.bump)
+                else:
+                    if alive.objects.move_player_phase(event):
+                        alive.objects.move_npc_phase()
