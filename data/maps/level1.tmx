@@ -87,17 +87,22 @@
     <property name="blocks" value="1"/>
    </properties>
   </tile>
+  <tile id="21">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
   <tile id="25">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="26">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="27">
    <properties>
     <property name="blocks" value="1"/>
    </properties>
@@ -112,6 +117,36 @@
     <property name="blocks" value="1"/>
    </properties>
   </tile>
+  <tile id="37">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="53">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="blocks" value="1"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="bg" width="20" height="20">
   <data encoding="base64" compression="zlib">
@@ -120,20 +155,120 @@
  </layer>
  <layer name="map" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJytVO0KgzAQq5v7MWcFdb7/q65FD0Iwu/MjEI6ruRCu1JRWdMAI/un7whb4CBD1GbzGwlcwk8K7cN7x64PZjNnx+xzMZXr0w3OrXs4s5pSfl9PTq++cU+WK+indRL23P8+P+6t+HfVRv29a95a2usA89nfdr9dzLuNA/SLmK668D9ujem+cK/KPqfUp/M6C77fmaoAqD2owD++zYgIqRDR34wervQY7
+   eJytlN0OgjAMhSvCxaJi4l8iF3qnb6Dv/2auSRsPRyowbXIyVtruy7ZOpMw6ENs6q8paZtUmnT9sHFIN8Ruodc5q7Hs7k9HjV+TXdVobI54hYd7e2JCP1xkzj09QD/0++n66TjRfmCIOrjfGqf+7L/FRPeb0c0zEd51YL0n/LuD/Ej7P4zjmm1pP845/4LsQh1oFtdX/LOCLznksjv0HefeoqpX+OTtn1G9T7x1bsrEBn/ZIaf/6OxT179z3BTmxf3G/Ipa79Pv3Jp/7WWq7H/PZht54txe5KAeP
   </data>
  </layer>
  <objectgroup name="objects" width="20" height="20">
   <object name="player" gid="57" x="288" y="320"/>
-  <object name="ICE" type="ai" gid="58" x="384" y="224"/>
-  <object name="door1" type="door" gid="6" x="288" y="384">
+  <object name="door 1" type="door" gid="6" x="288" y="384">
    <properties>
     <property name="on_finger" value="transmute=14,6"/>
    </properties>
   </object>
-  <object name="switch1" type="switch" gid="46" x="352" y="320">
+  <object name="switch 1" type="switch" gid="46" x="352" y="320">
    <properties>
-    <property name="fingers" value="door1"/>
+    <property name="fingers" value="door 1"/>
+   </properties>
+  </object>
+  <object name="door 2" gid="6" x="288" y="448">
+   <properties>
+    <property name="on_finger" value="transmute=14,6"/>
+   </properties>
+  </object>
+  <object name="switch 2" type="switch" gid="47" x="224" y="416">
+   <properties>
+    <property name="fingers" value="door 2"/>
+    <property name="fingers_1" value="cap 5"/>
+    <property name="message once" value="The door opens. A capacitor blows."/>
+   </properties>
+  </object>
+  <object name="secret cap" gid="25" x="512" y="480">
+   <properties>
+    <property name="on_finger_1" value="transmute=27"/>
+   </properties>
+  </object>
+  <object name="switch 4" type="switch" gid="55" x="512" y="512">
+   <properties>
+    <property name="fingers" value="door 4"/>
+   </properties>
+  </object>
+  <object name="door 4" type="door" gid="6" x="512" y="128">
+   <properties>
+    <property name="on_finger" value="transmute=6,14"/>
+   </properties>
+  </object>
+  <object name="door 5" type="door" gid="15" x="96" y="96">
+   <properties>
+    <property name="on_finger" value="transmute=7,15"/>
+   </properties>
+  </object>
+  <object name="switch 5" type="switch" gid="30" x="544" y="96">
+   <properties>
+    <property name="fingers" value="door 5"/>
+    <property name="fingers_2" value="door 4"/>
+   </properties>
+  </object>
+  <object name="switch 3" gid="46" x="480" y="352">
+   <properties>
+    <property name="fingers" value="secret cap"/>
+    <property name="message_once" value="a capacitor pops!"/>
+   </properties>
+  </object>
+  <object name="pop caps" type="switch" gid="55" x="192" y="64">
+   <properties>
+    <property name="fingers_1" value="cap 1"/>
+    <property name="fingers_2" value="cap 2"/>
+    <property name="fingers_3" value="cap 3"/>
+    <property name="message_once" value="some capacitors pop!"/>
+   </properties>
+  </object>
+  <object name="cap 3" type="cap" gid="26" x="96" y="32">
+   <properties>
+    <property name="on_finger" value="transmute=28"/>
+   </properties>
+  </object>
+  <object name="cap 2" type="cap" gid="26" x="128" y="32">
+   <properties>
+    <property name="on_finger" value="transmute=28"/>
+   </properties>
+  </object>
+  <object name="cap 1" type="cap" gid="26" x="160" y="32">
+   <properties>
+    <property name="on_finger_1" value="transmute=28"/>
+   </properties>
+  </object>
+  <object name="inactive term" type="term" gid="31" x="32" y="480">
+   <properties>
+    <property name="on_finger" value="transmute=47"/>
+    <property name="on_finger_3" value="give=fingers door 6"/>
+   </properties>
+  </object>
+  <object name="term 1" type="term" gid="46" x="32" y="448">
+   <properties>
+    <property name="fingers_once" value="inactive term"/>
+    <property name="message_once" value="the large terminal next to you unlocks"/>
+   </properties>
+  </object>
+  <object name="door 6" type="door" gid="6" x="64" y="512">
+   <properties>
+    <property name="on_finger" value="transmute=14,6"/>
+   </properties>
+  </object>
+  <object name="pop caps plate" type="switch" gid="14" x="64" y="128">
+   <properties>
+    <property name="fingers" value="cap 4"/>
+    <property name="message once" value="Another capacitor blows! What is going on?"/>
+   </properties>
+  </object>
+  <object name="cap 4" type="cap" gid="25" x="0" y="128">
+   <properties>
+    <property name="on_finger" value="transmute=27"/>
+   </properties>
+  </object>
+  <object gid="16" x="512" y="544"/>
+  <object name="cap 5" type="cap" gid="26" x="256" y="416">
+   <properties>
+    <property name="on_finger" value="transmute=28"/>
    </properties>
   </object>
  </objectgroup>
