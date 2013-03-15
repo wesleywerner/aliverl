@@ -12,7 +12,7 @@
          "y":0
         }, 
         {
-         "data":[12, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 2, 2, 13, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 15, 0, 15, 0, 17, 5, 9, 0, 2, 2, 2, 2, 1, 2, 2, 25, 1, 25, 4, 2, 4, 2, 5, 0, 15, 11, 11, 0, 0, 0, 0, 0, 18, 0, 0, 0, 18, 0, 0, 0, 0, 0, 11, 0, 17, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 0, 15, 11, 11, 0, 0, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0, 0, 0, 11, 0, 17, 5, 11, 0, 17, 2, 2, 2, 3, 2, 1, 2, 4, 2, 0, 1, 0, 0, 5, 0, 15, 11, 11, 0, 0, 0, 0, 0, 11, 0, 11, 0, 0, 0, 0, 9, 27, 27, 5, 0, 17, 5, 11, 0, 10, 0, 0, 0, 11, 0, 11, 0, 0, 0, 0, 11, 0, 0, 11, 0, 15, 11, 11, 0, 11, 0, 0, 0, 11, 0, 9, 2, 2, 2, 2, 5, 0, 0, 11, 0, 17, 5, 11, 0, 9, 2, 19, 0, 11, 0, 11, 0, 0, 0, 0, 11, 0, 0, 11, 0, 15, 11, 11, 0, 11, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 15, 0, 0, 11, 0, 17, 5, 11, 0, 20, 2, 2, 2, 4, 2, 3, 0, 2, 2, 2, 3, 2, 2, 4, 2, 14, 5, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 9, 14, 25, 14, 14, 14, 5, 9, 2, 2, 2, 2, 2, 2, 0, 5, 0, 0, 0, 0, 9, 14, 14, 14, 25, 14, 5, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 9, 14, 25, 14, 14, 14, 5, 11, 0, 10, 25, 10, 25, 10, 0, 0, 0, 0, 0, 0, 9, 14, 14, 14, 25, 14, 5, 11, 0, 18, 25, 18, 25, 18, 0, 0, 0, 0, 0, 0, 9, 14, 25, 14, 14, 14, 5, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 9, 14, 14, 14, 25, 14, 5, 20, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 21],
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 26, 26, 0, 0, 0, 0, 12, 2, 3, 4, 4, 2, 54, 2, 2, 2, 2, 2, 2, 4, 3, 4, 13, 0, 0, 25, 5, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 11, 0, 0, 0, 3, 14, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 14, 3, 19, 25, 25, 5, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 9, 19, 25, 0, 11, 0, 11, 0, 12, 2, 2, 2, 22, 2, 2, 2, 1, 1, 5, 0, 11, 0, 0, 0, 11, 0, 11, 0, 11, 0, 0, 0, 0, 0, 0, 0, 11, 26, 11, 0, 11, 0, 0, 0, 11, 0, 11, 0, 11, 0, 12, 2, 2, 2, 13, 0, 9, 1, 5, 0, 31, 0, 0, 0, 11, 0, 11, 0, 11, 0, 11, 0, 0, 0, 30, 0, 11, 26, 11, 0, 11, 0, 0, 0, 11, 0, 11, 0, 11, 0, 11, 0, 0, 0, 11, 0, 9, 1, 5, 0, 11, 0, 0, 0, 11, 0, 11, 0, 11, 0, 11, 0, 0, 0, 30, 0, 11, 26, 11, 0, 11, 0, 0, 0, 11, 0, 11, 0, 30, 0, 20, 2, 0, 2, 21, 0, 9, 55, 5, 0, 11, 0, 0, 0, 11, 0, 11, 0, 11, 0, 11, 0, 0, 0, 0, 0, 11, 0, 11, 0, 11, 0, 0, 0, 11, 0, 11, 0, 20, 2, 2, 2, 14, 2, 2, 2, 21, 0, 15, 0, 11, 0, 0, 0, 11, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 5, 0, 0, 25, 3, 14, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 3, 19, 25, 25, 5, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 19, 25, 0, 20, 2, 4, 2, 2, 2, 2, 2, 2, 39, 2, 2, 1, 38, 2, 2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 0, 0],
          "height":20,
          "name":"map",
          "opacity":1,
@@ -27,113 +27,9 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":30,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":608,
-                 "y":352
-                }, 
-                {
-                 "gid":30,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":608,
-                 "y":288
-                }, 
-                {
-                 "gid":30,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":608,
-                 "y":160
-                }, 
-                {
-                 "gid":30,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":608,
-                 "y":96
-                }, 
-                {
-                 "gid":31,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":608,
-                 "y":224
-                }, 
-                {
-                 "gid":6,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":576,
-                 "y":416
-                }, 
-                {
-                 "gid":7,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":256,
-                 "y":544
-                }, 
-                {
-                 "gid":7,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "type":"",
-                 "width":0,
-                 "x":256,
-                 "y":576
-                }, 
-                {
                  "gid":57,
                  "height":0,
-                 "name":"",
+                 "name":"player",
                  "properties":
                     {
 
@@ -141,7 +37,264 @@
                  "type":"",
                  "width":0,
                  "x":288,
+                 "y":320
+                }, 
+                {
+                 "gid":6,
+                 "height":0,
+                 "name":"door 1",
+                 "properties":
+                    {
+                     "on_finger":"transmute=14,6"
+                    },
+                 "type":"door",
+                 "width":0,
+                 "x":288,
+                 "y":384
+                }, 
+                {
+                 "gid":46,
+                 "height":0,
+                 "name":"switch 1",
+                 "properties":
+                    {
+                     "fingers":"door 1"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":352,
+                 "y":320
+                }, 
+                {
+                 "gid":6,
+                 "height":0,
+                 "name":"door 2",
+                 "properties":
+                    {
+                     "on_finger":"transmute=14,6"
+                    },
+                 "type":"door",
+                 "width":0,
+                 "x":288,
+                 "y":448
+                }, 
+                {
+                 "gid":47,
+                 "height":0,
+                 "name":"switch 2",
+                 "properties":
+                    {
+                     "fingers":"door 2",
+                     "fingers_1":"cap 5",
+                     "message once":"The door opens. A capacitor blows."
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":256,
+                 "y":416
+                }, 
+                {
+                 "gid":25,
+                 "height":0,
+                 "name":"secret cap",
+                 "properties":
+                    {
+                     "on_finger_1":"transmute=27"
+                    },
+                 "type":"cap",
+                 "width":0,
+                 "x":512,
+                 "y":480
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"switch 4",
+                 "properties":
+                    {
+                     "fingers":"door 4"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":512,
+                 "y":512
+                }, 
+                {
+                 "gid":6,
+                 "height":0,
+                 "name":"door 4",
+                 "properties":
+                    {
+                     "on_finger":"transmute=6,14"
+                    },
+                 "type":"door",
+                 "width":0,
+                 "x":512,
+                 "y":128
+                }, 
+                {
+                 "gid":15,
+                 "height":0,
+                 "name":"door 5",
+                 "properties":
+                    {
+                     "on_finger":"transmute=7,15"
+                    },
+                 "type":"door",
+                 "width":0,
+                 "x":96,
+                 "y":96
+                }, 
+                {
+                 "gid":30,
+                 "height":0,
+                 "name":"switch 5",
+                 "properties":
+                    {
+                     "fingers":"door 5",
+                     "fingers_2":"door 4"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":544,
+                 "y":96
+                }, 
+                {
+                 "gid":46,
+                 "height":0,
+                 "name":"switch 3",
+                 "properties":
+                    {
+                     "fingers":"secret cap",
+                     "message_once":"a capacitor pops!"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":480,
                  "y":352
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"pop caps",
+                 "properties":
+                    {
+                     "fingers_1":"cap 1",
+                     "fingers_2":"cap 2",
+                     "fingers_3":"cap 3",
+                     "message_once":"some capacitors pop!"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":192,
+                 "y":64
+                }, 
+                {
+                 "gid":26,
+                 "height":0,
+                 "name":"cap 3",
+                 "properties":
+                    {
+                     "on_finger":"transmute=28"
+                    },
+                 "type":"cap",
+                 "width":0,
+                 "x":96,
+                 "y":32
+                }, 
+                {
+                 "gid":26,
+                 "height":0,
+                 "name":"cap 2",
+                 "properties":
+                    {
+                     "on_finger":"transmute=28"
+                    },
+                 "type":"cap",
+                 "width":0,
+                 "x":128,
+                 "y":32
+                }, 
+                {
+                 "gid":26,
+                 "height":0,
+                 "name":"cap 1",
+                 "properties":
+                    {
+                     "on_finger_1":"transmute=28"
+                    },
+                 "type":"cap",
+                 "width":0,
+                 "x":160,
+                 "y":32
+                }, 
+                {
+                 "gid":31,
+                 "height":0,
+                 "name":"inactive term",
+                 "properties":
+                    {
+                     "on_finger":"transmute=47",
+                     "on_finger_3":"give=fingers door 6"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":32,
+                 "y":480
+                }, 
+                {
+                 "gid":46,
+                 "height":0,
+                 "name":"term 1",
+                 "properties":
+                    {
+                     "fingers_once":"inactive term",
+                     "message_once":"the large terminal next to you unlocks"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":32,
+                 "y":448
+                }, 
+                {
+                 "gid":6,
+                 "height":0,
+                 "name":"door 6",
+                 "properties":
+                    {
+                     "on_finger":"transmute=14,6"
+                    },
+                 "type":"door",
+                 "width":0,
+                 "x":64,
+                 "y":512
+                }, 
+                {
+                 "gid":14,
+                 "height":0,
+                 "name":"pop caps plate",
+                 "properties":
+                    {
+                     "fingers":"cap 4",
+                     "message once":"Another capacitor blows! What is going on?"
+                    },
+                 "type":"switch",
+                 "width":0,
+                 "x":64,
+                 "y":128
+                }, 
+                {
+                 "gid":25,
+                 "height":0,
+                 "name":"cap 4",
+                 "properties":
+                    {
+                     "on_finger":"transmute=27"
+                    },
+                 "type":"cap",
+                 "width":0,
+                 "x":0,
+                 "y":128
                 }, 
                 {
                  "gid":16,
@@ -153,11 +306,24 @@
                     },
                  "type":"",
                  "width":0,
-                 "x":288,
-                 "y":288
+                 "x":512,
+                 "y":544
                 }, 
                 {
-                 "gid":6,
+                 "gid":55,
+                 "height":0,
+                 "name":"term hello",
+                 "properties":
+                    {
+                     "storyline":"1"
+                    },
+                 "type":"term",
+                 "width":0,
+                 "x":288,
+                 "y":256
+                }, 
+                {
+                 "gid":59,
                  "height":0,
                  "name":"",
                  "properties":
@@ -166,61 +332,47 @@
                     },
                  "type":"",
                  "width":0,
-                 "x":384,
-                 "y":224
-                }, 
-                {
-                 "gid":25,
-                 "height":0,
-                 "name":"cap 1",
-                 "properties":
-                    {
-                     "on_finger":"transmute=27"
-                    },
-                 "type":"cap",
-                 "width":0,
-                 "x":448,
-                 "y":224
-                }, 
-                {
-                 "gid":25,
-                 "height":0,
-                 "name":"cap 2",
-                 "properties":
-                    {
-                     "on_finger":"transmute=27"
-                    },
-                 "type":"cap",
-                 "width":0,
-                 "x":480,
-                 "y":224
-                }, 
-                {
-                 "gid":30,
-                 "height":0,
-                 "name":"switch 1",
-                 "properties":
-                    {
-                     "fingers":"cap 1",
-                     "fingers 2":"cap 2"
-                    },
-                 "type":"switch",
-                 "width":0,
-                 "x":416,
+                 "x":512,
                  "y":288
                 }, 
                 {
-                 "gid":30,
+                 "gid":60,
                  "height":0,
                  "name":"",
                  "properties":
                     {
-                     "message once":"A surge of static passes through you"
+
                     },
                  "type":"",
                  "width":0,
-                 "x":512,
-                 "y":288
+                 "x":128,
+                 "y":352
+                }, 
+                {
+                 "gid":58,
+                 "height":0,
+                 "name":"ice",
+                 "properties":
+                    {
+
+                    },
+                 "type":"ai",
+                 "width":0,
+                 "x":224,
+                 "y":544
+                }, 
+                {
+                 "gid":65,
+                 "height":0,
+                 "name":"punk",
+                 "properties":
+                    {
+
+                    },
+                 "type":"ai",
+                 "width":0,
+                 "x":64,
+                 "y":352
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -295,15 +447,19 @@
                 {
                  "blocks":"1"
                 },
+             "21":
+                {
+                 "blocks":"1"
+                },
+             "22":
+                {
+                 "blocks":"1"
+                },
+             "24":
+                {
+                 "blocks":"1"
+                },
              "25":
-                {
-                 "blocks":"1"
-                },
-             "26":
-                {
-                 "blocks":"1"
-                },
-             "27":
                 {
                  "blocks":"1"
                 },
@@ -319,11 +475,39 @@
                 {
                  "blocks":"1"
                 },
+             "37":
+                {
+                 "blocks":"1"
+                },
+             "38":
+                {
+                 "blocks":"1"
+                },
              "4":
                 {
                  "blocks":"1"
                 },
+             "45":
+                {
+                 "blocks":"1"
+                },
+             "46":
+                {
+                 "blocks":"1"
+                },
              "5":
+                {
+                 "blocks":"1"
+                },
+             "53":
+                {
+                 "blocks":"1"
+                },
+             "54":
+                {
+                 "blocks":"1"
+                },
+             "56":
                 {
                  "blocks":"1"
                 },

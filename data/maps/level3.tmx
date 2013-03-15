@@ -134,5 +134,7 @@
     <property name="fingers" value="capacitor 1"/>
    </properties>
   </object>
+  <object gid="57" x="352" y="192"/>
+  <object gid="57" x="352" y="192"/>
  </objectgroup>
 </map>

@@ -185,7 +185,7 @@
     <property name="on_finger" value="transmute=14"/>
    </properties>
   </object>
-  <object name="player" gid="57" x="32" y="192"/>
-  <object gid="58" x="160" y="192"/>
+  <object name="player" gid="57" x="32" y="64"/>
+  <object name="ICE" type="ai" gid="58" x="96" y="128"/>
  </objectgroup>
 </map>
