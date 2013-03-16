@@ -10,7 +10,7 @@
     "stealth": 0,
     "mana": 0,
     "maxmana": 5,
-    "manarate": 3,
+    "manarate": 6,
     "mode": "idle"
     },
   "58": {

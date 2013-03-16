@@ -53,7 +53,9 @@ class LevelObjects(object):
             
         # 2. Combat
         if b.type in ('ai', 'player'):
-            self.alive.messages.add(Combat(a, b))
+            combat_result = Combat(a, b)
+            if a is self.player:
+                self.alive.messages.add(combat_result)
             return True
                     
         # 1. fire any triggers on the bumpee
@@ -157,8 +159,11 @@ class LevelObjects(object):
                 if npc.health < npc.maxhealth:
                     if self.alive.level.turn % npc.healrate == 0:
                         npc.health += 1
-                        self.alive.messages.add('%s heals to %s hp' % \
-                                                (npc.name, npc.health))
+                        if npc is self.player:
+                            self.alive.messages.add('You heal.')
+                        else:
+                            trace.write('%s heals to %s hp' % \
+                                        (npc.name, npc.health))
                 # mana
                 if npc.mana < npc.maxmana:
                     if self.alive.level.turn % npc.manarate == 0:

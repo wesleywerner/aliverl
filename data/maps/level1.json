@@ -209,6 +209,58 @@
                  "width":0,
                  "x":288,
                  "y":64
+                }, 
+                {
+                 "gid":59,
+                 "height":0,
+                 "name":"virus",
+                 "properties":
+                    {
+
+                    },
+                 "type":"ai",
+                 "width":0,
+                 "x":416,
+                 "y":320
+                }, 
+                {
+                 "gid":58,
+                 "height":0,
+                 "name":"ICE",
+                 "properties":
+                    {
+
+                    },
+                 "type":"ai",
+                 "width":0,
+                 "x":256,
+                 "y":448
+                }, 
+                {
+                 "gid":58,
+                 "height":0,
+                 "name":"ICE",
+                 "properties":
+                    {
+
+                    },
+                 "type":"ai",
+                 "width":0,
+                 "x":352,
+                 "y":448
+                }, 
+                {
+                 "gid":59,
+                 "height":0,
+                 "name":"virus",
+                 "properties":
+                    {
+
+                    },
+                 "type":"ai",
+                 "width":0,
+                 "x":448,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",

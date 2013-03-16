@@ -208,7 +208,7 @@
   <object name="switch5" type="switch" gid="30" x="32" y="288">
    <properties>
     <property name="fingers" value="door5"/>
-    <property name="message" value="Your push the terminal buttons."/>
+    <property name="message" value="Your push the terminal buttons. this is a super long message line."/>
    </properties>
   </object>
   <object name="switch6" type="switch" gid="30" x="0" y="384">
