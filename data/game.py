@@ -86,7 +86,7 @@ def run ():
                 )
         screen.blit(
                 alive.messages.dialog_canvas,
-                (300, 20)
+                (320, 30)
                 )
         #TODO draw a background for dialogs state, add it to resources.py
         #TODO render some kind of dialog words using helper.renderLines
