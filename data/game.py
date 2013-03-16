@@ -9,6 +9,7 @@ from bump import Bump
 import trace
 import audio
 from messages import Messages
+import stats
 
 class AliveRL(object):
     """ This is where all game state objects live. """
@@ -44,7 +45,9 @@ if __name__ == '__main__':
         screen.blit(x, (0, 0))
         screen.blit(alive.level.tile_canvas, (288, 0))
         screen.blit(alive.level.character_canvas, (288, 0))
-        screen.blit(alive.messages.canvas, (16, 352))  #(286, 520)
+        screen.blit(alive.messages.canvas, (16, 352))
+        screen.blit(stats.draw_stats(alive.objects.player, alive.level),
+                    (10, 54) )
         pygame.display.flip()
         
         # handle input
