@@ -31,7 +31,7 @@ class Messages(object):
     
     def render(self):
         """ Renders new messages to our canvas. """
-        self.canvas = self.renderLines(
+        self.canvas = self.__renderLines(
                         self.messages[-10:],
                         self.font,
                         True,
@@ -54,7 +54,7 @@ class Messages(object):
     # we could by compositing the lines first onto a transparent surface, then
     # blitting to the returned surface.)
 
-    def renderLines(self, lines, font, antialias, color, background=None):
+    def __renderLines(self, lines, font, antialias, color, background=None):
         fontHeight = font.get_height()
         surfaces = []
         c = color
@@ -74,8 +74,3 @@ class Messages(object):
         for i in range(len(lines)):
           result.blit(surfaces[i], (0,i*fontHeight))
         return result
-
-    def renderTextBlock(self, text, font, antialias, color, background=None):
-        "This is renderTextBlock"
-        brokenText = text.replace("\r\n","\n").replace("\r","\n")
-        return renderLines(brokenText.split("\n"), font, antialias, color, background)
