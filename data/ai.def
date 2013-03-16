@@ -8,9 +8,9 @@
     "speed": 2,
     "healrate": 4,
     "stealth": 0,
-    "mana": 5,
+    "mana": 0,
     "maxmana": 5,
-    "manarate": 2,
+    "manarate": 3,
     "mode": "idle"
     },
   "58": {
