@@ -9,6 +9,7 @@
     "healrate": 4,
     "stealth": 0,
     "mana": 5,
+    "maxmana": 5,
     "manarate": 2,
     "mode": "idle"
     },
@@ -22,6 +23,7 @@
     "healrate": 2,
     "stealth": 0,
     "mana": 5,
+    "maxmana": 5,
     "manarate": 2,
     "mode": "patrol",
     "type": "ai"
@@ -36,6 +38,7 @@
     "healrate": 2,
     "stealth": 0,
     "mana": 5,
+    "maxmana": 5,
     "manarate": 2,
     "mode": "patrol",
     "type": "ai"
@@ -50,6 +53,7 @@
     "healrate": 2,
     "stealth": 0,
     "mana": 5,
+    "maxmana": 5,
     "manarate": 2,
     "mode": "patrol",
     "type": "ai"
@@ -64,6 +68,7 @@
     "healrate": 2,
     "stealth": 0,
     "mana": 5,
+    "maxmana": 5,
     "manarate": 2,
     "mode": "patrol",
     "type": "ai"
