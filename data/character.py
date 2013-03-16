@@ -51,8 +51,8 @@ class Character(object):
         for k, v in level_data.items():
             if k in ('name', 'type'):
                 # no overwrite existing values (level door names)
-                if getattr(self, k) == '':
-                    setattr(self, k, v)
+                #if getattr(self, k) == '':
+                setattr(self, k, v)
             elif k in ('properties', 'x', 'y'):
                 setattr(self, k, v)
         # rework position to indexed 

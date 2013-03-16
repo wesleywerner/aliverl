@@ -50,10 +50,9 @@ class LevelObjects(object):
             trace.write('Fingering %s' % (b.name, ) )
         else:
             trace.write('Bumping %s and %s' % (a.name, b.name, ) )
-            #self.alive.messages.add('Bumping %s and %s' % (a.name, b.name, ))
             
         # 2. Combat
-        if b.type in ('ai', 'player'):
+        if not is_finger_target and b.type in ('ai', 'player'):
             combat_result = Combat(a, b)
             if a is self.player:
                 self.alive.messages.add(combat_result)
@@ -63,8 +62,9 @@ class LevelObjects(object):
         for action in b.properties.keys():
             try:
                 action_value = b.properties[action]
+
                 # finger somebody else
-                if action.startswith('fingers'):
+                if not is_finger_target and action.startswith('fingers'):
                     for f in [e for e in self.characters if e.name == action_value]:
                         self.bump(a, f, is_finger_target=True)
                 
@@ -80,10 +80,6 @@ class LevelObjects(object):
                     
                     # grab the finger actions
                     f_acts = action_value.split('=')
-                    
-                    # message from this finger action
-                    if f_acts[0].startswith('message'):
-                        trace.write(f_acts[1])
                     
                     if f_acts[0].startswith('give'):
                         give = f_acts[1].split(' ')

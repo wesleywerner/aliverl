@@ -1,7 +1,9 @@
+import json
 import pygame
 from pygame.locals import *
 import trace
 import helper
+
 
 class Messages(object):
     """ Stores and renders recent game messages. """
@@ -12,8 +14,10 @@ class Messages(object):
         self.canvas = None
         self.maxlen = 39
         self.font = None
+        self.dialogs = None
     
     def load (self):
+        self.load_dialog_data()
         self.font = pygame.font.Font('bitwise.ttf', 14)
         self.render()
         
@@ -37,3 +41,7 @@ class Messages(object):
                         (0, 20, 0),
                         (0, 20, 0),
                         )
+                        
+    def load_dialog_data(self):
+        """ load the dialog.def data. """
+        self.dialogs = json.load(open('dialogs.def'))

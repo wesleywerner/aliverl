@@ -9,7 +9,7 @@ from bump import Bump
 import input
 import trace
 import audio
-from messages import Messages
+import messages
 from ui import UxManager
 import stats
 import states
@@ -23,13 +23,13 @@ class AliveRL(object):
         self.level = Level()
         self.objects = LevelObjects(self)
         self.audio = audio.Audio()
-        self.messages = Messages()
+        self.messages = messages.Messages()
         self.input = input.Input(self)
         # ui manager handles drawing and clicking widgets
         self.ui = UxManager('images/buttons.png', (500, 500), 
                             self.input.handler )
         # setup the state machine
-        self.state = states.MachineState( [states.menu, states.play, states.dialog] )
+        self.state = states.MachineState( [states.play,] )
         # load some resources
         self.res = resources.Resources()
     
