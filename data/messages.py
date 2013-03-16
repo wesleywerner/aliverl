@@ -8,14 +8,23 @@ class Messages(object):
         """ Class initialiser """
         self.messages = [''] * 20
         self.canvas = None
+        self.maxlen = 39
         self.font = pygame.font.Font('bitwise.ttf', 14)
+        #self.font = pygame.font.SysFont('', 14)
+        #Yours push the terminal button. this is a very long message.
         self.render()
         
     def add(self, message):
         """ Add message and trim the list. """
         if type(message) is list:
-            self.messages.extend(message)
+            for m in message:
+                self.add(m)
         else:
+            # wrap at maxlen
+            while len(message) > self.maxlen:
+                cutoff = message.find(' ', -self.maxlen)
+                self.add(message[:cutoff])
+                message = message[cutoff:]
             self.messages.append(message)
         self.messages = self.messages[-20:]
         self.render()
@@ -25,7 +34,7 @@ class Messages(object):
         self.canvas = self.renderLines(
                         self.messages[-10:],
                         self.font,
-                        False,
+                        True,
                         (0, 20, 0)
                         )
         
