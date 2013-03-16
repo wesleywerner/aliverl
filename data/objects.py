@@ -52,14 +52,6 @@ class LevelObjects(object):
         else:
             trace.write('Bumping %s and %s' % (a.name, b.name, ) )
         
-        # 0. Next level
-        if b.type == 'exit':
-            trace.write('EXIT')
-            self.alive.level.next_level()
-            self.alive.objects.load()
-            self.alive.messages.clear()
-            self.alive.messages.add('you enter level %s' % (self.alive.level.level,))
-        
         # 1. Combat
         if not is_finger_target and b.type in ('ai', 'player'):
             combat_result = Combat(a, b)
@@ -124,6 +116,14 @@ class LevelObjects(object):
             except Exception as err:
                 trace.error('Tile "%s" has a malformed property: %s \
                 ' % (b.name, err) )
+        
+        # 0. Next level
+        if b.type == 'exit':
+            trace.write('EXIT')
+            self.alive.level.next_level()
+            self.alive.objects.load()
+            self.alive.messages.clear()
+            self.alive.messages.add('you enter level %s' % (self.alive.level.level,))
         
         # 3. Blocking map tiles
         try:

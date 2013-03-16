@@ -153,7 +153,7 @@
                  "name":"exit",
                  "properties":
                     {
-
+                     "dialog":"level1 exit"
                     },
                  "type":"exit",
                  "width":0,
