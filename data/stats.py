@@ -21,12 +21,12 @@ def draw_stats(player, level):
     # stats
     lines.append( str(player.health) + ' health' )
     colors.append(__get_color_band(player.health / float(player.maxhealth)))
+    lines.append( str(player.mana) + ' mana' )
+    colors.append(__get_color_band(player.mana / float(player.maxmana)))
     lines.append( str(player.attack) + ' attack' )
     colors.append( (128, 128, 255) )
     lines.append( str(player.stealth) + ' stealth' )
     colors.append( (128, 128, 255) )
-    lines.append( str(player.mana) + ' mana' )
-    colors.append(__get_color_band(player.mana / float(player.maxmana)))
 
     
     canvas.blit( renderLines(lines, font, True, colors ,), (10, 10))

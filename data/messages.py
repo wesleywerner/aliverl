@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import trace
 
 class Messages(object):
     """ Stores and renders recent game messages. """
@@ -11,7 +12,6 @@ class Messages(object):
         self.maxlen = 39
         self.font = pygame.font.Font('bitwise.ttf', 14)
         #self.font = pygame.font.SysFont('', 14)
-        #Yours push the terminal button. this is a very long message.
         self.render()
         
     def add(self, message):
@@ -21,6 +21,7 @@ class Messages(object):
                 self.add(m)
         else:
             # wrap at maxlen
+            trace.write(message)
             while len(message) > self.maxlen:
                 cutoff = message.find(' ', -self.maxlen)
                 self.add(message[:cutoff])

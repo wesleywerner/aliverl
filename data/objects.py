@@ -153,13 +153,17 @@ class LevelObjects(object):
                             if e.type in ('player', 'ai')
                             and not e.dead]:
             try:
-                if self.alive.level.turn % npc.healrate == 0:
-                    if npc.health < npc.maxhealth:
+                # health
+                if npc.health < npc.maxhealth:
+                    if self.alive.level.turn % npc.healrate == 0:
                         npc.health += 1
-                        self.alive.messages.add('%s heals to %s hp' % (npc.name, 
-                                                        npc.health))
-                        trace.write('%s heals to %s hp' % (npc.name, 
-                                                        npc.health) )
+                        self.alive.messages.add('%s heals to %s hp' % \
+                                                (npc.name, npc.health))
+                # mana
+                if npc.mana < npc.maxmana:
+                    if self.alive.level.turn % npc.manarate == 0:
+                        npc.mana += 1
+                        
             except AttributeError as err:
                 trace.error(npc.name)
                 print(err)
