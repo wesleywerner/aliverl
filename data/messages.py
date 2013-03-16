@@ -24,6 +24,9 @@ class Messages(object):
         self.largefont = pygame.font.Font('bitwise.ttf', 28)
         self.render()
         
+    def clear(self):
+        self.messages = [''] * 20
+        
     def add(self, message):
         """ Add message and trim the list. """
         if type(message) is list:
@@ -31,7 +34,7 @@ class Messages(object):
                 self.add(m)
         else:
             trace.write(message)
-            self.messages.extend(helper.wrapLines(message, 39))
+            self.messages.extend(helper.wrapLines(message, 35))
         self.messages = self.messages[-20:]
         self.render()
     

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" width="256" height="832"/>
   <tile id="0">
@@ -108,46 +108,49 @@
    </properties>
   </tile>
  </tileset>
- <layer name="bg" width="20" height="20">
+ <layer name="bg" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYGBg4BjFo3gUj+JRPIpJxAAxiQyB
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
   </data>
  </layer>
- <layer name="map" width="20" height="20">
+ <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJy1VNEOwiAMrG48KOri1AfiR/j/fydNegm7UGAPu+RyK6PNtbDdROS8gydHlffMKPuwOPrMDJkXiz0fymSx6mxr0FDUjQ1/aycGkA9/e/tl/Ex7/q6dGPD8aVzOb5LtHDEvsTVgdH6RtISe4deIeuyP+2nVi5Vn9sd5iNUL36VQ2cf+kPc6yF8tF1gq79nfW7Y94Twne187+3LfQ8bus3e+mp9MQXy/3r9EZDt7rgei7hH+yvuXSD2M+FttvdRevZY/D61+a/74njDnwTXlJ/MPaCoIKA==
+   eJytUtEOwiAQqzIeJuoyow+L//+fQmyTGzsWsuySpnC7Xo/BHcD1IB4ZCf+4YR31XqH6OSNmjOwVyBfyQAZzikie2Ev9arZRPL6E9PLv0Sdn3fLXeSyioz/b36uFqW35a17978Dvdv5g1qp7VvPv+Y+sX8iC9dddxx29sOA8/8R86732+Jf9q0Pf8u+d3/N/Y31XA7bvz8sVfDJ+Ru4F1A==
   </data>
  </layer>
- <objectgroup name="objects" width="20" height="20">
-  <object gid="30" x="608" y="352"/>
-  <object gid="30" x="608" y="288"/>
-  <object gid="30" x="608" y="160"/>
-  <object gid="30" x="608" y="96"/>
-  <object gid="31" x="608" y="224"/>
-  <object gid="6" x="576" y="416"/>
-  <object gid="7" x="256" y="544"/>
-  <object gid="7" x="256" y="576"/>
-  <object gid="57" x="288" y="352"/>
-  <object gid="16" x="288" y="288"/>
-  <object gid="6" x="384" y="224"/>
-  <object name="cap 1" type="cap" gid="25" x="448" y="224">
+ <objectgroup name="objects" width="16" height="16">
+  <object gid="30" x="480" y="224"/>
+  <object gid="30" x="480" y="160"/>
+  <object gid="31" x="480" y="96"/>
+  <object gid="6" x="448" y="288"/>
+  <object gid="7" x="128" y="416"/>
+  <object gid="7" x="128" y="448"/>
+  <object name="player" gid="57" x="160" y="224"/>
+  <object gid="16" x="160" y="160"/>
+  <object name="door 1" type="door" gid="6" x="256" y="96">
+   <properties>
+    <property name="fingers once" value="door 1"/>
+    <property name="on_finger" value="transmute=14"/>
+   </properties>
+  </object>
+  <object name="cap 1" type="cap" gid="25" x="320" y="96">
    <properties>
     <property name="on_finger" value="transmute=27"/>
    </properties>
   </object>
-  <object name="cap 2" type="cap" gid="25" x="480" y="224">
+  <object name="cap 2" type="cap" gid="25" x="352" y="96">
    <properties>
     <property name="on_finger" value="transmute=27"/>
    </properties>
   </object>
-  <object name="switch 1" type="switch" gid="30" x="416" y="288">
+  <object name="switch 1" type="switch" gid="30" x="288" y="160">
    <properties>
     <property name="fingers" value="cap 1"/>
     <property name="fingers 2" value="cap 2"/>
     <property name="message once" value="The capacitors pop. Looks like a way through..."/>
    </properties>
   </object>
-  <object gid="30" x="512" y="288">
+  <object gid="30" x="384" y="160">
    <properties>
     <property name="message once" value="A surge of static passes through you"/>
    </properties>

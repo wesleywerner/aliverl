@@ -81,7 +81,7 @@ class Level(object):
     def next_level(self):
         """ Jumps to the next level. """
         self.level += 1
-        self.load_level()
+        self.load()
     
     def tile_blocks(self, xy):
         """ Returns if the tile at (x, y) would block movement. """

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" width="256" height="832"/>
   <tile id="0">
@@ -153,132 +153,102 @@
    </properties>
   </tile>
  </tileset>
- <layer name="bg" width="20" height="20">
+ <layer name="bg" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYGBg4BjFo3gUj+JRPIpJxAAxiQyB
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
   </data>
  </layer>
- <layer name="map" width="20" height="20">
+ <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJytlN0OgjAMhavCxaJi4l8iF3qnb6Dv/2ZusScpx9XBsMlJ2ejaL4VOpM56I7ZN1DJqFdWo0vqpPqfGxG9NrktUq8+7iYyIX9N+qtOp93hysucOymb5uE7JEB9MPrsPj35CZ1ovVB4H5ytxpvf9j3gvH3PiOwbiu43Mx3WvM/m8OOarzVfLh3NH+fRN1J8M3+sPfKV47z24oI7W4PTmbex/xxbUt2YvzUjt/OIe8uZ36v1iOe38ol+ol9NDhvN7l+9+1tp+5nm23B0PewOWdAeF
+   eJyVUssOgzAMy3gcUMt2YZPaw/b/f0kqGs0KTQOWLIeAcVolEtHAfDgcQAtXOhCqZuaroxoLM4G/582OPzKnylGp1GX2GfwBNNAZ2fi255c5qKrc0dLI/zX8eg7d9/Itfyv/jt/L/9Z6o/9+FL4hH5+tfAut9+jH3A/zacwRoTer/1yBnAP92PM4QV12Evf/LmT/5ezJUItyJzsfGwXh
   </data>
  </layer>
- <objectgroup name="objects" width="20" height="20">
-  <object name="player" gid="57" x="288" y="320"/>
-  <object name="door 1" type="door" gid="6" x="288" y="384">
+ <objectgroup name="objects" width="16" height="16">
+  <object name="player" gid="57" x="160" y="256"/>
+  <object name="door 1" type="door" gid="6" x="160" y="192">
+   <properties>
+    <property name="on_finger" value="transmute=14"/>
+    <property name="on_finger_2" value="give=fingers=cap 1"/>
+    <property name="on_finger_3" value="give=message once=POP! goes the capacitor. What is going on here?"/>
+   </properties>
+  </object>
+  <object name="switch 1" type="switch" gid="46" x="224" y="256">
+   <properties>
+    <property name="fingers once" value="term hello"/>
+    <property name="message once" value="The larger terminal across from you blinks alive..."/>
+   </properties>
+  </object>
+  <object name="door 2" type="door" gid="6" x="160" y="384">
    <properties>
     <property name="on_finger" value="transmute=14,6"/>
    </properties>
   </object>
-  <object name="switch 1" type="switch" gid="46" x="352" y="320">
+  <object name="switch 5" type="switch" gid="30" x="448" y="128">
    <properties>
-    <property name="fingers" value="door 1"/>
+    <property name="fingers" value="door 3"/>
    </properties>
   </object>
-  <object name="door 2" type="door" gid="6" x="288" y="448">
+  <object name="pop caps" type="switch" gid="55" x="320" y="320">
    <properties>
-    <property name="on_finger" value="transmute=14,6"/>
+    <property name="fingers" value="popcap"/>
+    <property name="message_once" value="pop! pop! pop! The capacitors blow."/>
    </properties>
   </object>
-  <object name="switch 2" type="switch" gid="47" x="256" y="416">
-   <properties>
-    <property name="fingers" value="door 2"/>
-    <property name="fingers_1" value="cap 5"/>
-    <property name="message once" value="The door opens. A capacitor blows."/>
-   </properties>
-  </object>
-  <object name="secret cap" type="cap" gid="25" x="512" y="480">
-   <properties>
-    <property name="on_finger_1" value="transmute=27"/>
-   </properties>
-  </object>
-  <object name="switch 4" type="switch" gid="55" x="512" y="512">
-   <properties>
-    <property name="fingers" value="door 4"/>
-   </properties>
-  </object>
-  <object name="door 4" type="door" gid="6" x="512" y="128">
-   <properties>
-    <property name="on_finger" value="transmute=6,14"/>
-   </properties>
-  </object>
-  <object name="door 5" type="door" gid="15" x="96" y="96">
-   <properties>
-    <property name="on_finger" value="transmute=7,15"/>
-   </properties>
-  </object>
-  <object name="switch 5" type="switch" gid="30" x="544" y="96">
-   <properties>
-    <property name="fingers" value="door 5"/>
-    <property name="fingers_2" value="door 4"/>
-   </properties>
-  </object>
-  <object name="switch 3" type="switch" gid="46" x="480" y="352">
-   <properties>
-    <property name="fingers" value="secret cap"/>
-    <property name="message_once" value="a capacitor pops!"/>
-   </properties>
-  </object>
-  <object name="pop caps" type="switch" gid="55" x="192" y="64">
-   <properties>
-    <property name="fingers_1" value="cap 1"/>
-    <property name="fingers_2" value="cap 2"/>
-    <property name="fingers_3" value="cap 3"/>
-    <property name="message_once" value="some capacitors pop!"/>
-   </properties>
-  </object>
-  <object name="cap 3" type="cap" gid="26" x="96" y="32">
+  <object name="popcap" type="cap" gid="26" x="320" y="288">
    <properties>
     <property name="on_finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="cap 2" type="cap" gid="26" x="128" y="32">
+  <object name="popcap" type="cap" gid="26" x="320" y="224">
    <properties>
     <property name="on_finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="cap 1" type="cap" gid="26" x="160" y="32">
+  <object name="popcap" type="cap" gid="26" x="320" y="160">
    <properties>
     <property name="on_finger_1" value="transmute=28"/>
    </properties>
   </object>
-  <object name="inactive term" type="switch" gid="31" x="32" y="480">
+  <object name="exit" type="exit" gid="16" x="32" y="64"/>
+  <object name="term hello" type="term" gid="31" x="96" y="256">
    <properties>
-    <property name="on_finger" value="transmute=47"/>
-    <property name="on_finger_3" value="give=fingers door 6"/>
+    <property name="on_finger_1" value="give=dialog=level1 intro"/>
+    <property name="on_finger_2" value="transmute=47"/>
+    <property name="on_finger_3" value="give=fingers_3=door 1"/>
    </properties>
   </object>
-  <object name="term 1" type="switch" gid="46" x="32" y="448">
+  <object name="cap 1" type="cap" gid="26" x="128" y="160">
    <properties>
-    <property name="fingers_once" value="inactive term"/>
-    <property name="message_once" value="the large terminal next to you unlocks"/>
+    <property name="on_finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="door 6" type="door" gid="6" x="64" y="512">
+  <object name="virus" type="ai" gid="59" x="256" y="160"/>
+  <object name="cap 2" type="cap" gid="26" x="64" y="96">
    <properties>
-    <property name="on_finger" value="transmute=14,6"/>
+    <property name="on_finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="pop caps plate" type="switch" gid="14" x="64" y="128">
+  <object name="switch exit cap" type="switch" gid="54" x="64" y="32">
    <properties>
-    <property name="fingers" value="cap 4"/>
-    <property name="message once" value="Another capacitor blows! What is going on?"/>
+    <property name="fingers" value="cap 2"/>
+    <property name="message" value="Pop! That was a satisfying sound."/>
    </properties>
   </object>
-  <object name="cap 4" type="cap" gid="25" x="0" y="128">
+  <object name="door 3" type="door" gid="7" x="352" y="64">
    <properties>
-    <property name="on_finger" value="transmute=27"/>
+    <property name="on_finger" value="transmute=15,7"/>
    </properties>
   </object>
-  <object gid="16" x="512" y="544"/>
-  <object name="term hello" type="term" gid="55" x="288" y="256">
+  <object name="door 3" type="door" gid="7" x="352" y="96">
    <properties>
-    <property name="storyline" value="1"/>
+    <property name="on_finger" value="transmute=15,7"/>
    </properties>
   </object>
-  <object gid="59" x="512" y="288"/>
-  <object gid="60" x="128" y="352"/>
-  <object name="ice" type="ai" gid="58" x="224" y="544"/>
-  <object name="punk" type="ai" gid="65" x="64" y="352"/>
+  <object name="switch 2" type="switch" gid="22" x="192" y="384">
+   <properties>
+    <property name="fingers" value="door 2"/>
+   </properties>
+  </object>
+  <object name="Ice" type="ai" gid="58" x="64" y="416"/>
  </objectgroup>
 </map>

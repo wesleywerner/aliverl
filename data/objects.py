@@ -19,6 +19,7 @@ class LevelObjects(object):
         
     def load (self):
         # Loads the characters from the level data
+        self.characters = []
         for layer in self.alive.level.object_layers():
             for obj_data in layer['objects']:
                 definition = None
@@ -50,15 +51,23 @@ class LevelObjects(object):
             trace.write('Fingering %s' % (b.name, ) )
         else:
             trace.write('Bumping %s and %s' % (a.name, b.name, ) )
-            
-        # 2. Combat
+        
+        # 0. Next level
+        if b.type == 'exit':
+            trace.write('EXIT')
+            self.alive.level.next_level()
+            self.alive.objects.load()
+            self.alive.messages.clear()
+            self.alive.messages.add('you enter level %s' % (self.alive.level.level,))
+        
+        # 1. Combat
         if not is_finger_target and b.type in ('ai', 'player'):
             combat_result = Combat(a, b)
             if a is self.player:
                 self.alive.messages.add(combat_result)
             return True
                     
-        # 1. fire any triggers on the bumpee
+        # 2. fire any triggers on the bumpee
         for action in b.properties.keys():
             try:
                 action_value = b.properties[action]
@@ -86,11 +95,11 @@ class LevelObjects(object):
                     # grab the finger actions
                     f_acts = action_value.split('=')
                     
-                    if f_acts[0].startswith('give'):
-                        give = f_acts[1].split(' ')
-                        b.properties[give[0]] = ' '.join(give[1:])
+                    if f_acts[0] == 'give':
+                        # give us a new property equal to the rest of f_acts
+                        b.properties[f_acts[1]] = ' '.join(f_acts[2:])
                     
-                    if f_acts[0].startswith('transmute'):
+                    if f_acts[0] == 'transmute':
                         # value could be 1 value (one-way transmute)
                         # or a csv list (rotate transmute)
                         options = f_acts[1].split(',')
@@ -125,6 +134,8 @@ class LevelObjects(object):
     
     def move_player_phase(self, event):
         """ Checks the event if we need to move the player. """
+        if self.player.dead:
+            return False
         x, y = (0, 0)
         if event.key == K_l:
             x, y = (1, 0)
@@ -147,8 +158,9 @@ class LevelObjects(object):
             self.alive.level.turn += 1
             self.heal_characters()
             self.move_npc_phase()
-            if self.alive.level.turn % 3 == 0:
-                self.alive.messages.add('')
+            # empty the message list over time
+            #if self.alive.level.turn % 3 == 0:
+                #self.alive.messages.add('')
             return True
     
     def heal_characters(self):
@@ -187,6 +199,11 @@ class LevelObjects(object):
         if (nx < 0) or (nx > self.alive.level.width - 1) or \
             (ny < 1) or (nx > self.alive.level.height - 1):
                 return False
+        
+        if self.alive.wizard:
+            character.x += x_offset
+            character.y += y_offset
+            return True
         
         # 1. detect object collisions
         for other in self.characters:

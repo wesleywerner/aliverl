@@ -32,6 +32,7 @@ class AliveRL(object):
         self.state = states.MachineState( [states.play,] )
         # load some resources
         self.res = resources.Resources()
+        self.wizard = False
     
     def set_state (self, newstate):
         """ set a new state on the machine stack. """
@@ -98,6 +99,9 @@ def run ():
             if event.key == K_ESCAPE:
                 alive.state.pop()
                 alive.ui.set_context(alive.state.peek())
+            elif event.key == K_F12:
+                alive.wizard = alive.wizard ^ True
+                alive.messages.add('wizard %s' % (alive.wizard,) )
             # test for movement
             alive.objects.move_player_phase(event)
 
@@ -111,6 +115,14 @@ def run ():
             elif event.key == K_SPACE:
                 alive.set_state(states.play)
     
+    def input_dialog(event):
+        """ handles all things states.dialog """
+        if event.type == KEYDOWN:
+            # Close
+            if event.key in (K_ESCAPE, K_SPACE, K_RETURN):
+                alive.state.pop()
+                alive.ui.set_context(alive.state.peek())
+        
     print('starting the hamster...')
     print('init pygame...')
     pygame.init()
@@ -191,7 +203,8 @@ def run ():
             try:
                 {
                     states.play: input_play,
-                    states.menu: input_menu
+                    states.menu: input_menu,
+                    states.dialog: input_dialog
                 }.get(alive.state.peek(), None)(event)
             except TypeError:
                 # there is no draw loop for this state.
