@@ -7,6 +7,7 @@ menu = 1
 help = 2
 about = 3
 play = 4
+dialog = 5
 
 class MachineState(object):
     """ manages the machine's state. """

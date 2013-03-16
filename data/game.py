@@ -29,7 +29,7 @@ class AliveRL(object):
         self.ui = UxManager('images/buttons.png', (500, 500), 
                             self.input.handler )
         # setup the state machine
-        self.state = states.MachineState( [states.menu, states.play] )
+        self.state = states.MachineState( [states.menu, states.play, states.dialog] )
         # load some resources
         self.res = resources.Resources()
     
@@ -64,6 +64,12 @@ def run ():
     def draw_menu():
         """ draws all things states.menu """
         pass
+        
+    def draw_dialog():
+        """ draws all things state.dialog """
+        pass
+        #TODO draw a background for dialogs state, add it to resources.py
+        #TODO render some kind of dialog words using helper.renderLines
 
     def input_play(event):
         """ handles all things states.play """
@@ -118,19 +124,20 @@ def run ():
             
         # test for widgets mouse hover & hotkey click
         alive.ui.hover( pygame.mouse.get_pos() )
-        # draw the characters canvas
+        # render the characters canvas (in memory of course)
         alive.level.draw_characters(alive.objects.characters)
         # blit the current state background
-        bg = alive.res.backgrounds[alive.state.peek()]
-        if bg:
-            screen.blit(
-                    bg, (0, 0)
-                    )
+        try:
+            bg = alive.res.backgrounds[alive.state.peek()]
+            screen.blit(bg, (0, 0))
+        except:
+            screen.blit(alive.res.defaultbg, (0, 0))
         # draw different things depending on current machine state
         try:
             {
                 states.play: draw_play,
-                states.menu: draw_menu
+                states.menu: draw_menu,
+                states.dialog: draw_dialog
             }.get(alive.state.peek(), None)()
         except TypeError:
             # there is no draw loop for this state
@@ -168,8 +175,11 @@ def run ():
                     states.menu: input_menu
                 }.get(alive.state.peek(), None)(event)
             except TypeError:
-                # there is no draw loop for this state
-                pass
+                # there is no draw loop for this state.
+                # so let us handle the Escape key for this case.
+                if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+                    alive.state.pop()
+                    alive.ui.set_context(alive.state.peek())
             
             # MOUSE
             if event.type == MOUSEBUTTONDOWN:
