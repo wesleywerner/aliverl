@@ -5,10 +5,13 @@ def wrapLines(message, maxlength):
     maxlength is the characters per line. """
     lines = []
     while len(message) > maxlength:
-        cutoff = message.find(' ', -maxlength)
-        lines.append(message[:cutoff])
+        cutoff = message.find(' ', maxlength)
+        lines.insert(0,message[:cutoff])
         message = message[cutoff:]
-    lines.append(message)
+    # add any remainder
+    lines.insert(0,message)
+    # unreverse the order
+    lines.reverse()
     return lines
 
 def renderLines(lines, font, antialias, color, colorize=None, background=None):
@@ -63,3 +66,37 @@ def renderTextBlock(text, font, antialias, color, colorize=None, background=None
                         colorize, 
                         background
                         )
+
+if __name__ == "__main__":
+    #print(wrapLines('The server at lipsum.com cant be found because the DNS look-up failed.', 
+    #10))
+    message = 'The server at lipsum.com cant be found because the DNS look-up failed.'
+    maxlength = 15
+
+    lines = []
+    # reverse
+    message = message[::-1]
+    while len(message) > maxlength:
+        cutoff = message.find(' ', maxlength)
+        lines.append(message[:cutoff][::-1])
+        message = message[cutoff:]
+    # add any remainder
+    lines.append(message[::-1])
+    # unreverse the order
+    lines.reverse()
+    print lines
+
+    print('\n')
+
+    maxlength = 10
+    lines = []
+    message = "The server at lipsum.com cant be found because the DNS look-up failed. DNS is the network service that translates a websites name to its Internet address."
+    while len(message) > maxlength:
+        cutoff = message.find(' ', maxlength)
+        lines.insert(0,message[:cutoff])
+        message = message[cutoff:]
+    # add any remainder
+    lines.insert(0,message)
+    # unreverse the order
+    lines.reverse()
+    print lines

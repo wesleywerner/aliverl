@@ -17,5 +17,10 @@ class Resources(object):
             states.menu: pygame.image.load('images/menu.png').convert_alpha(),
             states.help: None,
             states.about: None,
-            states.play: pygame.image.load('images/playscreen.png').convert_alpha()
+            states.play: pygame.image.load('images/playscreen.png').convert_alpha(),
+            states.dialog: None,
+            'dialog': pygame.image.load('images/dialog.png').convert_alpha()
             }
+        # copy the dialog background as the play one. we show the dialog text
+        # overlayed on the map.
+        self.backgrounds[states.dialog] = self.backgrounds[states.play]

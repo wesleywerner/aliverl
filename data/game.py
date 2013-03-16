@@ -78,10 +78,16 @@ def run ():
         
     def draw_dialog():
         """ draws all things state.dialog """
+        draw_play()
+        # draw the dialog background
+        screen.blit( 
+                alive.res.backgrounds['dialog'], 
+                (288, 0)
+                )
         screen.blit(
                 alive.messages.dialog_canvas,
-                (0, 0)
-        )
+                (300, 20)
+                )
         #TODO draw a background for dialogs state, add it to resources.py
         #TODO render some kind of dialog words using helper.renderLines
 

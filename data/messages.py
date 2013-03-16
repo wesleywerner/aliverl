@@ -21,7 +21,7 @@ class Messages(object):
     def load (self):
         self.load_dialog_data()
         self.font = pygame.font.Font('bitwise.ttf', 14)
-        self.largefont = pygame.font.Font('bitwise.ttf', 32)
+        self.largefont = pygame.font.Font('bitwise.ttf', 28)
         self.render()
         
     def add(self, message):
@@ -53,8 +53,9 @@ class Messages(object):
         """ get dialog text by name. """
         try:
             text = self.dialogs[name]
-            self.dialog_canvas = helper.renderTextBlock(
-                        text,
+            lines = helper.wrapLines(text, 25)
+            self.dialog_canvas = helper.renderLines(
+                        lines,
                         self.largefont,
                         True,
                         (0, 255, 0)
