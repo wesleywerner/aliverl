@@ -29,6 +29,7 @@ import pygame
 from pygame.locals import *
 import helper
 import color
+import states
 
 class UxBase(object):
     """ The base class that UI elements are based on. """
@@ -106,6 +107,7 @@ class UxManager(object):
     
     def set_context(self, context):
         self.context = context
+        self.refresh_canvas()
     
     def add(self, element, context=None):
         """ add an element to us. munch. """
@@ -153,7 +155,8 @@ class UxManager(object):
                                         self.tooltip_area.size, 
                                         0, 
                                         32)
-        self.tooltip_canvas.set_colorkey((255, 0, 255))
+            self.tooltip_canvas.set_colorkey((255, 0, 255))
+        self.clear_tooltips()
         self.canvas.set_colorkey((255, 0, 255))
         self.canvas.fill((255, 0, 255))
         for element in self.context_elements():
@@ -277,10 +280,10 @@ class UxManager(object):
                     source_rect=pygame.Rect(0, 0, 32, 32),
                     dest_rect=pygame.Rect(246, 16, 32, 32)
                     )
-        , context=None)
+        , context=states.play)
         
-        # prerender
-        self.refresh_canvas()
+        # no point to pre render if we don't know our context yet :]
+        #self.refresh_canvas()
         
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ class Resources(object):
     def load (self):
         self.backgrounds = {
             states.intro: None,
-            states.menu: None,
+            states.menu: pygame.image.load('images/menu.png').convert_alpha(),
             states.help: None,
             states.about: None,
             states.play: pygame.image.load('images/playscreen.png').convert_alpha()

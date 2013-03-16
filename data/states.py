@@ -31,3 +31,7 @@ class MachineState(object):
             # empty stack
             return None
     
+    def push(self, statevalue):
+        """ push a state onto the stack. Returns the pushed value. """
+        self.statestack.append(statevalue)
+        return statevalue
