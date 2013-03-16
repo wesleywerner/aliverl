@@ -1,30 +1,25 @@
-[notes]
-
-
-
-
 [top]
 
-* get the player object into a variable. render it last (z-order)
+* handle player death by dropping the current state and going
+    to a game over state.
 
+
+* draw the full stats screen:
+
+    + level
+    + turn
+
+    + health
+    + mana
+    + stealth
+    + attack
+    + score
+
+* fill out the base map tile blocking tiles
+* complete ai.def
 * flesh out ten levels with tile and objects.
+* copy blocking info to other levels
 
-* drink coffee.
+* write story to match each level.
 
-* create a list of map tiles that are interactive. 
-  these should enhance level gameplay via solving puzzles.
-
-
-
-[wishlist]
-
-* tracked module music. I have some I wrote, but ideally for this task
-    to work I need to 1) contact modders who would like to offer their
-    work, 2) tech out a module player library. libmikmod is first choice.
-
-
-[done]
-
-# day 1
-* map.py for loading map data and building a list of blocked tiles
-* drink coffee.
+* add a score counter to the player

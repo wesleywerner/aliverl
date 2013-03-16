@@ -38,19 +38,51 @@ then for the connectors where walls join into corners or t-junctions.
             who share the same name.
     * on_finger: also on_finger_1..N. values include:
             * transmute=tile_id[, rotate_tile_id, ..N]
-            
 
 
-NPC's / AI's
+### Object Interactions
+
+Give map objects these properties to interact with the game.
+The action names only match the start, you can add any descriptive
+words after the name (you can't have two actions with the same name).
+You may also append any action name with the word 'once' for that effect.
+
+* message=text: 
+    print an in-game message.
+
+* fingers=name: 
+    action the named object. It's actions will
+    process, except for other finger actions. You can finger multiple
+    object with 'finger 1', 'finger that enemy', 'finger door'.
+    Object that share the same name will all be fingered too.
+    
+* on_finger=action: 
+    where action is one of:
+    * give=value: give this object a new property
+        This simulates a terminal that has to be fingered for it
+        to work later, like a power switch or an unlock.
+    * transmute=id[,id..]: change this object tile to another.
+        A comma list of id's will rotate between each.
+        This simulates open/closing doors.
+
+* dialog=name: 
+    show the dialog text by name as defined in dialogs.def
+
+Examples:
+    + fingers_secret_door=transmute=2
+    + message=A secret door opens
+    change the tile to a non blockable one, and tell the player about it.
+    
+    + on_finger
+
+Characters
 ============
 
-Non Player Characters use the same  base as the player, 
-allowing our hero to temporarily take control of them. 
+The player and enemy bots are all characters. Their stats are defined
+in ai.def by the tileset tile_id.
 
-Some AI's idle in their area, others may patrol the perimiter of the map. 
-Of course any one of them will follow you if spotted or provoked.
-
-We write their attack/health points as ATK/HP, or 1/2.
+If current_turn % speed == 0 then we can move her.
+Same goes for heal rates.
 
 NPC types:
 
