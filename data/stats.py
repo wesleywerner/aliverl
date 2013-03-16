@@ -1,17 +1,18 @@
 # for rendering player stats
 import pygame
 from pygame.locals import *
+import color
 
 def draw_stats(player, level, full_info=False):
     """ draw and return the player stats box. """
     def __get_color_band(ratio):
         # gradient more green for healthy, red for hurt
         if ratio > 0.8:
-            return (0, 255, 0)
+            return color.green
         elif ratio > 0.5:
-            return (192, 192, 0)
+            return color.yellow
         else:
-            return (255, 0, 0)
+            return color.red
 
     font = pygame.font.Font('bitwise.ttf', 14)
     canvas = pygame.Surface((275, 160), pygame.SRCALPHA)
@@ -31,9 +32,9 @@ def draw_stats(player, level, full_info=False):
     lines = []
     colors = []
     lines.append( str(player.attack) + ' attack' )
-    colors.append( (128, 128, 255) )
+    colors.append( color.text )
     lines.append( str(player.stealth) + ' stealth' )
-    colors.append( (128, 128, 255) )
+    colors.append( color.text )
     canvas.blit( renderLines(lines, font, True, colors ,), (10, 10))
     return canvas
 

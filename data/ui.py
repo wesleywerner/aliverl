@@ -27,6 +27,8 @@ import sys
 import time
 import pygame
 from pygame.locals import *
+import helper
+import color
 
 class UxBase(object):
     """ The base class that UI elements are based on. """
@@ -51,19 +53,15 @@ class UxBase(object):
         target_type = type(position)
         if target_type is tuple:
             return self.dest_rect.collidepoint(position)
-        elif target_type is int:
-            try:
-                key = chr(position)
-            except ValueError:
-                return False
-            return key == self.hotkey
+        else:
+            return position == self.hotkey
     
     def hover(self, position):
         """ test if the given point hovers over us. """
         last_state = self.ishovering
         self.ishovering = self.istarget(position)
         # true means redraw this element
-        return self.ishovering != last_state
+        return self.ishovering or self.ishovering != last_state
     
     def click(self, position):
         """ test if the given point is clicking us. """
@@ -71,16 +69,7 @@ class UxBase(object):
         self.isclicked = self.istarget(position)
         # true means redraw this element
         return self.isclicked != last_state
-
-    def unclick(self, position):
-        """ test if the given point is clicking us. """
-        if self.isclicked and self.istarget(position):
-            self.isclicked = False
-            # true means redraw this element
-            return True
-        else:
-            return False
-        
+       
 class UxManager(object):
     """ Stores UI elements and handles drawing them.
     
@@ -97,11 +86,14 @@ class UxManager(object):
         self.canvas_size = canvas_size
         self.theme = theme
         self.elements = []
+        self.tooltip_area = None
+        self.tooltip_canvas = None
         self.canvas = None
         self.imagemap = None
         self.imagemap_disabled = None
         self.imagemap_hover = None
         self.imagemap_clicked = None
+        self.font = pygame.font.Font('bitwise.ttf', 18)
         self.click_callback = click_callback
         self.load_image_data()
     
@@ -126,8 +118,9 @@ class UxManager(object):
         for element in self.context_elements():
             if element.hover(position):
                 self.draw_element(element)
-                #TODO fire callback for element tooltip :)
+                self.draw_element_tooltip(element)
                 return 
+            self.clear_tooltips()
     
     def click(self, position):
         """ I hear it tickles when you're clicked the first time. """
@@ -135,23 +128,31 @@ class UxManager(object):
             if element.click(position):
                 self.draw_element(element)
                 if self.click_callback is not None:
-                    click_callback(self.context, element.code)
+                    self.click_callback(self.context, element.code)
                 return
     
-    def unclick(self, position):
+    def unclick(self):
         """ is there a sharp pointy thing hanging over our heads? """
         for element in self.context_elements():
-            if element.unclick(position):
-                self.draw_element(element)
-                return 
+            element.isclicked = False
+            self.draw_element(element)
+            return 
 
     def refresh_canvas(self):
         """ tell all our elements to go draw themselves. """
         # set up the canvas with transparency key
         if self.canvas is None:
-            self.canvas = pygame.Surface(self.canvas_size, pygame.SRCALPHA, 32)
-        #self.canvas.set_colorkey((255, 0, 255))
-        #self.canvas.fill((255, 0, 255))
+            self.canvas = pygame.Surface(
+                                        self.canvas_size, 
+                                        0, 
+                                        32)
+            self.tooltip_canvas = pygame.Surface(
+                                        self.tooltip_area.size, 
+                                        0, 
+                                        32)
+        self.tooltip_canvas.set_colorkey((255, 0, 255))
+        self.canvas.set_colorkey((255, 0, 255))
+        self.canvas.fill((255, 0, 255))
         for element in self.context_elements():
             self.draw_element(element)
     
@@ -177,18 +178,40 @@ class UxManager(object):
     
     def draw_element_text(self, element):
         """ draw an element's text. """
-        
         # print the element's title
-        timg = font.render(element.title, False, (255, 255, 255) )
+        timg = self.font.render(element.title, False, (255, 255, 255) )
         tpos = ( element.dest_rect.left + element.dest_rect.width, 
                 element.dest_rect.top + 12)
         self.canvas.blit(source=timg, dest=tpos)
         
         # print the hotkey below
-        timg = font.render(element.hotkey, False, (255, 255, 255) )
+        timg = self.font.render(element.hotkey, False, (255, 255, 255) )
         tpos = (tpos[0], tpos[1] + 12)
         self.canvas.blit(source=timg, dest=tpos)
     
+    def draw_element_tooltip(self, element):
+        """ draw an element's tooltip. """
+        if self.tooltip_area:
+            #tip = pygame.Surface(
+            #            self.tooltip_area.size,
+            #            0, 32)
+            # blue fill
+            #tip.fill(color.yellow)
+            timg = helper.renderTextBlock(
+                        '%s\nhotkey: %s' % (element.description, 
+                                                element.hotkey.upper()),
+                        font=self.font,
+                        antialias=True,
+                        color=color.yellow,
+                        background=color.blue
+                        )
+            #self.tooltip_canvas.blit( tip, (0, 16) )
+            self.tooltip_canvas.blit( timg, (2, 18) )
+    
+    def clear_tooltips(self):
+        """ Clears the tooltip canvas. """
+        self.tooltip_canvas.fill((255, 0, 255))
+        
     def load_image_data(self):
         """ load the theme's image data. 
         we use funky color manipulation to copy the map for other UI
@@ -239,14 +262,15 @@ class UxManager(object):
     def setup(self):
         """ set up the UI for the game.
         This is the only method in the class that is not reusable. """
+        self.tooltip_area = pygame.Rect(0, 0, 400, 100)
         
         # define all buttons for all contexts
         self.add(   UxBase( 
-                    'full stats', 
+                    'stats', 
                     title='stats',
-                    description='',
+                    description='Display the full stats screen.',
                     enabled=True, 
-                    hotkey='i', 
+                    hotkey='@', 
                     source_rect=pygame.Rect(0, 0, 32, 32),
                     dest_rect=pygame.Rect(246, 16, 32, 32)
                     )

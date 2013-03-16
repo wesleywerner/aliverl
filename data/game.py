@@ -6,6 +6,7 @@ from character import Character
 from level import Level
 from objects import LevelObjects
 from bump import Bump
+import input
 import trace
 import audio
 from messages import Messages
@@ -21,11 +22,10 @@ class AliveRL(object):
         self.objects = LevelObjects(self)
         self.audio = audio.Audio()
         self.messages = Messages()
-        
-        # set up ui
+        self.input = input.Input(self)
         self.ui = UxManager('images/buttons.png', 
-                            (330, 300), 
-                            None )
+                            (500, 500), 
+                            self.input.handler )
         self.ui.setup()
     
 if __name__ == '__main__':
@@ -56,6 +56,7 @@ if __name__ == '__main__':
         screen.blit(stats.draw_stats(alive.objects.player, alive.level),
                     (10, 0) )   # (10, 54)
         screen.blit(alive.ui.canvas, (0, 0) )
+        screen.blit(alive.ui.tooltip_canvas, pygame.mouse.get_pos() )
         pygame.display.flip()
         
         # handle input
@@ -64,19 +65,14 @@ if __name__ == '__main__':
                 running = False
             elif event.type == KEYDOWN:
                 # send as hotkey to the UI manager
-                alive.ui.click(event.key)
+                alive.ui.click(event.unicode)
+                # Escape the loop
                 if event.key == K_ESCAPE:
                     running = False
-                else:
-                    alive.objects.move_player_phase(event)
-            elif event.type == KEYUP:
-                # send as hotkey to the UI manager
-                alive.ui.unclick(event.key)
-                pass
+                # test for movement keys
+                alive.objects.move_player_phase(event)
             elif event.type == MOUSEBUTTONDOWN:
-                # click on ui
                 if event.button == 1:
                     alive.ui.click(event.pos)
-            elif event.type == MOUSEBUTTONUP:
-                # unclick on ui
-                alive.ui.unclick(event.pos)
+            elif event.type == MOUSEBUTTONUP or event.type == KEYUP:
+                alive.ui.unclick()
