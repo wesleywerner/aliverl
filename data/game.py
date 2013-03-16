@@ -33,6 +33,17 @@ class AliveRL(object):
         # load some resources
         self.res = resources.Resources()
     
+    def set_state (self, newstate):
+        """ set a new state on the machine stack. """
+        self.state.push(newstate)
+        self.ui.set_context(newstate)
+        
+    def show_dialog (self, name):
+        """ shows dialog by name. """
+        text = self.messages.dialog(name)
+        if text:
+            self.set_state(states.dialog)
+        
 def run ():
     """ Become... Alive! """
 
@@ -67,7 +78,10 @@ def run ():
         
     def draw_dialog():
         """ draws all things state.dialog """
-        pass
+        screen.blit(
+                alive.messages.dialog_canvas,
+                (0, 0)
+        )
         #TODO draw a background for dialogs state, add it to resources.py
         #TODO render some kind of dialog words using helper.renderLines
 
@@ -89,8 +103,7 @@ def run ():
                 alive.state.pop()
                 alive.ui.set_context(alive.state.peek())
             elif event.key == K_SPACE:
-                alive.state.push(states.play)
-                alive.ui.set_context(alive.state.peek())
+                alive.set_state(states.play)
     
     print('starting the hamster...')
     print('init pygame...')

@@ -12,13 +12,16 @@ class Messages(object):
         """ Class initialiser """
         self.messages = [''] * 20
         self.canvas = None
+        self.dialog_canvas = None
         self.maxlen = 39
         self.font = None
+        self.largefont = None
         self.dialogs = None
     
     def load (self):
         self.load_dialog_data()
         self.font = pygame.font.Font('bitwise.ttf', 14)
+        self.largefont = pygame.font.Font('bitwise.ttf', 32)
         self.render()
         
     def add(self, message):
@@ -45,3 +48,17 @@ class Messages(object):
     def load_dialog_data(self):
         """ load the dialog.def data. """
         self.dialogs = json.load(open('dialogs.def'))
+        
+    def dialog(self, name):
+        """ get dialog text by name. """
+        try:
+            text = self.dialogs[name]
+            self.dialog_canvas = helper.renderTextBlock(
+                        text,
+                        self.largefont,
+                        True,
+                        (0, 255, 0)
+                        )
+            return True
+        except KeyError:
+            return False

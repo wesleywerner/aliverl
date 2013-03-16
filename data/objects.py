@@ -72,6 +72,11 @@ class LevelObjects(object):
                 if action.startswith('message'):
                     trace.write(action_value)
                     self.alive.messages.add(action_value)
+                    
+                # show a dialog
+                if action.startswith('dialog'):
+                    trace.write(action_value)
+                    self.alive.show_dialog(action_value)
 
                 # fingered characters only
                 if is_finger_target and \
