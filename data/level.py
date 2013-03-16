@@ -57,9 +57,9 @@ class Level(object):
         self.tiles = None
         self.per_row = None
         self.tileset = None
-        self.load_level()
+        #self.load_level()
     
-    def load_level(self):
+    def load (self):
         """ Loads the level data of level (int). """
         self.data = json.load(open('maps/level%s.json' % (self.level, )))
         self.height = self.data["height"]

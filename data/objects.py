@@ -17,6 +17,7 @@ class LevelObjects(object):
         self.characters = []
         self.player = None
         
+    def load (self):
         # Loads the characters from the level data
         for layer in self.alive.level.object_layers():
             for obj_data in layer['objects']:

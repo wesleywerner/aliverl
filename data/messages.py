@@ -11,6 +11,9 @@ class Messages(object):
         self.messages = [''] * 20
         self.canvas = None
         self.maxlen = 39
+        self.font = None
+    
+    def load (self):
         self.font = pygame.font.Font('bitwise.ttf', 14)
         self.render()
         

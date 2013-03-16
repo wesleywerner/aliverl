@@ -93,8 +93,11 @@ class UxManager(object):
         self.imagemap_disabled = None
         self.imagemap_hover = None
         self.imagemap_clicked = None
-        self.font = pygame.font.Font('bitwise.ttf', 18)
+        self.font = None
         self.click_callback = click_callback
+    
+    def load (self):
+        self.font = pygame.font.Font('bitwise.ttf', 18)
         self.load_image_data()
     
     def context_elements(self):
