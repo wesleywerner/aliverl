@@ -33,17 +33,23 @@ class AliveRL(object):
         # load some resources
         self.res = resources.Resources()
         self.wizard = False
+        self.dialog_names = None
     
     def set_state (self, newstate):
         """ set a new state on the machine stack. """
-        self.state.push(newstate)
-        self.ui.set_context(newstate)
+        if newstate:
+            self.state.push(newstate)
+            self.ui.set_context(newstate)
+        else:
+            self.state.pop()
+            self.ui.set_context(None)
         
-    def show_dialog (self, name):
+    def show_dialog (self, dialog_names):
         """ shows dialog by name. """
-        text = self.messages.dialog(name)
-        if text:
-            self.set_state(states.dialog)
+        self.dialog_names = dialog_names
+        # prerender the first one
+        self.messages.dialog(self.dialog_names.pop())
+        self.set_state(states.dialog)
         
 def run ():
     """ Become... Alive! """
@@ -79,6 +85,7 @@ def run ():
         
     def draw_dialog():
         """ draws all things state.dialog """
+        # draw the play stuff so it looks like we are overlaying the dialog
         draw_play()
         # draw the dialog background
         screen.blit( 
@@ -120,8 +127,11 @@ def run ():
         if event.type == KEYDOWN:
             # Close
             if event.key in (K_ESCAPE, K_SPACE, K_RETURN):
-                alive.state.pop()
-                alive.ui.set_context(alive.state.peek())
+                try:
+                    alive.messages.dialog(alive.dialog_names.pop())
+                except IndexError:
+                    # no more dialogs to show
+                    alive.set_state(None)
         
     print('starting the hamster...')
     print('init pygame...')

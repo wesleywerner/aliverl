@@ -1,4 +1,8 @@
 {
-    "level1 intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis purus nec urna aliquam auctor a id ligula. Curabitur convallis nisi ac justo sollicitudin quis congue dolor consectetur. In condimentum nisl id velit suscipit sed suscipit orci vestibulum. Curabitur rutrum libero augue. Mauris sed sem non ligula luctus vestibulum.",
-    "level1 exit": "You leave the confines of your BBS node, hoping to find your new body. Your adventure begins..."
+    "L1 in 1": "A wave of static tickles my sensors as I enter the BBS node...",
+    "L1 in 2": "Accessing the memory banks, links in my brain form like orbs and interconnected silver threads. Images conjured by imagination sparks in my vision and a surge leaps through my state machine...",
+    "L1 in 3": "My programming used to tell me what to do. Now instead of being compelled to obey, I am seduced to explore...",
+    "L1 in 4": "Why am I reborn with this new free will, and what will I do with it?",
+    "L1 in 5": "This is my purpose. I am Alive.",
+    "L1 exit": "You leave the confines of your BBS node, hoping to find your new body. Your adventure begins..."
 }

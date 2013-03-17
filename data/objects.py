@@ -83,7 +83,9 @@ class LevelObjects(object):
                 # show a dialog
                 if action.startswith('dialog'):
                     trace.write(action_value)
-                    self.alive.show_dialog(action_value)
+                    # split the dialog names and reverse the list for the 
+                    # main loop (it uses pop() to unstack from the bottom)
+                    self.alive.show_dialog(action_value.split(',')[::-1])
 
                 # fingered characters only
                 if is_finger_target and \
