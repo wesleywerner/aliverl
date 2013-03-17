@@ -53,11 +53,17 @@ class LevelObjects(object):
             trace.write('Bumping %s and %s' % (a.name, b.name, ) )
         
         # 1. Combat
-        if not is_finger_target and b.type in ('ai', 'player'):
-            combat_result = Combat(a, b)
-            if a is self.player:
-                self.alive.messages.add(combat_result)
-            return True
+        if not is_finger_target:
+        # so we can finger ai's without fighting them
+            if b.type in ('ai', 'player'):
+                # short-circuit calls Combat() with player as first parameter.
+                # It will only call if a or b is the player.
+                # We don't let npc's battle each other.
+                result = ((a is self.player or b is self.player)
+                        and (Combat(a, b))) or Combat(b, a)
+                if result:
+                    self.alive.messages.add(result)
+                return True
                     
         # 2. fire any triggers on the bumpee
         for action in b.properties.keys():

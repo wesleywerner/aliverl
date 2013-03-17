@@ -1,21 +1,20 @@
 from character import Character
 import trace
 
-def Combat(foo, bar):
+def Combat(player, enemy):
     """ Combats the two given Characters """
     result = []
     # allow for potential damage mitigation
-    foo_atk = foo.attack
-    bar_atk = bar.attack
+    player_atk = player.attack
+    enemy_atk = enemy.attack
     # each deals damage
-    foo.health -= bar_atk
-    result.append('%s deals %s damage to %s (%s)' % (bar.name, bar.attack, foo.name, foo.health) )
-    bar.health -= foo_atk
-    result.append('%s deals %s damage to %s (%s)' % (foo.name, foo.attack, bar.name, bar.health) )
+    player.health -= enemy_atk
+    result.append('* the %s hits you for %s.' % (enemy.name, enemy.attack) )
+    enemy.health -= player_atk
+    result.append('* you hit the %s for %s.' % (enemy.name, player.attack) )
     # death
-    foo.dead = foo.health < 1
-    bar.dead = bar.health < 1
+    player.dead = player.health < 1
+    enemy.dead = enemy.health < 1
     # print results
-    for r in result:
-        trace.write(r)
+    trace.write(result)
     return result
