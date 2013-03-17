@@ -216,9 +216,9 @@
   </object>
   <object name="term hello" type="term" gid="31" x="96" y="256">
    <properties>
-    <property name="on_finger_1" value="give=dialog=level1 intro"/>
+    <property name="on_finger_1" value="give=dialog=L1 in 1,L1 in 2,L1 in 3,L1 in 4,L1 in 5"/>
     <property name="on_finger_2" value="transmute=47"/>
-    <property name="on_finger_3" value="give=fingers_3=door 1"/>
+    <property name="on_finger_3" value="give=fingers door once=door 1"/>
    </properties>
   </object>
   <object name="cap 1" type="cap" gid="26" x="128" y="160">

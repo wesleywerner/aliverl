@@ -166,9 +166,9 @@
                  "name":"term hello",
                  "properties":
                     {
-                     "on_finger_1":"give=dialog=level1 intro",
+                     "on_finger_1":"give=dialog=L1 in 1,L1 in 2,L1 in 3,L1 in 4,L1 in 5",
                      "on_finger_2":"transmute=47",
-                     "on_finger_3":"give=fingers_3=door 1"
+                     "on_finger_3":"give=fingers door once=door 1"
                     },
                  "type":"term",
                  "width":0,
