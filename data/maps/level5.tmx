@@ -3,9 +3,14 @@
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" width="256" height="832"/>
  </tileset>
+ <layer name="bg" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzjYGBg4BjFo3gUj+JRPIpJxAAxiQyB
+  </data>
+ </layer>
  <layer name="map" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJytVNEOhCAMwxMThfMB8P7/V08TiM2yuUF86EvXdWUKq3NuVRAYLhv6OKQTy2BvyxIMflzmpp8qPid8RQHNVmsFenzlEK2elX1EIZeUEfFl5s4wO4IG+YvblSzIJfD4EW0iPO6xcYFoi+BBeSnbJnh4gzfnp2l78j2dcXo5n3V/1/deBj24fPHlfHHAIwt8q/Xks96Dnnz4z9M3JAzs7+ldPNx917Q97YS3QNLiXA5/0I8PSQ==
+   eJxjYBgFIxHwALE5EDMBMS8VzONGYstRwTwRBojb2IBYlArmjYJRMAqoDwC3KgCt
   </data>
  </layer>
 </map>
