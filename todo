@@ -1,8 +1,11 @@
 [top]
 
-* handle player death by dropping the current state and going
-    to a game over state.
+* send a messages.add flag to indicate a background flash.
 
+* need a function to find object of type within a range
+* on ai move if player in range go to them
+
+* handle player death by dropping the current state and going to a game over state.
 
 * draw the full stats screen:
 
@@ -21,5 +24,7 @@
 * copy blocking info to other levels
 
 * write story to match each level.
+
+* implement abilities logic and ui
 
 * add a score counter to the player
