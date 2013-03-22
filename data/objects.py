@@ -67,64 +67,59 @@ class LevelObjects(object):
                     
         # 2. fire any triggers on the bumpee
         for action in b.properties.keys():
-            try:
-                action_value = b.properties[action]
+            action_value = b.properties[action]
 
-                # finger somebody else
-                if not is_finger_target and action.startswith('fingers'):
-                    for f in [e for e in self.characters if e.name == action_value]:
-                        self.bump(a, f, is_finger_target=True)
-                
-                # show a message
-                if action.startswith('message'):
-                    trace.write(action_value)
-                    self.alive.messages.add(action_value)
-                    
-                # show a dialog
-                if action.startswith('dialog'):
-                    trace.write(action_value)
-                    # split the dialog names and reverse the list for the 
-                    # main loop (it uses pop() to unstack from the bottom)
-                    self.alive.show_dialog(action_value.split(',')[::-1])
-
-                # fingered characters only
-                if is_finger_target and \
-                            self.player.xy() != b.xy() and \
-                            action.startswith('on_finger'):
-                    
-                    # grab the finger actions
-                    f_acts = action_value.split('=')
-                    
-                    if f_acts[0] == 'give':
-                        # give us a new property equal to the rest of f_acts
-                        b.properties[f_acts[1]] = ' '.join(f_acts[2:])
-                    
-                    if f_acts[0] == 'transmute':
-                        # value could be 1 value (one-way transmute)
-                        # or a csv list (rotate transmute)
-                        options = f_acts[1].split(',')
-                        if len(options) == 1:
-                            transmute_id = int(options[0])
-                        else:
-                            if str(b.tile_id) in options:
-                                # rotate the list with the current
-                                # index as offset. 
-                                idx = options.index(str(b.tile_id)) - 1
-                                transmute_id = int(list(options[idx:] + options[:idx])[0])
-                                trace.write('Rotate tile index %s to %s' % (b.tile_id, transmute_id))
-                            else:
-                                # use first index
-                                transmute_id = int(options[0])
-                        b.tile_id = transmute_id
-
-                # once shots actions (append once to any action)
-                if action.endswith('once'):
-                    del b.properties[action]
+            # finger somebody else
+            if not is_finger_target and action.startswith('fingers'):
+                for f in [e for e in self.characters if e.name == action_value]:
+                    self.bump(a, f, is_finger_target=True)
             
-            except Exception as err:
-                trace.error('Tile "%s" has a malformed property: %s \
-                ' % (b.name, err) )
-        
+            # show a message
+            if action.startswith('message'):
+                trace.write(action_value)
+                self.alive.messages.add(action_value)
+                
+            # show a dialog
+            if action.startswith('dialog'):
+                trace.write(action_value)
+                # split the dialog names and reverse the list for the 
+                # main loop (it uses pop() to unstack from the bottom)
+                self.alive.show_dialog(action_value.split(',')[::-1])
+
+            # fingered characters only
+            if is_finger_target and \
+                        self.player.xy() != b.xy() and \
+                        action.startswith('on_finger'):
+                
+                # grab the finger actions
+                f_acts = action_value.split('=')
+                
+                if f_acts[0] == 'give':
+                    # give us a new property equal to the rest of f_acts
+                    b.properties[f_acts[1]] = ' '.join(f_acts[2:])
+                
+                if f_acts[0] == 'transmute':
+                    # value could be 1 value (one-way transmute)
+                    # or a csv list (rotate transmute)
+                    options = f_acts[1].split(',')
+                    if len(options) == 1:
+                        transmute_id = int(options[0])
+                    else:
+                        if str(b.tile_id) in options:
+                            # rotate the list with the current
+                            # index as offset. 
+                            idx = options.index(str(b.tile_id)) - 1
+                            transmute_id = int(list(options[idx:] + options[:idx])[0])
+                            trace.write('Rotate tile index %s to %s' % (b.tile_id, transmute_id))
+                        else:
+                            # use first index
+                            transmute_id = int(options[0])
+                    b.tile_id = transmute_id
+
+            # once shots actions (append once to any action)
+            if action.endswith('once'):
+                del b.properties[action]
+
         # 0. Next level
         if b.type == 'exit':
             trace.write('EXIT')
