@@ -4,7 +4,7 @@ import trace
 from eventmanager import *
 import color
 
-class GraphicalView:
+class GraphicalView(object):
     """
     Draws the model state onto the screen.
     """
@@ -71,6 +71,7 @@ class GraphicalView:
         pygame.display.set_caption('Alive')
         self.screen = pygame.display.set_mode((800, 512))
         self.clock = pygame.time.Clock()
+        # load resources
         self.smallfont = pygame.font.Font(None, 14)
         self.largefont = pygame.font.Font('bitwise.ttf', 28)
         self.defaultbackground = image.load('images/background.png').convert()

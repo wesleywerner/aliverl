@@ -85,6 +85,50 @@ the Model state, and decide what user keys to process, and what to draw.
 
 That is their domain, and their job.
 
+## State implementation
+
+Using a state machine to track these game states allows us interesting tricks otherwise difficult to do.
+
+### What is a state machine?
+
+It is a fancy name for "a list of values, Last one In is First one Out." LIFO.
+
+Think of it like a stack of dinner plates.
+
+              ===     <- we have a green plate on the table
+            #######   <- our wooden breakfast table
+
+You can peek() at what the topmost plate is, we see it is green, so we draw and react to events that mean "our game is busy playing". 
+
+When we push() a red plate on top of the stack, we draw and do things that mean "the game is now paused". 
+
+              ===     <- we now see a red plate on top of the stack
+              ===     ... green plate
+            #######   ... table
+
+To unpause, we simply pop() the top most plate off the stack, and we can now see the green plate again. Our game carries on playing.
+
+**Why would we do this?**
+
+Because this allows us to easily unwind the stack to escape from game menus, options, dialogue screens and so forth.
+
+All our View needs to do, is draw whatever the current stack item says.
+All our Controller needs to do, is handle input for the current stack item.
+
+We can use this to show game dialogue for more than one screen. Consider this:
+
+              ===     ... dialogue text #1
+              ===     ... dialogue text #2
+              ===     ... dialogue text #3
+              ===     ... green plate
+            #######   ... table
+
+The View draws the dialogue text #1, and when the user presses the "anykey" we pop the stack and suddenly the View draws text #2. Neat. 
+
+The Controller knows it's a dialogue mode and knows to pop the stack on the "anykey" press. 
+
+Press enough keys, pop enough plates, we move through the storyline and get back to the game.
+
 # Restructuring
 
 Existing code files will be restructured.

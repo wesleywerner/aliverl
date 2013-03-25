@@ -1,7 +1,7 @@
 import pygame
 from eventmanager import *
 
-class KeyboardMouse:
+class KeyboardMouse(object):
     """
     Handles keyboard input.
     """
