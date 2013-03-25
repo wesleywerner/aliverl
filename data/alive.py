@@ -5,13 +5,13 @@ import aliveController
 
 def run():
     evManager = eventmanager.EventManager()
-    engine = aliveModel.GameEngine(evManager)
-    kbmousey = aliveController.KeyboardMouse(evManager)
+    gamemodel = aliveModel.GameEngine(evManager)
+    kbmousey = aliveController.KeyboardMouse(evManager, gamemodel)
     graphics = aliveView.GraphicalView(evManager)
-    evManager.RegisterListener(engine)
+    evManager.RegisterListener(gamemodel)
     evManager.RegisterListener(kbmousey)
     evManager.RegisterListener(graphics)
-    engine.run()
+    gamemodel.run()
 
 if __name__ == '__main__':
     run()

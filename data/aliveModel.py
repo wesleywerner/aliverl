@@ -10,6 +10,7 @@ class GameEngine(object):
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.running = True
+        self.state = StateMachine()
 
     def notify(self, event):
         """
@@ -18,6 +19,15 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.running = False
+        if isinstance(event, StateChangeEvent):
+            if event.state:
+                self.state.push(event.state)
+            else:
+                self.state.pop()
+            trace.write('game state is now %s' % (self.state.peek(),))
+            # No state, we quit
+            if not self.state.peek():
+                self.evManager.Post(QuitEvent())
 
     def run(self):
         """
@@ -26,7 +36,10 @@ class GameEngine(object):
         This pumps a Tick event into the message queue for each loop.
         The loop ends when this object hears a QuitEvent in notify(). 
         """
-
+        
+        # set up the state machine
+        self.evManager.Post(StateChangeEvent(STATE_MENU))
+        self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
         while self.running:
@@ -35,12 +48,12 @@ class GameEngine(object):
 
 
 # State machine constants for the StateMachine class below
-STATE_INTRO = 0
-STATE_MENU = 1
-STATE_HELP = 2
-STATE_ABOUT = 3
-STATE_PLAY = 4
-STATE_DIALOG = 5
+STATE_INTRO = 1
+STATE_MENU = 2
+STATE_HELP = 3
+STATE_ABOUT = 4
+STATE_PLAY = 5
+STATE_DIALOG = 6
 
 class StateMachine(object):
     """
