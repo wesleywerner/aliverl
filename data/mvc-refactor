@@ -1,0 +1,54 @@
+Separating the coupling between the view, controller and the game model, we use
+an event manager that sits between them like so:
+
+
+      ----         ----------
+      VIEW         CONTROLLER
+      ----         ----------
+         \        /
+           -------
+            EVENT 
+           MANAGER
+           -------
+              |
+         ----------
+            MODEL
+         GAME STATE
+         ----------
+
+
+Existing code files will be restructured like so:
+
+-----
+MODEL             (aliveModel.py)
+-----
+game.py
+character.py
+objects.py
+states.py
+stats.py
+combat.py
+bump.py
+level.py
+messages.py
+
+----
+VIEW              (aliveView.py)
+----
+resources.py
+trace.py
+ui.py
+color.py
+helper.py
+audio.py
+
+----------
+CONTROLLER        (aliveController.py)
+----------
+input.py
+
+-----
+OTHER
+-----
+alive.py          (binds the mvc objects together)
+eventmanager.py
