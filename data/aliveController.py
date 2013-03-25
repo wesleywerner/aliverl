@@ -1,4 +1,5 @@
 import pygame
+import aliveModel
 from eventmanager import *
 
 class KeyboardMouse(object):

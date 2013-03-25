@@ -33,7 +33,8 @@ class GameEngine(object):
             newTick = TickEvent()
             self.evManager.Post(newTick)
 
-# constants
+
+# State machine constants for the StateMachine class below
 STATE_INTRO = 0
 STATE_MENU = 1
 STATE_HELP = 2

@@ -1,8 +1,9 @@
 import pygame
 from pygame import image
 import trace
-from eventmanager import *
 import color
+import aliveModel
+from eventmanager import *
 
 class GraphicalView(object):
     """

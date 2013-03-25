@@ -11,6 +11,7 @@ class Event(object):
     def __str__(self):
         return self.name
     
+    
 class QuitEvent(Event):
     """
     Quit event.
@@ -19,6 +20,7 @@ class QuitEvent(Event):
     def __init__ (self):
         self.name = "Quit event"
     
+    
 class TickEvent(Event):
     """
     Tick event.
@@ -26,6 +28,7 @@ class TickEvent(Event):
     
     def __init__ (self):
         self.name = "Tick event"
+    
     
 class InputEvent(Event):
     """
@@ -39,6 +42,7 @@ class InputEvent(Event):
     def __str__(self):
         return '%s, char=%s, clickpos=%s' % (self.name, self.char, self.clickpos)
     
+    
 class InitializeEvent(Event):
     """
     Tells all listeners to initialize themselves.
@@ -51,6 +55,7 @@ class InitializeEvent(Event):
     def __init__ (self):
         self.name = "Initialize event"
 
+
 class LoadLevel(Event):
     """
     At the start of each game level, tell Views to prepare resources
@@ -62,7 +67,7 @@ class LoadLevel(Event):
         self.name = "Load level event"
         self.level = level
 
-#   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.
