@@ -1,3 +1,7 @@
+# Table of Contents
+
+[TOC]
+
 # Purpose
 
 Implement the MVC design pattern for a 2D graphical roguelike game.
@@ -7,8 +11,6 @@ implement other neat controllers like:
 
 * a View for graphic on mobile devices.
 * a Controller for touch-screens.
-
-[TOC]
 
 # The Coupling
 
@@ -85,34 +87,36 @@ That is their domain, and their job.
 
 # Restructuring
 
-Existing code files will be restructured like so:
+Existing code files will be restructured.
+(_slanted files await refactoring_)
 
-**MODEL**: _aliveModel.py_
+**MODEL**: aliveModel.py
 
-* game.py
-* character.py
-* objects.py
-* states.py
-* stats.py
-* combat.py
-* bump.py
-* level.py
-* messages.py
+* _game.py_
+* _character.py_
+* _objects.py_
+* _states.py_
+* _stats.py_
+* _combat.py_
+* _bump.py_
+* _level.py_
+* _messages.py_
 
-**VIEW**: _aliveView.py_
+**VIEW**: aliveView.py
 
 * resources.py
-* trace.py
-* ui.py
-* color.py
-* helper.py
-* audio.py
+* _trace.py_
+* _ui.py_
+* _color.py_
+* _helper.py_
+* _audio.py_
 
-**CONTROLLER**: _aliveController.py_
+**CONTROLLER**: aliveController.py
 
-* input.py
+* _input.py_
 
 **OTHER**:
+
 * alive.py
     * binds the mvc objects together
 * eventmanager.py
