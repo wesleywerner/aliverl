@@ -24,9 +24,8 @@ class KeyboardMouse:
                self.evManager.Post(QuitEvent)
             
             if event.type == pygame.KEYDOWN:
-               inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
-               self.evManager.Post(inEvent)
-
-            if event.type == pygame.K_ESCAPE:
-               trace.write('escape key pushed')
-               self.evManager.Post(QuitEvent)
+               if event.key == pygame.K_ESCAPE:
+                  self.evManager.Post(QuitEvent())
+               else:
+                  inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
+                  self.evManager.Post(inEvent)

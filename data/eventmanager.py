@@ -8,6 +8,8 @@ class Event:
     
     def __init__(self):
         self.name = "Generic event"
+    def __str__(self):
+        return self.name
     
 class QuitEvent(Event):
     """
@@ -34,7 +36,8 @@ class InputEvent(Event):
         self.name = "Input event"
         self.char = unicodechar
         self.clickpos = clickpos
-        
+    def __str__(self):
+        return '%s, char=%s, clickpos=%s' % (self.name, self.char, self.clickpos)
     
 class InitializeEvent(Event):
     """
@@ -83,6 +86,6 @@ class EventManager:
         It will be broadcast to all listeners.
         """
         
-        not isinstance(event, TickEvent) and trace.write(event.name)
+        not isinstance(event, TickEvent) and trace.write(str(event))
         for listener in self.listeners.keys():
             listener.notify(event)
