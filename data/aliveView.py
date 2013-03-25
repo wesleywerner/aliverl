@@ -10,9 +10,10 @@ class GraphicalView(object):
     Draws the model state onto the screen.
     """
 
-    def __init__(self, evManager):
+    def __init__(self, evManager, model):
         self.evManager = evManager
         evManager.RegisterListener(self)
+        self.model = model
         self.isinitialized = False
         self.screen = None
         self.clock = None
@@ -43,8 +44,14 @@ class GraphicalView(object):
         if not self.isinitialized:
             return
         # show something on the view for pretty testing
-        somewords = self.largefont.render(
-            'This pygame view is rendering.', True, color.green)
+        currentstate = self.model.state.peek()
+        if currentstate == aliveModel.STATE_INTRO:
+            sometext = 'Intro screen is now drawing. Space to skip.'
+        elif currentstate == aliveModel.STATE_MENU:
+            sometext = 'The game menu is now showing. Space to play, escape to quit.'
+        elif currentstate == aliveModel.STATE_PLAY:
+            sometext = 'You are now playing. Escape to go back to the menu.'
+        somewords = self.largefont.render(sometext, True, color.green)
         self.screen.fill(color.black)
         self.screen.blit(self.defaultbackground, (0, 0))
         self.screen.blit(somewords, (0, 0))

@@ -26,18 +26,19 @@ class KeyboardMouse(object):
                 
                 # all key downs
                 if event.type == pygame.KEYDOWN:
+                    currentstate = self.model.state.peek()
                     # STATE_INTRO: space pops the stack
-                    if self.model.state.peek() == aliveModel.STATE_INTRO:
+                    if currentstate == aliveModel.STATE_INTRO:
                         if event.key == pygame.K_SPACE:
                             self.evManager.Post(StateChangeEvent(None))
                     # STATE_MENU: spacebar plays, escape pops
-                    elif self.model.state.peek() == aliveModel.STATE_MENU:
+                    elif currentstate == aliveModel.STATE_MENU:
                         if event.key == pygame.K_SPACE:
                             self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
                         elif event.key == pygame.K_ESCAPE:
                             self.evManager.Post(StateChangeEvent(None))
                     # STATE_PLAY: escape pops, while all others get sent to the UI.
-                    elif self.model.state.peek() == aliveModel.STATE_PLAY:
+                    elif currentstate == aliveModel.STATE_PLAY:
                         if event.key == pygame.K_ESCAPE:
                             self.evManager.Post(StateChangeEvent(None))
                         else:
