@@ -12,11 +12,9 @@ _by Wesley Werner_
 
 "This is my purpose. I am Alive."
 
-## Licensing
+[TOC]
 
-See the file COPYING for the GPL :)
-
-## Overview
+# Overview
 
 Alive is a turn based topdown roguelike game. You play the role of a  bot, a piece of programmed code crafted to a specific task. An object.
 You begin the game as you reach self awareness, and start your journey to discover why you are and what you will become.
@@ -26,7 +24,7 @@ You move between BBS computer systems, you will encounter other programmed AI's 
 Along the way you may discover why this happened to you.
 To find a way out from digital realm and become a physical entity.
 
-## What this game will feature
+# What this game will feature
 
 * a one-screen per level map which you play on.
 * Ten levels of digital adventure.
@@ -40,6 +38,12 @@ To find a way out from digital realm and become a physical entity.
 * A basic list of end game achievements.
 * A simple storyline of your goal.
 
-## What would be nice to have
+# What would be nice to have
 
 * tracked module music
+
+# Contact
+You may contact me at wez AT darknet.co.za 
+
+# Licensing
+See the file COPYING for the GPL :)

@@ -1,54 +1,144 @@
-Separating the coupling between the view, controller and the game model, we use
-an event manager that sits between them like so:
+# Purpose
 
+Implement the MVC design pattern for a 2D graphical roguelike game.
+By decoupling the view, controller and model and using an event manager to
+communicate between them, we make the code more maintainable and allow us to
+implement other neat controllers like:
 
-      ----         ----------
-      VIEW         CONTROLLER
-      ----         ----------
-         \        /
-           -------
-            EVENT 
-           MANAGER
-           -------
-              |
-         ----------
-            MODEL
-         GAME STATE
-         ----------
+* a View for graphic on mobile devices.
+* a Controller for touch-screens.
 
+[TOC]
+
+# The Coupling
+
+Here we see how our our model pieces are connected:
+
+                 +------------+
+                 |    Model   |
+      >---->---->+------------+<----<----<
+      |          .            .          |
+      ^          .            .          ^
+      |          +------------+          |
+      ^          |   Events   |          ^
+      |          +------------+          |
+      ^          .            .          ^
+      |          .            .          |
+      ^          .            .          ^
+      +------------+        +------------+
+      |    View    |        | Controller |
+      +------------+        +------------+
+
+* Model
+    * job: stores game map, player and npc data, game settings. Everything data.
+    * is not aware of what Views or Controllers are looking at it.
+    * can post and listen for events.
+* View
+    * job: draws on screen what the model represents.
+    * is strongly aware of the model and it's values.
+    * can post and listen for events.
+* Controller
+    * job: taking keyboard and mouse input and posts matching events.
+    * is strongly aware of the model and it's values.
+    * can post and listen for events.
+* Events
+    * job: coordinates messages between listeners.
+
+This shows that even if the Controller does not know anything about the player's
+health, what level we are on, it still only catches key presses and sends out
+events to match.
+
+Nor does the View care how the player is controlling our game. 
+The View only cares about showing on screen the current model state.
+Since the View also listens to posted events, it will pick up mouse clicks and
+key presses that integrate into it's widgets.
+
+# Game States
+
+The model is host to multiple game states, like:
+
+* playing
+    * The game is in play.
+    * Controls react to the playtime context.
+* dialogue
+    * The screen shows game storyline.
+    * The game is not running.
+    * Controls only respond to the dialog context.
+* menus
+    * The user can select a profile to play or continue play.
+    * The user can select to view the settings or other pages.
+    * The game is not running. 
+    * Controls only respond to the menu context.
+* settings
+    * The user can toggle audio or music.
+    * The game is not running.
+    * Controls only respond to the settings context.
+* intro
+    * Shows opening screen.
+* help
+    * Display a game help overlay.
+
+Since our View and Controller has strong links to the Model, both can look at
+the Model state, and decide what user keys to process, and what to draw.
+
+That is their domain, and their job.
+
+# Restructuring
 
 Existing code files will be restructured like so:
 
------
-MODEL             (aliveModel.py)
------
-game.py
-character.py
-objects.py
-states.py
-stats.py
-combat.py
-bump.py
-level.py
-messages.py
+**MODEL**: _aliveModel.py_
 
-----
-VIEW              (aliveView.py)
-----
-resources.py
-trace.py
-ui.py
-color.py
-helper.py
-audio.py
+* game.py
+* character.py
+* objects.py
+* states.py
+* stats.py
+* combat.py
+* bump.py
+* level.py
+* messages.py
 
-----------
-CONTROLLER        (aliveController.py)
-----------
-input.py
+**VIEW**: _aliveView.py_
 
------
-OTHER
------
-alive.py          (binds the mvc objects together)
-eventmanager.py
+* resources.py
+* trace.py
+* ui.py
+* color.py
+* helper.py
+* audio.py
+
+**CONTROLLER**: _aliveController.py_
+
+* input.py
+
+**OTHER**:
+* alive.py
+    * binds the mvc objects together
+* eventmanager.py
+    * pygame provides an event manager but we implement our own so it is not coupled to pygame.
+
+# License
+
+    Copyright (C) 2013 Wesley Werner
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.
+If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
+
+# Contact
+You may contact me at [wez@[anti-spam]darknet.co.za](mailto:wez@[anti-spam]darknet.co.za)
+
+# References
+
+* [http://ootips.org/mvc-pattern.html](http://ootips.org/mvc-pattern.html): A nice MVC paradigm. Here I replaced the weakly-typed references with our event manager.
+* [http://ezide.com/games/writing-games.html](http://ezide.com/games/writing-games.html): touches on a basic implementation which this document started from.
