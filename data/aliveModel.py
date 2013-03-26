@@ -1,4 +1,6 @@
 import pygame
+from pygame.locals import *
+from pytmx import tmxloader
 from eventmanager import *
 
 class GameEngine(object):
@@ -7,10 +9,20 @@ class GameEngine(object):
     """
 
     def __init__(self, evManager):
+        """
+        evManager controls Post()ing and notify()ing events.
+        
+        Attributes:
+        running (bool): True while the engine is online. Changed via QuitEvent().
+        state (StateMachine): controls the game mode stack.
+        level (?): 
+        """
+        
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.running = True
         self.state = StateMachine()
+        self.level = None
 
     def notify(self, event):
         """
@@ -19,7 +31,7 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.running = False
-        if isinstance(event, StateChangeEvent):
+        elif isinstance(event, StateChangeEvent):
             if event.state:
                 self.state.push(event.state)
             else:
@@ -39,12 +51,35 @@ class GameEngine(object):
         
         # set up the state machine
         self.evManager.Post(StateChangeEvent(STATE_MENU))
-        self.evManager.Post(StateChangeEvent(STATE_INTRO))
+        # # self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
+        self.level = GameLevel(1)
+        self.evManager.Post(LoadLevel(1))
+        # off we go!
         while self.running:
             newTick = TickEvent()
             self.evManager.Post(newTick)
+
+
+class GameLevel(object):
+    """
+    Contains level specific data. Nothing here should persist across levels.
+    """
+    
+    def __init__ (self, number):
+        """
+        Attributes:
+        
+        number (int): the current level number.
+        filename (str): relative path to the level file.
+        data (pytmx.TiledMap): the .tmx map data.
+        """
+        self.number = number
+        self.filename = 'maps/level%s.tmx' % (number,)
+        self.data = tmxloader.load_pygame(self.filename, pixelalpha=False)
+        trace.write('loaded tmx data OK')
+
 
 
 # State machine constants for the StateMachine class below

@@ -1,5 +1,7 @@
 import pygame
 from pygame import image
+from pygame.locals import *
+from pytmx import tmxloader
 import trace
 import color
 import aliveModel
@@ -11,6 +13,21 @@ class GraphicalView(object):
     """
 
     def __init__(self, evManager, model):
+        """
+        evManager controls Post()ing and notify()ing events.
+        model gives us a strong reference to what we need to draw.
+        
+        Attributes:
+        isinitialized (bool): pygame is ready to draw.
+        screen (pygame.Surface): the screen surface.
+        clock (pygame.time.Clock): keeps the fps constant.
+        smallfont (pygame.Font): a small font.
+        largefont (pygame.Font): a larger font.
+        levelcanvas (pygame.Surface): a rendering of the level tiles.
+        objectcanvas (pygame.Surface): a rendering of the level objects.
+        viewport (pygame.Rect): the viewable play area.
+         """
+        
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.model = model
@@ -19,7 +36,10 @@ class GraphicalView(object):
         self.clock = None
         self.smallfont = None
         self.largefont = None
-        
+        self.levelcanvas = None
+        self.objectcanvas = None
+        self.viewport = pygame.Rect(0, 0, 320, 320)
+    
     def notify(self, event):
         """
         Called by an event in the message queue.
@@ -27,22 +47,27 @@ class GraphicalView(object):
 
         if isinstance(event, InitializeEvent):
             self.initialize()
-        if isinstance(event, QuitEvent):
+        elif isinstance(event, QuitEvent):
             self.isinitialized = False
             pygame.quit()
-        if isinstance(event, LoadLevel):
-            self.preplevel(event.level)
-        if isinstance(event, TickEvent):
+        elif isinstance(event, LoadLevel):
+            self.rendermap()
+        elif isinstance(event, TickEvent):
             self.clock.tick(30)
             self.render()
 
     def render(self):
         """
         Draw the current game state on screen.
+        blits the correct surfaces for the current Model state.
+        Does nothing if isinitialized == False (pygame.init failed)
         """
         
         if not self.isinitialized:
             return
+
+        self.screen.blit(self.defaultbackground, (0, 0))
+
         # show something on the view for pretty testing
         currentstate = self.model.state.peek()
         if currentstate == aliveModel.STATE_INTRO:
@@ -51,21 +76,56 @@ class GraphicalView(object):
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
         elif currentstate == aliveModel.STATE_PLAY:
             sometext = 'You are now playing. Escape to go back to the menu.'
+            self.screen.blit(self.levelcanvas, (-self.viewport.x, -self.viewport.y))
+            self.renderobjects()
+            self.screen.blit(self.objectcanvas, (0, 0))
+            
         somewords = self.largefont.render(sometext, True, color.green)
-        self.screen.fill(color.black)
-        self.screen.blit(self.defaultbackground, (0, 0))
         self.screen.blit(somewords, (0, 0))
         # flip the screen with all we drew
         pygame.display.flip()
         
-    def preplevel(self, level):
+    def rendermap(self):
         """
-        Prepares any graphical resources for the given level.
-        This even includes creating all object sprites from the model's
-        map data.
+        Render the level tiles onto self.levelcanvas.
         """
         
-        pass
+        tiledata = self.model.level.data
+        levelsize = (tiledata.width * tiledata.tilewidth,
+                    tiledata.height * tiledata.tileheight)
+        # create level and object canvii
+        self.levelcanvas = pygame.Surface(levelsize)
+        self.levelcanvas.set_colorkey(color.magenta)
+        self.levelcanvas.fill(color.magenta)
+        self.objectcanvas = pygame.Surface(levelsize)
+        self.objectcanvas.set_colorkey(color.magenta)
+        self.objectcanvas.fill(color.magenta)
+        
+        tw = tiledata.tilewidth
+        th = tiledata.tileheight
+        gt = tiledata.getTileImage
+
+        for l in xrange(0, len(tiledata.tilelayers)):
+            if tiledata.tilelayers[l].visible:
+                for y in xrange(0, tiledata.height):
+                    for x in xrange(0, tiledata.width):
+                        tile = gt(x, y, l)
+                        if tile:
+                            self.levelcanvas.blit(tile, (x*tw, y*th))
+
+    def renderobjects(self):
+        """
+        Render the level objects onto self.objectcanvas.
+        """
+        
+        #NOTE in the end we need to render the objects within the Model itself.
+        #       for now we render them from the map data for preview.
+        #       just note how we get the image for a GID.
+        tiledata = self.model.level.data
+        for o in tiledata.getObjects():
+            if self.viewport.contains(pygame.Rect(o.x, o.y - 32, 32, 32)):
+                self.objectcanvas.blit(tiledata.images[o.gid], 
+                            (o.x - self.viewport.x, o.y - 32 - self.viewport.y))
 
     def initialize(self):
         """

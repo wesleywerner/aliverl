@@ -60,12 +60,11 @@ class LoadLevel(Event):
     """
     At the start of each game level, tell Views to prepare resources
     for the given level.
-    Level is a number.
     """
     
-    def __init__ (self, level):
+    def __init__ (self, number):
         self.name = "Load level event"
-        self.level = level
+        self.number = number
 
 
 class StateChangeEvent(Event):
