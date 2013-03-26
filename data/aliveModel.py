@@ -49,9 +49,11 @@ class GameEngine(object):
         The loop ends when this object hears a QuitEvent in notify(). 
         """
         
-        # set up the state machine
-        self.evManager.Post(StateChangeEvent(STATE_MENU))
-        # # self.evManager.Post(StateChangeEvent(STATE_INTRO))
+        # for testing we play immediately. remove this and uncomment below for reality.
+        self.evManager.Post(StateChangeEvent(STATE_PLAY))
+        # # set up the state machine
+        # self.evManager.Post(StateChangeEvent(STATE_MENU))
+        # self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
         self.level = GameLevel(1)
