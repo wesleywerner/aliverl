@@ -139,7 +139,7 @@ Existing code files will be restructured.
 * _game.py_
 * _character.py_
 * _objects.py_
-* _states.py_
+* states.py
 * _stats.py_
 * _combat.py_
 * _bump.py_
