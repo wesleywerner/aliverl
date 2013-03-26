@@ -44,3 +44,14 @@ class KeyboardMouse(object):
                         else:
                             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
                             self.evManager.Post(inEvent)
+                        
+                        # # NOTE: This was used to test the viewport rendering.
+                        # # It works great, by the way.
+                        #if event.key == pygame.K_DOWN:
+                            #self.evManager.Post(ShiftViewportEvent((0, 1)))
+                        #if event.key == pygame.K_UP:
+                            #self.evManager.Post(ShiftViewportEvent((0, -1)))
+                        #if event.key == pygame.K_LEFT:
+                            #self.evManager.Post(ShiftViewportEvent((-1, 0)))
+                        #if event.key == pygame.K_RIGHT:
+                            #self.evManager.Post(ShiftViewportEvent((1, 0)))

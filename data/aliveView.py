@@ -26,7 +26,13 @@ class GraphicalView(object):
         levelcanvas (pygame.Surface): a rendering of the level tiles.
         objectcanvas (pygame.Surface): a rendering of the level objects.
         viewport (pygame.Rect): the viewable play area.
-         """
+
+        Note: The viewport defines which area of the level we see as the 
+        play area. a smaller viewport will render correctly, as long as
+        we move it with the player character via the ShiftViewportEvent.
+        It takes a tuple of (x,y) offset to move, by index, not pixels,
+        where index equals the number of tiles to shift.
+        """
         
         self.evManager = evManager
         evManager.RegisterListener(self)
@@ -38,7 +44,7 @@ class GraphicalView(object):
         self.largefont = None
         self.levelcanvas = None
         self.objectcanvas = None
-        self.viewport = pygame.Rect(0, 0, 320, 320)
+        self.viewport = None
     
     def notify(self, event):
         """
@@ -50,8 +56,11 @@ class GraphicalView(object):
         elif isinstance(event, QuitEvent):
             self.isinitialized = False
             pygame.quit()
-        elif isinstance(event, LoadLevel):
+        elif isinstance(event, LoadLevelEvent):
             self.rendermap()
+        elif isinstance(event, ShiftViewportEvent):
+            ratio = self.model.level.data.tilewidth
+            self.viewport = self.viewport.move(event.xy[0]*ratio, event.xy[1]*ratio)
         elif isinstance(event, TickEvent):
             self.clock.tick(30)
             self.render()
@@ -99,7 +108,6 @@ class GraphicalView(object):
         self.levelcanvas.fill(color.magenta)
         self.objectcanvas = pygame.Surface(levelsize)
         self.objectcanvas.set_colorkey(color.magenta)
-        self.objectcanvas.fill(color.magenta)
         
         tw = tiledata.tilewidth
         th = tiledata.tileheight
@@ -121,6 +129,7 @@ class GraphicalView(object):
         #NOTE in the end we need to render the objects within the Model itself.
         #       for now we render them from the map data for preview.
         #       just note how we get the image for a GID.
+        self.objectcanvas.fill(color.magenta)
         tiledata = self.model.level.data
         for o in tiledata.getObjects():
             if self.viewport.contains(pygame.Rect(o.x, o.y - 32, 32, 32)):
@@ -129,15 +138,14 @@ class GraphicalView(object):
 
     def initialize(self):
         """
-        Set up the pygame graphical display.
-        Loads graphical resources.
-        Should only be called once.
+        Set up the pygame graphical display and loads graphical resources.
         """
 
         result = pygame.init()
         pygame.font.init()
         pygame.display.set_caption('Alive')
         self.screen = pygame.display.set_mode((800, 512))
+        self.viewport = pygame.Rect(0, 0, 512, 512)
         self.clock = pygame.time.Clock()
         # load resources
         self.smallfont = pygame.font.Font(None, 14)

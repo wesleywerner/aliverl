@@ -55,7 +55,7 @@ class GameEngine(object):
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
         self.level = GameLevel(1)
-        self.evManager.Post(LoadLevel(1))
+        self.evManager.Post(LoadLevelEvent(1))
         # off we go!
         while self.running:
             newTick = TickEvent()

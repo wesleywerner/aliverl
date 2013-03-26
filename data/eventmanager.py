@@ -56,7 +56,7 @@ class InitializeEvent(Event):
         self.name = "Initialize event"
 
 
-class LoadLevel(Event):
+class LoadLevelEvent(Event):
     """
     At the start of each game level, tell Views to prepare resources
     for the given level.
@@ -81,7 +81,19 @@ class StateChangeEvent(Event):
             return '%s pushed %s' % (self.name, self.state)
         else:
             return '%s popped' % (self.name, )
+
+
+class ShiftViewportEvent(Event):
+    """
+    Move the Viewport around.
+    It is that area which the game takes place.
+    """
     
+    def __init__ (self, xy):
+        self.name = "Shift viewport event"
+        self.xy = xy
+
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.
