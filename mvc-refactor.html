@@ -1,0 +1,215 @@
+<h1 id="table-of-contents">Table of contents</h1>
+<div class="toc">
+<ul>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#the-purpose-of-this-document">The purpose of this document</a><ul>
+<li><a href="#versions">Versions</a></li>
+</ul>
+</li>
+<li><a href="#the-coupling">The coupling</a></li>
+<li><a href="#game-states">Game states</a><ul>
+<li><a href="#state-implementation">State implementation</a><ul>
+<li><a href="#what-is-a-state-machine">What is a state machine?</a></li>
+<li><a href="#why-would-we-do-this">Why would we do this?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#restructuring">Restructuring</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+<h1 id="the-purpose-of-this-document">The purpose of this document</h1>
+<p>Implement the MVC design pattern for a 2D graphical RPG Roguelike game.
+By decoupling the view, controller and model and using an event manager to
+communicate between them, we make the code more maintainable and allow us to
+implement other neat controllers like:</p>
+<ul>
+<li>a View for graphic on mobile devices.</li>
+<li>a Controller for touch-screens.</li>
+</ul>
+<p><em>For more on MVC patters see References below</em></p>
+<h2 id="versions">Versions</h2>
+<p>This document is a work in progress and incomplete.</p>
+<ol>
+<li>2013/03: drafting</li>
+</ol>
+<h1 id="the-coupling">The coupling</h1>
+<p>Here we see how our our model pieces are connected:</p>
+<pre><code>             +------------+
+             |    Model   |
+  &gt;----&gt;----&gt;+------------+&lt;----&lt;----&lt;
+  |          .            .          |
+  ^          .            .          ^
+  |          +------------+          |
+  ^          |   Events   |          ^
+  |          +------------+          |
+  ^          .            .          ^
+  |          .            .          |
+  ^          .            .          ^
+  +------------+        +------------+
+  |    View    |        | Controller |
+  +------------+        +------------+
+</code></pre>
+<ul>
+<li>Model<ul>
+<li>job: stores game map, player and npc data, game settings. Everything data.</li>
+<li>is not aware of what Views or Controllers are looking at it.</li>
+<li>can post and listen for events.</li>
+</ul>
+</li>
+<li>View<ul>
+<li>job: draws on screen what the model represents.</li>
+<li>is strongly aware of the model and it's values.</li>
+<li>can post and listen for events.</li>
+</ul>
+</li>
+<li>Controller<ul>
+<li>job: taking keyboard and mouse input and posts matching events.</li>
+<li>is strongly aware of the model and it's values.</li>
+<li>can post and listen for events.</li>
+</ul>
+</li>
+<li>Events<ul>
+<li>job: coordinates messages between listeners.</li>
+</ul>
+</li>
+</ul>
+<p>This shows that even if the Controller does not know anything about the player's
+health, what level we are on, it still only catches key presses and sends out
+events to match.</p>
+<p>Nor does the View care how the player is controlling our game. 
+The View only cares about showing on screen the current model state.
+Since the View also listens to posted events, it will pick up mouse clicks and
+key presses that integrate into it's widgets.</p>
+<h1 id="game-states">Game states</h1>
+<p>The model is host to multiple game states, like:</p>
+<ul>
+<li>playing<ul>
+<li>The game is in play.</li>
+<li>Controls react to the playtime context.</li>
+</ul>
+</li>
+<li>dialogue<ul>
+<li>The screen shows game storyline.</li>
+<li>The game is not running.</li>
+<li>Controls only respond to the dialog context.</li>
+</ul>
+</li>
+<li>menus<ul>
+<li>The user can select a profile to play or continue play.</li>
+<li>The user can select to view the settings or other pages.</li>
+<li>The game is not running. </li>
+<li>Controls only respond to the menu context.</li>
+</ul>
+</li>
+<li>settings<ul>
+<li>The user can toggle audio or music.</li>
+<li>The game is not running.</li>
+<li>Controls only respond to the settings context.</li>
+</ul>
+</li>
+<li>intro<ul>
+<li>Shows opening screen.</li>
+</ul>
+</li>
+<li>help<ul>
+<li>Display a game help overlay.</li>
+</ul>
+</li>
+</ul>
+<p>Since our View and Controller has strong links to the Model, both can look at
+the Model state, and decide what user keys to process, and what to draw.</p>
+<p>That is their domain, and their job.</p>
+<h2 id="state-implementation">State implementation</h2>
+<p>Using a state machine to track these game states allows us interesting tricks otherwise difficult to do.</p>
+<h3 id="what-is-a-state-machine">What is a state machine?</h3>
+<p>It is a fancy name for "a list of values, Last one In is First one Out." LIFO.</p>
+<p>Think of it like a stack of dinner plates.</p>
+<pre><code>          ===     &lt;- we have a green plate on the table
+        #######   &lt;- our wooden breakfast table
+</code></pre>
+<p>You can peek() at what the topmost plate is, we see it is green, so we draw and react to events that mean "our game is busy playing". </p>
+<p>When we push() a red plate on top of the stack, we draw and do things that mean "the game is now paused". </p>
+<pre><code>          ===     &lt;- we now see a red plate on top of the stack
+          ===     ... green plate
+        #######   ... table
+</code></pre>
+<p>To unpause, we simply pop() the top most plate off the stack, and we can now see the green plate again. Our game carries on playing.</p>
+<h3 id="why-would-we-do-this">Why would we do this?</h3>
+<p>Because this allows us to easily unwind the stack to escape from game menus, options, dialogue screens and so forth.</p>
+<p>All our View needs to do, is draw whatever the current stack item says.
+All our Controller needs to do, is handle input for the current stack item.</p>
+<p>We can use this to show game dialogue for more than one screen. Consider this:</p>
+<pre><code>          ===     ... dialogue text #1
+          ===     ... dialogue text #2
+          ===     ... dialogue text #3
+          ===     ... green plate
+        #######   ... table
+</code></pre>
+<p>The View draws the dialogue text #1, and when the user presses the "anykey" we pop the stack and suddenly the View draws text #2. Neat. </p>
+<p>The Controller knows it's a dialogue mode and knows to pop the stack on the "anykey" press. </p>
+<p>Press enough keys, pop enough plates, we move through the storyline and get back to the game.</p>
+<h1 id="restructuring">Restructuring</h1>
+<p>Existing code files will be restructured.
+(<em>slanted files await refactoring</em>)</p>
+<p><strong>MODEL</strong>: aliveModel.py</p>
+<ul>
+<li><em>game.py</em></li>
+<li><em>character.py</em></li>
+<li><em>objects.py</em></li>
+<li>states.py</li>
+<li><em>stats.py</em></li>
+<li><em>combat.py</em></li>
+<li><em>bump.py</em></li>
+<li><em>level.py</em></li>
+<li><em>messages.py</em></li>
+</ul>
+<p><strong>VIEW</strong>: aliveView.py</p>
+<ul>
+<li>resources.py</li>
+<li><em>trace.py</em></li>
+<li><em>ui.py</em></li>
+<li><em>color.py</em></li>
+<li><em>helper.py</em></li>
+<li><em>audio.py</em></li>
+</ul>
+<p><strong>CONTROLLER</strong>: aliveController.py</p>
+<ul>
+<li><em>input.py</em></li>
+</ul>
+<p><strong>OTHER</strong>:</p>
+<ul>
+<li>alive.py<ul>
+<li>binds the mvc objects together</li>
+</ul>
+</li>
+<li>eventmanager.py<ul>
+<li>pygame provides an event manager but we implement our own so it is not coupled to pygame.</li>
+</ul>
+</li>
+</ul>
+<h1 id="license">License</h1>
+<pre><code>Copyright (C) 2013 Wesley Werner
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+</code></pre>
+<p>You should have received a copy of the GNU General Public License along with this program.
+If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h1 id="contact">Contact</h1>
+<p>You may contact me at <a href="mailto:wez@[anti-spam]darknet.co.za">wez@[anti-spam]darknet.co.za</a></p>
+<h1 id="references">References</h1>
+<ul>
+<li><a href="http://ootips.org/mvc-pattern.html">http://ootips.org/mvc-pattern.html</a>: A nice MVC paradigm. Here I replaced the weakly-typed references with our event manager.</li>
+<li><a href="http://ezide.com/games/writing-games.html">http://ezide.com/games/writing-games.html</a>: touches on a basic implementation which this document started from. It expands the model to include networking support, which I have omitted.</li>
+</ul>

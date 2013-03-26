@@ -1,10 +1,10 @@
-# Table of Contents
+# Table of contents
 
 [TOC]
 
-# Purpose
+# The purpose of this document
 
-Implement the MVC design pattern for a 2D graphical roguelike game.
+Implement the MVC design pattern for a 2D graphical RPG Roguelike game.
 By decoupling the view, controller and model and using an event manager to
 communicate between them, we make the code more maintainable and allow us to
 implement other neat controllers like:
@@ -12,7 +12,15 @@ implement other neat controllers like:
 * a View for graphic on mobile devices.
 * a Controller for touch-screens.
 
-# The Coupling
+_For more on MVC patters see References below_
+
+## Versions
+
+This document is a work in progress and incomplete.
+
+1. 2013/03: drafting
+
+# The coupling
 
 Here we see how our our model pieces are connected:
 
@@ -55,7 +63,7 @@ The View only cares about showing on screen the current model state.
 Since the View also listens to posted events, it will pick up mouse clicks and
 key presses that integrate into it's widgets.
 
-# Game States
+# Game states
 
 The model is host to multiple game states, like:
 
@@ -108,7 +116,7 @@ When we push() a red plate on top of the stack, we draw and do things that mean 
 
 To unpause, we simply pop() the top most plate off the stack, and we can now see the green plate again. Our game carries on playing.
 
-**Why would we do this?**
+### Why would we do this?
 
 Because this allows us to easily unwind the stack to escape from game menus, options, dialogue screens and so forth.
 
@@ -189,4 +197,4 @@ You may contact me at [wez@[anti-spam]darknet.co.za](mailto:wez@[anti-spam]darkn
 # References
 
 * [http://ootips.org/mvc-pattern.html](http://ootips.org/mvc-pattern.html): A nice MVC paradigm. Here I replaced the weakly-typed references with our event manager.
-* [http://ezide.com/games/writing-games.html](http://ezide.com/games/writing-games.html): touches on a basic implementation which this document started from.
+* [http://ezide.com/games/writing-games.html](http://ezide.com/games/writing-games.html): touches on a basic implementation which this document started from. It expands the model to include networking support, which I have omitted.
