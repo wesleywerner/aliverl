@@ -63,9 +63,17 @@ class GraphicalView(object):
             self.viewport = self.viewport.move(event.xy[0]*ratio, event.xy[1]*ratio)
         elif isinstance(event, TickEvent):
             self.clock.tick(30)
-            self.render()
-
-    def render(self):
+            self.renderall()
+    
+    def widgetclick(self, context, code):
+        """
+        A handler that gets called by UI widgets.
+        #TODO UI WIDGET IMPLEMENTATION
+        """
+        
+        pass
+        
+    def renderall(self):
         """
         Draw the current game state on screen.
         blits the correct surfaces for the current Model state.

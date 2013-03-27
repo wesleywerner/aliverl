@@ -89,11 +89,42 @@ class GameLevel(object):
         data (pytmx.TiledMap): the .tmx map data.
         """
         self.number = number
+        self.objects = []
         self.filename = 'maps/level%s.tmx' % (number,)
         self.data = tmxloader.load_pygame(self.filename, pixelalpha=False)
         trace.write('loaded tmx data OK')
+        for obj in self.data.getObjects():
+            self.objects.append(LevelObject(obj))
+        trace.write('load level objects OK')
 
 
+class LevelObject(object):
+    """
+    Represents an interactable, movable level object.
+    """
+    
+    def __init__ (self, baseobject):
+        """
+        Create this from baseobject.
+        Inherits it's base values and save additional attributes in properties.
+        """
+        
+        self.name = None
+        self.type = None
+        self.x = 0
+        self.y = 0
+        self.width = 0
+        self.height = 0
+        self.gid = 0
+        self.props = {}
+        defaultprops = self.__dict__.keys()
+        for p in baseobject.__dict__.keys():
+            if p in defaultprops:
+                # inherit a base value
+                setattr(self, p, baseobject.__dict__[p])
+            else:
+                # propertize all other values
+                self.props[p] = baseobject.__dict__[p]
 
 # State machine constants for the StateMachine class below
 STATE_INTRO = 1
