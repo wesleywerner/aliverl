@@ -137,6 +137,21 @@ The Controller knows it's a dialogue mode and knows to pop the stack on the "any
 
 Press enough keys, pop enough plates, we move through the storyline and get back to the game.
 
+# Rendering the level
+
+We will use the Tiled map editor to create game levels, and the PyTMX library for reading the level files - See [References](#references) below for links to these two great pieces of code :]
+
+The best way to learn a library is to work through the included demo code.
+
+Read through the demo and mentally note the classes it uses. Then browse those
+class sources and go through their properties and functions. 
+
+This will take some time, but it is rewarding when you use the library someone else has worked on. We can only thank them for their hard work!
+
+## Where the rendering code lives
+
+In our MVC model, everything that involves drawing goes into the View.
+
 # Restructuring
 
 Existing code files will be restructured.
@@ -157,15 +172,13 @@ Existing code files will be restructured.
 **VIEW**: aliveView.py
 
 * resources.py
-* _trace.py_
 * _ui.py_
-* _color.py_
 * _helper.py_
 * _audio.py_
 
 **CONTROLLER**: aliveController.py
 
-* _input.py_
+* input.py
 
 **OTHER**:
 
@@ -173,6 +186,8 @@ Existing code files will be restructured.
     * binds the mvc objects together
 * eventmanager.py
     * pygame provides an event manager but we implement our own so it is not coupled to pygame.
+* trace.py
+* color.py
 
 # License
 
@@ -195,6 +210,10 @@ If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 You may contact me at [wez@[anti-spam]darknet.co.za](mailto:wez@[anti-spam]darknet.co.za)
 
 # References
+
+* [http://mapeditor.org](http://mapeditor.org): A 2D tiled map editor.
+
+* [https://github.com/bitcraft/PyTMX](https://github.com/bitcraft/PyTMX): A python library for reading .tmx map files.
 
 * [http://ootips.org/mvc-pattern.html](http://ootips.org/mvc-pattern.html): A nice MVC paradigm. Here I replaced the weakly-typed references with our event manager.
 * [http://ezide.com/games/writing-games.html](http://ezide.com/games/writing-games.html): touches on a basic implementation which this document started from. It expands the model to include networking support, which I have omitted.

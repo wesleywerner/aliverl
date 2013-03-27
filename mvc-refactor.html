@@ -15,6 +15,10 @@
 </li>
 </ul>
 </li>
+<li><a href="#rendering-the-level">Rendering the level</a><ul>
+<li><a href="#where-the-rendering-code-lives">Where the rendering code lives</a></li>
+</ul>
+</li>
 <li><a href="#restructuring">Restructuring</a></li>
 <li><a href="#license">License</a></li>
 <li><a href="#contact">Contact</a></li>
@@ -152,6 +156,14 @@ All our Controller needs to do, is handle input for the current stack item.</p>
 <p>The View draws the dialogue text #1, and when the user presses the "anykey" we pop the stack and suddenly the View draws text #2. Neat. </p>
 <p>The Controller knows it's a dialogue mode and knows to pop the stack on the "anykey" press. </p>
 <p>Press enough keys, pop enough plates, we move through the storyline and get back to the game.</p>
+<h1 id="rendering-the-level">Rendering the level</h1>
+<p>We will use the Tiled map editor to create game levels, and the PyTMX library for reading the level files - See <a href="#references">References</a> below for links to these two great pieces of code :]</p>
+<p>The best way to learn a library is to work through the included demo code.</p>
+<p>Read through the demo and mentally note the classes it uses. Then browse those
+class sources and go through their properties and functions. </p>
+<p>This will take some time, but it is rewarding when you use the library someone else has worked on. We can only thank them for their hard work!</p>
+<h2 id="where-the-rendering-code-lives">Where the rendering code lives</h2>
+<p>In our MVC model, everything that involves drawing goes into the View.</p>
 <h1 id="restructuring">Restructuring</h1>
 <p>Existing code files will be restructured.
 (<em>slanted files await refactoring</em>)</p>
@@ -170,15 +182,13 @@ All our Controller needs to do, is handle input for the current stack item.</p>
 <p><strong>VIEW</strong>: aliveView.py</p>
 <ul>
 <li>resources.py</li>
-<li><em>trace.py</em></li>
 <li><em>ui.py</em></li>
-<li><em>color.py</em></li>
 <li><em>helper.py</em></li>
 <li><em>audio.py</em></li>
 </ul>
 <p><strong>CONTROLLER</strong>: aliveController.py</p>
 <ul>
-<li><em>input.py</em></li>
+<li>input.py</li>
 </ul>
 <p><strong>OTHER</strong>:</p>
 <ul>
@@ -190,6 +200,8 @@ All our Controller needs to do, is handle input for the current stack item.</p>
 <li>pygame provides an event manager but we implement our own so it is not coupled to pygame.</li>
 </ul>
 </li>
+<li>trace.py</li>
+<li>color.py</li>
 </ul>
 <h1 id="license">License</h1>
 <pre><code>Copyright (C) 2013 Wesley Werner
@@ -210,6 +222,14 @@ If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/<
 <p>You may contact me at <a href="mailto:wez@[anti-spam]darknet.co.za">wez@[anti-spam]darknet.co.za</a></p>
 <h1 id="references">References</h1>
 <ul>
-<li><a href="http://ootips.org/mvc-pattern.html">http://ootips.org/mvc-pattern.html</a>: A nice MVC paradigm. Here I replaced the weakly-typed references with our event manager.</li>
+<li>
+<p><a href="http://mapeditor.org">http://mapeditor.org</a>: A 2D tiled map editor.</p>
+</li>
+<li>
+<p><a href="https://github.com/bitcraft/PyTMX">https://github.com/bitcraft/PyTMX</a>: A python library for reading .tmx map files.</p>
+</li>
+<li>
+<p><a href="http://ootips.org/mvc-pattern.html">http://ootips.org/mvc-pattern.html</a>: A nice MVC paradigm. Here I replaced the weakly-typed references with our event manager.</p>
+</li>
 <li><a href="http://ezide.com/games/writing-games.html">http://ezide.com/games/writing-games.html</a>: touches on a basic implementation which this document started from. It expands the model to include networking support, which I have omitted.</li>
 </ul>
