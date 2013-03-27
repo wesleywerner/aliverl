@@ -56,12 +56,23 @@ class GameEngine(object):
         # self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
-        self.level = GameLevel(1)
-        self.evManager.Post(LoadLevelEvent(1))
-        # off we go!
+        self.levelup()
         while self.running:
             newTick = TickEvent()
             self.evManager.Post(newTick)
+    
+    def levelup(self):
+        """
+        Proceed to the next level.
+        """
+        
+        if self.level:
+            nextlevel = self.level.number + 1
+        else:
+            nextlevel = 1
+        trace.write('going to the next level: %s ' % (nextlevel,))
+        self.level = GameLevel(nextlevel)
+        self.evManager.Post(NextLevelEvent())
 
 
 class GameLevel(object):

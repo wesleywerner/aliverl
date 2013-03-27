@@ -56,15 +56,14 @@ class InitializeEvent(Event):
         self.name = "Initialize event"
 
 
-class LoadLevelEvent(Event):
+class NextLevelEvent(Event):
     """
-    At the start of each game level, tell Views to prepare resources
-    for the given level.
+    At the start of each game level.
+    Tell Views to prepare resources.
     """
     
-    def __init__ (self, number):
-        self.name = "Load level event"
-        self.number = number
+    def __init__ (self):
+        self.name = "Next level event"
 
 
 class StateChangeEvent(Event):

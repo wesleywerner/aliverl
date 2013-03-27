@@ -56,7 +56,7 @@ class GraphicalView(object):
         elif isinstance(event, QuitEvent):
             self.isinitialized = False
             pygame.quit()
-        elif isinstance(event, LoadLevelEvent):
+        elif isinstance(event, NextLevelEvent):
             self.rendermap()
         elif isinstance(event, ShiftViewportEvent):
             ratio = self.model.level.data.tilewidth
