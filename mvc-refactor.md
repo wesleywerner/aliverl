@@ -137,9 +137,168 @@ The Controller knows it's a dialogue mode and knows to pop the stack on the "any
 
 Press enough keys, pop enough plates, we move through the storyline and get back to the game.
 
+# The Code
+
+Now we can implement our MVC pattern in [Python](http://python.org). We will create the Model, the View and the Controller.
+We will also create the file that hosts instances of each and links them together.
+
+We will use the [PyGame](http://pygame.org) library for our View's graphics. The whole MVC design will allow us to replace PyGame with another graphics library if that is our wish. The game's behaviour will stay the same since the View does not control how the game runs, cutting out many potential bugs when refactoring another View.
+
+_our coding style is taken from [PEP8](http://www.python.org/dev/peps/pep-0008/). Read it. :)_
+
+We will now create:
+
+* model.py, the brain.
+* view.py, draws what the brain thinks.
+* controller.py, tells the brain what to do.
+* eventmanager.py, coordinates all our senses.
+* main.py, glues all of the above into a running instance.
+
+## The Model
+
+Let's start with the brain of our game. Check this out:
+
+_Model.py_
+
+---
+
+    import pygame
+    from eventmanager import *
+
+    class GameEngine(object):
+        """
+        Tracks the game state.
+        """
+
+        def __init__(self, evManager):
+            """
+            evManager (EventManager): Allows posting messages to the event queue.
+            
+            Attributes:
+            running (bool): True while the engine is online. Changed via QuitEvent().
+            """
+            
+            self.evManager = evManager
+            evManager.RegisterListener(self)
+            self.running = False
+
+        def notify(self, event):
+            """
+            Called by an event in the message queue. 
+            """
+
+            if isinstance(event, QuitEvent):
+                self.running = False
+
+        def run(self):
+            """
+            Starts the game engine loop.
+
+            This pumps a Tick event into the message queue for each loop.
+            The loop ends when this object hears a QuitEvent in notify(). 
+            """
+            self.running = True
+            self.evManager.Post(InitializeEvent())
+            while self.running:
+                newTick = TickEvent()
+                self.evManager.Post(newTick)
+
+---
+
+You can see the Model takes an instance of Event Manager, this is so we can post() messages from the Model. Any messages sent there are received into notify(), this includes messages posted by other instances. The run() method simply tells all other message listeners to get ready for action (InitializeEvent) and then starts posting TickEvents, forever, until it hears a QuitEvent through notify(). note how the Model imports eventmanager (line 1), but no View or Controller! The Model is blind to what is watching or controlling it, that is done all through the message pump.
+
+
+## The View
+
+Next up we code the View. First you will note it imports eventmanager, and the model. We call this a strong reference to the model, because we explicitly code against the model's properties. Because we are only a View, we should try and limit our selves to only read the model data, and avoid calling it's functions directly - of course nothing stops you from making direct calls, but the MVC pattern for a View hints to us that we only display the Model state.
+
+_view.py_
+
+---
+
+    import pygame
+    import model
+    from eventmanager import *
+
+    class GraphicalView(object):
+        """
+        Draws the model state onto the screen.
+        """
+
+        def __init__(self, evManager, model):
+            """
+            evManager (EventManager): Allows posting messages to the event queue.
+            model (GameEngine): a strong reference to the game Model.
+                    
+            Attributes:
+            isinitialized (bool): pygame is ready to draw.
+            screen (pygame.Surface): the screen surface.
+            clock (pygame.time.Clock): keeps the fps constant.
+            smallfont (pygame.Font): a small font.
+            """
+            
+            self.evManager = evManager
+            evManager.RegisterListener(self)
+            self.model = model
+            self.isinitialized = False
+            self.screen = None
+            self.clock = None
+            self.smallfont = None
+        
+        def notify(self, event):
+            """
+            Receive events posted to the message queue. 
+            """
+
+            if isinstance(event, InitializeEvent):
+                self.initialize()
+            elif isinstance(event, QuitEvent):
+                # shut down the pygame graphics
+                self.isinitialized = False
+                pygame.quit()
+            elif isinstance(event, TickEvent):
+                self.renderall()
+                # limit the redraw speed to 30 frames per second
+                self.clock.tick(30)
+        
+        def renderall(self):
+            """
+            Draw the current game state on screen.
+            Does nothing if isinitialized == False (pygame.init failed)
+            """
+            
+            if not self.isinitialized:
+                return
+            # clear display
+            self.screen.fill((0, 0, 0))
+            # draw some words on the screen
+            somewords = self.smallfont.render(
+                        'The View is busy drawing on your screen', 
+                        True, 
+                        (0, 255, 0))
+            self.screen.blit(somewords, (0, 0))
+            # flip the display to show whatever we drew
+            pygame.display.flip()
+            
+        def initialize(self):
+            """
+            Set up the pygame graphical display and loads graphical resources.
+            """
+
+            result = pygame.init()
+            pygame.font.init()
+            pygame.display.set_caption('MVC game')
+            self.screen = pygame.display.set_mode((800, 512))
+            self.clock = pygame.time.Clock()
+            self.smallfont = pygame.font.Font(None, 40)
+            self.isinitialized = True
+
+---
+
+
 # Rendering the level
 
-We will use the Tiled map editor to create game levels, and the PyTMX library for reading the level files - See [References](#references) below for links to these two great pieces of code :]
+We will use the Tiled map editor to create game levels, and the PyTMX library for reading the level files - See [References](#references) below for links to these great pieces of code :]
 
 The best way to learn a library is to work through the included demo code.
 
