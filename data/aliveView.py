@@ -62,8 +62,8 @@ class GraphicalView(object):
             ratio = self.model.level.data.tilewidth
             self.viewport = self.viewport.move(event.xy[0]*ratio, event.xy[1]*ratio)
         elif isinstance(event, TickEvent):
-            self.clock.tick(30)
             self.renderall()
+            self.clock.tick(30)
     
     def widgetclick(self, context, code):
         """
