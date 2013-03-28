@@ -22,7 +22,7 @@ class KeyboardMouse(object):
             for event in pygame.event.get():
                 # always handle window closing events
                 if event.type == pygame.QUIT:
-                    self.evManager.Post(QuitEvent)
+                    self.evManager.Post(QuitEvent())
                 
                 # all key downs
                 if event.type == pygame.KEYDOWN:
