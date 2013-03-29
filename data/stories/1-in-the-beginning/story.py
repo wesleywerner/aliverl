@@ -4,7 +4,7 @@ title = 'in the beginning...'
 # list of levels to play
 levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
 
-# define npc and player stats
+# define npc and player stats. (lowercase keys please)
 stats = {
     "player": {
             "attack": 1,
@@ -18,7 +18,7 @@ stats = {
             "manarate": 6,
             "mode": "idle"
             },
-    "Ice": {
+    "ice": {
             "attack": 1,
             "health": 2,
             "maxhealth": 2,
@@ -31,7 +31,7 @@ stats = {
             "mode": "patrol",
             "type": "ai"
             },
-    "Virus": {
+    "virus": {
             "attack": 1,
             "health": 2,
             "maxhealth": 2,
@@ -44,7 +44,7 @@ stats = {
             "mode": "patrol",
             "type": "ai"
             },
-    "Zombie": {
+    "zombie": {
             "attack": 1,
             "health": 2,
             "maxhealth": 2,
@@ -57,7 +57,7 @@ stats = {
             "mode": "patrol",
             "type": "ai"
             },
-    "Punk": {
+    "punk": {
             "attack": 1,
             "health": 2,
             "maxhealth": 2,
