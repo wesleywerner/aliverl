@@ -14,4 +14,7 @@ def error(text):
     """
     Writes error output. 
     """
-    print('\n# ERR: ' + text)
+    if type(text) is str:
+        print('\n# ERR: ' + text)
+    else:
+        print(text)

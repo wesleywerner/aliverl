@@ -1,3 +1,5 @@
+import os
+import sys
 import pygame
 from pygame.locals import *
 from pytmx import tmxloader
@@ -15,7 +17,8 @@ class GameEngine(object):
         Attributes:
         running (bool): True while the engine is online. Changed via QuitEvent().
         state (StateMachine): controls the game mode stack.
-        level (?): 
+        level (GameLevel): stores level related data.
+        story (object): imports from story.py
         """
         
         self.evManager = evManager
@@ -23,6 +26,7 @@ class GameEngine(object):
         self.running = True
         self.state = StateMachine()
         self.level = None
+        self.story = None
 
     def notify(self, event):
         """
@@ -56,11 +60,31 @@ class GameEngine(object):
         # self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
-        self.levelup()
-        while self.running:
-            newTick = TickEvent()
-            self.evManager.Post(newTick)
+        if self.loadstory('1-in-the-beginning'):
+            self.levelup()
+            while self.running:
+                newTick = TickEvent()
+                self.evManager.Post(newTick)
     
+    def loadstory(self, storyname):
+        """
+        Loads the story data for the given story name.
+        The name is essentially the directory name of the story.
+        We expect the story.py file to exist.
+        """
+        
+        # this loads the 'story.py' file from the story directory.
+        try:
+            storypath = os.path.abspath(os.path.join('stories', storyname))
+            sys.path.append(storypath)
+            self.story = __import__('story')
+            setattr(self.story, 'path', storypath)
+            sys.path.remove(storypath)
+            trace.write('loaded story OK')
+            return True
+        except Exception as e:
+            trace.error(e)
+        
     def levelup(self):
         """
         Proceed to the next level.
@@ -70,17 +94,21 @@ class GameEngine(object):
             nextlevel = self.level.number + 1
         else:
             nextlevel = 1
-        trace.write('going to the next level: %s ' % (nextlevel,))
-        self.level = GameLevel(nextlevel)
+        trace.write('warping to level: %s ' % (nextlevel,))
+        self.level = GameLevel(
+                nextlevel, 
+                os.path.join(self.story.path, self.story.levels[nextlevel-1])
+                )
         self.evManager.Post(NextLevelEvent())
 
 
 class GameLevel(object):
     """
-    Contains level specific data. Nothing here should persist across levels.
+    Contains level specific data.
+    Nothing here should persist across levels.
     """
     
-    def __init__ (self, number):
+    def __init__ (self, number, filename):
         """
         Attributes:
         
@@ -90,41 +118,11 @@ class GameLevel(object):
         """
         self.number = number
         self.objects = []
-        self.filename = 'maps/level%s.tmx' % (number,)
+        self.filename = filename
         self.data = tmxloader.load_pygame(self.filename, pixelalpha=False)
+        self.objects = self.data.getObjects()
         trace.write('loaded tmx data OK')
-        for obj in self.data.getObjects():
-            self.objects.append(LevelObject(obj))
-        trace.write('load level objects OK')
 
-
-class LevelObject(object):
-    """
-    Represents an interactable, movable level object.
-    """
-    
-    def __init__ (self, baseobject):
-        """
-        Create this from baseobject.
-        Inherits it's base values and save additional attributes in properties.
-        """
-        
-        self.name = None
-        self.type = None
-        self.x = 0
-        self.y = 0
-        self.width = 0
-        self.height = 0
-        self.gid = 0
-        self.props = {}
-        defaultprops = self.__dict__.keys()
-        for p in baseobject.__dict__.keys():
-            if p in defaultprops:
-                # inherit a base value
-                setattr(self, p, baseobject.__dict__[p])
-            else:
-                # propertize all other values
-                self.props[p] = baseobject.__dict__[p]
 
 # State machine constants for the StateMachine class below
 STATE_INTRO = 1
