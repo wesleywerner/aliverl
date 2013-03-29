@@ -84,7 +84,21 @@ class GameEngine(object):
             return True
         except Exception as e:
             trace.error(e)
-        
+    
+    def applystats(self):
+        """
+        Apply any story character stats to the level object list.
+        """
+        # apply story stats to any matching objects
+        for obj in self.level.objects:
+            # case insensitive match
+            if obj.name.lower() in [e.lower() for e in self.story.stats.keys()]:
+                # apply all properties from story to this object
+                [setattr(obj, k, v) 
+                    for k, v 
+                    in self.story.stats[obj.name.lower()].items()
+                    ]
+
     def levelup(self):
         """
         Proceed to the next level.
@@ -99,6 +113,7 @@ class GameEngine(object):
                 nextlevel, 
                 os.path.join(self.story.path, self.story.levels[nextlevel-1])
                 )
+        self.applystats()
         self.evManager.Post(NextLevelEvent())
 
 
