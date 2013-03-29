@@ -1,30 +1,24 @@
-Alive, the roguelike spec.
+# Alive, the roguelike
 
-MAP
-============
+# Game level
 
 Each level is a BBS computer system you visit.
 
-Our game levels use a 32x32 tiled map. Each level fits on one screen.
-The dark, minimal and make use of scanlines, patterened dots and subtle
-glow. The main color theme is blue, with green red and yellow hilighting
-buttons or events.
+Our game levels use a 32x32 tiled map. Each level fits on one screen. The dark, minimal and make use of scanlines, patterened dots and subtle glow. The main color theme is blue, with green red and yellow hilighting buttons or events.
 
-There are 11 wall tiles, each for the four cartesian directions, and
-then for the connectors where walls join into corners or t-junctions.
+## Level tiles
 
-### Tile types:
+
 
 * Walls
 * Gates
 * Terminals. Tile attributes handle these events:
-    + Trigger doors with a challenge roll.
-    + Display story related messages.
-    + 
-* Backdoor leads to the next level.
+    * Trigger doors with a challenge roll.
+    * Display story related messages.
+* Exit leads to the next level.
 * Code bank to upgrade your abilities. One-shot per level.
 
-### Tiled map editor notes:
+## Tiled map editor notes
 
 * Place static map tiles on a Tile Layer.
 * Place AI, player, doors and such on an Object Layer.
@@ -40,7 +34,9 @@ then for the connectors where walls join into corners or t-junctions.
             * transmute=tile_id[, rotate_tile_id, ..N]
 
 
-### Object Interactions
+# Gameplay
+
+## Object Interactions
 
 Give map objects these properties to interact with the game.
 The action names only match the start, you can add any descriptive
@@ -75,8 +71,7 @@ Examples:
     
     + on_finger
 
-Characters
-============
+# Characters
 
 The player and enemy bots are all characters. Their stats are defined
 in ai.def by the tileset tile_id.
@@ -92,8 +87,7 @@ NPC types:
 
 
 
-CODE
-============
+# CODE
 
 Using the Tiled map editor, by adding the 'blocks' bit to a tile's properties makes walls in game. The objects layer items will always block a player. Theyy also call back so we known what is happening.
 
@@ -105,5 +99,70 @@ We can have both actions on the same object, effectively expiring and fingering 
 
 It becomes a npc (ambush) or item (rewards) spawner. 
 
+# Game stories
 
-============
+Stories are like campaigns the player can enjoy. They consist of multiple levels with story dialogue. Each story defines it's own tileset and character stat definitions.
+
+A story lives in the directory "./data/stories/<your choice>/", and the story file is named "story.py"
+
+## Story definition example
+
+A story file defines a campaign the player can play. It lists the levels involved, dialogue the player can read, and some more.
+
+Story files use valid python syntax.
+
+~~~python
+    # the title of this story
+    title = 'in the beginning...'
+    
+    # list of levels to play
+    levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ...]
+
+    # define npc and player stats. (lowercase keys please)
+    stats = {
+        "player": {
+                "attack": 1,
+                "health": 4,
+                "maxhealth": 4,
+                "speed": 2,
+                "healrate": 4,
+                "stealth": 0,
+                "mana": 0,
+                "maxmana": 5,
+                "manarate": 6,
+                "mode": "idle"
+                },
+        "enemy": {
+                "attack": 1,
+                "health": 2,
+                "maxhealth": 2,
+                "speed": 2,
+                "healrate": 2,
+                "stealth": 0,
+                "mana": 5,
+                "maxmana": 5,
+                "manarate": 2,
+                "mode": "patrol",
+                "type": "ai"
+                }
+            }
+~~~
+
+The filename must be story.py, it lives in data/stories/<your choice>/story.py.
+
+# Level definition example
+
+The level definition file adds extra properties to a level. This commented example shows what is available.
+
+~~~python
+    # a list of tiles that block character movement
+    BLOCKLIST = [gid, gid, ...]
+    
+    # define words to show as story lines.
+    # shown by giving a level object the property:
+    #   dialogue<_foo_once>=<name>
+    DIALOGUE = {
+        "welcome_terminal": "This is a line of dialogue",
+        "another_switch": "We tell our story through interacting terminals" 
+        }
+~~~
