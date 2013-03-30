@@ -124,45 +124,36 @@ Story files use valid python syntax.
                 "attack": 1,
                 "health": 4,
                 "maxhealth": 4,
-                "speed": 2,
                 "healrate": 4,
+                "speed": 2,
                 "stealth": 0,
                 "mana": 0,
                 "maxmana": 5,
-                "manarate": 6,
-                "mode": "idle"
+                "manarate": 6
                 },
         "enemy": {
                 "attack": 1,
                 "health": 2,
                 "maxhealth": 2,
-                "speed": 2,
                 "healrate": 2,
+                "speed": 2,
                 "stealth": 0,
                 "mana": 5,
                 "maxmana": 5,
                 "manarate": 2,
-                "mode": "patrol",
-                "type": "ai"
+                "mode": "patrol"
                 }
             }
 ~~~
 
 The filename must be story.py, it lives in data/stories/<your choice>/story.py.
 
-# Level definition example
+## Story one
 
-The level definition file adds extra properties to a level. This commented example shows what is available.
-
-~~~python
-    # a list of tiles that block character movement
-    BLOCKLIST = [gid, gid, ...]
-    
-    # define words to show as story lines.
-    # shown by giving a level object the property:
-    #   dialogue<_foo_once>=<name>
-    DIALOGUE = {
-        "welcome_terminal": "This is a line of dialogue",
-        "another_switch": "We tell our story through interacting terminals" 
-        }
-~~~
+1. You awaken and find yourself conscious. You must find a way out of this node.
+1. You find info on a term about a backup node that hosts copies of AI's. You figure you can use it to clone yourself and increase your chance of survival.
+1. You encounter an AI who you ask for access to the backup node. It requests you to verify with an electronic signature. You agree to send it soon.
+1. You find a series of terminals, through them you unlock a signature. You look for a secure comms node from where to send your new signature to get backup access.
+1. You find the comms node and send the signature. You now have backup access.
+1. After passing a series of locked doors, you find the master backup terminal. You access it and the backup starts.
+1. You see a copy of yourself appear. Interacting with it reveals nothing but a dumb AI. A blinking master backup terminal shows a backup failed, anomaly detected.
