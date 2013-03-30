@@ -42,6 +42,17 @@ class InputEvent(Event):
     def __str__(self):
         return '%s, char=%s, clickpos=%s' % (self.name, self.char, self.clickpos)
     
+
+class PlayerMoveEvent(Event):
+    """
+    Request to move the player object.
+    Direction (x, y): tile offset to move.
+    """
+    
+    def __init__(self, direction):
+        self.name = 'Player move event'
+        self.direction = direction
+
     
 class InitializeEvent(Event):
     """

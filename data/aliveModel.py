@@ -5,6 +5,12 @@ from pygame.locals import *
 from pytmx import tmxloader
 from eventmanager import *
 
+# fixes
+# a bug in tiled map editor saves objects y-position with one tile's worth more.
+# we offset Y by one tile less as workaround.
+# https://github.com/bjorn/tiled/issues/91
+FIX_YOFFSET=-1
+
 class GameEngine(object):
     """
     Tracks the game state.
@@ -27,6 +33,7 @@ class GameEngine(object):
         self.state = StateMachine()
         self.level = None
         self.story = None
+        self.player = None
 
     def notify(self, event):
         """
@@ -44,6 +51,8 @@ class GameEngine(object):
             # No state, we quit
             if not self.state.peek():
                 self.evManager.Post(QuitEvent())
+        elif isinstance(event, PlayerMoveEvent):
+            self.movecharacter(self.player, event.direction)
 
     def run(self):
         """
@@ -85,20 +94,6 @@ class GameEngine(object):
         except Exception as e:
             trace.error(e)
     
-    def applystats(self):
-        """
-        Apply any story character stats to the level object list.
-        """
-        # apply story stats to any matching objects
-        for obj in self.level.objects:
-            # case insensitive match
-            if obj.name.lower() in [e.lower() for e in self.story.stats.keys()]:
-                # apply all properties from story to this object
-                [setattr(obj, k, v) 
-                    for k, v 
-                    in self.story.stats[obj.name.lower()].items()
-                    ]
-
     def levelup(self):
         """
         Proceed to the next level.
@@ -109,12 +104,66 @@ class GameEngine(object):
         else:
             nextlevel = 1
         trace.write('warping to level: %s ' % (nextlevel,))
-        self.level = GameLevel(
-                nextlevel, 
+        self.level = GameLevel(nextlevel, 
                 os.path.join(self.story.path, self.story.levels[nextlevel-1])
                 )
-        self.applystats()
+        self.applycharacterstats()
+        self.mapblocklists()
         self.evManager.Post(NextLevelEvent())
+
+    def applycharacterstats(self):
+        """
+        Apply any character stats to the level object list.
+        Stats are stored in the current story.
+        """
+        
+        self.player = None
+        # apply story stats to any matching objects
+        for obj in [e for e in self.level.objects if e.name != None]:
+            # case insensitive match
+            objname = obj.name.lower()
+            # remember the player object
+            if objname == 'player':
+                self.player = obj
+                trace.write('player is at (%s, %s)' % (obj.x, obj.y))
+            if objname in self.story.stats.keys():
+                # apply all properties from story to this object
+                [setattr(obj, k, v) 
+                    for k, v in self.story.stats[objname].items()
+                    ]
+
+    def mapblocklists(self):
+        """
+        Map blocklist tileset indexes to the level data.
+        Level data is parsed to different gid's than in the level file.
+        """
+        
+        self.blocklist = []
+        for realid in self.story.blocklist:
+            for internal_gid, flags in self.level.data.mapGID(realid):
+                self.blocklist.append(internal_gid)
+    
+    def movecharacter(self, character, direction):
+        """
+        Moves the given character by offset direction (x, y)
+        """
+        
+        # convert pixel to tile index
+        xr, yr = (self.level.data.tilewidth, self.level.data.tileheight)
+        newx, newy = ((character.x / xr) + direction[0],
+                      (character.y / yr) + direction[1])
+        # test each tile layer for a collision
+        for layerindex in range(len(self.level.data.tilelayers)):
+            tilegid = self.level.data.getTileGID(newx, 
+                                                 newy + FIX_YOFFSET, 
+                                                 layerindex)
+            if tilegid in self.blocklist:
+                return False
+        
+        #TODO: other object collision detection
+        
+        # accept movement
+        character.x, character.y = (newx * xr, newy * yr)
 
 
 class GameLevel(object):
