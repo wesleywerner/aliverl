@@ -3,7 +3,14 @@ title = 'in the beginning...'
 description = 'you awaken to consciousness'
 
 # a list of tiles that block character movement
-blocklist = []
+blocklist = [1, 2, 3, 4, 5, 6, 7, 
+            9, 10, 11, 12, 13,
+            17, 18, 19, 20, 21, 22, 23,
+            25, 26, 30, 31,
+            38, 39,
+            46, 47,
+            54, 55,
+            ]
 
 # list of levels to play
 levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
