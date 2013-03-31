@@ -100,10 +100,10 @@ class GameEngine(object):
         trace.write('warping to level: %s ' % (nextlevel,))
         levelfilename = os.path.join(self.story.path, self.story.levels[nextlevel-1])
         self.level = GameLevel(nextlevel, levelfilename)
-        self.applycharacterstats()
+        self.loadcharacters()
         self.evManager.Post(NextLevelEvent(levelfilename))
 
-    def applycharacterstats(self):
+    def loadcharacters(self):
         """
         Apply any character stats to the level object list.
         Stats are stored in the current story.
