@@ -7,7 +7,7 @@ from eventmanager import *
 # a bug in tiled map editor saves objects y-position with one tile's worth more.
 # we offset Y by one tile less as workaround.
 # https://github.com/bjorn/tiled/issues/91
-FIX_YOFFSET=-1
+FIX_YOFFSET=1
 
 class GameEngine(object):
     """
@@ -134,21 +134,18 @@ class GameEngine(object):
         Moves the given character by offset direction (x, y)
         """
         
-        # convert pixel to tile index
-        xr, yr = (self.level.tmx.tile_width, self.level.tmx.tile_height)
-        newx, newy = ((character.x / xr) + direction[0],
-                      (character.y / yr) + direction[1])
-        # test each tile layer for a collision
+        newx, newy = (character.x + direction[0],
+                      character.y + direction[1])
+        # tile collisions
         for layer in self.level.tmx.tilelayers:
-            gid = layer.at((newx, newy))
+            gid = layer.at((newx, newy - FIX_YOFFSET))
             if gid in self.story.blocklist:
-                trace.write('%s is in blocklist' % (gid))
                 return False
         
         #TODO: other object collision detection
         
         # accept movement
-        character.x, character.y = (newx * xr, newy * yr)
+        character.x, character.y = (newx, newy)
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
 
 

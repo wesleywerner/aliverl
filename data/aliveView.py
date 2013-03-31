@@ -9,6 +9,12 @@ from eventmanager import *
 from tmxparser import TMXParser
 from tmxparser import TilesetParser
 
+# fixes
+# a bug in tiled map editor saves objects y-position with one tile's worth more.
+# we offset Y by one tile less as workaround.
+# https://github.com/bjorn/tiled/issues/91
+FIX_YOFFSET=32
+
 class GraphicalView(object):
     """
     Draws the model state onto the screen.
@@ -164,7 +170,7 @@ class GraphicalView(object):
                     # of map objects are one tile too large.
                     # fix with -tile_height
                     x = (obj.x * tmx.tile_width)
-                    y = (obj.y * tmx.tile_height) - tmx.tile_height
+                    y = (obj.y * tmx.tile_height) - FIX_YOFFSET
                     s = Sprite(
                             id(obj),
                             Rect(x, y, 
