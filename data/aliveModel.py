@@ -32,6 +32,7 @@ class GameEngine(object):
         self.level = None
         self.story = None
         self.player = None
+        self.objects = None
 
     def notify(self, event):
         """
@@ -46,7 +47,9 @@ class GameEngine(object):
         elif isinstance(event, PlayerMoveRequestEvent):
             self.movecharacter(self.player, event.direction)
         elif isinstance(event, CombatEvent):
-            pass
+            self.combatcharacters(event)
+        elif isinstance(event, KillCharacterEvent):
+            self.killcharacter(event.character)
 
     def run(self):
         """
@@ -139,19 +142,57 @@ class GameEngine(object):
                 return False
         
         # other object collision detection
-        for grp in self.level.tmx.objectgroups:
-            for obj in grp:
-                if obj.x == newx and obj.y == newy:
-                    # AI's always block, in fact, it means combat!
-                    if obj.type == 'ai':
+        for obj in self.objects:
+            if obj.x == newx and obj.y == newy:
+                # AI's always block, in fact, it means combat!
+                if obj.type == 'ai':
+                    # of course ai don't fight each other.
+                    # the code works but in this world they all fight you.
+                    if obj is self.player or character is self.player:
                         self.evManager.Post(CombatEvent(character, obj))
-                        return False
-                    elif obj.gid in self.story.blocklist:
-                        return False
+                    return False
+                elif obj.gid in self.story.blocklist:
+                    return False
         
         # accept movement
         character.x, character.y = (newx, newy)
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
+    
+    def combatcharacters(self, event):
+        """
+        Begin a combat round.
+        """
+        
+        result = []
+        a = event.attacker
+        d = event.defender
+        # we say 'you' where the player is involved
+        a_name = (a is self.player) and ('you') or (a.name)
+        d_name = (d is self.player) and ('you') or (d.name)
+        # damage control
+        a_atk = a.attack
+        d_atk = d.attack
+        # damage
+        if a_atk:
+            d.health -= a_atk
+            result.append('%s hits %s for %s' % (a_name, d_name, a_atk) )
+        if d_atk:
+            a.health -= d_atk
+            result.append('%s hits %s for %s' % (d_name, a_name, d_atk) )
+        # report
+        self.evManager.Post(MessageEvent(result))
+        # death
+        if a.health < 1:
+            self.evManager.Post(KillCharacterEvent(a))
+        if d.health < 1:
+            self.evManager.Post(KillCharacterEvent(d))
+
+    def killcharacter(self, character):
+        """
+        Remove a character from play.
+        """
+        
+        self.objects.remove(character)
 
 
 class GameLevel(object):
@@ -169,7 +210,6 @@ class GameLevel(object):
         data (TMXParser): tmx file data.
         """
         self.number = number
-        self.objects = []
         self.filename = filename
         self.tmx = TMXParser(filename)
         trace.write('loaded tmx data OK')

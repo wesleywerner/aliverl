@@ -158,6 +158,19 @@ class MessageEvent(Event):
         return '\n * %s'.join(self.messages)
 
 
+class KillCharacterEvent(Event):
+    """
+    Kill a character from the level.
+    """
+    
+    def __init__(self, character):
+        self.name = 'Kill character event'
+        self.character = character
+    
+    def __str__(self):
+        return '%s <%s>' % (self.name, self.character.name)
+    
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.

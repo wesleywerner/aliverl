@@ -215,7 +215,7 @@
     <property name="on_finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="VIRUs" type="ai" gid="59" x="256" y="160"/>
+  <object name="VIRUs" type="ai" gid="59" x="128" y="288"/>
   <object name="cap 2" type="cap" gid="26" x="64" y="96">
    <properties>
     <property name="on_finger" value="transmute=28"/>

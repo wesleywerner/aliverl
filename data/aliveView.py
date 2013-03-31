@@ -77,6 +77,8 @@ class GraphicalView(object):
             self.viewport = self.viewport.move(event.xy[0]*ratio, event.xy[1]*ratio)
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
+        elif isinstance(event, KillCharacterEvent):
+            self.removesprite(event.character)
     
     def widgetclick(self, context, code):
         """
@@ -199,6 +201,14 @@ class GraphicalView(object):
                     event.direction[0] * tmx.tile_width,
                     event.direction[1] * tmx.tile_height)
                 return
+
+    def removesprite(self, mapobject):
+        """
+        Remove a character from play and from the sprite list.
+        """
+        match = [e for e in self.spritegroup if e.name == id(mapobject)]
+        if match:
+            self.spritegroup.remove(match[0])
         
     def initialize(self):
         """

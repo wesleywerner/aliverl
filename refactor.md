@@ -5,14 +5,14 @@ Existing code files will be restructured.
 
 **MODEL**: aliveModel.py
 
-* _game.py_
-* _character.py_
+* game.py
+* character.py
 * _objects.py_
 * states.py
 * _stats.py_
-* _combat.py_
+* combat.py
 * _bump.py_
-* _level.py_
+* level.py
 * _messages.py_
 
 **VIEW**: aliveView.py
