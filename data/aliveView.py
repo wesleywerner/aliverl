@@ -160,30 +160,32 @@ class GraphicalView(object):
             for obj in grp:
                 # obj has a frames list.
                 # if this list is empty, use the obj.gid
+                frames = []
+                fps = 0
                 try:
-                    frames = []
+                    fps = obj.fps
                     for f in obj.frames:
                         frames.append(self.tsp[f])
-                    if len(frames) == 0:
-                        frames.append(self.tsp[obj.gid])
-                    # tiled map editor has a bug where y position
-                    # of map objects are one tile too large.
-                    # fix with -tile_height
-                    x = (obj.x * tmx.tile_width)
-                    y = (obj.y * tmx.tile_height) - FIX_YOFFSET
-                    s = Sprite(
-                            id(obj),
-                            Rect(x, y, 
-                                tmx.tile_width, 
-                                tmx.tile_height),
-                            frames,
-                            obj.fps,
-                            self.spritegroup
-                            )
                 except AttributeError as e:
                     # this object has no frames or fps set
-                    trace.error(e)
                     pass
+                if len(frames) == 0:
+                    frames.append(self.tsp[obj.gid])
+                # tiled map editor has a bug where y position
+                # of map objects are one tile too large.
+                # fix with -tile_height
+                x = (obj.x * tmx.tile_width)
+                y = (obj.y * tmx.tile_height) - FIX_YOFFSET
+                s = Sprite(
+                        id(obj),
+                        Rect(x, y, 
+                            tmx.tile_width, 
+                            tmx.tile_height),
+                        frames,
+                        fps,
+                        self.spritegroup
+                        )
+
     
     def movesprite(self, event):
         """
@@ -238,7 +240,7 @@ class Sprite(pygame.sprite.Sprite):
         self.image = None
         self._images = frames
         self._start = pygame.time.get_ticks()
-        if fps < 1: fps = 1
+        if fps <= 0: fps = 1
         self._delay = 1000 / fps
         self._last_update = 0
         self._frame = 0

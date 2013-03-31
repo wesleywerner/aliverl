@@ -58,6 +58,10 @@ stats = {
             'mode': 'patrol',
             'frames': [],
             'fps': 1
+            },
+    'switch 1': {
+            'frames': [30, 46],
+            'fps': 0.4
             }
         }
 
