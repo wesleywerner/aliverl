@@ -180,6 +180,20 @@ class GameOverEvent(Event):
         self.name = 'Game over event'
 
 
+class GameStartEvent(Event):
+    """
+    Signals the start of a new game.
+    """
+    
+    def __init__(self, story):
+        """
+        story name matched the directory the story lives in.
+        """
+        
+        self.name = 'Game start event'
+        self.story = story
+    
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.
