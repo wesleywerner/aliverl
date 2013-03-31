@@ -41,13 +41,7 @@ class GameEngine(object):
         if isinstance(event, QuitEvent):
             self.running = False
         elif isinstance(event, StateChangeEvent):
-            if event.state:
-                self.state.push(event.state)
-            else:
-                self.state.pop()
-            trace.write('game state is now %s' % (self.state.peek(),))
-            # No state, we quit
-            if not self.state.peek():
+            if not self.state.process(event.state):
                 self.evManager.Post(QuitEvent())
         elif isinstance(event, PlayerMoveRequestEvent):
             self.movecharacter(self.player, event.direction)
@@ -228,3 +222,15 @@ class StateMachine(object):
         """
         self.statestack.append(state)
         return state
+    
+    def process(self, state):
+        """
+        Process the given state.
+        Returns False if the state stack is empty.
+        """
+        
+        if state:
+            self.push(state)
+        else:
+            self.pop()
+        return len(self.statestack) > 0
