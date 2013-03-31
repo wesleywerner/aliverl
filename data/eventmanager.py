@@ -155,7 +155,7 @@ class MessageEvent(Event):
             self.messages = messages
         
     def __str__(self):
-        return '\n * %s'.join(self.messages)
+        return '\n* '.join(self.messages)
 
 
 class KillCharacterEvent(Event):
@@ -170,6 +170,15 @@ class KillCharacterEvent(Event):
     def __str__(self):
         return '%s <%s>' % (self.name, self.character.name)
     
+
+class GameOverEvent(Event):
+    """
+    Signals the player has died :(
+    """
+    
+    def __init__(self):
+        self.name = 'Game over event'
+
 
 class EventManager(object):
     """
