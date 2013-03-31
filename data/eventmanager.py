@@ -7,7 +7,7 @@ class Event(object):
     """
     
     def __init__(self):
-        self.name = "Generic event"
+        self.name = 'Generic event'
     def __str__(self):
         return self.name
     
@@ -18,7 +18,7 @@ class QuitEvent(Event):
     """
     
     def __init__ (self):
-        self.name = "Quit event"
+        self.name = 'Quit event'
     
     
 class TickEvent(Event):
@@ -27,7 +27,7 @@ class TickEvent(Event):
     """
     
     def __init__ (self):
-        self.name = "Tick event"
+        self.name = 'Tick event'
     
     
 class InputEvent(Event):
@@ -36,7 +36,7 @@ class InputEvent(Event):
     """
     
     def __init__(self, unicodechar, clickpos):
-        self.name = "Input event"
+        self.name = 'Input event'
         self.char = unicodechar
         self.clickpos = clickpos
     def __str__(self):
@@ -78,7 +78,7 @@ class InitializeEvent(Event):
     """
     
     def __init__ (self):
-        self.name = "Initialize event"
+        self.name = 'Initialize event'
 
 
 class NextLevelEvent(Event):
@@ -88,7 +88,7 @@ class NextLevelEvent(Event):
     """
     
     def __init__ (self, filename):
-        self.name = "Next level event"
+        self.name = 'Next level event'
         self.filename = filename
 
 
@@ -99,7 +99,7 @@ class StateChangeEvent(Event):
     """
     
     def __init__(self, state):
-        self.name = "State change event"
+        self.name = 'State change event'
         self.state = state
     def __str__(self):
         if self.state:
@@ -149,9 +149,9 @@ class MessageEvent(Event):
         """
         
         self.name = 'Message event'
-        if type(message) is str:
-            self.messages = list(message)
-        elif type(message) is list:
+        if type(messages) is str:
+            self.messages = list(messages)
+        elif type(messages) is list:
             self.messages = messages
         
     def __str__(self):
