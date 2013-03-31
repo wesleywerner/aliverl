@@ -26,35 +26,22 @@ class KeyboardMouse(object):
                 
                 # all key downs
                 if event.type == pygame.KEYDOWN:
-                    currentstate = self.model.state.peek()
-                    # STATE_INTRO: space pops the stack
-                    if currentstate == aliveModel.STATE_INTRO:
-                        if event.key == pygame.K_SPACE:
-                            self.evManager.Post(StateChangeEvent(None))
-                    # STATE_MENU: spacebar plays, escape pops
-                    elif currentstate == aliveModel.STATE_MENU:
-                        if event.key == pygame.K_SPACE:
-                            self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
-                        elif event.key == pygame.K_ESCAPE:
-                            self.evManager.Post(StateChangeEvent(None))
-                    elif currentstate == aliveModel.STATE_PLAY:
-                        self.playkeydown(event)
-                        
-                        # # NOTE: This was used to test the viewport rendering.
-                        # # It works great, by the way.
-                        #if event.key == pygame.K_DOWN:
-                            #self.evManager.Post(ShiftViewportEvent((0, 1)))
-                        #if event.key == pygame.K_UP:
-                            #self.evManager.Post(ShiftViewportEvent((0, -1)))
-                        #if event.key == pygame.K_LEFT:
-                            #self.evManager.Post(ShiftViewportEvent((-1, 0)))
-                        #if event.key == pygame.K_RIGHT:
-                            #self.evManager.Post(ShiftViewportEvent((1, 0)))
+                    state = self.model.state.peek()
+                    if state == aliveModel.STATE_INTRO:
+                        self.introkeys(event)
+                    elif state == aliveModel.STATE_MENU:
+                        self.menukeys(event)
+                    elif state == aliveModel.STATE_PLAY:
+                        self.playkeys(event)
+                    elif state == aliveModel.STATE_GAMEOVER:
+                        self.gameoverkeys(event)
+                    else:
+                        # allow escaping from unhandled states
+                        self.evManager.Post(StateChangeEvent(None))
     
-    def playkeydown(self, event):
+    def playkeys(self, event):
         """
-        Handles keys for game play.
-        Escape pops the stack.
+        Handles game play keys.
         """
         
         movement = {
@@ -83,3 +70,29 @@ class KeyboardMouse(object):
         else:
             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
+
+    def menukeys(self, event):
+        """
+        Handles menu keys.
+        """
+        
+        if event.key == pygame.K_SPACE:
+            self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
+        elif event.key == pygame.K_ESCAPE:
+            self.evManager.Post(StateChangeEvent(None))
+
+    def introkeys(self, event):
+        """
+        Handles intro keys.
+        """
+        
+        if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
+            self.evManager.Post(StateChangeEvent(None))
+
+    def gameoverkeys(self, event):
+        """
+        Handles game over keys.
+        """
+        
+        if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
+            self.evManager.Post(StateChangeEvent(None))
