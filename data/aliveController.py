@@ -77,7 +77,11 @@ class KeyboardMouse(object):
         """
         
         if event.key == pygame.K_SPACE:
-            self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
+            if not self.model.playing:
+                #TODO allow selecting the storyline, pass it in here
+                self.evManager.Post(GameStartEvent('1-in-the-beginning'))
+            else:
+                self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
         elif event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
 
