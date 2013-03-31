@@ -43,15 +43,27 @@ class InputEvent(Event):
         return '%s, char=%s, clickpos=%s' % (self.name, self.char, self.clickpos)
     
 
-class PlayerMoveEvent(Event):
+class PlayerMoveRequestEvent(Event):
     """
     Request to move the player object.
     Direction (x, y): tile offset to move.
     """
     
     def __init__(self, direction):
-        self.name = 'Player move event'
+        self.name = 'Player move request event'
         self.direction = direction
+
+    
+class PlayerMovedEvent(Event):
+    """
+    Request to move the player object.
+    Direction (x, y): tile offset to move.
+    """
+    
+    def __init__(self, objectid, direction):
+        self.name = 'Player moved event'
+        self.direction = direction
+        self.objectid = objectid
 
     
 class InitializeEvent(Event):
@@ -73,8 +85,9 @@ class NextLevelEvent(Event):
     Tell Views to prepare resources.
     """
     
-    def __init__ (self):
+    def __init__ (self, filename):
         self.name = "Next level event"
+        self.filename = filename
 
 
 class StateChangeEvent(Event):

@@ -79,7 +79,7 @@ class KeyboardMouse(object):
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
         elif event.key in movement.keys():
-            self.evManager.Post(PlayerMoveEvent(movement[event.key]))
+            self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
         else:
             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)

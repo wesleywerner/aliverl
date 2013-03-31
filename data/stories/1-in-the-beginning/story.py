@@ -27,7 +27,9 @@ stats = {
             'mana': 0,
             'maxmana': 5,
             'manarate': 6,
-            'mode': ''
+            'mode': '',
+            'frames': [],
+            'fps': 0
             },
     'ice': {
             'attack': 1,
@@ -39,7 +41,9 @@ stats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'mode': 'patrol'
+            'mode': 'patrol',
+            'frames': [],
+            'fps': 0
             },
     'virus': {
             'attack': 1,
@@ -51,7 +55,9 @@ stats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'mode': 'patrol'
+            'mode': 'patrol',
+            'frames': [],
+            'fps': 1
             }
         }
 

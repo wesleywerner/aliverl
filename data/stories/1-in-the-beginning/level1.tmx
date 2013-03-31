@@ -148,11 +148,6 @@
    </properties>
   </tile>
  </tileset>
- <layer name="bg" width="16" height="16" visible="0">
-  <data encoding="base64" compression="zlib">
-   eJzjYGBg4BjFo3gUj0gMABTwCAE=
-  </data>
- </layer>
  <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
    eJyVUssOgzAMy3gcUMt2YZPaw/b/f0kqGs0KTQOWLIeAcVolEtHAfDgcQAtXOhCqZuaroxoLM4G/582OPzKnylGp1GX2GfwBNNAZ2fi255c5qKrc0dLI/zX8eg7d9/Itfyv/jt/L/9Z6o/9+FL4hH5+tfAut9+jH3A/zacwRoTer/1yBnAP92PM4QV12Evf/LmT/5ezJUItyJzsfGwXh

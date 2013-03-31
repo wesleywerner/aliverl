@@ -1,8 +1,6 @@
 import os
 import sys
-import pygame
-from pygame.locals import *
-from pytmx import tmxloader
+from tmxparser import TMXParser
 from eventmanager import *
 
 # fixes
@@ -51,7 +49,7 @@ class GameEngine(object):
             # No state, we quit
             if not self.state.peek():
                 self.evManager.Post(QuitEvent())
-        elif isinstance(event, PlayerMoveEvent):
+        elif isinstance(event, PlayerMoveRequestEvent):
             self.movecharacter(self.player, event.direction)
 
     def run(self):
@@ -104,12 +102,10 @@ class GameEngine(object):
         else:
             nextlevel = 1
         trace.write('warping to level: %s ' % (nextlevel,))
-        self.level = GameLevel(nextlevel, 
-                os.path.join(self.story.path, self.story.levels[nextlevel-1])
-                )
+        levelfilename = os.path.join(self.story.path, self.story.levels[nextlevel-1])
+        self.level = GameLevel(nextlevel, levelfilename)
         self.applycharacterstats()
-        self.mapblocklists()
-        self.evManager.Post(NextLevelEvent())
+        self.evManager.Post(NextLevelEvent(levelfilename))
 
     def applycharacterstats(self):
         """
@@ -118,52 +114,42 @@ class GameEngine(object):
         """
         
         self.player = None
-        # apply story stats to any matching objects
-        for obj in [e for e in self.level.objects if e.name != None]:
-            # case insensitive match
-            objname = obj.name.lower()
-            # remember the player object
-            if objname == 'player':
-                self.player = obj
-                trace.write('player is at (%s, %s)' % (obj.x, obj.y))
-            if objname in self.story.stats.keys():
-                # apply all properties from story to this object
-                [setattr(obj, k, v) 
-                    for k, v in self.story.stats[objname].items()
-                    ]
+        self.objects = []
+        for objectgroup in self.level.tmx.objectgroups:
+            for obj in objectgroup:
+                self.objects.append(obj)
+                objname = obj.name.lower()
+                # remember the player object
+                if objname == 'player':
+                    self.player = obj
+                    trace.write('player is at (%s, %s)' % (obj.x, obj.y))
+                if objname in self.story.stats.keys():
+                    # apply all properties from story to this object
+                    [setattr(obj, k, v) 
+                        for k, v in self.story.stats[objname].items()
+                        ]
 
-    def mapblocklists(self):
-        """
-        Map blocklist tileset indexes to the level data.
-        Level data is parsed to different gid's than in the level file.
-        """
-        
-        self.blocklist = []
-        for realid in self.story.blocklist:
-            for internal_gid, flags in self.level.data.mapGID(realid):
-                self.blocklist.append(internal_gid)
-    
     def movecharacter(self, character, direction):
         """
         Moves the given character by offset direction (x, y)
         """
         
         # convert pixel to tile index
-        xr, yr = (self.level.data.tilewidth, self.level.data.tileheight)
+        xr, yr = (self.level.tmx.tile_width, self.level.tmx.tile_height)
         newx, newy = ((character.x / xr) + direction[0],
                       (character.y / yr) + direction[1])
         # test each tile layer for a collision
-        for layerindex in range(len(self.level.data.tilelayers)):
-            tilegid = self.level.data.getTileGID(newx, 
-                                                 newy + FIX_YOFFSET, 
-                                                 layerindex)
-            if tilegid in self.blocklist:
+        for layer in self.level.tmx.tilelayers:
+            gid = layer.at((newx, newy))
+            if gid in self.story.blocklist:
+                trace.write('%s is in blocklist' % (gid))
                 return False
         
         #TODO: other object collision detection
         
         # accept movement
         character.x, character.y = (newx * xr, newy * yr)
+        self.evManager.Post(PlayerMovedEvent(id(character), direction))
 
 
 class GameLevel(object):
@@ -178,13 +164,12 @@ class GameLevel(object):
         
         number (int): the current level number.
         filename (str): relative path to the level file.
-        data (pytmx.TiledMap): the .tmx map data.
+        data (TMXParser): tmx file data.
         """
         self.number = number
         self.objects = []
         self.filename = filename
-        self.data = tmxloader.load_pygame(self.filename, pixelalpha=False)
-        self.objects = self.data.getObjects()
+        self.tmx = TMXParser(filename)
         trace.write('loaded tmx data OK')
 
 

@@ -1,11 +1,13 @@
+import os
 import pygame
 from pygame import image
 from pygame.locals import *
-from pytmx import tmxloader
 import trace
 import color
 import aliveModel
 from eventmanager import *
+from tmxparser import TMXParser
+from tmxparser import TilesetParser
 
 class GraphicalView(object):
     """
@@ -45,25 +47,30 @@ class GraphicalView(object):
         self.levelcanvas = None
         self.objectcanvas = None
         self.viewport = None
+        self.tilemapdata = None
+        self.spritegroup = None
     
     def notify(self, event):
         """
         Called by an event in the message queue.
         """
 
-        if isinstance(event, InitializeEvent):
+        if isinstance(event, TickEvent):
+            self.render()
+            self.clock.tick(30)
+        elif isinstance(event, InitializeEvent):
             self.initialize()
         elif isinstance(event, QuitEvent):
             self.isinitialized = False
             pygame.quit()
         elif isinstance(event, NextLevelEvent):
-            self.rendermap()
+            self.preparelevel()
+            self.createsprites()
         elif isinstance(event, ShiftViewportEvent):
             ratio = self.model.level.data.tilewidth
             self.viewport = self.viewport.move(event.xy[0]*ratio, event.xy[1]*ratio)
-        elif isinstance(event, TickEvent):
-            self.renderall()
-            self.clock.tick(30)
+        elif isinstance(event, PlayerMovedEvent):
+            self.movesprite(event)
     
     def widgetclick(self, context, code):
         """
@@ -73,7 +80,7 @@ class GraphicalView(object):
         
         pass
         
-    def renderall(self):
+    def render(self):
         """
         Draw the current game state on screen.
         blits the correct surfaces for the current Model state.
@@ -93,57 +100,98 @@ class GraphicalView(object):
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
         elif currentstate == aliveModel.STATE_PLAY:
             sometext = 'You are now playing. Escape to go back to the menu.'
-            self.screen.blit(self.levelcanvas, (-self.viewport.x, -self.viewport.y))
-            self.renderobjects()
-            self.screen.blit(self.objectcanvas, (0, 0))
+            self.screen.blit(self.levelcanvas, 
+                            (-self.viewport.x, -self.viewport.y))
+            #self.drawobjects()
+            ## update sprite animations and draw them
+        self.spritegroup.update(pygame.time.get_ticks())
+        self.spritegroup.draw(self.screen)
             
         somewords = self.largefont.render(sometext, True, color.green)
         self.screen.blit(somewords, (0, 0))
         # flip the screen with all we drew
         pygame.display.flip()
         
-    def rendermap(self):
+    def preparelevel(self):
         """
-        Render the level tiles onto self.levelcanvas.
+        Prepare the View's resource to display the level given in event param.
         """
         
-        tiledata = self.model.level.data
-        levelsize = (tiledata.width * tiledata.tilewidth,
-                    tiledata.height * tiledata.tileheight)
-        # create level and object canvii
-        self.levelcanvas = pygame.Surface(levelsize)
-        self.levelcanvas.set_colorkey(color.magenta)
+        tmx = self.model.level.tmx
+        # load the tileset parser
+        tilesetfile = os.path.join(self.model.story.path, tmx.tilesets[0].source)
+        self.tsp = TilesetParser(
+                                tilesetfile,
+                                (tmx.tile_width, tmx.tile_height), 
+                                color.magenta
+                                )
+
+        # draw tiles
+        if not self.levelcanvas:
+            self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
+            self.levelcanvas.set_colorkey(color.magenta)
         self.levelcanvas.fill(color.magenta)
-        self.objectcanvas = pygame.Surface(levelsize)
-        self.objectcanvas.set_colorkey(color.magenta)
-        
-        tw = tiledata.tilewidth
-        th = tiledata.tileheight
-        gt = tiledata.getTileImage
+        for y in range(tmx.height):
+            for x in range(tmx.width):
+                for layer in tmx.tilelayers:
+                    gid = layer.at((x, y)) 
+                    tile = self.tsp[gid]
+                    if tile:
+                        self.levelcanvas.blit(tile, 
+                                    (x * tmx.tile_width, y * tmx.tile_height))
 
-        for l in xrange(0, len(tiledata.tilelayers)):
-            if tiledata.tilelayers[l].visible:
-                for y in xrange(0, tiledata.height):
-                    for x in xrange(0, tiledata.width):
-                        tile = gt(x, y, l)
-                        if tile:
-                            self.levelcanvas.blit(tile, (x*tw, y*th))
-
-    def renderobjects(self):
+    def createsprites(self):
         """
-        Render the level objects onto self.objectcanvas.
+        Create all the sprites that represent all level objects.
         """
         
-        #NOTE in the end we need to render the objects within the Model itself.
-        #       for now we render them from the map data for preview.
-        #       just note how we get the image for a GID.
-        self.objectcanvas.fill(color.magenta)
-        tiledata = self.model.level.data
-        for o in tiledata.getObjects():
-            if self.viewport.contains(pygame.Rect(o.x, o.y - 32, 32, 32)):
-                self.objectcanvas.blit(tiledata.images[o.gid], 
-                            (o.x - self.viewport.x, o.y - 32 - self.viewport.y))
-
+        if not self.spritegroup:
+            self.spritegroup = pygame.sprite.Group()
+        self.spritegroup.empty()
+        
+        tmx = self.model.level.tmx
+        for grp in tmx.objectgroups:
+            for obj in grp:
+                # obj has a frames list.
+                # if this list is empty, use the obj.gid
+                try:
+                    frames = []
+                    for f in obj.frames:
+                        frames.append(self.tsp[f])
+                    if len(frames) == 0:
+                        frames.append(self.tsp[obj.gid])
+                    # tiled map editor has a bug where y position
+                    # of map objects are one tile too large.
+                    # fix with -tile_height
+                    x = (obj.x * tmx.tile_width)
+                    y = (obj.y * tmx.tile_height) - tmx.tile_height
+                    s = Sprite(
+                            id(obj),
+                            Rect(x, y, 
+                                tmx.tile_width, 
+                                tmx.tile_height),
+                            frames,
+                            obj.fps,
+                            self.spritegroup
+                            )
+                except AttributeError as e:
+                    # this object has no frames or fps set
+                    trace.error(e)
+                    pass
+    
+    def movesprite(self, event):
+        """
+        Move the sprite by the event details.
+        """
+        
+        tmx = self.model.level.tmx
+        for sprite in self.spritegroup:
+            if sprite.name == event.objectid:
+                sprite.rect = sprite.rect.move(
+                    event.direction[0] * tmx.tile_width,
+                    event.direction[1] * tmx.tile_height)
+                return
+        
     def initialize(self):
         """
         Set up the pygame graphical display and loads graphical resources.
@@ -155,6 +203,7 @@ class GraphicalView(object):
         self.screen = pygame.display.set_mode((800, 512))
         self.viewport = pygame.Rect(0, 0, 512, 512)
         self.clock = pygame.time.Clock()
+        self.spritegroup = pygame.sprite.Group()
         # load resources
         self.smallfont = pygame.font.Font(None, 14)
         self.largefont = pygame.font.Font('bitwise.ttf', 28)
@@ -163,3 +212,46 @@ class GraphicalView(object):
         self.playbackground = image.load('images/playscreen.png').convert()
         self.dialoguebackground = image.load('images/dialog.png').convert()
         self.isinitialized = True
+
+
+class Sprite(pygame.sprite.Sprite):
+    """
+    Represents an animated sprite.
+    """
+    
+    def __init__(self, name, rect, frames, fps, *groups):
+        """
+        rect(Rect) of the sprite on screen.
+        fps(int) frames per seconds to rotate through.
+        *groups(sprite.Group) add sprite to these groups.
+        """
+        
+        super(Sprite, self).__init__(*groups)
+        self.name = name
+        self.rect = rect
+        self.image = None
+        self._images = frames
+        self._start = pygame.time.get_ticks()
+        if fps < 1: fps = 1
+        self._delay = 1000 / fps
+        self._last_update = 0
+        self._frame = 0
+        self._hasframes = len(self._images) > 1
+
+        # set our first image.
+        self.image = self._images[0]
+
+    def update(self, t):
+        """
+        Update the sprite animation if enough time has passed.
+        Called by the sprite group draw().
+        """
+        
+        if not self._hasframes:
+            return
+        if t - self._last_update > self._delay:
+            self._frame += 1
+            if self._frame >= len(self._images): 
+                self._frame = 0
+            self.image = self._images[self._frame]
+            self._last_update = t
