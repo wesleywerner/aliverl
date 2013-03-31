@@ -53,6 +53,8 @@ class PlayerMoveRequestEvent(Event):
         self.name = 'Player move request event'
         self.direction = direction
 
+    def __str__(self):
+        return '%s offset %s' % (self.name, self.direction)
     
 class PlayerMovedEvent(Event):
     """
