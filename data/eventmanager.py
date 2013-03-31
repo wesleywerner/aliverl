@@ -115,9 +115,28 @@ class ShiftViewportEvent(Event):
     """
     
     def __init__ (self, xy):
-        self.name = "Shift viewport event"
+        self.name = 'Shift viewport event'
         self.xy = xy
 
+
+class CombatEvent(Event):
+    """
+    Initiates a combat turn.
+    """
+    
+    def __init__(self, attacker, defender):
+        """
+        attacker and defender are MapObjects.
+        The former indicates it's their move.
+        """
+        
+        self.name = 'Combat event'
+        self.attacker = attacker
+        self.defender = defender
+    
+    def __str__(self):
+        return '%s <%s -> %s>' % (self.name, self.attacker.name, self.defender.name)
+    
 
 class EventManager(object):
     """

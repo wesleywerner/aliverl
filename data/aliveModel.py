@@ -51,6 +51,8 @@ class GameEngine(object):
                 self.evManager.Post(QuitEvent())
         elif isinstance(event, PlayerMoveRequestEvent):
             self.movecharacter(self.player, event.direction)
+        elif isinstance(event, CombatEvent):
+            pass
 
     def run(self):
         """
@@ -142,7 +144,16 @@ class GameEngine(object):
             if gid in self.story.blocklist:
                 return False
         
-        #TODO: other object collision detection
+        # other object collision detection
+        for grp in self.level.tmx.objectgroups:
+            for obj in grp:
+                if obj.x == newx and obj.y == newy:
+                    # AI's always block, in fact, it means combat!
+                    if obj.type == 'ai':
+                        self.evManager.Post(CombatEvent(character, obj))
+                        return False
+                    elif obj.gid in self.story.blocklist:
+                        return False
         
         # accept movement
         character.x, character.y = (newx, newy)
