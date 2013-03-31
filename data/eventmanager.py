@@ -138,6 +138,26 @@ class CombatEvent(Event):
         return '%s <%s -> %s>' % (self.name, self.attacker.name, self.defender.name)
     
 
+class MessageEvent(Event):
+    """
+    Sends a game message for the user to read.
+    """
+    
+    def __init__(self, messages):
+        """
+        message can be a single string, or a list of them.
+        """
+        
+        self.name = 'Message event'
+        if type(message) is str:
+            self.messages = list(message)
+        elif type(message) is list:
+            self.messages = messages
+        
+    def __str__(self):
+        return '\n * %s'.join(self.messages)
+
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.
