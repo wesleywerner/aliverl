@@ -99,25 +99,23 @@ class GraphicalView(object):
             return
 
         self.screen.blit(self.defaultbackground, (0, 0))
-
-        # show something on the view for pretty testing
-        currentstate = self.model.state.peek()
-        if currentstate == aliveModel.STATE_INTRO:
+        sometext = ''
+        state = self.model.state.peek()
+        if state == aliveModel.STATE_INTRO:
             sometext = 'Intro screen is now drawing. Space to skip.'
-        elif currentstate == aliveModel.STATE_MENU:
+        elif state == aliveModel.STATE_MENU:
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
-        elif currentstate == aliveModel.STATE_PLAY:
-            sometext = 'You are now playing. Escape to go back to the menu.'
+        elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
             self.screen.blit(self.levelcanvas, 
                             (-self.viewport.x, -self.viewport.y))
-            #self.drawobjects()
-            ## update sprite animations and draw them
-        self.spritegroup.update(pygame.time.get_ticks())
-        self.spritegroup.draw(self.screen)
-            
+            # update sprites
+            self.spritegroup.update(pygame.time.get_ticks())
+            self.spritegroup.draw(self.screen)
+            if state == aliveModel.STATE_GAMEOVER:
+                sometext = 'You have died :('
+        
         somewords = self.largefont.render(sometext, True, color.green)
         self.screen.blit(somewords, (0, 0))
-        # flip the screen with all we drew
         pygame.display.flip()
         
     def preparelevel(self):
