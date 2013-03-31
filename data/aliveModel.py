@@ -28,6 +28,7 @@ class GameEngine(object):
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.running = True
+        self.playing = False
         self.state = StateMachine()
         self.level = None
         self.story = None
@@ -50,6 +51,10 @@ class GameEngine(object):
             self.combatcharacters(event)
         elif isinstance(event, KillCharacterEvent):
             self.killcharacter(event.character)
+        elif isinstance(event, GameOverEvent):
+            self.endgame()
+        elif isinstance(event, GameStartEvent):
+            self.begingame(event)
 
     def run(self):
         """
@@ -59,19 +64,27 @@ class GameEngine(object):
         The loop ends when this object hears a QuitEvent in notify(). 
         """
         
-        # for testing we play immediately. remove this and uncomment below for reality.
-        self.evManager.Post(StateChangeEvent(STATE_PLAY))
-        # # set up the state machine
-        # self.evManager.Post(StateChangeEvent(STATE_MENU))
-        # self.evManager.Post(StateChangeEvent(STATE_INTRO))
+        self.evManager.Post(StateChangeEvent(STATE_MENU))
+        #self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.evManager.Post(InitializeEvent())
-        if self.loadstory('1-in-the-beginning'):
+        while self.running:
+            newTick = TickEvent()
+            self.evManager.Post(newTick)
+        
+    def begingame(self, event):
+        """
+        Begins a new game.
+        event.story contains the campaign to play.
+        """
+        
+        if self.loadstory(event.story):
+            self.level = None
+            self.playing = True
             self.levelup()
-            while self.running:
-                newTick = TickEvent()
-                self.evManager.Post(newTick)
-    
+            # signal to play
+            self.evManager.Post(StateChangeEvent(STATE_PLAY))
+
     def loadstory(self, storyname):
         """
         Loads the story data for the given story name.
@@ -133,6 +146,9 @@ class GameEngine(object):
         Moves the given character by offset direction (x, y)
         """
         
+        if not self.playing:
+            return False
+        
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
         # tile collisions
@@ -163,6 +179,9 @@ class GameEngine(object):
         Begin a combat round.
         """
         
+        if not self.playing:
+            return False
+        
         result = []
         a = event.attacker
         d = event.defender
@@ -183,16 +202,34 @@ class GameEngine(object):
         self.evManager.Post(MessageEvent(result))
         # death
         if a.health < 1:
-            self.evManager.Post(KillCharacterEvent(a))
+            if a is self.player:
+                self.evManager.Post(GameOverEvent())
+            else:
+                self.evManager.Post(KillCharacterEvent(a))
         if d.health < 1:
-            self.evManager.Post(KillCharacterEvent(d))
+            if d is self.player:
+                self.evManager.Post(GameOverEvent())
+            else:
+                self.evManager.Post(KillCharacterEvent(d))
 
     def killcharacter(self, character):
         """
         Remove a character from play.
         """
-        
+
         self.objects.remove(character)
+
+    def endgame(self):
+        """
+        Makes the game over.
+        """
+        
+        self.playing = False
+        while True:
+            popped = self.state.pop()
+            if not popped or popped == STATE_PLAY:
+                break
+        self.state.push(STATE_GAMEOVER)
 
 
 class GameLevel(object):
@@ -222,6 +259,7 @@ STATE_HELP = 3
 STATE_ABOUT = 4
 STATE_PLAY = 5
 STATE_DIALOG = 6
+STATE_GAMEOVER = 7
 
 class StateMachine(object):
     """
@@ -274,3 +312,11 @@ class StateMachine(object):
         else:
             self.pop()
         return len(self.statestack) > 0
+    
+    def contains(self, state):
+        """
+        Returns if a state is in the list.
+        """
+        
+        return state in self.statestack
+        
