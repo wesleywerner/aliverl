@@ -162,7 +162,10 @@ class Mapobject(ObjectHelper):
         tilesize is (w, h)
         """
         
-        self.name = tag.attrib['name']
+        if 'name' in tag.attrib.keys():
+            self.name = tag.attrib['name']
+        else:
+            self.name = 'Unamed'
         self.gid = int(tag.attrib['gid'])
         self.px = int(tag.attrib['x'])
         self.py = int(tag.attrib['y'])
