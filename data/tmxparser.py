@@ -166,6 +166,10 @@ class Mapobject(ObjectHelper):
             self.name = tag.attrib['name']
         else:
             self.name = 'Unamed'
+        if 'type' in tag.attrib.keys():
+            self.type = tag.attrib['type']
+        else:
+            self.type = ''
         self.gid = int(tag.attrib['gid'])
         self.px = int(tag.attrib['x'])
         self.py = int(tag.attrib['y'])
@@ -235,7 +239,7 @@ if __name__ == '__main__':
     
     def test_tmxparser():
         screen = pygame.display.set_mode((640, 32))
-        tmx = TMXParser('stories/1-in-the-beginning/test.tmx')
+        tmx = TMXParser('stories/1-in-the-beginning/level1.tmx')
         for t in tmx.tilesets:
             print(t)
         for td in tmx.tilelayers:
@@ -250,7 +254,7 @@ if __name__ == '__main__':
         screen = pygame.display.set_mode((640, 480))
         tsp = TilesetParser('stories/1-in-the-beginning/alive-tileset.png', 
                             (32, 32), (255, 0, 255))
-        tmx = TMXParser('stories/1-in-the-beginning/test.tmx')
+        tmx = TMXParser('stories/1-in-the-beginning/level1.tmx')
         # draw tiles
         for y in range(tmx.height):
             for x in range(tmx.width):
