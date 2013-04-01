@@ -1,30 +1,7 @@
-[top]
+* implement a player walked path for 'follower' ai modes to pick up on if they cross it.
+    (a future ability will reduce your path history)
 
-* send a messages.add flag to indicate a background flash.
-
-* need a function to find object of type within a range
-* on ai move if player in range go to them
-
-* handle player death by dropping the current state and going to a game over state.
-
-* draw the full stats screen:
-
-    + level
-    + turn
-
-    + health
-    + mana
-    + stealth
-    + attack
-    + score
-
-* fill out the base map tile blocking tiles
-* complete ai.def
-* flesh out ten levels with tile and objects.
-* copy blocking info to other levels
-
-* write story to match each level.
+* need a function to find the distance between two map coords
 
 * implement abilities logic and ui
 
-* add a score counter to the player
