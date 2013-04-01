@@ -9,11 +9,11 @@ from eventmanager import *
 from tmxparser import TMXParser
 from tmxparser import TilesetParser
 
-# fixes
-# a bug in tiled map editor saves objects y-position with one tile's worth more.
-# we offset Y by one tile less as workaround.
+# fixes a bug in tiled map editor.
+# it saves objects y-position with one tile's worth more.
+# its value is set later on. remove when bug is fixed :P
 # https://github.com/bjorn/tiled/issues/91
-FIX_YOFFSET=32
+FIX_YOFFSET=0
 
 class GraphicalView(object):
     """
@@ -73,8 +73,7 @@ class GraphicalView(object):
             self.preparelevel()
             self.createsprites()
         elif isinstance(event, ShiftViewportEvent):
-            ratio = self.model.level.data.tilewidth
-            self.viewport = self.viewport.move(event.xy[0]*ratio, event.xy[1]*ratio)
+            self.viewport.center = event.xy
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
         elif isinstance(event, KillCharacterEvent):
@@ -127,6 +126,8 @@ class GraphicalView(object):
         """
         
         tmx = self.model.level.tmx
+        global FIX_YOFFSET
+        FIX_YOFFSET = tmx.tile_height
         # load the tileset parser
         tilesetfile = os.path.join(self.model.story.path, tmx.tilesets[0].source)
         self.tsp = TilesetParser(
