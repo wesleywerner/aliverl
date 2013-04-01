@@ -79,6 +79,8 @@ class GraphicalView(object):
             self.movesprite(event)
         elif isinstance(event, KillCharacterEvent):
             self.removesprite(event.character)
+        elif isinstance(event, UpdateObjectGID):
+            self.transmutesprite(event)
     
     def widgetclick(self, context, code):
         """
@@ -205,10 +207,31 @@ class GraphicalView(object):
         """
         Remove a character from play and from the sprite list.
         """
-        match = [e for e in self.spritegroup if e.name == id(mapobject)]
+        match = [e for e in self.spritegroup if e.name == mapobject]
         if match:
             self.spritegroup.remove(match[0])
+    
+    def transmutesprite(self, event):
+        """
+        Change a sprite image by object gid.
+        """
         
+        oid = id(event.obj)
+        for sprite in self.spritegroup:
+            if sprite.name == oid:
+                print('TEST', event.action, event.gid)
+                if event.action == 'replace':
+                    while sprite.removeimage():
+                        pass
+                    for gid in event.gid:
+                        sprite.addimage(self.tsp[int(gid)])
+                elif event.action == 'add':
+                    for gid in event.gid:
+                        sprite.addimage(self.tsp[int(gid)])
+                elif event.action == 'remove':
+                    sprite.removeimage()
+        
+    
     def initialize(self):
         """
         Set up the pygame graphical display and loads graphical resources.
@@ -257,6 +280,28 @@ class Sprite(pygame.sprite.Sprite):
 
         # set our first image.
         self.image = self._images[0]
+    
+    def addimage(self, image):
+        """
+        Allows adding of a animated sprite image.
+        """
+        
+        self._images.append(image)
+        self._hasframes = len(self._images) > 1
+        if len(self._images) == 1:
+            self.image = self._images[0]
+
+    def removeimage(self):
+        """
+        Remove the last image frame.
+        You cannot remove the first frame.
+        """
+        
+        if len(self._images) > 0:
+            del self._images[-1]
+            self._hasframes = len(self._images) > 1
+            return True
+        return False
 
     def update(self, t):
         """
@@ -272,3 +317,4 @@ class Sprite(pygame.sprite.Sprite):
                 self._frame = 0
             self.image = self._images[self._frame]
             self._last_update = t
+    

@@ -11,7 +11,7 @@ Existing code files will be restructured.
 * states.py
 * _stats.py_
 * combat.py
-* _bump.py_
+* bump.py
 * level.py
 * _messages.py_
 

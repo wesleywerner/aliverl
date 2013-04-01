@@ -156,9 +156,9 @@
  <objectgroup name="objects" width="16" height="16">
   <object name="door 1" type="door" gid="6" x="160" y="192">
    <properties>
-    <property name="on_finger" value="transmute=14"/>
-    <property name="on_finger_2" value="give=fingers=cap 1"/>
-    <property name="on_finger_3" value="give=message once=POP! goes the capacitor. What is going on here?"/>
+    <property name="on finger" value="transmute=14"/>
+    <property name="on finger 2" value="give=fingers=cap 1"/>
+    <property name="on finger 3" value="give=message once=POP! goes the capacitor. What is going on here?"/>
    </properties>
   </object>
   <object name="switch 1" type="switch" gid="46" x="224" y="256">
@@ -169,7 +169,7 @@
   </object>
   <object name="door 2" type="door" gid="6" x="160" y="384">
    <properties>
-    <property name="on_finger" value="transmute=14,6"/>
+    <property name="on finger" value="transmute=14,6"/>
    </properties>
   </object>
   <object name="switch 5" type="switch" gid="30" x="448" y="128">
@@ -180,22 +180,22 @@
   <object name="pop caps" type="switch" gid="55" x="320" y="320">
    <properties>
     <property name="fingers" value="popcap"/>
-    <property name="message_once" value="pop! pop! pop! The capacitors blow."/>
+    <property name="message once" value="pop! pop! pop! The capacitors blow."/>
    </properties>
   </object>
   <object name="popcap" type="cap" gid="26" x="320" y="288">
    <properties>
-    <property name="on_finger" value="transmute=28"/>
+    <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
   <object name="popcap" type="cap" gid="26" x="320" y="224">
    <properties>
-    <property name="on_finger" value="transmute=28"/>
+    <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
   <object name="popcap" type="cap" gid="26" x="320" y="160">
    <properties>
-    <property name="on_finger_1" value="transmute=28"/>
+    <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
   <object name="exit" type="exit" gid="16" x="32" y="64">
@@ -205,20 +205,20 @@
   </object>
   <object name="term hello" type="term" gid="31" x="96" y="256">
    <properties>
-    <property name="on_finger_1" value="give=dialog=L1 in 1,L1 in 2,L1 in 3,L1 in 4,L1 in 5"/>
-    <property name="on_finger_2" value="transmute=47"/>
-    <property name="on_finger_3" value="give=fingers door once=door 1"/>
+    <property name="on finger 1" value="give=dialog=L1 in 1,L1 in 2,L1 in 3,L1 in 4,L1 in 5"/>
+    <property name="on finger 2" value="replaceframes=31,47"/>
+    <property name="on finger 3" value="give=fingers door once=door 1"/>
    </properties>
   </object>
   <object name="cap 1" type="cap" gid="26" x="128" y="160">
    <properties>
-    <property name="on_finger" value="transmute=28"/>
+    <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
   <object name="VIRUs" type="ai" gid="59" x="128" y="288"/>
   <object name="cap 2" type="cap" gid="26" x="64" y="96">
    <properties>
-    <property name="on_finger" value="transmute=28"/>
+    <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
   <object name="switch exit cap" type="switch" gid="54" x="64" y="32">
@@ -229,12 +229,12 @@
   </object>
   <object name="door 3" type="door" gid="7" x="352" y="64">
    <properties>
-    <property name="on_finger" value="transmute=15,7"/>
+    <property name="on finger" value="transmute=15,7"/>
    </properties>
   </object>
   <object name="door 3" type="door" gid="7" x="352" y="96">
    <properties>
-    <property name="on_finger" value="transmute=15,7"/>
+    <property name="on finger" value="transmute=15,7"/>
    </properties>
   </object>
   <object name="switch 2" type="switch" gid="22" x="192" y="384">

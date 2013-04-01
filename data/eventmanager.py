@@ -66,7 +66,9 @@ class PlayerMovedEvent(Event):
         self.name = 'Player moved event'
         self.direction = direction
         self.objectid = objectid
-
+    
+    def __str__(self):
+        return ''
     
 class InitializeEvent(Event):
     """
@@ -169,6 +171,22 @@ class KillCharacterEvent(Event):
     
     def __str__(self):
         return '%s <%s>' % (self.name, self.character.name)
+    
+    
+class UpdateObjectGID(Event):
+    """
+    Tells everyone that a MapObject's GID has changed.
+    This is used for drawing a specific tile, and for block checking.
+    """
+
+    def __init__ (self, obj, gid, action='replace'):
+        self.name = 'Update object gid event'
+        self.obj = obj
+        self.gid = gid
+        self.action = action
+    
+    def __str__(self):
+        return '%s <%s %s to %s>' % (self.name, self.obj.name, self.action, self.gid)
     
 class EventManager(object):
     """

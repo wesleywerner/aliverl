@@ -23,6 +23,9 @@ class GameEngine(object):
         state (StateMachine): controls the game mode stack.
         level (GameLevel): stores level related data.
         story (object): imports from story.py
+        player (MapObject): the player controlled map object.
+        objects ([MapObject]): list of level objects.
+        dialogue ([str]): List of dialogue strings in queue to display.
         """
         
         self.evManager = evManager
@@ -35,6 +38,7 @@ class GameEngine(object):
         self.story = None
         self.player = None
         self.objects = None
+        self.dialogue = []
 
     def notify(self, event):
         """
@@ -160,15 +164,13 @@ class GameEngine(object):
             return False
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
-        # tile collisions
-        for layer in self.level.tmx.tilelayers:
-            gid = layer.at((newx, newy - FIX_YOFFSET))
-            if gid in self.story.blocklist:
-                return False
-        
         # other object collision detection
         for obj in self.objects:
             if obj.x == newx and obj.y == newy:
+                # test for any triggers on this object.
+                # this will happen if it blocks us (terminals)
+                # or not (touch plates). even AI can have triggers.
+                self.processtriggers(obj)
                 # AI's always block, in fact, it means combat!
                 if obj.type == 'ai':
                     # of course ai don't fight each other.
@@ -178,10 +180,79 @@ class GameEngine(object):
                     return False
                 elif obj.gid in self.story.blocklist:
                     return False
-        
+        # tile collisions
+        for layer in self.level.tmx.tilelayers:
+            gid = layer.at((newx, newy - FIX_YOFFSET))
+            if gid in self.story.blocklist:
+                return False
         # accept movement
         character.x, character.y = (newx, newy)
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
+    
+    def processtriggers(self, obj, isfingered=False):
+        """
+        Process any triggers on an object.
+        """
+        
+        trace.write('trigger %s%s' % (obj.name, (isfingered) and (' via finger') or ('')))
+        
+        for action in obj.properties.keys():
+            action_value = obj.properties[action]
+
+            # finger somebody else
+            if not isfingered and action.startswith('fingers'):
+                for fn in [e for e in self.objects if e.name == action_value]:
+                    self.processtriggers(fn, isfingered=True)
+            
+            # show a message
+            if action.startswith('message'):
+                self.evManager.Post(MessageEvent(action_value))
+            
+            # show a dialog
+            if action.startswith('dialog'):
+                # split the dialog names and reverse the list for the 
+                # main loop (it uses pop() to unstack from the bottom)
+                self.dialogue.extend(action_value.split(',')[::-1])
+
+            # fingered characters only
+            if action.startswith('on finger') and isfingered and \
+                              obj is not self.player:
+                # grab the finger actions
+                f_action = action_value.split('=')
+                # give us a new property equal to the rest of f_action
+                if f_action[0] == 'give':
+                    obj.properties[f_action[1]] = ' '.join(f_action[2:])
+                elif f_action[0] == 'transmute':
+                    # we can have a one-way or rotate transmutes
+                    options = f_action[1].split(',')
+                    if len(options) == 1:
+                        transmute_id = int(options[0])
+                    else:
+                        if str(obj.gid) in options:
+                            # rotate the list with the current
+                            # index as offset. 
+                            idx = options.index(str(obj.gid)) - 1
+                            transmute_id = int(list(options[idx:] + options[:idx])[0])
+                            trace.write('Rotate tile index %s to %s' % (obj.gid, transmute_id))
+                        else:
+                            # use first index
+                            transmute_id = int(options[0])
+                    obj.gid = transmute_id
+                    self.evManager.Post(UpdateObjectGID(obj, [obj.gid]))
+                elif f_action[0] == 'addframes':
+                    self.evManager.Post(UpdateObjectGID(obj, 
+                                        f_action[1].split(','), 'add'))
+                elif f_action[0] == 'replaceframes':
+                    self.evManager.Post(UpdateObjectGID(obj, 
+                                        f_action[1].split(','), 'replace'))
+                elif f_action[0] == 'killframe':
+                    self.evManager.Post(UpdateObjectGID(obj, None, 'remove'))
+
+            # once shots actions (append once to any action)
+            if action.endswith('once'):
+                del obj.properties[action]
+
+        
     
     def combatcharacters(self, event):
         """
@@ -231,7 +302,13 @@ class GameEngine(object):
         """
         Process game state change events.
         """
-
+        
+        # popping dialogue removes one line of dialog text
+        if not state and \
+                        len(self.dialogue) > 0 and \
+                        self.state.peek() == STATE_DIALOG:
+            self.dialogue.pop()
+        # push or pop the given state
         if not self.state.process(state):
             self.evManager.Post(QuitEvent())
         if state == STATE_PLAY and not self.gamerunning:
