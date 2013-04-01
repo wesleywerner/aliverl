@@ -59,6 +59,9 @@ _These trigger when bumping into an object._
 * dialogue <foo once> = key
     show a game dialogue screen with the text defined with the key in story.py.
 
+* exit
+    exit for the next level.
+
 ### Fingered target actions
 
 _These trigger objects being fingered._

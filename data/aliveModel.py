@@ -170,7 +170,8 @@ class GameEngine(object):
                 # test for any triggers on this object.
                 # this will happen if it blocks us (terminals)
                 # or not (touch plates). even AI can have triggers.
-                self.processtriggers(obj)
+                if not self.processtriggers(obj):
+                    return False
                 # AI's always block, in fact, it means combat!
                 if obj.type == 'ai':
                     # of course ai don't fight each other.
@@ -192,6 +193,7 @@ class GameEngine(object):
     def processtriggers(self, obj, isfingered=False):
         """
         Process any triggers on an object.
+        Returns True on OK, False if level is changing, abort caller loop.
         """
         
         trace.write('trigger %s%s' % (obj.name, (isfingered) and (' via finger') or ('')))
@@ -204,6 +206,10 @@ class GameEngine(object):
                 for fn in [e for e in self.objects if e.name == action_value]:
                     self.processtriggers(fn, isfingered=True)
             
+            # next level
+            if action == 'exit':
+                self.levelup()
+                return False
             # show a message
             if action.startswith('message'):
                 self.evManager.Post(MessageEvent(action_value))
@@ -251,7 +257,8 @@ class GameEngine(object):
             # once shots actions (append once to any action)
             if action.endswith('once'):
                 del obj.properties[action]
-
+        # signal caller all is OK
+        return True
         
     
     def combatcharacters(self, event):

@@ -13,7 +13,7 @@ blocklist = [1, 2, 3, 4, 5, 6, 7,
             ]
 
 # list of levels to play
-levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
+levels = ['level1.tmx', 'level2.tmx', 'level3.tmx', ]
 
 # define npc and player stats. (lowercase keys please)
 stats = {
