@@ -183,7 +183,14 @@ class Mapobject(ObjectHelper):
         self.properties = {}
         for prop in tag.findall('properties/property'):
             self.properties[prop.attrib['name']] = prop.attrib['value']
-
+    
+    def getpixelxy(self):
+        """
+        Return a tuple of the pixel xy.
+        """
+        
+        return (self.px, self.py)
+        
 
 class TilesetParser(dict):
     """
