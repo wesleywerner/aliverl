@@ -112,6 +112,7 @@ class GraphicalView(object):
             self.spritegroup.update(pygame.time.get_ticks())
             self.spritegroup.draw(self.screen)
             if state == aliveModel.STATE_GAMEOVER:
+                #TODO Overlay a game over message.
                 sometext = 'You have died :('
         
         somewords = self.largefont.render(sometext, True, color.green)

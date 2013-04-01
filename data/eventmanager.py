@@ -170,30 +170,6 @@ class KillCharacterEvent(Event):
     def __str__(self):
         return '%s <%s>' % (self.name, self.character.name)
     
-
-class GameOverEvent(Event):
-    """
-    Signals the player has died :(
-    """
-    
-    def __init__(self):
-        self.name = 'Game over event'
-
-
-class GameStartEvent(Event):
-    """
-    Signals the start of a new game.
-    """
-    
-    def __init__(self, story):
-        """
-        story name matched the directory the story lives in.
-        """
-        
-        self.name = 'Game start event'
-        self.story = story
-    
-
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.

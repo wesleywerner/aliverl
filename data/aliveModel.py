@@ -28,8 +28,9 @@ class GameEngine(object):
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.running = True
-        self.playing = False
         self.state = StateMachine()
+        self.settings = Settings()
+        self.gamerunning = False
         self.level = None
         self.story = None
         self.player = None
@@ -43,18 +44,13 @@ class GameEngine(object):
         if isinstance(event, QuitEvent):
             self.running = False
         elif isinstance(event, StateChangeEvent):
-            if not self.state.process(event.state):
-                self.evManager.Post(QuitEvent())
+            self.changestate(event.state)
         elif isinstance(event, PlayerMoveRequestEvent):
             self.movecharacter(self.player, event.direction)
         elif isinstance(event, CombatEvent):
             self.combatcharacters(event)
         elif isinstance(event, KillCharacterEvent):
             self.killcharacter(event.character)
-        elif isinstance(event, GameOverEvent):
-            self.endgame()
-        elif isinstance(event, GameStartEvent):
-            self.begingame(event)
 
     def run(self):
         """
@@ -72,19 +68,33 @@ class GameEngine(object):
             newTick = TickEvent()
             self.evManager.Post(newTick)
         
-    def begingame(self, event):
+    def begingame(self):
         """
         Begins a new game.
         event.story contains the campaign to play.
         """
         
-        if self.loadstory(event.story):
+        #TODO allow selecting the storyline, pass it in here
+        self.settings.storyname = '1-in-the-beginning'
+        if self.loadstory(self.settings.storyname):
             self.level = None
-            self.playing = True
             self.levelup()
-            # signal to play
-            self.evManager.Post(StateChangeEvent(STATE_PLAY))
+            self.gamerunning = True
+            if self.state.peek() != STATE_PLAY:
+                self.changestate(STATE_PLAY)
 
+    def endgame(self):
+        """
+        Makes the game over.
+        """
+        
+        while True:
+            popped = self.state.pop()
+            if not popped or popped == STATE_PLAY:
+                break
+        self.changestate(STATE_GAMEOVER)
+        self.gamerunning = False
+    
     def loadstory(self, storyname):
         """
         Loads the story data for the given story name.
@@ -146,9 +156,8 @@ class GameEngine(object):
         Moves the given character by offset direction (x, y)
         """
         
-        if not self.playing:
+        if not self.gamerunning:
             return False
-        
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
         # tile collisions
@@ -179,9 +188,8 @@ class GameEngine(object):
         Begin a combat round.
         """
         
-        if not self.playing:
+        if not self.gamerunning:
             return False
-        
         result = []
         a = event.attacker
         d = event.defender
@@ -203,12 +211,12 @@ class GameEngine(object):
         # death
         if a.health < 1:
             if a is self.player:
-                self.evManager.Post(GameOverEvent())
+                self.endgame()
             else:
                 self.evManager.Post(KillCharacterEvent(a))
         if d.health < 1:
             if d is self.player:
-                self.evManager.Post(GameOverEvent())
+                self.endgame()
             else:
                 self.evManager.Post(KillCharacterEvent(d))
 
@@ -219,17 +227,16 @@ class GameEngine(object):
 
         self.objects.remove(character)
 
-    def endgame(self):
+    def changestate(self, state):
         """
-        Makes the game over.
+        Process game state change events.
         """
-        
-        self.playing = False
-        while True:
-            popped = self.state.pop()
-            if not popped or popped == STATE_PLAY:
-                break
-        self.state.push(STATE_GAMEOVER)
+
+        if not self.state.process(state):
+            self.evManager.Post(QuitEvent())
+        if state == STATE_PLAY and not self.gamerunning:
+            # start a new game
+            self.begingame()
 
 
 class GameLevel(object):
@@ -320,3 +327,15 @@ class StateMachine(object):
         
         return state in self.statestack
         
+
+class Settings(object):
+    """
+    Stores persistant settings.
+    """
+
+    def __init__ (self):
+        """
+        
+        """
+
+        self.storyname = None
