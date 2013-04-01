@@ -38,38 +38,59 @@ Our game levels use a 32x32 tiled map. Each level fits on one screen. The dark, 
 
 ## Object Interactions
 
-Give map objects these properties to interact with the game.
-The action names only match the start, you can add any descriptive
-words after the name (you can't have two actions with the same name).
-You may also append any action name with the word 'once' for that effect.
+Give map objects these properties to interact with the game. The actions match the start of the action name, you can add descriptive words after the name (like 'Foo'), you can't have two actions with the same name.
 
-* message=text: 
-    print an in-game message.
+You may append an action name with the word 'once' for a one-time trigger. This applies to both walk-in actions and fingered actions.
 
-* fingers=name: 
-    action the named object. It's actions will
-    process, except for other finger actions. You can finger multiple
-    object with 'finger 1', 'finger that enemy', 'finger door'.
-    Object that share the same name will all be fingered too.
+The GID mentioned is the numbered index of the tileset image.
+
+### Walk-in actions
+
+_These trigger when bumping into an object._
+
+* message <foo once> = text 
+    print a message for the player.
+
+* fingers <foo once> = target name
+    process triggers on the named object.
+    objects with the same name will all get fingered.
+    fingered targets won't finger others (recursion prevention)
+
+* dialogue <foo once> = key
+    show a game dialogue screen with the text defined with the key in story.py.
+
+### Fingered target actions
+
+_These trigger objects being fingered._
+
+* on finger <foo once> = action
     
-* on_finger=action: 
-    where action is one of:
-    * give=value: give this object a new property
-        This simulates a terminal that has to be fingered for it
-        to work later, like a power switch or an unlock.
-    * transmute=id[,id..]: change this object tile to another.
-        A comma list of id's will rotate between each.
-        This simulates open/closing doors.
+    * give = newpropertyname=newpropertyvalue
+        give this object a new property.
+    * transmute = id <,gid..n>
+        change this object tile to another.
+        this affects it blocking characters and similar tests.
+        A comma list of gid's will rotate between each trigger.
+    * addframes = gid <,gid..n>
+        Add one or more frames to the object sprite's animation.
+        Note this does not change the object gid, it only adds sprites.
+    * killframe
+        removes the last sprite animation frame.
+    * replaceframes = gid <,gid..n>
+        replace the sprite animation image(s) with one or more images.
 
-* dialog=name: 
-    show the dialog text by name as defined in dialogs.def
+* dialog <foo once> = key
+    show the dialog text by key as defined in dialogs.def
 
-Examples:
-    + fingers_secret_door=transmute=2
-    + message=A secret door opens
-    change the tile to a non blockable one, and tell the player about it.
-    
-    + on_finger
+### Examples
+
+Change a locked door tile to a non blockable open door tile.
+
+1. switch object:
+    * fingers = locked door
+    * message = A secret door opens
+1. locked door object:
+    * on finger = transmute=2
 
 # Characters
 
