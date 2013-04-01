@@ -75,8 +75,7 @@ class GraphicalView(object):
             self.preparelevel()
             self.createsprites()
         elif isinstance(event, ShiftViewportEvent):
-            #self.viewport.center = event.xy
-            pass
+            self.adjustviewport(event)
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
         elif isinstance(event, KillCharacterEvent):
@@ -239,8 +238,22 @@ class GraphicalView(object):
                         sprite.addimage(self.tsp[int(gid)])
                 elif event.action == 'remove':
                     sprite.removeimage()
-        
     
+    def adjustviewport(self, event):
+        """
+        Auto center the viewport if the player gets too close to any edge.
+        """
+        
+        pass
+        ## number of tiles away from any edge before we shift
+        #shifttolerance = 2
+        #??? WTF
+        #if x < shifttolerance or \
+                #y < shifttolerance or \
+                #(paw - x) < shifttolerance or \
+                #(pah - y) < shifttolerance:
+            #self.viewport.center = event.xy
+
     def initialize(self):
         """
         Set up the pygame graphical display and loads graphical resources.

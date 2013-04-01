@@ -216,7 +216,7 @@
     <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="VIRUs" type="ai" gid="59" x="128" y="288"/>
+  <object name="VIRUs" type="ai" gid="59" x="64" y="352"/>
   <object name="cap 2" type="cap" gid="26" x="64" y="96">
    <properties>
     <property name="on finger" value="transmute=28"/>
@@ -244,11 +244,11 @@
    </properties>
   </object>
   <object name="Ice" type="ai" gid="58" x="64" y="416"/>
-  <object name="player" type="player" gid="57" x="192" y="256">
+  <object name="player" type="player" gid="57" x="384" y="256">
    <properties>
     <property name="exit" value=""/>
    </properties>
   </object>
-  <object name="VIRUs" type="ai" gid="59" x="128" y="224"/>
+  <object name="VIRUs" type="ai" gid="59" x="256" y="160"/>
  </objectgroup>
 </map>
