@@ -59,11 +59,42 @@ stats = {
             'frames': [],
             'fps': 1
             },
-    'switch 1': {
-            'frames': [30, 46],
-            'fps': 0.4
-            }
         }
+
+animations = {
+    41: {
+            'frames': [41, 42],
+            'fps': 0.2
+            },
+    43: {
+            'frames': [43, 44],
+            'fps': 0.3
+            },
+    45: {
+            'frames': [45, 46],
+            'fps': 0.4
+            },
+    47: {
+            'frames': [47, 48],
+            'fps': 0.5
+            },
+    49: {
+            'frames': [49, 50],
+            'fps': 0.2
+            },
+    51: {
+            'frames': [51, 52],
+            'fps': 0.3
+            },
+    53: {
+            'frames': [53, 54],
+            'fps': 0.4
+            },
+    55: {
+            'frames': [55, 56],
+            'fps': 0.5
+            },
+}
 
 # define story dialogue. shown by giving a level object the property:
 #   dialogue<_foo_once>=<name>

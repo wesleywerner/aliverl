@@ -167,35 +167,39 @@ class GraphicalView(object):
         self.spritegroup.empty()
         
         tmx = self.model.level.tmx
-        for grp in tmx.objectgroups:
-            for obj in grp:
-                # obj has a frames list.
-                # if this list is empty, use the obj.gid
-                frames = []
-                fps = 0
-                try:
-                    fps = obj.fps
-                    for f in obj.frames:
-                        frames.append(self.tsp[f])
-                except AttributeError as e:
-                    # this object has no frames or fps set
-                    pass
-                if len(frames) == 0:
-                    frames.append(self.tsp[obj.gid])
-                # tiled map editor has a bug where y position
-                # of map objects are one tile too large.
-                # fix with -tile_height
-                x = (obj.x * tmx.tile_width)
-                y = (obj.y * tmx.tile_height) - FIX_YOFFSET
-                s = Sprite(
-                        id(obj),
-                        Rect(x, y, 
-                            tmx.tile_width, 
-                            tmx.tile_height),
-                        frames,
-                        fps,
-                        self.spritegroup
-                        )
+        for obj in self.model.objects:
+            # apply any frames data from our story
+            if obj.gid in self.model.story.animations.keys():
+                [setattr(obj, k, v) 
+                for k, v in self.model.story.animations[obj.gid].items()]
+
+            # obj has a frames list.
+            # if this list is empty, use the obj.gid
+            frames = []
+            fps = 0
+            try:
+                fps = obj.fps
+                for f in obj.frames:
+                    frames.append(self.tsp[f])
+            except AttributeError as e:
+                # this object has no frames or fps set
+                pass
+            if len(frames) == 0:
+                frames.append(self.tsp[obj.gid])
+            # tiled map editor has a bug where y position
+            # of map objects are one tile too large.
+            # fix with -tile_height
+            x = (obj.x * tmx.tile_width)
+            y = (obj.y * tmx.tile_height) - FIX_YOFFSET
+            s = Sprite(
+                    id(obj),
+                    Rect(x, y, 
+                        tmx.tile_width, 
+                        tmx.tile_height),
+                    frames,
+                    fps,
+                    self.spritegroup
+                    )
 
     
     def movesprite(self, event):
