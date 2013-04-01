@@ -2,155 +2,10 @@
 <map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" trans="ff00ff" width="256" height="832"/>
-  <tile id="0">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="1">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="2">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="3">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="4">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="5">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="6">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="8">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="9">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="10">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="11">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="12">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="16">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="17">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="18">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="19">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="20">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="21">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="22">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="24">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="25">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="29">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="30">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="37">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="38">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="45">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="46">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="53">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
-  <tile id="54">
-   <properties>
-    <property name="blocks" value="1"/>
-   </properties>
-  </tile>
  </tileset>
  <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJyVUssOgzAMy3gcUMt2YZPaw/b/f0kqGs0KTQOWLIeAcVolEtHAfDgcQAtXOhCqZuaroxoLM4G/582OPzKnylGp1GX2GfwBNNAZ2fi255c5qKrc0dLI/zX8eg7d9/Itfyv/jt/L/9Z6o/9+FL4hH5+tfAut9+jH3A/zacwRoTer/1yBnAP92PM4QV12Evf/LmT/5ezJUItyJzsfGwXh
+   eJyVUkEOgCAMmwoHA+pFD3Lx/78UIovNZCBNmsKwdpB5IhojhwZH0MSFHrisIXKrqMQceYK/5g0Nv480mZNQXqfeLfgdqKMvgvJtzc99UFZ+o7mQfxX8sg9Zb+Vr/lJ+j/9v/k7vfCQekI97za+hdI5+mbsqfXioWfGfP+B7oB9rLRpYp5nE+e8Fzz/f/VRUI7/JDeZYBbo=
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
@@ -161,7 +16,7 @@
     <property name="on finger 3" value="give=message once=POP! goes the capacitor. What is going on here?"/>
    </properties>
   </object>
-  <object name="switch 1" type="switch" gid="46" x="224" y="256">
+  <object name="switch 1" type="switch" gid="49" x="224" y="256">
    <properties>
     <property name="fingers once" value="term hello"/>
     <property name="message once" value="The larger terminal across from you blinks alive..."/>
@@ -204,10 +59,10 @@
     <property name="exit" value=""/>
    </properties>
   </object>
-  <object name="term hello" type="term" gid="31" x="96" y="256">
+  <object name="term hello" type="term" gid="52" x="96" y="256">
    <properties>
     <property name="on finger 1" value="give=dialog=L1 in 1,L1 in 2,L1 in 3,L1 in 4,L1 in 5"/>
-    <property name="on finger 2" value="replaceframes=31,47"/>
+    <property name="on finger 2" value="transmute=55"/>
     <property name="on finger 3" value="give=fingers door once=door 1"/>
    </properties>
   </object>
@@ -222,7 +77,7 @@
     <property name="on finger" value="transmute=28"/>
    </properties>
   </object>
-  <object name="switch exit cap" type="switch" gid="54" x="64" y="32">
+  <object name="switch exit cap" type="switch" gid="45" x="64" y="32">
    <properties>
     <property name="fingers" value="cap 2"/>
     <property name="message" value="Pop! That was a satisfying sound."/>
@@ -238,17 +93,25 @@
     <property name="on finger" value="transmute=15,7"/>
    </properties>
   </object>
-  <object name="switch 2" type="switch" gid="22" x="192" y="384">
+  <object name="switch 2" type="switch" gid="41" x="192" y="384">
    <properties>
     <property name="fingers" value="door 2"/>
    </properties>
   </object>
   <object name="Ice" type="ai" gid="58" x="64" y="416"/>
-  <object name="player" type="player" gid="57" x="384" y="256">
+  <object name="player" type="player" gid="57" x="160" y="256">
    <properties>
     <property name="exit" value=""/>
    </properties>
   </object>
   <object name="VIRUs" type="ai" gid="59" x="256" y="160"/>
+  <object name="term blue big h" gid="43" x="256" y="512"/>
+  <object name="term blue small h" gid="41" x="224" y="512"/>
+  <object name="term gbv" gid="55" x="0" y="256"/>
+  <object name="term gsv" gid="53" x="0" y="288"/>
+  <object name="term blue small h" gid="41" x="288" y="512"/>
+  <object name="term blue big h" gid="43" x="320" y="512"/>
+  <object name="term gbv" gid="55" x="0" y="320"/>
+  <object name="term gsv" gid="53" x="0" y="352"/>
  </objectgroup>
 </map>

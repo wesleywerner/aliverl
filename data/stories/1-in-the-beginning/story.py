@@ -92,7 +92,7 @@ animations = {
             },
     55: {
             'frames': [55, 56],
-            'fps': 0.5
+            'fps': 5
             },
 }
 

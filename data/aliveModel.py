@@ -293,15 +293,7 @@ class GameEngine(object):
                             # use first index
                             transmute_id = int(options[0])
                     obj.gid = transmute_id
-                    self.evManager.Post(UpdateObjectGID(obj, [obj.gid]))
-                elif f_action[0] == 'addframes':
-                    self.evManager.Post(UpdateObjectGID(obj, 
-                                        f_action[1].split(','), 'add'))
-                elif f_action[0] == 'replaceframes':
-                    self.evManager.Post(UpdateObjectGID(obj, 
-                                        f_action[1].split(','), 'replace'))
-                elif f_action[0] == 'killframe':
-                    self.evManager.Post(UpdateObjectGID(obj, None, 'remove'))
+                    self.evManager.Post(UpdateObjectGID(obj, obj.gid))
 
             # once shots actions (append once to any action)
             if action.endswith('once'):

@@ -157,6 +157,14 @@ class GraphicalView(object):
                         self.levelcanvas.blit(tile, 
                                     (x * tmx.tile_width, y * tmx.tile_height))
 
+    def getspritesettings(self, gid):
+        """
+        Apply sprite settings to an object from the story animations setting.
+        """
+        
+        if gid in self.model.story.animations.keys():
+            return self.model.story.animations[gid]
+    
     def createsprites(self):
         """
         Create all the sprites that represent all level objects.
@@ -168,13 +176,9 @@ class GraphicalView(object):
         
         tmx = self.model.level.tmx
         for obj in self.model.objects:
-            # apply any frames data from our story
-            if obj.gid in self.model.story.animations.keys():
-                [setattr(obj, k, v) 
-                for k, v in self.model.story.animations[obj.gid].items()]
-
-            # obj has a frames list.
-            # if this list is empty, use the obj.gid
+            ssett = self.getspritesettings(obj.gid)
+            if ssett:
+                [setattr(obj, k, v) for k, v in ssett.items()]
             frames = []
             fps = 0
             try:
@@ -231,17 +235,15 @@ class GraphicalView(object):
         oid = id(event.obj)
         for sprite in self.spritegroup:
             if sprite.name == oid:
-                print('TEST', event.action, event.gid)
-                if event.action == 'replace':
-                    while sprite.removeimage():
-                        pass
-                    for gid in event.gid:
-                        sprite.addimage(self.tsp[int(gid)])
-                elif event.action == 'add':
-                    for gid in event.gid:
-                        sprite.addimage(self.tsp[int(gid)])
-                elif event.action == 'remove':
-                    sprite.removeimage()
+                ssett = self.getspritesettings(event.gid)
+                if ssett:
+                    sprite.clear()
+                    sprite.setfps(ssett['fps'])
+                    for newspr in ssett['frames']:
+                        sprite.addimage(self.tsp[newspr])
+                else:
+                    sprite.clear()
+                    sprite.addimage(self.tsp[event.gid])
     
     def adjustviewport(self, event):
         """
@@ -305,8 +307,6 @@ class Sprite(pygame.sprite.Sprite):
         self._last_update = 0
         self._frame = 0
         self._hasframes = len(self._images) > 1
-
-        # set our first image.
         self.image = self._images[0]
     
     def addimage(self, image):
@@ -318,18 +318,35 @@ class Sprite(pygame.sprite.Sprite):
         self._hasframes = len(self._images) > 1
         if len(self._images) == 1:
             self.image = self._images[0]
-
-    def removeimage(self):
+    
+    def setfps(self, fps):
         """
-        Remove the last image frame.
-        You cannot remove the first frame.
+        Set a new fps value for the sprite.
         """
         
-        if len(self._images) > 0:
+        if fps <= 0: fps = 1
+        self._delay = 1000 / fps
+        
+    #def removeimage(self):
+        #"""
+        #Remove the last image frame.
+        #You cannot remove the first frame.
+        #"""
+        
+        #if len(self._images) > 0:
+            #del self._images[-1]
+            #self._hasframes = len(self._images) > 1
+            #return True
+        #return False
+
+    def clear(self):
+        """
+        Clear sprite images
+        """
+        
+        while len(self._images) > 0:
             del self._images[-1]
-            self._hasframes = len(self._images) > 1
-            return True
-        return False
+        self._hasframes = False
 
     def update(self, t):
         """
