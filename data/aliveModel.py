@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 from tmxparser import TMXParser
 from eventmanager import *
 
@@ -180,13 +181,12 @@ class GameEngine(object):
                 # test for any triggers on this object.
                 # this will happen if it blocks us (terminals)
                 # or not (touch plates). even AI can have triggers.
-                if not self.processtriggers(obj):
+                if (character is self.player) and (not self.processtriggers(obj)):
                     return False
-                # AI's always block, in fact, it means combat!
-                if obj.type == 'ai':
-                    # of course ai don't fight each other.
-                    # the code works but in this world they all fight you.
-                    if obj is self.player or character is self.player:
+                # these objects means combat!
+                if obj.type in ('ai', 'player'):
+                    # only combat if one or the other is the player
+                    if (obj is self.player) or (character is self.player):
                         self.evManager.Post(CombatEvent(character, obj))
                     return False
                 elif obj.gid in self.story.blocklist:
@@ -200,8 +200,22 @@ class GameEngine(object):
         character.x, character.y = (newx, newy)
         # heal turn
         self.healcharacters()
+        # ai move turn
+        self.movecomputer()
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
 
+    def movecomputer(self):
+        """
+        Moves all the ai characters.
+        """
+        
+        for obj in [e for e in self.objects if e.type == 'ai' and not e.dead]:
+            #TODO implement intelligent ai movement
+            if random.randint(0, 1):
+                x = random.randint(-1, 1)
+                y = random.randint(-1, 1)
+                self.movecharacter(obj, (x, y))
+    
     def healcharacters(self):
         """
         Each turn characters gets a chance to heal.
