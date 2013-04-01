@@ -150,7 +150,7 @@ class MessageEvent(Event):
         
         self.name = 'Message event'
         if type(messages) is str:
-            self.messages = list(messages)
+            self.messages = [messages]
         elif type(messages) is list:
             self.messages = messages
         
