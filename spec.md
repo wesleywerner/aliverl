@@ -1,40 +1,8 @@
 # Alive, the roguelike
 
-# Game level
-
 Each level is a BBS computer system you visit.
 
 Our game levels use a 32x32 tiled map. Each level fits on one screen. The dark, minimal and make use of scanlines, patterened dots and subtle glow. The main color theme is blue, with green red and yellow hilighting buttons or events.
-
-## Level tiles
-
-
-
-* Walls
-* Gates
-* Terminals. Tile attributes handle these events:
-    * Trigger doors with a challenge roll.
-    * Display story related messages.
-* Exit leads to the next level.
-* Code bank to upgrade your abilities. One-shot per level.
-
-## Tiled map editor notes
-
-* Place static map tiles on a Tile Layer.
-* Place AI, player, doors and such on an Object Layer.
-* Set wall tiles "blocks" bit property in the Tilesets picker.
-    This applies to both map tiles and Objects that use these tiles.
-* Set individual Object properties:
-    * name: used to target when fingering. can have duplicates.
-    * type: door (always blocks), switch. 
-    * fingers: also fingers_1..N. 
-            points to another object to action. will action all 
-            who share the same name.
-    * on_finger: also on_finger_1..N. values include:
-            * transmute=tile_id[, rotate_tile_id, ..N]
-
-
-# Gameplay
 
 ## Object Interactions
 
@@ -125,7 +93,7 @@ It becomes a npc (ambush) or item (rewards) spawner.
 
 # Game stories
 
-Stories are like campaigns the player can enjoy. They consist of multiple levels with story dialogue. Each story defines it's own tileset and character stat definitions.
+Stories are like campaigns the player can enjoy. They consist of multiple levels with story dialogue. Each story defines it's own tileset and character stats.
 
 A story lives in the directory "./data/stories/<your choice>/", and the story file is named "story.py"
 
@@ -169,6 +137,21 @@ Story files use valid python syntax.
                 }
             }
 ~~~
+
+## Story levels
+
+Levels are built with the [2D Tiled map editor](http://www.mapeditor.org). This is the process of creating maps to play with Alive.
+
+### Tileset
+
+Each map has a tileset, an image with many 32x32 sized blocks of tile images. Each level can have it's own tileset image, or share the same image. This is a PNG file, it should not have a transparency layer, instead all magenta pixels (#FF00FF) are rendered transparent. The image size _must_ be in multiples of 32.
+
+
+
+* Place static map tiles on a Tile Layer.
+* Place AI, player, doors and such on an Object Layer.
+
+
 
 The filename must be story.py, it lives in data/stories/<your choice>/story.py.
 
