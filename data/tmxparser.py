@@ -75,9 +75,14 @@ class Tileset(ObjectHelper):
 
     def __init__ (self, tag):
         self.source = tag.attrib['source']
-        self.trans = tag.attrib['trans']
         self.width = int(tag.attrib['width'])
         self.height = int(tag.attrib['height'])
+        if 'trans' in tag.attrib.keys():
+            self.trans = tag.attrib['trans']
+        else:
+            self.trans = 'ff00ff'
+            print('no transparency key set for this tmx map. Using magenta.')
+            
         
 
 class Tilelayer(ObjectHelper):
