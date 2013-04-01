@@ -27,13 +27,14 @@ class GraphicalView(object):
         
         Attributes:
         isinitialized (bool): pygame is ready to draw.
-        screen (pygame.Surface): the screen surface.
-        clock (pygame.time.Clock): keeps the fps constant.
-        smallfont (pygame.Font): a small font.
-        largefont (pygame.Font): a larger font.
-        levelcanvas (pygame.Surface): a rendering of the level tiles.
-        objectcanvas (pygame.Surface): a rendering of the level objects.
-        viewport (pygame.Rect): the viewable play area.
+        screen (Surface): the screen surface.
+        clock (Clock): keeps the fps constant.
+        smallfont (Font): a small font.
+        largefont (Font): a larger font.
+        levelcanvas (Surface): a rendering of the level tiles.
+        objectcanvas (Surface): a rendering of the level objects.
+        playarea (Rect): location on screen to draw gameplay.
+        viewport (Rect): which portion of the game map we are looking at.
 
         Note: The viewport defines which area of the level we see as the 
         play area. a smaller viewport will render correctly, as long as
@@ -52,6 +53,7 @@ class GraphicalView(object):
         self.largefont = None
         self.levelcanvas = None
         self.objectcanvas = None
+        self.playarea = None
         self.viewport = None
         self.tilemapdata = None
         self.spritegroup = None
@@ -107,11 +109,13 @@ class GraphicalView(object):
         elif state == aliveModel.STATE_MENU:
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
-            self.screen.blit(self.levelcanvas, 
-                            (-self.viewport.x, -self.viewport.y))
+            self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
             # update sprites
+            self.objectcanvas.fill(color.magenta)
             self.spritegroup.update(pygame.time.get_ticks())
-            self.spritegroup.draw(self.screen)
+            self.spritegroup.draw(self.objectcanvas)
+            self.screen.blit(self.objectcanvas, self.playarea)
+            
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
                 sometext = 'You have died :('
@@ -140,6 +144,9 @@ class GraphicalView(object):
         if not self.levelcanvas:
             self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
             self.levelcanvas.set_colorkey(color.magenta)
+        if not self.objectcanvas:
+            self.objectcanvas = pygame.Surface(self.playarea.size)
+            self.objectcanvas.set_colorkey(color.magenta)
         self.levelcanvas.fill(color.magenta)
         for y in range(tmx.height):
             for x in range(tmx.width):
@@ -241,6 +248,7 @@ class GraphicalView(object):
         result = pygame.init()
         pygame.font.init()
         pygame.display.set_caption('Alive')
+        self.playarea = pygame.Rect(800 - 512, 0, 512, 512)
         self.screen = pygame.display.set_mode((800, 512))
         self.viewport = pygame.Rect(0, 0, 512, 512)
         self.clock = pygame.time.Clock()
