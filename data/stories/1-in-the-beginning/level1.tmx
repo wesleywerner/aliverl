@@ -244,10 +244,11 @@
    </properties>
   </object>
   <object name="Ice" type="ai" gid="58" x="64" y="416"/>
-  <object name="player" gid="57" x="32" y="96">
+  <object name="player" type="player" gid="57" x="192" y="256">
    <properties>
     <property name="exit" value=""/>
    </properties>
   </object>
+  <object name="VIRUs" type="ai" gid="59" x="128" y="224"/>
  </objectgroup>
 </map>

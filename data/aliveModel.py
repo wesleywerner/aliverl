@@ -39,6 +39,7 @@ class GameEngine(object):
         self.player = None
         self.objects = None
         self.dialogue = []
+        self.turn = None
 
     def notify(self, event):
         """
@@ -81,6 +82,7 @@ class GameEngine(object):
         #TODO allow selecting the storyline, pass it in here
         self.settings.storyname = '1-in-the-beginning'
         if self.loadstory(self.settings.storyname):
+            self.turn = 0
             self.level = None
             self.levelup()
             self.gamerunning = True
@@ -141,19 +143,23 @@ class GameEngine(object):
         
         self.player = None
         self.objects = []
+        defaultproperties = {'dead':False}
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
+                # set default properties
+                [ setattr(obj, k, v) for k, v in defaultproperties.items() ]
                 self.objects.append(obj)
                 objname = obj.name.lower()
                 # remember the player object
-                if objname == 'player':
+                if obj.type == 'player':
                     self.player = obj
-                    trace.write('player is at (%s, %s)' % (obj.x, obj.y))
                 if objname in self.story.stats.keys():
                     # apply all properties from story to this object
                     [setattr(obj, k, v) 
                         for k, v in self.story.stats[objname].items()
                         ]
+        if self.player is None:
+            trace.error('there is no player character set on this map. Good luck!')
 
     def movecharacter(self, character, direction):
         """
@@ -164,6 +170,10 @@ class GameEngine(object):
             return False
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
+        
+        # increase turn 
+        self.turn += 1
+        
         # other object collision detection
         for obj in self.objects:
             if obj.x == newx and obj.y == newy:
@@ -188,7 +198,27 @@ class GameEngine(object):
                 return False
         # accept movement
         character.x, character.y = (newx, newy)
+        # heal turn
+        self.healcharacters()
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
+
+    def healcharacters(self):
+        """
+        Each turn characters gets a chance to heal.
+        """
+
+        for npc in [e for e in self.objects
+                            if e.type in ('player', 'ai')
+                            and not e.dead]:
+            # health
+            if npc.health < npc.maxhealth:
+                if self.turn % npc.healrate == 0:
+                    npc.health += 1
+                    trace.write('%s heals to %s hp' % (npc.name, npc.health))
+            # mana
+            if npc.mana < npc.maxmana:
+                if self.turn % npc.manarate == 0:
+                    npc.mana += 1
     
     def processtriggers(self, obj, isfingered=False):
         """
