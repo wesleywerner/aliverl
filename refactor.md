@@ -7,7 +7,7 @@ Existing code files will be restructured.
 
 * game.py
 * character.py
-* _objects.py_
+* objects.py
 * states.py
 * _stats.py_
 * combat.py
