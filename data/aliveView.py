@@ -207,7 +207,7 @@ class GraphicalView(object):
         """
         Remove a character from play and from the sprite list.
         """
-        match = [e for e in self.spritegroup if e.name == mapobject]
+        match = [e for e in self.spritegroup if e.name == id(mapobject)]
         if match:
             self.spritegroup.remove(match[0])
     
