@@ -75,7 +75,8 @@ class GraphicalView(object):
             self.preparelevel()
             self.createsprites()
         elif isinstance(event, ShiftViewportEvent):
-            self.viewport.center = event.xy
+            #self.viewport.center = event.xy
+            pass
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
         elif isinstance(event, KillCharacterEvent):
@@ -114,7 +115,7 @@ class GraphicalView(object):
             self.objectcanvas.fill(color.magenta)
             self.spritegroup.update(pygame.time.get_ticks())
             self.spritegroup.draw(self.objectcanvas)
-            self.screen.blit(self.objectcanvas, self.playarea)
+            self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
@@ -145,7 +146,7 @@ class GraphicalView(object):
             self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
             self.levelcanvas.set_colorkey(color.magenta)
         if not self.objectcanvas:
-            self.objectcanvas = pygame.Surface(self.playarea.size)
+            self.objectcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
             self.objectcanvas.set_colorkey(color.magenta)
         self.levelcanvas.fill(color.magenta)
         for y in range(tmx.height):
@@ -248,9 +249,10 @@ class GraphicalView(object):
         result = pygame.init()
         pygame.font.init()
         pygame.display.set_caption('Alive')
-        self.playarea = pygame.Rect(800 - 512, 0, 512, 512)
-        self.screen = pygame.display.set_mode((800, 512))
+        windowsize = pygame.Rect(0, 0, 800, 512)
         self.viewport = pygame.Rect(0, 0, 512, 512)
+        self.playarea = pygame.Rect((windowsize.w - self.viewport.w, 0), self.viewport.size)
+        self.screen = pygame.display.set_mode(windowsize.size)
         self.clock = pygame.time.Clock()
         self.spritegroup = pygame.sprite.Group()
         # load resources

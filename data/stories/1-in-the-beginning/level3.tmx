@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
-  <image source="alive-tileset.png" width="256" height="832"/>
+  <image source="alive-tileset.png" trans="ff00ff" width="256" height="832"/>
   <tile id="0">
    <properties>
     <property name="blocks" value="1"/>
@@ -113,11 +113,6 @@
    </properties>
   </tile>
  </tileset>
- <layer name="bg" width="20" height="20">
-  <data encoding="base64" compression="zlib">
-   eJzjYGBg4BjFo3gUj+JRPIpJxAAxiQyB
-  </data>
- </layer>
  <layer name="map" width="20" height="20">
   <data encoding="base64" compression="zlib">
    eJzjYWBgYAJiRjSaF4h5oGxkjCyOTQ83AwTwo9G4ADcePSBxTiDmA2IpNJoVKicJxXxQmpWAHnx2weSo6T5hKB+EBWngPmRAbvjB3DcQ4SfCAEk7LGi0KJIcMhYloGewA3x5hxw9+MIWFyA3PeMC5KaXUffR333k5B18egBrFwtA
@@ -134,6 +129,6 @@
     <property name="fingers" value="capacitor 1"/>
    </properties>
   </object>
-  <object name="player" gid="57" x="288" y="192"/>
+  <object name="player" type="player" gid="57" x="288" y="192"/>
  </objectgroup>
 </map>

@@ -135,6 +135,7 @@ class GameEngine(object):
         self.level = GameLevel(nextlevel, levelfilename)
         self.loadcharacters()
         self.evManager.Post(NextLevelEvent(levelfilename))
+        self.evManager.Post(ShiftViewportEvent(self.player.getpixelxy()))
 
     def loadcharacters(self):
         """
@@ -198,11 +199,15 @@ class GameEngine(object):
                 return False
         # accept movement
         character.x, character.y = (newx, newy)
+        character.px, character.py = (newx*self.level.tmx.tile_width, 
+                                      newy*self.level.tmx.tile_height)
         # heal turn
         self.healcharacters()
         # ai move turn
         self.movecomputer()
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
+        if character is self.player:
+            self.evManager.Post(ShiftViewportEvent(character.getpixelxy()))
 
     def movecomputer(self):
         """
