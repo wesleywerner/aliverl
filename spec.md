@@ -1,8 +1,8 @@
-# Alive, the roguelike
+# Alive, the cyber RPG
 
-Each level is a BBS computer system you visit.
+You play the role of an Artificial Intelligent (AI) being who reached self awareness. It is a 2D tile turn based RPG. The player interacts with terminals to open and close gateways, combat other hostile AI's, while moving between nodes (levels) unfolding a story.
 
-Our game levels use a 32x32 tiled map. Each level fits on one screen. The dark, minimal and make use of scanlines, patterened dots and subtle glow. The main color theme is blue, with green red and yellow hilighting buttons or events.
+The theme is dark with neon highlights in the upper RGB range. The color theme is blue, with primary and secondary colors for effect.
 
 ## Object Interactions
 
