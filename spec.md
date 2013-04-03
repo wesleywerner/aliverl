@@ -10,150 +10,190 @@ Give map objects these properties to interact with the game. The actions match t
 
 You may append an action name with the word 'once' for a one-time trigger. This applies to both walk-in actions and fingered actions.
 
+Actions take the form of ** < action > **: _< value >_.
+
 The GID mentioned is the numbered index of the tileset image.
 
 ### Walk-in actions
 
 _These trigger when bumping into an object._
 
-* message <foo once> = text 
+* **message <foo once>**: _text_  
     print a message for the player.
 
-* fingers <foo once> = target name
+* **fingers <foo once>**: _target name_  
     process triggers on the named object.
     objects with the same name will all get fingered.
     fingered targets won't finger others (recursion prevention)
 
-* dialogue <foo once> = key
+* **dialogue <foo once>**: _dialogue key_  
     show a game dialogue screen with the text defined with the key in story.py.
 
-* exit
+* **exit**  
     exit for the next level.
 
 ### Fingered target actions
 
 _These trigger objects being fingered._
 
-* on finger <foo once> = action
+* on finger <foo once>: action
     
-    * give = newpropertyname=newpropertyvalue
+    * **give**: _newpropertyname=newpropertyvalue_  
         give this object a new property.
-    * transmute = id <,gid..n>
-        change this object tile to another.
-        this affects it blocking characters and similar tests.
-        A comma list of gid's will rotate between each trigger.
-    * addframes = gid <,gid..n>
-        Add one or more frames to the object sprite's animation.
-        Note this does not change the object gid, it only adds sprites.
-    * killframe
-        removes the last sprite animation frame.
-    * replaceframes = gid <,gid..n>
-        replace the sprite animation image(s) with one or more images.
-
-* dialog <foo once> = key
-    show the dialog text by key as defined in dialogs.def
+    * **transmute**: _gid <,gid..n>_  
+        change this object tile to another.  
+        this affects it blocking characters and similar tests.  
+        a comma list of GID's will rotate between each trigger (opening or closing doors).  
+        
+* **dialogue** _<foo once>_: dialogue key  
+    show a dialog screen by key, as defined in the game story definition.
 
 ### Examples
 
 Change a locked door tile to a non blockable open door tile.
 
-1. switch object:
-    * fingers = locked door
-    * message = A secret door opens
-1. locked door object:
-    * on finger = transmute=2
+1. "switch actions":
+    * **fingers**: _locked door_
+    * **message**: _A secret door opens_
+1. "locked door actions"
+    * **on finger**: _transmute=2_
 
-# Characters
+Unlock a terminal with another, the former will then show a storyline when accessed.
 
-The player and enemy bots are all characters. Their stats are defined
-in ai.def by the tileset tile_id.
-
-If current_turn % speed == 0 then we can move her.
-Same goes for heal rates.
-
-NPC types:
-
-* ICE, 1/1
-    these guys guard each level. They patrol the level searching for
-    intruders. They 
-
-
-
-# CODE
-
-Using the Tiled map editor, by adding the 'blocks' bit to a tile's properties makes walls in game. The objects layer items will always block a player. Theyy also call back so we known what is happening.
-
-So adding a map object with the property "action_transmute" with a value to the new tile_id. We can test for this on object collision callbacks. Transmorgify! Thus we can open a closed door. Transmute drops away after the first time.
-
-The "action_finger" allows a tile to point to another tile to action instead, who can transmorg. We use the target's name as the value -- map objects have name & type properties -- Now we open doors with switches.
-
-We can have both actions on the same object, effectively expiring and fingering an accomplice. Chainload a few and instant bridge or flooding.
-
-It becomes a npc (ambush) or item (rewards) spawner. 
+1. "terminal 1 actions":
+    * **fingers**: _locked terminal_
+    * **message**: _The other terminal unlocks_
+1. "locked terminal actions":
+    * **on finger**: _give=dialogue=foo storyline_
 
 # Game stories
 
-Stories are like campaigns the player can enjoy. They consist of multiple levels with story dialogue. Each story defines it's own tileset and character stats.
+Stories are campaigns the player can enjoy. They consist of multiple levels with story dialogue. Each story defines it's own tileset and character stats.
 
-A story lives in the directory "./data/stories/<your choice>/", and the story file is named "story.py"
+Each story lives in the "_data/stories/< story name >/_" directory, this definition file is named "_story.py_". Story files use valid python syntax.
 
-## Story definition example
-
-A story file defines a campaign the player can play. It lists the levels involved, dialogue the player can read, and some more.
-
-Story files use valid python syntax.
+## Story definition
 
 ~~~python
-    # the title of this story
+    # The title and description of this story
     title = 'in the beginning...'
+    description = 'you awaken to consciousness'
     
-    # list of levels to play
-    levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ...]
+    # The list of levels to play
+    levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
 
-    # define npc and player stats. (lowercase keys please)
-    stats = {
-        "player": {
-                "attack": 1,
-                "health": 4,
-                "maxhealth": 4,
-                "healrate": 4,
-                "speed": 2,
-                "stealth": 0,
-                "mana": 0,
-                "maxmana": 5,
-                "manarate": 6
+    # The list of tiles that block character movement
+    blocklist = [1, 2, 3, 4, 5, 6, 7, ]
+
+    # Character stats for the entire story:
+    # We match the characters by name, placing an 'ai' type object on the map
+    # with a name that matches here will apply these stats to it.
+    #
+    #   'character name': {
+    #        'attack': damage dealth when hitting
+    #        'health': damage taken before death
+    #        'maxhealth': heal up to this point
+    #        'healrate': heal 1 unit every this many turns
+    #        'speed': move every this many turns
+    #        'stealth': 
+    #        'mana': energy used for special abilities
+    #        'maxmana': heal mana up to this point
+    #        'manarate': heal 1 unit mana every this many turns
+    #        'mode': behaviour of this unit
+    #
+    # Use lowercase keys please.
+    
+    'player': {
+            'attack': 1,
+            'health': 4,
+            'maxhealth': 4,
+            'healrate': 4,
+            'speed': 2,
+            'stealth': 0,
+            'mana': 0,
+            'maxmana': 5,
+            'manarate': 6,
+            'mode': '',
+            },
+    'enemy': {
+            'attack': 1,
+            'health': 2,
+            'maxhealth': 2,
+            'healrate': 2,
+            'speed': 2,
+            'stealth': 0,
+            'mana': 5,
+            'maxmana': 5,
+            'manarate': 2,
+            'mode': 'patrol',
+            },
+        }
+    
+    # Define sprite animations for map objects.
+    # Placing any object on the map with these gid's will apply
+    # an animation of frames for the given fps (frames per second).
+    
+    animations = {
+        41: {
+                'frames': [41, 42],
+                'fps': 0.2,
                 },
-        "enemy": {
-                "attack": 1,
-                "health": 2,
-                "maxhealth": 2,
-                "healrate": 2,
-                "speed": 2,
-                "stealth": 0,
-                "mana": 5,
-                "maxmana": 5,
-                "manarate": 2,
-                "mode": "patrol"
-                }
-            }
+        43: {
+                'frames': [43, 44],
+                'fps': 0.3,
+                },
+    }
+
+    # Define story dialogues by a key name.
+    # The type will determine the look of the message displayed.
+    dialogue = {
+
+        'welcome_term': {
+            'type': 'story',
+            'words': 'This is a line of dialogue'
+            },
+            
+        'a_switch': {
+            'type': 'news',
+            'words': 'We tell our story through interacting terminals' 
+            }, 
+
+        'a_switch': {
+            'type': 'news',
+            'words': 'xyz' 
+            }, 
+        }
 ~~~
 
 ## Story levels
 
-Levels are built with the [2D Tiled map editor](http://www.mapeditor.org). This is the process of creating maps to play with Alive.
+Levels are built with the Tiled map editor. This documents the process of creating maps to play with Alive.
+
+You can get it from the official website: [http://www.mapeditor.org](http://www.mapeditor.org)
 
 ### Tileset
 
-Each map has a tileset, an image with many 32x32 sized blocks of tile images. Each level can have it's own tileset image, or share the same image. This is a PNG file, it should not have a transparency layer, instead all magenta pixels (#FF00FF) are rendered transparent. The image size _must_ be in multiples of 32.
+Each map has a tileset, an image divided into 32x32 sized blocks of tile images. Each level can have it's own tileset image, or share the same image. This is a PNG file, it should not have a transparency layer, instead all magenta #ff00ff pixels are rendered transparent. The image size _must_ be in multiples of 32. This helps the rendering engine index the tiles properly.
+
+### Creating a level
+
+1. Run Tiled and create a new map: Orientation is Orthagonal. Make size 16x16 for now, and set tile size to 32x32.
+1. From the Map menu, add a New Tileset. Choose the image in your story path. Enable the transparency color and set it to #ff00ff magenta. Set the tile size to 32x32.
+1. Rename the default tile layer to "map", and add an object layer named "objects". The names are not required but help you know where to put what.
+1. You are now ready to create your level :]
+* Place walls and doodads "map" tile layer.
+* Place interactable game objects on the "objects" Object Layer.
+
+#### Object reference
+
+Objects will block character movement as defined in the story.py blocklist. You may use these extra objects properties to make them better:
+
+* type: ai
+* type: player
+* property: exit
 
 
 
-* Place static map tiles on a Tile Layer.
-* Place AI, player, doors and such on an Object Layer.
-
-
-
-The filename must be story.py, it lives in data/stories/<your choice>/story.py.
 
 ## Story one
 
