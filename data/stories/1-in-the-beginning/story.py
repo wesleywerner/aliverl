@@ -28,8 +28,6 @@ stats = {
             'maxmana': 5,
             'manarate': 6,
             'mode': '',
-            'frames': [],
-            'fps': 0
             },
     'ice': {
             'attack': 1,
@@ -42,8 +40,6 @@ stats = {
             'maxmana': 5,
             'manarate': 2,
             'mode': 'patrol',
-            'frames': [],
-            'fps': 0
             },
     'virus': {
             'attack': 1,
@@ -56,43 +52,41 @@ stats = {
             'maxmana': 5,
             'manarate': 2,
             'mode': 'patrol',
-            'frames': [],
-            'fps': 1
             },
         }
 
 animations = {
     41: {
             'frames': [41, 42],
-            'fps': 0.2
+            'fps': 0.2,
             },
     43: {
             'frames': [43, 44],
-            'fps': 0.3
+            'fps': 0.3,
             },
     45: {
             'frames': [45, 46],
-            'fps': 0.4
+            'fps': 0.4,
             },
     47: {
             'frames': [47, 48],
-            'fps': 0.5
+            'fps': 0.5,
             },
     49: {
             'frames': [49, 50],
-            'fps': 0.2
+            'fps': 0.2,
             },
     51: {
             'frames': [51, 52],
-            'fps': 0.3
+            'fps': 0.3,
             },
     53: {
             'frames': [53, 54],
-            'fps': 0.4
+            'fps': 0.4,
             },
     55: {
             'frames': [55, 56],
-            'fps': 5
+            'fps': 0.6,
             },
 }
 
