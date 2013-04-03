@@ -86,7 +86,7 @@ class GraphicalView(object):
     def widgetclick(self, context, code):
         """
         A handler that gets called by UI widgets.
-        #TODO UI WIDGET IMPLEMENTATION
+        #TODO ui widget implementation
         """
         
         pass
@@ -251,14 +251,6 @@ class GraphicalView(object):
         """
         
         pass
-        ## number of tiles away from any edge before we shift
-        #shifttolerance = 2
-        #??? WTF
-        #if x < shifttolerance or \
-                #y < shifttolerance or \
-                #(paw - x) < shifttolerance or \
-                #(pah - y) < shifttolerance:
-            #self.viewport.center = event.xy
 
     def initialize(self):
         """
