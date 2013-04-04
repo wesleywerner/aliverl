@@ -145,19 +145,12 @@ class MessageEvent(Event):
     Sends a game message for the user to read.
     """
     
-    def __init__(self, messages):
-        """
-        message can be a single string, or a list of them.
-        """
-        
+    def __init__(self, message):
         self.name = 'Message event'
-        if type(messages) is str:
-            self.messages = [messages]
-        elif type(messages) is list:
-            self.messages = messages
-        
+        self.message = message
+    
     def __str__(self):
-        return '\n* '.join(self.messages)
+        return self.message
 
 
 class KillCharacterEvent(Event):

@@ -5,6 +5,7 @@ from pygame.locals import *
 import trace
 import color
 import aliveModel
+import viewhelper as helper
 from eventmanager import *
 from tmxparser import TMXParser
 from tmxparser import TilesetParser
@@ -35,9 +36,11 @@ class GraphicalView(object):
         objectcanvas (Surface): a rendering of the level objects.
         statscanvas (Surface): a rendering of player and level stats.
         playarea (Rect): location on screen to draw gameplay.
-        statsarea (Rect): area to draw player stats
+        statsarea (Rect): area to draw player stats.
+        messagearea (Rect): area to draw the recent messages.
         viewport (Rect): which portion of the game map we are looking at.
-        spritegroup (Group):  contains all animated, movable objects in play.
+        spritegroup (Group): contains all animated, movable objects in play.
+        messages (list): list of recent game messages.
 
         Note: The viewport defines which area of the level we see as the 
         play area. a smaller viewport will render correctly, as long as
@@ -59,8 +62,10 @@ class GraphicalView(object):
         self.statscanvas = None
         self.playarea = None
         self.statsarea = None
+        self.messagearea = None
         self.viewport = None
         self.spritegroup = None
+        self.messages = [''] * 20
     
     def notify(self, event):
         """
@@ -72,8 +77,11 @@ class GraphicalView(object):
             self.clock.tick(30)
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
+        elif isinstance(event, MessageEvent):
+            self.messages.extend(helper.wrapLines(event.message, 30))
         elif isinstance(event, KillCharacterEvent):
             self.removesprite(event.character)
+            self.messages.append('The %s dies' % (event.character.name))
         elif isinstance(event, UpdateObjectGID):
             self.transmutesprite(event)
         elif isinstance(event, NextLevelEvent):
@@ -119,6 +127,7 @@ class GraphicalView(object):
             self.drawstats()
             self.screen.blit(self.playbackground, (0, 0))
             self.screen.blit(self.statscanvas, self.statsarea)
+            self.drawmessages()
             self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
             # update sprites
             self.objectcanvas.fill(color.magenta)
@@ -153,8 +162,8 @@ class GraphicalView(object):
         player = self.model.player
         
         # health
-        xposition = 170
-        yposition = 16
+        xposition = 0
+        yposition = 0
         phealth = self.smallfont.render(
                                 str(player.health) + ' health', 
                                 False,
@@ -165,8 +174,25 @@ class GraphicalView(object):
                                 str(player.mana) + ' mana',
                                 False,
                                 _colorband(player.mana / player.maxmana))
-        self.statscanvas.blit(pmana, (xposition, yposition + self.smallfont.get_height()))
+        self.statscanvas.blit(pmana, (xposition + (phealth.get_width() * 1.5), yposition))
     
+    def drawmessages(self):
+        """
+        Draw recent game messages.
+        """
+        
+        self.screen.blit(
+                        helper.renderLines(
+                            self.messages[-8:],
+                            self.smallfont,
+                            False,
+                            (0, 20, 0),
+                            (0, 20, 0)),
+                        self.messagearea.topleft)
+        # cull
+        self.messages = self.messages[-20:]
+        
+        
     def renderLines(self, lines, font, antialias, color, background=None):
         """
         Draws a list of lines to a surface.
@@ -341,11 +367,12 @@ class GraphicalView(object):
         self.viewport = pygame.Rect(0, 0, 512, 512)
         self.playarea = pygame.Rect((windowsize.w - self.viewport.w, 0), self.viewport.size)
         self.screen = pygame.display.set_mode(windowsize.size)
-        self.statsarea = pygame.Rect(0, 0, self.playarea.left, 200)
+        self.statsarea = pygame.Rect(16, 300, self.playarea.left, 100)
+        self.messagearea = pygame.Rect(15, 360, 260, 140)
         self.clock = pygame.time.Clock()
         self.spritegroup = pygame.sprite.Group()
         # load resources
-        self.smallfont = pygame.font.Font('bitwise.ttf', 14)
+        self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
         self.largefont = pygame.font.Font('bitwise.ttf', 28)
         self.defaultbackground = image.load('images/background.png').convert()
         self.menubackground = image.load('images/menu.png').convert()

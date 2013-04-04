@@ -135,7 +135,7 @@ class GameEngine(object):
         self.level = GameLevel(nextlevel, levelfilename)
         self.loadcharacters()
         self.evManager.Post(NextLevelEvent(levelfilename))
-        self.evManager.Post(ShiftViewportEvent(self.player.getpixelxy()))
+        #self.evManager.Post(ShiftViewportEvent(self.player.getpixelxy()))
 
     def loadcharacters(self):
         """
@@ -309,24 +309,25 @@ class GameEngine(object):
         
         if not self.gamerunning:
             return False
-        result = []
         a = event.attacker
         d = event.defender
         # we say 'you' where the player is involved
         a_name = (a is self.player) and ('you') or (a.name)
         d_name = (d is self.player) and ('you') or (d.name)
+        a_verb = (a is self.player) and ('hit') or ('hits')
+        d_verb = (a is self.player) and ('hits') or ('hit')
         # damage control
         a_atk = a.attack
         d_atk = d.attack
         # damage
         if a_atk:
             d.health -= a_atk
-            result.append('%s hits %s for %s' % (a_name, d_name, a_atk) )
+            self.evManager.Post(
+                    MessageEvent('%s %s for %s' % (a_name, a_verb, a_atk)))
         if d_atk:
             a.health -= d_atk
-            result.append('%s hits %s for %s' % (d_name, a_name, d_atk) )
-        # report
-        self.evManager.Post(MessageEvent(result))
+            self.evManager.Post(
+                    MessageEvent('%s %s for %s' % (d_name, d_verb, d_atk)))
         # death
         if a.health < 1:
             if a is self.player:
