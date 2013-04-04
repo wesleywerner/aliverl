@@ -9,7 +9,7 @@ Existing code files will be restructured.
 * character.py
 * objects.py
 * states.py
-* _stats.py_
+* stats.py
 * combat.py
 * bump.py
 * level.py

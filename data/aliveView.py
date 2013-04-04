@@ -33,8 +33,11 @@ class GraphicalView(object):
         largefont (Font): a larger font.
         levelcanvas (Surface): a rendering of the level tiles.
         objectcanvas (Surface): a rendering of the level objects.
+        statscanvas (Surface): a rendering of player and level stats.
         playarea (Rect): location on screen to draw gameplay.
+        statsarea (Rect): area to draw player stats
         viewport (Rect): which portion of the game map we are looking at.
+        spritegroup (Group):  contains all animated, movable objects in play.
 
         Note: The viewport defines which area of the level we see as the 
         play area. a smaller viewport will render correctly, as long as
@@ -53,9 +56,10 @@ class GraphicalView(object):
         self.largefont = None
         self.levelcanvas = None
         self.objectcanvas = None
+        self.statscanvas = None
         self.playarea = None
+        self.statsarea = None
         self.viewport = None
-        self.tilemapdata = None
         self.spritegroup = None
     
     def notify(self, event):
@@ -102,13 +106,19 @@ class GraphicalView(object):
             return
 
         self.screen.blit(self.defaultbackground, (0, 0))
-        sometext = ''
         state = self.model.state.peek()
+        sometext = ''
+        
         if state == aliveModel.STATE_INTRO:
             sometext = 'Intro screen is now drawing. Space to skip.'
+            
         elif state == aliveModel.STATE_MENU:
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
+            
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
+            self.drawstats()
+            self.screen.blit(self.playbackground, (0, 0))
+            self.screen.blit(self.statscanvas, self.statsarea)
             self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
             # update sprites
             self.objectcanvas.fill(color.magenta)
@@ -123,7 +133,71 @@ class GraphicalView(object):
         somewords = self.largefont.render(sometext, True, color.green)
         self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
+    
+    def drawstats(self):
+        """
+        Draw the player stats onto statscanvas.
+        """
         
+        def _colorband(ratio):
+            # gradient green for healthy and red for hurt
+            if ratio > 0.8:
+                return color.green
+            elif ratio > 0.5:
+                return color.yellow
+            else:
+                return color.red
+
+        self.statscanvas.fill(color.magenta)
+        
+        player = self.model.player
+        
+        # health
+        xposition = 170
+        yposition = 16
+        phealth = self.smallfont.render(
+                                str(player.health) + ' health', 
+                                False,
+                                _colorband(player.health / player.maxhealth))
+        self.statscanvas.blit(phealth, (xposition, yposition))
+        # mana
+        pmana = self.smallfont.render(
+                                str(player.mana) + ' mana',
+                                False,
+                                _colorband(player.mana / player.maxmana))
+        self.statscanvas.blit(pmana, (xposition, yposition + self.smallfont.get_height()))
+    
+    def renderLines(self, lines, font, antialias, color, background=None):
+        """
+        Draws a list of lines to a surface.
+        """
+
+        print(type(font), font)
+        fontHeight = font.get_height()
+        if type(color) is list:
+            surfaces = [font.render(k, antialias, v) for k,v in zip(lines, color)]
+        else:
+            surfaces = [font.render(ln, antialias, color) for ln in lines]
+        # can't pass background to font.render, because it doesn't respect the alpha
+
+        maxwidth = max([s.get_width() for s in surfaces])
+        result = pygame.Surface((maxwidth, len(lines)*fontHeight), pygame.SRCALPHA)
+        if background == None:
+            result.fill((90,90,90,0))
+        else:
+            result.fill(background)
+
+        for i in range(len(lines)):
+          result.blit(surfaces[i], (0,i*fontHeight))
+        return result
+
+    def renderTextBlock(self, text, font, antialias, color, background=None):
+        """
+        Draws text lines with newlines to a surface.
+        """
+        brokenText = text.replace("\r\n","\n").replace("\r","\n")
+        return renderLines(brokenText.split("\n"), font, antialias, color, background)
+
     def preparelevel(self):
         """
         Prepare the View's resource to display the level given in event param.
@@ -147,6 +221,9 @@ class GraphicalView(object):
         if not self.objectcanvas:
             self.objectcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
             self.objectcanvas.set_colorkey(color.magenta)
+        if not self.statscanvas:
+            self.statscanvas = pygame.Surface(self.statsarea.size)
+            self.statscanvas.set_colorkey(color.magenta)
         self.levelcanvas.fill(color.magenta)
         for y in range(tmx.height):
             for x in range(tmx.width):
@@ -264,10 +341,11 @@ class GraphicalView(object):
         self.viewport = pygame.Rect(0, 0, 512, 512)
         self.playarea = pygame.Rect((windowsize.w - self.viewport.w, 0), self.viewport.size)
         self.screen = pygame.display.set_mode(windowsize.size)
+        self.statsarea = pygame.Rect(0, 0, self.playarea.left, 200)
         self.clock = pygame.time.Clock()
         self.spritegroup = pygame.sprite.Group()
         # load resources
-        self.smallfont = pygame.font.Font(None, 14)
+        self.smallfont = pygame.font.Font('bitwise.ttf', 14)
         self.largefont = pygame.font.Font('bitwise.ttf', 28)
         self.defaultbackground = image.load('images/background.png').convert()
         self.menubackground = image.load('images/menu.png').convert()
