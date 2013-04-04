@@ -70,22 +70,22 @@ class GraphicalView(object):
         if isinstance(event, TickEvent):
             self.render()
             self.clock.tick(30)
-        elif isinstance(event, InitializeEvent):
-            self.initialize()
-        elif isinstance(event, QuitEvent):
-            self.isinitialized = False
-            pygame.quit()
-        elif isinstance(event, NextLevelEvent):
-            self.preparelevel()
-            self.createsprites()
-        elif isinstance(event, ShiftViewportEvent):
-            self.adjustviewport(event)
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
         elif isinstance(event, KillCharacterEvent):
             self.removesprite(event.character)
         elif isinstance(event, UpdateObjectGID):
             self.transmutesprite(event)
+        elif isinstance(event, NextLevelEvent):
+            self.preparelevel()
+            self.createsprites()
+        elif isinstance(event, ShiftViewportEvent):
+            self.adjustviewport(event)
+        elif isinstance(event, InitializeEvent):
+            self.initialize()
+        elif isinstance(event, QuitEvent):
+            self.isinitialized = False
+            pygame.quit()
     
     def widgetclick(self, context, code):
         """
