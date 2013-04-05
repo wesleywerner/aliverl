@@ -144,7 +144,7 @@ class GraphicalView(object):
             self.spritegroup.update(pygame.time.get_ticks())
             self.spritegroup.draw(self.objectcanvas)
             self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
-            self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
+            #self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
@@ -490,12 +490,13 @@ class Sprite(pygame.sprite.Sprite):
         
         self._images.append(image)
         self._hasframes = len(self._images) > 1
-        if len(self._images) > 0:
+        if not self.image and len(self._images) > 0:
             self.image = self._images[0]
         if fps <= 0:
             fps = 1
         self._delay = 1000 / fps
         self.loop = loop
+        self._frame = 0
    
     def clear(self):
         """
@@ -522,6 +523,7 @@ class Sprite(pygame.sprite.Sprite):
                     self.loop -= 1
                 if self.loop == 0:
                     self._hasframes = False
+                    self._frame = -1
             self.image = self._images[self._frame]
             self._last_update = t
     

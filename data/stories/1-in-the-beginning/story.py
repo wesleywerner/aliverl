@@ -95,6 +95,18 @@ animations = {
             'fps': 0.6,
             'loop': -1,
             },
+    # flat capacitor glow
+    65: {
+            'frames': [65, 66, 67, 68, 67, 66],
+            'fps': 2,
+            'loop': -1,
+            },
+    # flat capacitor pop
+    69: {
+            'frames': [69, 70, 71, 72],
+            'fps': 8,
+            'loop': 0,
+            },
 }
 
 dialogue = {
