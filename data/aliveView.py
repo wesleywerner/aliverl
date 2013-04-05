@@ -260,14 +260,25 @@ class GraphicalView(object):
                         self.levelcanvas.blit(tile, 
                                     (x * tmx.tile_width, y * tmx.tile_height))
 
-    def getspritesettings(self, gid):
+    def setspriteframes(self, obj):
         """
         Apply sprite settings to an object from the story animations setting.
         """
         
-        if gid in self.model.story.animations.keys():
-            return self.model.story.animations[gid]
-    
+        defaultvalues = {'frames':[], 'fps':0, 'loop': 0}
+        anims = self.model.story.animations
+        sprite = [e for e in self.spritegroup if e.name == id(obj)][0]
+        if sprite:
+            if obj.gid in anims.keys():
+                [setattr(obj, k, v) for k, v in anims[obj.gid].items()]
+            else:
+                [setattr(obj, k, v) for k, v in defaultvalues.items()]
+            if len(obj.frames) == 0:
+                obj.frames.append(obj.gid)
+            sprite.clear()
+            for f in obj.frames:
+                sprite.addimage(self.tsp[f], obj.fps, obj.loop)
+
     def createsprites(self):
         """
         Create all the sprites that represent all level objects.
@@ -279,23 +290,6 @@ class GraphicalView(object):
         
         tmx = self.model.level.tmx
         for obj in self.model.objects:
-            ssett = self.getspritesettings(obj.gid)
-            if ssett:
-                [setattr(obj, k, v) for k, v in ssett.items()]
-            frames = []
-            fps = 0
-            try:
-                fps = obj.fps
-                for f in obj.frames:
-                    frames.append(self.tsp[f])
-            except AttributeError as e:
-                # this object has no frames or fps set
-                pass
-            if len(frames) == 0:
-                frames.append(self.tsp[obj.gid])
-            # tiled map editor has a bug where y position
-            # of map objects are one tile too large.
-            # fix with -tile_height
             x = (obj.x * tmx.tile_width)
             y = (obj.y * tmx.tile_height) - FIX_YOFFSET
             s = Sprite(
@@ -303,12 +297,10 @@ class GraphicalView(object):
                     Rect(x, y, 
                         tmx.tile_width, 
                         tmx.tile_height),
-                    frames,
-                    fps,
                     self.spritegroup
                     )
+            self.setspriteframes(obj)
 
-    
     def movesprite(self, event):
         """
         Move the sprite by the event details.
@@ -335,18 +327,8 @@ class GraphicalView(object):
         Change a sprite image by object gid.
         """
         
-        oid = id(event.obj)
-        for sprite in self.spritegroup:
-            if sprite.name == oid:
-                ssett = self.getspritesettings(event.gid)
-                if ssett:
-                    sprite.clear()
-                    sprite.setfps(ssett['fps'])
-                    for newspr in ssett['frames']:
-                        sprite.addimage(self.tsp[newspr])
-                else:
-                    sprite.clear()
-                    sprite.addimage(self.tsp[event.gid])
+        event.obj.gid = event.gid
+        self.setspriteframes(event.obj)
     
     def adjustviewport(self, event):
         """
@@ -386,7 +368,7 @@ class Sprite(pygame.sprite.Sprite):
     Represents an animated sprite.
     """
     
-    def __init__(self, name, rect, frames, fps, *groups):
+    def __init__(self, name, rect, *groups):
         """
         rect(Rect) of the sprite on screen.
         fps(int) frames per seconds to rotate through.
@@ -397,45 +379,30 @@ class Sprite(pygame.sprite.Sprite):
         self.name = name
         self.rect = rect
         self.image = None
-        self._images = frames
+        self._images = []
         self._start = pygame.time.get_ticks()
-        if fps <= 0: fps = 1
-        self._delay = 1000 / fps
+        self._delay = 0
         self._last_update = 0
         self._frame = 0
-        self._hasframes = len(self._images) > 1
-        self.image = self._images[0]
+        self._hasframes = False
+        self.image = None
+        self.fps = 1
+        self.loop = -1
     
-    def addimage(self, image):
+    def addimage(self, image, fps, loop):
         """
         Allows adding of a animated sprite image.
         """
         
         self._images.append(image)
         self._hasframes = len(self._images) > 1
-        if len(self._images) == 1:
+        if len(self._images) > 0:
             self.image = self._images[0]
-    
-    def setfps(self, fps):
-        """
-        Set a new fps value for the sprite.
-        """
-        
-        if fps <= 0: fps = 1
+        if fps <= 0:
+            fps = 1
         self._delay = 1000 / fps
-        
-    #def removeimage(self):
-        #"""
-        #Remove the last image frame.
-        #You cannot remove the first frame.
-        #"""
-        
-        #if len(self._images) > 0:
-            #del self._images[-1]
-            #self._hasframes = len(self._images) > 1
-            #return True
-        #return False
-
+        self.loop = loop
+   
     def clear(self):
         """
         Clear sprite images
@@ -457,6 +424,10 @@ class Sprite(pygame.sprite.Sprite):
             self._frame += 1
             if self._frame >= len(self._images): 
                 self._frame = 0
+                if self.loop > 0:
+                    self.loop -= 1
+                if self.loop == 0:
+                    self._hasframes = False
             self.image = self._images[self._frame]
             self._last_update = t
     
