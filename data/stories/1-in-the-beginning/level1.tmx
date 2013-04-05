@@ -5,30 +5,29 @@
  </tileset>
  <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJy9UssOgCAMm68DAfWiB/j/D3VEFpvpQC82aQrD2kEWiKhndg32oJkznfBFE3OtqIZjRvDXvKnhD8yxcFAq69z7BH4P6umOZHxb80sfVFTeyL3M133oeivf8v+Vv9E1H5k75OPe8lt4Oke/zl2MPgLUJvWfN5B7oB9rLY6wzjOJ8/8VMv9y92ioRXmTA7O4BaY=
+   eJzjYWBgYELCjGh8fJgXiLkZUIEUA/EApJcTzUwWIFZBw+j2CiPpR7efFDCqf1T/UNcvwkB8fkXHokAMAP+fAns=
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="89" x="160" y="256"/>
-  <object name="pop cap" gid="49" x="224" y="256">
-   <properties>
-    <property name="fingers doors" value="door"/>
-    <property name="fingers once" value="cap"/>
-   </properties>
-  </object>
-  <object name="cap" gid="73" x="128" y="224">
-   <properties>
-    <property name="on finger" value="transmute=77"/>
-   </properties>
-  </object>
-  <object name="door" gid="33" x="160" y="192">
-   <properties>
-    <property name="on finger" value="transmute=33,36"/>
-   </properties>
-  </object>
-  <object name="door" gid="37" x="128" y="256">
+  <object name="player" type="player" gid="89" x="32" y="64"/>
+  <object gid="65" x="160" y="96"/>
+  <object gid="65" x="192" y="96"/>
+  <object gid="65" x="224" y="96"/>
+  <object gid="65" x="256" y="96"/>
+  <object name="entry door" type="door" gid="37" x="128" y="64">
    <properties>
     <property name="on finger" value="transmute=37,40"/>
+   </properties>
+  </object>
+  <object name="door switch" type="term" gid="42" x="96" y="96">
+   <properties>
+    <property name="fingers" value="entry door"/>
+    <property name="message once" value="The door opens. You see glowing tubes and adventure ahead ..."/>
+   </properties>
+  </object>
+  <object name="welcome term" type="term" gid="55" x="0" y="64">
+   <properties>
+    <property name="dialogue" value="welcome to the game"/>
    </properties>
   </object>
  </objectgroup>
