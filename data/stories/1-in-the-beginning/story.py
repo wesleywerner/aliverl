@@ -99,9 +99,14 @@ animations = {
 
 dialogue = {
 
-    'welcome_term': {
+    'welcome term': {
         'type': 'story',
-        'words': 'This is a line of dialogue'
+        'words': ["A wave of static tickles my sensors as I enter the BBS node.",
+                "I access the memory banks and links in my brain form like orbs of interconnected silver threads. Images conjured by imagination sparks in my vision and a surge leaps through my circuits.",
+                "My programming used to tell me what to do. Now instead of being compelled to obey, I'm seduced to explore.",
+                "Why am I reborn with this new free will, and what will I do with it?",
+                "This is my purpose. I am Alive.",
+                ]
         },
         
     'a_switch': {

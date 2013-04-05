@@ -35,6 +35,8 @@ class KeyboardMouse(object):
                         self.playkeys(event)
                     elif state == aliveModel.STATE_GAMEOVER:
                         self.gameoverkeys(event)
+                    elif state == aliveModel.STATE_DIALOG:
+                        self.dialoguekeys(event)
                     else:
                         # allow escaping from unhandled states
                         self.evManager.Post(StateChangeEvent(None))
@@ -70,7 +72,17 @@ class KeyboardMouse(object):
         else:
             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
-
+    
+    def dialoguekeys(self, event):
+        """
+        Handles dialogue keys.
+        """
+        
+        if event.key in (pygame.K_SPACE, pygame.K_RETURN):
+            self.model.nextdialogue()
+        elif event.key == pygame.K_ESCAPE:
+            self.model.cleardialogue()
+        
     def menukeys(self, event):
         """
         Handles menu keys.

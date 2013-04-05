@@ -294,10 +294,8 @@ class GameEngine(object):
                 self.evManager.Post(MessageEvent(action_value))
             
             # show a dialog
-            if action.startswith('dialog'):
-                # split the dialog names and reverse the list for the 
-                # main loop (it uses pop() to unstack from the bottom)
-                self.dialogue.extend(action_value.split(',')[::-1])
+            if action.startswith('dialogue'):
+                self.showdialogue(action_value)
 
             # fingered characters only
             if action.startswith('on finger') and isfingered and \
@@ -394,6 +392,36 @@ class GameEngine(object):
             # start a new game
             self.begingame()
 
+    def showdialogue(self, key):
+        """
+        Update the model state to show a dialogue screen.
+        keys is a list of dialogue key names.
+        """
+        
+        if key in self.story.dialogue:
+            words = self.story.dialogue[key]['words']
+            self.dialogue.extend(words[::-1])
+            self.changestate(STATE_DIALOG)
+        else:
+            trace.write('dialogue "%s" not found in story file' % (key))
+        
+    def nextdialogue(self):
+        """
+        Move to the next dialogue words.
+        """
+        
+        if self.dialogue:
+            self.dialogue.pop()
+        if not self.dialogue:
+            self.changestate(None)
+
+    def cleardialogue(self):
+        """
+        Clear all dialogue.
+        """
+        
+        self.dialogue = []
+        self.changestate(None)
 
 class GameLevel(object):
     """

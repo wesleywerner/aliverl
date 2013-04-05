@@ -5,7 +5,6 @@ from pygame.locals import *
 import trace
 import color
 import aliveModel
-import viewhelper as helper
 from eventmanager import *
 from tmxparser import TMXParser
 from tmxparser import TilesetParser
@@ -81,7 +80,7 @@ class GraphicalView(object):
             self.movesprite(event)
             self.erasefog()
         elif isinstance(event, MessageEvent):
-            self.messages.extend(helper.wrapLines(event.message, 30))
+            self.messages.extend(self.wrapLines(event.message, 30))
         elif isinstance(event, KillCharacterEvent):
             self.removesprite(event.character)
             self.messages.append('The %s dies' % (event.character.name))
@@ -127,10 +126,17 @@ class GraphicalView(object):
         elif state == aliveModel.STATE_MENU:
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
             
-        elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
+        elif state == aliveModel.STATE_DIALOG:
+            # draw game frame and stats like normal
+            self.drawborders()
             self.drawstats()
-            self.screen.blit(self.playbackground, (0, 0))
-            self.screen.blit(self.statscanvas, self.statsarea)
+            self.drawmessages()
+            # dialogue overlay with words
+            self.drawdialogue()
+            
+        elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
+            self.drawborders()
+            self.drawstats()
             self.drawmessages()
             self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
             # update sprites
@@ -148,6 +154,23 @@ class GraphicalView(object):
         self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
     
+    def drawdialogue(self):
+        """
+        Draw current dialogue words.
+        """
+        
+        self.screen.blit(self.dialoguebackground, self.playarea)
+        words = self.wrapLines(self.model.dialogue[-1], 25)
+        wordsimage = self.renderLines(words, self.largefont, False, color.green)
+        self.screen.blit(wordsimage, self.playarea.move(40, 40))
+        
+    def drawborders(self):
+        """
+        Draw game borders.
+        """
+        
+        self.screen.blit(self.borders, (0, 0))
+        
     def drawstats(self):
         """
         Draw the player stats onto statscanvas.
@@ -180,6 +203,7 @@ class GraphicalView(object):
                                 False,
                                 _colorband(player.mana / player.maxmana))
         self.statscanvas.blit(pmana, (xposition + (phealth.get_width() * 1.5), yposition))
+        self.screen.blit(self.statscanvas, self.statsarea)
     
     def drawmessages(self):
         """
@@ -187,7 +211,7 @@ class GraphicalView(object):
         """
         
         self.screen.blit(
-                        helper.renderLines(
+                        self.renderLines(
                             self.messages[-8:],
                             self.smallfont,
                             False,
@@ -197,37 +221,78 @@ class GraphicalView(object):
         # cull
         self.messages = self.messages[-20:]
         
+    def wrapLines(self, message, maxlength):
+        """ Takes a long string and returns a list of lines. 
+        maxlength is the characters per line. """
+        lines = []
+        while len(message) > maxlength:
+            cutoff = message.find(' ', maxlength)
+            if cutoff > 0:
+                lines.insert(0,message[:cutoff])
+                message = message[cutoff:]
+            else:
+                lines.insert(0, message)
+                message = ''
+        # add any remainder
+        if len(message) > 0:
+            lines.insert(0, message)
+        # unreverse the order
+        lines.reverse()
+        return lines
+
+    def renderLines(self, lines, font, antialias, fontcolor, colorize=None, background=None):
+        """ # Simple functions to easily render pre-wrapped text onto a single
+        # surface with a uniform background.
+        # Author: George Paci
+
+        # Results with various background color alphas:
+        #  no background given: ultimate blit will just change figure part of text,
+        #      not ground i.e. it will be interpreted as a transparent background
+        #  background alpha = 0: "
+        #  background alpha = 128, entire bounding rectangle will be equally blended
+        #      with background color, both within and outside text
+        #  background alpha = 255: entire bounding rectangle will be background color
+        #
+        # (At this point, we're not trying to respect foreground color alpha;
+        # we could by compositing the lines first onto a transparent surface, then
+        # blitting to the returned surface.)
         
-    def renderLines(self, lines, font, antialias, color, background=None):
-        """
-        Draws a list of lines to a surface.
-        """
-
-        print(type(font), font)
+        colorize sets by how much each rgb value is upped for each line.
+        (0, 10, 0) will up green by 10 for each line printed.
+         """
+        
         fontHeight = font.get_height()
-        if type(color) is list:
-            surfaces = [font.render(k, antialias, v) for k,v in zip(lines, color)]
+        surfaces = []
+        c = fontcolor
+        if colorize:
+            for ln in lines:
+                c = ( c[0] + colorize[0], c[1] + colorize[1], c[2] + colorize[2])
+                surfaces.append(font.render(ln, antialias, c))
         else:
-            surfaces = [font.render(ln, antialias, color) for ln in lines]
-        # can't pass background to font.render, because it doesn't respect the alpha
-
+            surfaces = [font.render(ln, antialias, fontcolor) for ln in lines]
         maxwidth = max([s.get_width() for s in surfaces])
-        result = pygame.Surface((maxwidth, len(lines)*fontHeight), pygame.SRCALPHA)
+        result = pygame.Surface((maxwidth, len(lines)*fontHeight))
+        result.set_colorkey(color.magenta)
         if background == None:
-            result.fill((90,90,90,0))
+            result.fill(color.magenta)
         else:
             result.fill(background)
 
         for i in range(len(lines)):
-          result.blit(surfaces[i], (0,i*fontHeight))
+            result.blit(surfaces[i], (0,i*fontHeight))
         return result
 
-    def renderTextBlock(self, text, font, antialias, color, background=None):
-        """
-        Draws text lines with newlines to a surface.
-        """
+    def renderTextBlock(self, text, font, antialias, fontcolor, colorize=None, background=None):
+        """ renders block text with newlines. """
         brokenText = text.replace("\r\n","\n").replace("\r","\n")
-        return renderLines(brokenText.split("\n"), font, antialias, color, background)
+        return renderLines(
+                        brokenText.split("\n"), 
+                        font, 
+                        antialias, 
+                        fontcolor, 
+                        colorize, 
+                        background
+                        )
 
     def preparelevel(self):
         """
@@ -378,7 +443,7 @@ class GraphicalView(object):
         self.largefont = pygame.font.Font('bitwise.ttf', 28)
         self.defaultbackground = image.load('images/background.png').convert()
         self.menubackground = image.load('images/menu.png').convert()
-        self.playbackground = image.load('images/playscreen.png').convert()
+        self.borders = image.load('images/playscreen.png').convert()
         self.dialoguebackground = image.load('images/dialog.png').convert()
         self.isinitialized = True
 
