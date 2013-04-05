@@ -1,4 +1,5 @@
 import pygame
+import color as colors
 
 def wrapLines(message, maxlength):
     """ Takes a long string and returns a list of lines. 
@@ -50,9 +51,10 @@ def renderLines(lines, font, antialias, color, colorize=None, background=None):
     else:
         surfaces = [font.render(ln, antialias, color) for ln in lines]
     maxwidth = max([s.get_width() for s in surfaces])
-    result = pygame.Surface((maxwidth, len(lines)*fontHeight), pygame.SRCALPHA)
+    result = pygame.Surface((maxwidth, len(lines)*fontHeight))
+    result.set_colorkey(colors.magenta)
     if background == None:
-        result.fill((90,90,90,0))
+        result.fill(colors.magenta)
     else:
         result.fill(background)
 
