@@ -422,6 +422,15 @@ class GraphicalView(object):
         
         pass
 
+    def playmusic(self, level):
+        playlist = [
+            'audio/universalnetwork2_real.xm',
+            'audio/kbmonkey-ditty.it'
+            ]
+        pygame.mixer.music.fadeout(1000)
+        pygame.mixer.music.load(playlist[0])
+        pygame.mixer.music.play()
+
     def initialize(self):
         """
         Set up the pygame graphical display and loads graphical resources.
