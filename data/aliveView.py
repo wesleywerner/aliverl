@@ -490,7 +490,7 @@ class Sprite(pygame.sprite.Sprite):
         
         self._images.append(image)
         self._hasframes = len(self._images) > 1
-        if not self.image and len(self._images) > 0:
+        if len(self._images) > 0:
             self.image = self._images[0]
         if fps <= 0:
             fps = 1
