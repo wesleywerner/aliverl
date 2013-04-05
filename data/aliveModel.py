@@ -1,5 +1,6 @@
 import os
 import sys
+import math
 import random
 from tmxparser import TMXParser
 from eventmanager import *
@@ -145,7 +146,7 @@ class GameEngine(object):
         
         self.player = None
         self.objects = []
-        defaultproperties = {'dead':False}
+        defaultproperties = {'dead':False, 'seen':False}
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
                 # set default properties
@@ -201,6 +202,8 @@ class GameEngine(object):
         character.x, character.y = (newx, newy)
         character.px, character.py = (newx*self.level.tmx.tile_width, 
                                       newy*self.level.tmx.tile_height)
+        # update what we can see
+        self.lookaround()
         # heal turn
         self.healcharacters()
         # ai move turn
@@ -221,6 +224,33 @@ class GameEngine(object):
                 y = random.randint(-1, 1)
                 self.movecharacter(obj, (x, y))
     
+    def lookaround(self):
+        """
+        Marks any other objects within the player characters range as seen.
+        """
+        
+        pxy = (self.player.x, self.player.y)
+        for obj in self.objects:
+            obj.seen = self.distance(pxy, (obj.x, obj.y)) <= 3
+    
+    def distance(self, pointa, pointb):
+        """
+        Returns the distance between two cartesian points.
+        """
+        
+        return math.sqrt((pointa[0] - pointb[0])**2 + (pointa[1] - pointb[1])**2)
+    
+    def getcharacter(self, objectid):
+        """
+        Get characters object by it's id().
+        """
+        
+        match = [e for e in self.objects if id(e) == objectid]
+        if match:
+            return match[0]
+        else:
+            return None
+        
     def healcharacters(self):
         """
         Each turn characters gets a chance to heal.
