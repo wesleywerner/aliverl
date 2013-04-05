@@ -1,7 +1,11 @@
-* implement a player walked path for 'follower' ai modes to pick up on if they cross it.
-    (a future ability will reduce your path history)
+* implement a player walked path for 'follower' ai modes to pick up on if they cross it. (a future ability will reduce your path history)
 
-* need a function to find the distance between two map coords
+* implement abilities
 
-* implement abilities logic and ui
+* add the UI button class
 
+* create the menu with story selection
+
+* save game state
+
+* find music to play randomly from a playlist. remove from playlist once played.
