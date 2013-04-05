@@ -146,22 +146,16 @@ Each story lives in the "_data/stories/< story name >/_" directory, this definit
 
     # Define story dialogues by a key name.
     # The type will determine the look of the message displayed.
+    # dialogue 'type' is not yet used by the engine.
     dialogue = {
 
         'welcome_term': {
-            'type': 'story',
-            'words': 'This is a line of dialogue'
-            },
-            
-        'a_switch': {
-            'type': 'news',
-            'words': 'We tell our story through interacting terminals' 
-            }, 
-
-        'a_switch': {
-            'type': 'news',
-            'words': 'xyz' 
-            }, 
+            'type': '',
+            'words': ["This is the first screen of a dialogue.",
+                      "This is the second screen.",
+                      "We use double quotes here.",
+                      ]
+                        },
         }
 ~~~
 
