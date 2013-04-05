@@ -89,6 +89,7 @@ class GraphicalView(object):
             self.transmutesprite(event)
         elif isinstance(event, NextLevelEvent):
             self.preparelevel()
+            self.erasefog()
             self.createsprites()
         elif isinstance(event, ShiftViewportEvent):
             self.adjustviewport(event)
