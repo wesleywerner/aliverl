@@ -132,12 +132,12 @@ class GraphicalView(object):
             self.screen.blit(self.statscanvas, self.statsarea)
             self.drawmessages()
             self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
-            self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
             # update sprites
             self.objectcanvas.fill(color.magenta)
             self.spritegroup.update(pygame.time.get_ticks())
             self.spritegroup.draw(self.objectcanvas)
             self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
+            self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
@@ -276,6 +276,8 @@ class GraphicalView(object):
         
         clearing = pygame.Rect((0, 0), self.model.level.tmx.tilesize(3))
         clearing.center = self.model.player.getpixelxy()
+        balancingoffset = self.model.level.tmx.tile_width / 2
+        clearing.left += balancingoffset
         self.fogcanvas.fill(color.magenta, clearing)
         
     
