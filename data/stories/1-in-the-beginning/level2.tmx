@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
-  <image source="alive-tileset.png" width="256" height="832"/>
+  <image source="alive-tileset.png" trans="ff00ff" width="256" height="832"/>
   <tile id="0">
    <properties>
     <property name="blocks" value="1"/>
@@ -108,11 +108,6 @@
    </properties>
   </tile>
  </tileset>
- <layer name="bg" width="16" height="16">
-  <data encoding="base64" compression="zlib">
-   eJzjYGBg4BjFo3gUj0gMABTwCAE=
-  </data>
- </layer>
  <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
    eJytUtEOwiAQqzIeJuoyow+L//+fQmyTGzsWsuySpnC7Xo/BHcD1IB4ZCf+4YR31XqH6OSNmjOwVyBfyQAZzikie2Ev9arZRPL6E9PLv0Sdn3fLXeSyioz/b36uFqW35a17978Dvdv5g1qp7VvPv+Y+sX8iC9dddxx29sOA8/8R86732+Jf9q0Pf8u+d3/N/Y31XA7bvz8sVfDJ+Ru4F1A==
@@ -135,12 +130,12 @@
   </object>
   <object name="cap 1" type="cap" gid="25" x="320" y="96">
    <properties>
-    <property name="on_finger" value="transmute=27"/>
+    <property name="on finger" value="transmute=27"/>
    </properties>
   </object>
   <object name="cap 2" type="cap" gid="25" x="352" y="96">
    <properties>
-    <property name="on_finger" value="transmute=27"/>
+    <property name="on finger" value="transmute=27"/>
    </properties>
   </object>
   <object name="switch 1" type="switch" gid="30" x="288" y="160">
