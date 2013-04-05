@@ -11,9 +11,17 @@ blocklist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
             73, 74, 75, 76, # long capacitors
             ]
 
-# list of levels to play
-levels = ['level1.tmx', 'level2.tmx', 'level3.tmx', ]
+# list of levels in this story
+levels = ['level1.tmx', 
+          'level2.tmx', 
+          'level3.tmx', 
+          ]
 
+# configure level entry messages. the index matches the levels.
+entrymessages = ['Welcome to Alive! Press F1 for help. Then come back and walk left into the green terminal...',
+                ]
+
+# define all character stats
 stats = {
     'player': {
             'attack': 1,
@@ -154,7 +162,7 @@ animations = {
 
 dialogue = {
 
-    'welcome term': {
+    'welcome to the game': {
         'type': 'story',
         'words': ["A wave of static tickles my sensors as I enter the BBS node.",
                 "I access the memory banks and links in my brain form like orbs of interconnected silver threads. Images conjured by imagination sparks in my vision and a surge leaps through my circuits.",

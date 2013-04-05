@@ -137,6 +137,9 @@ class GameEngine(object):
         self.loadcharacters()
         self.evManager.Post(NextLevelEvent(levelfilename))
         #self.evManager.Post(ShiftViewportEvent(self.player.getpixelxy()))
+        print(len(self.story.entrymessages), nextlevel)
+        if len(self.story.entrymessages) <= nextlevel:
+            self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
 
     def loadcharacters(self):
         """
