@@ -277,7 +277,7 @@ class GraphicalView(object):
         clearing = pygame.Rect((0, 0), self.model.level.tmx.tilesize(3))
         clearing.center = self.model.player.getpixelxy()
         balancingoffset = self.model.level.tmx.tile_width / 2
-        clearing.left += balancingoffset
+        clearing = clearing.move(balancingoffset, -balancingoffset)
         self.fogcanvas.fill(color.magenta, clearing)
         
     
