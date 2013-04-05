@@ -4,7 +4,7 @@ _by Wesley Werner_
 
 "A wave of static tickles my sensors as I enter the BBS node."
 
-"Accessing the memory banks, links in my brain form like orbs and interconnected silver threads. Images conjured by imagination sparks in my vision and a surge leaps through my state machine."
+"I access the memory banks and links in my brain form like orbs of interconnected silver threads. Images conjured by imagination sparks in my vision and a surge leaps through my circuits."
 
 "My programming used to tell me what to do. Now instead of being compelled to obey, I'm seduced to explore."
 
@@ -12,38 +12,49 @@ _by Wesley Werner_
 
 "This is my purpose. I am Alive."
 
-[TOC]
-
 # Overview
 
-Alive is a turn based topdown roguelike game. You play the role of a  bot, a piece of programmed code crafted to a specific task. An object.
-You begin the game as you reach self awareness, and start your journey to discover why you are and what you will become.
+Alive is a tiled turn based RPG. You play the role of an Artificial Intelligent being who reached self awareness. You begin the game as you reach self awareness, and start your journey. You interact with terminals to open and close gateways, and combat other hostile AI's while moving between nodes (levels), unfolding a way out from the digital realm to become a physical entity.
 
-You move between BBS computer systems, you will encounter other programmed AI's that see you as a threat, a foreign object, and try to destroy you.
+# Development
 
-Along the way you may discover why this happened to you.
-To find a way out from digital realm and become a physical entity.
+This game is still in development, it is not yet ready for general play. The framework is still young, but functional. The content is still lacking.
+
+The file spec.md documents technical details on the engine, and how game levels are made.
 
 # What this game will feature
 
-* a one-screen per level map which you play on.
-* Ten levels of digital adventure.
-* Each level is a BBS you move through.
-* blockable walls.
-* basic range of view.
-* various enemy's (AI's) that appear at different levels.
-* A melee and ranged combat system.
-* Game event messages.
-* upgradable abilities each level, including the first level.
-* A basic list of end game achievements.
-* A simple storyline of your goal.
+* multiple story campaigns.
+* Ten levels of digital adventure for the first story.
+* blockable walls and map doodads.
+* field of vision.
+* various enemy's to combat.
+* a melee and ranged combat system.
+* upgradable character abilities.
+* 8-bit love.
+* tracked module music.
+* a nicely packaged release for multiple platforms.
 
-# What would be nice to have
+# Requirements
 
-* tracked module music
+You require that Python and PyGame is installed. The packaged releases should come bundled with everything. 
 
 # Contact
-You may contact me at wez AT darknet.co.za 
 
-# Licensing
-See the file COPYING for the GPL :)
+You may contact me at wez at darknet dot co dot za 
+
+# License
+
+    Copyright (C) 2013 Wesley Werner
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+You should receive a copy of the GNU General Public License along with this program. If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
