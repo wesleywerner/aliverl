@@ -134,13 +134,17 @@ Each story lives in the "_data/stories/< story name >/_" directory, this definit
     # an animation of frames for the given fps (frames per second).
     
     animations = {
-        41: {
-                'frames': [41, 42],
-                'fps': 0.2,
+        # flat door open
+        36: {
+                'frames': [34, 35, 36],
+                'fps': 8,
+                'loop': 0,
                 },
-        43: {
-                'frames': [43, 44],
-                'fps': 0.3,
+        # flat door close
+        33: {
+                'frames': [35, 34, 33],
+                'fps': 8,
+                'loop': 0,
                 },
     }
 
@@ -177,6 +181,16 @@ Each map has a tileset, an image divided into 32x32 sized blocks of tile images.
 1. You are now ready to create your level :]
 * Place walls and doodads "map" tile layer.
 * Place interactable game objects on the "objects" Object Layer.
+
+### Creating animations
+
+Animations are configured in your story.py file under the 'animations' section. Assume our tileset has door images that go from closed to open over 4 frames: (closed) 33, 34, 35, 36 (open).
+
+We configure the open animation keyframe (36) to run frames [34, 35, 36]. We end with the keyframe.
+
+We configure the close animation keyframe (33) to [35, 34, 33]. The sequence reversed, and we also end on the keyframe.
+
+We end with our key frames because with no loop the animation stops on the last frame.
 
 #### Object reference
 

@@ -55,45 +55,77 @@ stats = {
         }
 
 animations = {
+    # flat small blue terminal
     41: {
             'frames': [41, 42],
             'fps': 0.2,
             'loop': -1,
             },
+    # flat large blue terminal
     43: {
             'frames': [43, 44],
             'fps': 0.3,
             'loop': -1,
             },
+    # flat small green terminal
     45: {
             'frames': [45, 46],
             'fps': 0.4,
             'loop': -1,
             },
+    # flat large green terminal
     47: {
             'frames': [47, 48],
             'fps': 0.5,
             'loop': -1,
             },
+    # tall small blue terminal
     49: {
             'frames': [49, 50],
             'fps': 0.2,
             'loop': -1,
             },
+    # tall large blue terminal
     51: {
             'frames': [51, 52],
             'fps': 0.3,
             'loop': -1,
             },
+    # tall small green terminal
     53: {
             'frames': [53, 54],
             'fps': 0.4,
             'loop': -1,
             },
+    # tall large green terminal
     55: {
             'frames': [55, 56],
             'fps': 0.6,
             'loop': -1,
+            },
+    # flat door open
+    36: {
+            'frames': [34, 35, 36],
+            'fps': 8,
+            'loop': 0,
+            },
+    # flat door close
+    33: {
+            'frames': [35, 34, 33],
+            'fps': 8,
+            'loop': 0,
+            },
+    # tall door open
+    40: {
+            'frames': [38, 39, 40],
+            'fps': 8,
+            'loop': 0,
+            },
+    # tall door close
+    37: {
+            'frames': [39, 38, 37],
+            'fps': 8,
+            'loop': 0,
             },
     # flat capacitor glow
     65: {

@@ -10,19 +10,25 @@
  </layer>
  <objectgroup name="objects" width="16" height="16">
   <object name="player" type="player" gid="89" x="160" y="256"/>
-  <object name="cap" gid="65" x="160" y="192">
-   <properties>
-    <property name="on finger" value="transmute=69"/>
-   </properties>
-  </object>
   <object name="pop cap" gid="49" x="224" y="256">
    <properties>
+    <property name="fingers doors" value="door"/>
     <property name="fingers once" value="cap"/>
    </properties>
   </object>
-  <object name="cap" gid="73" x="192" y="224">
+  <object name="cap" gid="73" x="128" y="224">
    <properties>
     <property name="on finger" value="transmute=77"/>
+   </properties>
+  </object>
+  <object name="door" gid="33" x="160" y="192">
+   <properties>
+    <property name="on finger" value="transmute=33,36"/>
+   </properties>
+  </object>
+  <object name="door" gid="37" x="128" y="256">
+   <properties>
+    <property name="on finger" value="transmute=37,40"/>
    </properties>
   </object>
  </objectgroup>
