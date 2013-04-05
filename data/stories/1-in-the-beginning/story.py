@@ -101,10 +101,22 @@ animations = {
             'fps': 2,
             'loop': -1,
             },
+    # tall capacitor glow
+    73: {
+            'frames': [73, 74, 75, 76, 75, 74],
+            'fps': 2,
+            'loop': -1,
+            },
     # flat capacitor pop
     69: {
             'frames': [69, 70, 71, 72],
-            'fps': 8,
+            'fps': 6,
+            'loop': 0,
+            },
+    # tall capacitor pop
+    77: {
+            'frames': [77, 78, 79, 80],
+            'fps': 6,
             'loop': 0,
             },
 }

@@ -9,109 +9,21 @@
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
-  <object name="door 1" type="door" gid="6" x="160" y="192">
+  <object name="player" type="player" gid="89" x="160" y="256"/>
+  <object name="cap" gid="65" x="160" y="192">
    <properties>
-    <property name="on finger" value="transmute=14"/>
-    <property name="on finger 2" value="give=fingers=cap 1"/>
-    <property name="on finger 3" value="give=message once=POP! goes the capacitor. What is going on here?"/>
+    <property name="on finger" value="transmute=69"/>
    </properties>
   </object>
-  <object name="switch 1" type="switch" gid="49" x="224" y="256">
+  <object name="pop cap" gid="49" x="224" y="256">
    <properties>
-    <property name="fingers once" value="term hello"/>
-    <property name="message once" value="The larger terminal across from you blinks alive..."/>
+    <property name="fingers once" value="cap"/>
    </properties>
   </object>
-  <object name="door 2" type="door" gid="6" x="160" y="384">
+  <object name="cap" gid="73" x="192" y="224">
    <properties>
-    <property name="on finger" value="transmute=14,6"/>
+    <property name="on finger" value="transmute=77"/>
    </properties>
   </object>
-  <object name="switch 5" type="switch" gid="30" x="448" y="128">
-   <properties>
-    <property name="fingers" value="door 3"/>
-   </properties>
-  </object>
-  <object name="pop caps" type="switch" gid="55" x="320" y="320">
-   <properties>
-    <property name="fingers" value="popcap"/>
-    <property name="message once" value="pop! pop! pop! The capacitors blow."/>
-   </properties>
-  </object>
-  <object name="popcap" type="cap" gid="26" x="320" y="288">
-   <properties>
-    <property name="on finger" value="transmute=28"/>
-   </properties>
-  </object>
-  <object name="popcap" type="cap" gid="26" x="320" y="224">
-   <properties>
-    <property name="on finger" value="transmute=28"/>
-   </properties>
-  </object>
-  <object name="popcap" type="cap" gid="26" x="320" y="160">
-   <properties>
-    <property name="on finger" value="transmute=28"/>
-   </properties>
-  </object>
-  <object name="exit" gid="16" x="32" y="64">
-   <properties>
-    <property name="dialog" value="level1 exit"/>
-    <property name="exit" value=""/>
-   </properties>
-  </object>
-  <object name="term hello" type="term" gid="52" x="96" y="256">
-   <properties>
-    <property name="on finger 1" value="give=dialogue=welcome term"/>
-    <property name="on finger 2" value="transmute=55"/>
-    <property name="on finger 3" value="give=fingers door once=door 1"/>
-   </properties>
-  </object>
-  <object name="cap 1" type="cap" gid="26" x="128" y="160">
-   <properties>
-    <property name="on finger" value="transmute=28"/>
-   </properties>
-  </object>
-  <object name="VIRUs" type="ai" gid="59" x="64" y="352"/>
-  <object name="cap 2" type="cap" gid="26" x="64" y="96">
-   <properties>
-    <property name="on finger" value="transmute=28"/>
-   </properties>
-  </object>
-  <object name="switch exit cap" type="switch" gid="45" x="64" y="32">
-   <properties>
-    <property name="fingers" value="cap 2"/>
-    <property name="message" value="Pop! That was a satisfying sound."/>
-   </properties>
-  </object>
-  <object name="door 3" type="door" gid="7" x="352" y="64">
-   <properties>
-    <property name="on finger" value="transmute=15,7"/>
-   </properties>
-  </object>
-  <object name="door 3" type="door" gid="7" x="352" y="96">
-   <properties>
-    <property name="on finger" value="transmute=15,7"/>
-   </properties>
-  </object>
-  <object name="switch 2" type="switch" gid="41" x="192" y="384">
-   <properties>
-    <property name="fingers" value="door 2"/>
-   </properties>
-  </object>
-  <object name="Ice" type="ai" gid="58" x="64" y="416"/>
-  <object name="player" type="player" gid="57" x="160" y="256">
-   <properties>
-    <property name="exit" value=""/>
-   </properties>
-  </object>
-  <object name="VIRUs" type="ai" gid="59" x="256" y="160"/>
-  <object name="term blue big h" gid="43" x="256" y="512"/>
-  <object name="term blue small h" gid="41" x="224" y="512"/>
-  <object name="term gbv" gid="55" x="0" y="256"/>
-  <object name="term gsv" gid="53" x="0" y="288"/>
-  <object name="term blue small h" gid="41" x="288" y="512"/>
-  <object name="term blue big h" gid="43" x="320" y="512"/>
-  <object name="term gbv" gid="55" x="0" y="320"/>
-  <object name="term gsv" gid="53" x="0" y="352"/>
  </objectgroup>
 </map>
