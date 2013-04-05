@@ -255,10 +255,8 @@ class GraphicalView(object):
         if not self.statscanvas:
             self.statscanvas = pygame.Surface(self.statsarea.size)
             self.statscanvas.set_colorkey(color.magenta)
-        if not self.fogcanvas:
-            self.fogcanvas = pygame.Surface(self.levelcanvas.get_size())
-            self.fogcanvas.set_colorkey(color.magenta)
-        self.fogcanvas.fill(color.black)
+        self.fogcanvas = image.load('images/fog.png').convert()
+        self.fogcanvas.set_colorkey(color.magenta)
         self.levelcanvas.fill(color.magenta)
         for y in range(tmx.height):
             for x in range(tmx.width):
