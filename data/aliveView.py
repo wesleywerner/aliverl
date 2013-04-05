@@ -285,7 +285,7 @@ class GraphicalView(object):
     def renderTextBlock(self, text, font, antialias, fontcolor, colorize=None, background=None):
         """ renders block text with newlines. """
         brokenText = text.replace("\r\n","\n").replace("\r","\n")
-        return renderLines(
+        return self.renderLines(
                         brokenText.split("\n"), 
                         font, 
                         antialias, 
@@ -449,7 +449,7 @@ class GraphicalView(object):
         self.spritegroup = pygame.sprite.Group()
         # load resources
         self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
-        self.largefont = pygame.font.Font('bitwise.ttf', 28)
+        self.largefont = pygame.font.Font('bitwise.ttf', 30)
         self.defaultbackground = image.load('images/background.png').convert()
         self.menubackground = image.load('images/menu.png').convert()
         self.borders = image.load('images/playscreen.png').convert()

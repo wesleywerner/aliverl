@@ -161,7 +161,16 @@ animations = {
 }
 
 dialogue = {
-
+    'help': {
+        'words': ["Welcome to Alive! You may use the numeric keypad or " \
+                                    "vi-like keys to move your avatar.",
+                    "Move into PC terminals to use them." \
+                                    "Not all of them can be used though.",
+                    "Move into enemies to attack.",
+                    "you can skip these dialogues with [escape]."
+        
+        ],
+    },
     'welcome to the game': {
         'type': 'story',
         'words': ["A wave of static tickles my sensors as I enter the BBS node.",
