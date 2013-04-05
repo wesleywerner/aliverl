@@ -197,6 +197,7 @@ class GameEngine(object):
         for layer in self.level.tmx.tilelayers:
             gid = layer.at((newx, newy - FIX_YOFFSET))
             if gid in self.story.blocklist:
+                trace.write('tile collision with %s' % (gid))
                 return False
         # accept movement
         character.x, character.y = (newx, newy)
@@ -209,8 +210,8 @@ class GameEngine(object):
         # ai move turn
         self.movecomputer()
         self.evManager.Post(PlayerMovedEvent(id(character), direction))
-        if character is self.player:
-            self.evManager.Post(ShiftViewportEvent(character.getpixelxy()))
+        #if character is self.player:
+            #self.evManager.Post(ShiftViewportEvent(character.getpixelxy()))
 
     def movecomputer(self):
         """
