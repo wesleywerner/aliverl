@@ -66,7 +66,14 @@ class TMXParser(ObjectHelper):
         for tag in map.findall('objectgroup'):
             self.objectgroups.append(Objectgroup(tag, 
                                     (self.tile_width, self.tile_height)))
-
+    
+    def tilesize(self, multiplier=1):
+        """
+        Return (tile_width, tile_height).
+        """
+        
+        return (self.tile_width * multiplier, self.tile_height * multiplier)
+        
 
 class Tileset(ObjectHelper):
     """
@@ -186,7 +193,7 @@ class Mapobject(ObjectHelper):
     
     def getpixelxy(self):
         """
-        Return a tuple of the pixel xy.
+        Return (self.px, self.py).
         """
         
         return (self.px, self.py)

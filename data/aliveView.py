@@ -35,6 +35,7 @@ class GraphicalView(object):
         levelcanvas (Surface): a rendering of the level tiles.
         objectcanvas (Surface): a rendering of the level objects.
         statscanvas (Surface): a rendering of player and level stats.
+        fogcanvas (Surface): overlay for visibility fog.
         playarea (Rect): location on screen to draw gameplay.
         statsarea (Rect): area to draw player stats.
         messagearea (Rect): area to draw the recent messages.
@@ -60,6 +61,7 @@ class GraphicalView(object):
         self.levelcanvas = None
         self.objectcanvas = None
         self.statscanvas = None
+        self.fogcanvas = None
         self.playarea = None
         self.statsarea = None
         self.messagearea = None
@@ -77,6 +79,7 @@ class GraphicalView(object):
             self.clock.tick(30)
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
+            self.erasefog()
         elif isinstance(event, MessageEvent):
             self.messages.extend(helper.wrapLines(event.message, 30))
         elif isinstance(event, KillCharacterEvent):
@@ -129,6 +132,7 @@ class GraphicalView(object):
             self.screen.blit(self.statscanvas, self.statsarea)
             self.drawmessages()
             self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
+            self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
             # update sprites
             self.objectcanvas.fill(color.magenta)
             self.spritegroup.update(pygame.time.get_ticks())
@@ -245,11 +249,15 @@ class GraphicalView(object):
             self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
             self.levelcanvas.set_colorkey(color.magenta)
         if not self.objectcanvas:
-            self.objectcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
+            self.objectcanvas = pygame.Surface(self.levelcanvas.get_size())
             self.objectcanvas.set_colorkey(color.magenta)
         if not self.statscanvas:
             self.statscanvas = pygame.Surface(self.statsarea.size)
             self.statscanvas.set_colorkey(color.magenta)
+        if not self.fogcanvas:
+            self.fogcanvas = pygame.Surface(self.levelcanvas.get_size())
+            self.fogcanvas.set_colorkey(color.magenta)
+        self.fogcanvas.fill(color.black)
         self.levelcanvas.fill(color.magenta)
         for y in range(tmx.height):
             for x in range(tmx.width):
@@ -259,7 +267,18 @@ class GraphicalView(object):
                     if tile:
                         self.levelcanvas.blit(tile, 
                                     (x * tmx.tile_width, y * tmx.tile_height))
-
+    
+    def erasefog(self):
+        """
+        Partially clear some fog around the player.
+        We do this by clearing (filling) the fogcanvas with magenta.
+        """
+        
+        clearing = pygame.Rect((0, 0), self.model.level.tmx.tilesize(3))
+        clearing.center = self.model.player.getpixelxy()
+        self.fogcanvas.fill(color.magenta, clearing)
+        
+    
     def setspriteframes(self, obj):
         """
         Apply sprite settings to an object from the story animations setting.
