@@ -198,6 +198,13 @@ class Mapobject(ObjectHelper):
         
         return (self.px, self.py)
         
+    def getxy(self):
+        """
+        Return (self.x, self.y)
+        """
+
+        return (self.x, self.y)
+
 
 class TilesetParser(dict):
     """

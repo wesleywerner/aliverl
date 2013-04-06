@@ -254,6 +254,15 @@ class GameEngine(object):
             return match[0]
         else:
             return None
+    
+    def getcharacterat(self, xy):
+        """
+        Get character by location.
+        """
+        
+        match = [e for e in self.objects if e.getxy() == xy]
+        if match:
+            return match[0]
         
     def healcharacters(self):
         """
@@ -324,6 +333,14 @@ class GameEngine(object):
                         else:
                             # use first index
                             transmute_id = int(options[0])
+                    # do not transmute to blocklist gid's if anyone is 
+                    # standing on the finger target (cant close doors)
+                    fingerfriend = self.getcharacterat(obj.getxy())
+                    if fingerfriend and fingerfriend is not obj and \
+                                    transmute_id in self.story.blocklist:
+                        trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
+                        return False
+                    # transmorgify!
                     obj.gid = transmute_id
                     self.evManager.Post(UpdateObjectGID(obj, obj.gid))
 
