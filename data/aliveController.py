@@ -68,7 +68,7 @@ class KeyboardMouse(object):
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
         elif event.key == pygame.K_F1:
-            self.model.showdialogue('help')
+            self.evManager.Post(StateChangeEvent(aliveModel.STATE_HELP))
         elif event.key in movement.keys():
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
         else:

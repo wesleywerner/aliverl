@@ -40,6 +40,7 @@ class GraphicalView(object):
         messagearea (Rect): area to draw the recent messages.
         viewport (Rect): which portion of the game map we are looking at.
         spritegroup (Group): contains all animated, movable objects in play.
+        helpimages (Surface): stores the F1 help screens.
         messages (list): list of recent game messages.
 
         Note: The viewport defines which area of the level we see as the 
@@ -66,6 +67,7 @@ class GraphicalView(object):
         self.messagearea = None
         self.viewport = None
         self.spritegroup = None
+        self.helpimages = None
         self.messages = [''] * 20
     
     def notify(self, event):
@@ -149,6 +151,11 @@ class GraphicalView(object):
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
                 sometext = 'You have died :('
+        
+        elif state == aliveModel.STATE_HELP:
+            if not self.helpimages:
+                self.helpimages = pygame.image.load('images/help-1.png').convert()
+            self.screen.blit(self.helpimages, (0, 0))
         
         somewords = self.largefont.render(sometext, True, color.green)
         self.screen.blit(somewords, (0, 0))
