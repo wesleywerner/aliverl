@@ -80,7 +80,7 @@ class KeyboardMouse(object):
         Handles dialogue keys.
         """
         
-        if event.key in (pygame.K_SPACE, pygame.K_RETURN):
+        if event.key in (pygame.K_SPACE, pygame.K_RETURN, pygame.K_KP_ENTER):
             self.model.nextdialogue()
         elif event.key == pygame.K_ESCAPE:
             self.model.cleardialogue()
