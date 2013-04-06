@@ -534,3 +534,31 @@ class Sprite(pygame.sprite.Sprite):
             self.image = self._images[self._frame]
             self._last_update = t
     
+class Transition(object):
+    """
+    Base for animated screen transitions.
+    
+    Attributes:
+        complete (bit): True when the transition is over.
+        speed (int): how fast we transist.
+    """
+    
+    def __init__(self):
+        self.complete = False
+        self.speed = 1
+    
+    def update(self):
+        """
+        Step the transition.
+        """
+        
+        
+class SlideinTransition(Transition):
+    """
+    Starts with a small centered square.
+    Elengate the square horizontally into a long rectangle.
+    Elongate the rectangle vertically to fill up the space.
+    """
+    
+    def __init__(self):
+        pass
