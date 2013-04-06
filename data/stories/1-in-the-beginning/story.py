@@ -3,7 +3,7 @@ title = 'in the beginning...'
 description = 'you awaken to consciousness'
 
 # a list of tiles that block character movement
-blocklist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
+blocklist = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 
             16, 17, 18, 19, 20, 21, 22, 23, # wall tiles up to here
             33, 34, 35, # flat door frames
             37, 38, 39, # long door frames
@@ -181,9 +181,11 @@ dialogue = {
                 ]
         },
         
-    'a_switch': {
-        'type': 'news',
-        'words': 'We tell our story through interacting terminals' 
+    'unlock the gate': {
+        'type': 'terminal',
+        'words': ["Accessing remote terminal.........",
+                "Gate terminal unlocked ok.",
+                ]  
         }, 
 
     'a_switch': {

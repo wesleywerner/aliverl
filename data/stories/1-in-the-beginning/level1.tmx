@@ -5,13 +5,16 @@
  </tileset>
  <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYELCjGh8fJgXiLkZUIEUA/EApJcTzUwWIFZBw+j2CiPpR7efFDCqf1T/UNcvwkB8fkXHokAMAP+fAns=
+   eJzjYWBgYELCjGh8fJgXiLkZUIEUA/EApJcTzUwWIFZBw+j2CiPpR7efFIDNfhiGAXz+Z6WC/aP6R/VTol+Egfj8io5FgRgALjYCiw==
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
   <object name="player" type="player" gid="89" x="32" y="64"/>
-  <object gid="65" x="160" y="96"/>
-  <object gid="65" x="192" y="96"/>
+  <object name="cap 1" gid="65" x="160" y="96">
+   <properties>
+    <property name="on finger" value="transmute=69"/>
+   </properties>
+  </object>
   <object gid="65" x="224" y="96"/>
   <object gid="65" x="256" y="96"/>
   <object name="entry door" type="door" gid="37" x="128" y="64">
@@ -30,5 +33,47 @@
     <property name="dialogue" value="welcome to the game"/>
    </properties>
   </object>
+  <object type="term" gid="41" x="192" y="32">
+   <properties>
+    <property name="fingers" value="entry door"/>
+   </properties>
+  </object>
+  <object type="term" gid="45" x="224" y="32">
+   <properties>
+    <property name="message once" value="&quot;I have to find a way out of this node.&quot;"/>
+   </properties>
+  </object>
+  <object name="gate" type="door" gid="33" x="192" y="160">
+   <properties>
+    <property name="on finger" value="transmute=33,36"/>
+   </properties>
+  </object>
+  <object name="broken term" type="term" gid="41" x="256" y="160">
+   <properties>
+    <property name="message 1" value="*bzzzt*"/>
+    <property name="message 2 once" value="This terminal seems broken"/>
+   </properties>
+  </object>
+  <object name="broken term" type="term" gid="41" x="160" y="160">
+   <properties>
+    <property name="message 1 once" value="*bzzzt*"/>
+    <property name="message 2 once" value="This term is locked."/>
+    <property name="on finger 1" value="give=fingers=gate"/>
+    <property name="on finger 2" value="give=message once=*pop*"/>
+    <property name="on finger 4" value="give=fingers once=cap 1"/>
+   </properties>
+  </object>
+  <object name="gate" type="door" gid="33" x="224" y="160">
+   <properties>
+    <property name="on finger" value="transmute=33,36"/>
+   </properties>
+  </object>
+  <object name="unlocker" type="term" gid="55" x="0" y="128">
+   <properties>
+    <property name="dialogue once" value="unlock the gate"/>
+    <property name="fingers once" value="broken term"/>
+   </properties>
+  </object>
+  <object gid="65" x="192" y="96"/>
  </objectgroup>
 </map>
