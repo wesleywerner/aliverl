@@ -6,8 +6,8 @@ import aliveController
 def run():
     evManager = eventmanager.EventManager()
     gamemodel = aliveModel.GameEngine(evManager)
-    kbmousey = aliveController.KeyboardMouse(evManager, gamemodel)
     graphics = aliveView.GraphicalView(evManager, gamemodel)
+    kbmousey = aliveController.KeyboardMouse(evManager, gamemodel, graphics)
     evManager.RegisterListener(gamemodel)
     evManager.RegisterListener(kbmousey)
     evManager.RegisterListener(graphics)

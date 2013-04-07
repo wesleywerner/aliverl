@@ -7,10 +7,11 @@ class KeyboardMouse(object):
     Handles keyboard input.
     """
 
-    def __init__(self, evManager, model):
+    def __init__(self, evManager, model, view):
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.model = model
+        self.view = view
 
     def notify(self, event):
         """
@@ -81,9 +82,10 @@ class KeyboardMouse(object):
         """
         
         if event.key in (pygame.K_SPACE, pygame.K_RETURN, pygame.K_KP_ENTER):
-            self.model.nextdialogue()
+            self.view.nextdialogue()
         elif event.key == pygame.K_ESCAPE:
-            self.model.cleardialogue()
+            # skip all dialogue by going back to the previous model state
+            self.evManager.Post(StateChangeEvent(None))
         
     def menukeys(self, event):
         """

@@ -421,28 +421,13 @@ class GameEngine(object):
         
         if key in self.story.dialogue:
             words = self.story.dialogue[key]['words']
-            self.dialogue.extend(words[::-1])
+            # tell anybody the words that should display
+            self.evManager.Post(DialogueEvent(words))
+            # match the model state
             self.evManager.Post(StateChangeEvent(STATE_DIALOG))
         else:
-            trace.write('dialogue "%s" not found in story file' % (key))
-        
-    def nextdialogue(self):
-        """
-        Move to the next dialogue words.
-        """
-        
-        if self.dialogue:
-            self.dialogue.pop()
-        if not self.dialogue:
-            self.changestate(None)
+            trace.write('dialogue "%s" not found in story definition' % (key))
 
-    def cleardialogue(self):
-        """
-        Clear all dialogue.
-        """
-        
-        self.dialogue = []
-        self.changestate(None)
 
 class GameLevel(object):
     """

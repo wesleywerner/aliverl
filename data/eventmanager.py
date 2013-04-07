@@ -153,6 +153,16 @@ class MessageEvent(Event):
         return self.message
 
 
+class DialogueEvent(Event):
+    """
+    A game dialogue moment ensues.
+    """
+    
+    def __init__(self, words):
+        self.name = 'Dialogue event'
+        self.words = words
+
+
 class KillCharacterEvent(Event):
     """
     Kill a character from the level.
