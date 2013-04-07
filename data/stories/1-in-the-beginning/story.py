@@ -158,6 +158,24 @@ animations = {
             'fps': 6,
             'loop': 0,
             },
+    # blue ice
+    105: {
+            'frames': [105, 106, 107, 108],
+            'fps': 6,
+            'loop': -1,
+            },
+    # green ice
+    113: {
+            'frames': [113, 114, 115, 116],
+            'fps': 6,
+            'loop': -1,
+            },
+    # green virus
+    121: {
+            'frames': [121, 122, 123, 124],
+            'fps': 6,
+            'loop': -1,
+            },
 }
 
 dialogue = {
