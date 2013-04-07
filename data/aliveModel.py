@@ -422,7 +422,7 @@ class GameEngine(object):
         if key in self.story.dialogue:
             words = self.story.dialogue[key]['words']
             self.dialogue.extend(words[::-1])
-            self.changestate(STATE_DIALOG)
+            self.evManager.Post(StateChangeEvent(STATE_DIALOG))
         else:
             trace.write('dialogue "%s" not found in story file' % (key))
         
