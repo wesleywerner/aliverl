@@ -59,6 +59,18 @@ stats = {
             'manarate': 2,
             'mode': 'patrol',
             },
+    'zombie': {
+            'attack': 1,
+            'health': 2,
+            'maxhealth': 2,
+            'healrate': 2,
+            'speed': 1,
+            'stealth': 0,
+            'mana': 5,
+            'maxmana': 5,
+            'manarate': 2,
+            'mode': 'patrol',
+            },
         }
 
 animations = {
@@ -173,6 +185,12 @@ animations = {
     # green virus
     121: {
             'frames': [121, 122, 123, 124],
+            'fps': 6,
+            'loop': -1,
+            },
+    # zombie
+    129: {
+            'frames': [129, 130, 131, 132, 131, 130],
             'fps': 6,
             'loop': -1,
             },
