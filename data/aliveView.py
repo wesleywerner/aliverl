@@ -171,7 +171,7 @@ class GraphicalView(object):
         self.spritegroup.update(pygame.time.get_ticks())
         self.spritegroup.draw(self.objectcanvas)
         self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
-        self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
+        #self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
         
         
     def drawdialogue(self):
