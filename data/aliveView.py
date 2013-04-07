@@ -41,6 +41,8 @@ class GraphicalView(object):
         viewport (Rect): which portion of the game map we are looking at.
         spritegroup (Group): contains all animated, movable objects in play.
         helpimages (Surface): stores the F1 help screens.
+        transition (TransitionBase): currently animated screen transition.
+        transitionbmp (Surface): the transition bitmap renedered upon.
         messages (list): list of recent game messages.
 
         Note: The viewport defines which area of the level we see as the 
@@ -68,7 +70,10 @@ class GraphicalView(object):
         self.viewport = None
         self.spritegroup = None
         self.helpimages = None
+        self.transition = None
+        self.transitionbmp = None
         self.messages = [''] * 20
+        self.gamefps = 30
     
     def notify(self, event):
         """
@@ -77,7 +82,7 @@ class GraphicalView(object):
 
         if isinstance(event, TickEvent):
             self.render()
-            self.clock.tick(30)
+            self.clock.tick(self.gamefps)
         elif isinstance(event, PlayerMovedEvent):
             self.movesprite(event)
             self.erasefog()
@@ -88,6 +93,9 @@ class GraphicalView(object):
             self.messages.append('The %s dies' % (event.character.name))
         elif isinstance(event, UpdateObjectGID):
             self.transmutesprite(event)
+        elif isinstance(event, StateChangeEvent):
+            if event.state == aliveModel.STATE_DIALOG:
+                self.transition = None
         elif isinstance(event, NextLevelEvent):
             self.preparelevel()
             self.erasefog()
@@ -129,24 +137,17 @@ class GraphicalView(object):
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
             
         elif state == aliveModel.STATE_DIALOG:
-            # draw game frame and stats like normal
             self.drawborders()
             self.drawstats()
             self.drawmessages()
-            # dialogue overlay with words
+            self.drawplayground()
             self.drawdialogue()
             
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
             self.drawborders()
             self.drawstats()
             self.drawmessages()
-            self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
-            # update sprites
-            self.objectcanvas.fill(color.magenta)
-            self.spritegroup.update(pygame.time.get_ticks())
-            self.spritegroup.draw(self.objectcanvas)
-            self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
-            self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
+            self.drawplayground()
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
@@ -161,15 +162,38 @@ class GraphicalView(object):
         self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
     
+    def drawplayground(self):
+        """
+        Draw the play area: level tiles and objects.
+        """
+
+        self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
+        self.objectcanvas.fill(color.magenta)
+        self.spritegroup.update(pygame.time.get_ticks())
+        self.spritegroup.draw(self.objectcanvas)
+        self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
+        self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
+        
+        
     def drawdialogue(self):
         """
         Draw current dialogue words.
         """
-        
-        self.screen.blit(self.dialoguebackground, self.playarea)
-        words = self.wrapLines(self.model.dialogue[-1], 25)
-        wordsimage = self.renderLines(words, self.largefont, False, color.green)
-        self.screen.blit(wordsimage, self.playarea.move(40, 40))
+
+        if not self.transition:
+            self.transitionbmp = pygame.Surface(self.playarea.size)
+            self.transitionbmp.set_colorkey(color.magenta)
+            self.transitionbmp.fill(color.magenta)
+            self.transition = SlideinTransition(
+                                self.transitionbmp, self.gamefps, self.largefont)
+        if self.transition.update(pygame.time.get_ticks()):
+            self.screen.blit(self.transitionbmp, self.playarea)
+        else:
+            # dialogue overlay with words        
+            self.screen.blit(self.dialoguebackground, self.playarea)
+            words = self.wrapLines(self.model.dialogue[-1], 25)
+            wordsimage = self.renderLines(words, self.largefont, False, color.green)
+            self.screen.blit(wordsimage, self.playarea.move(40, 40))
         
     def drawborders(self):
         """
@@ -534,31 +558,98 @@ class Sprite(pygame.sprite.Sprite):
             self.image = self._images[self._frame]
             self._last_update = t
     
-class Transition(object):
+    
+class TransitionBase(object):
     """
     Base for animated screen transitions.
     
     Attributes:
-        complete (bit): True when the transition is over.
-        speed (int): how fast we transist.
+        surface (Surface): where to draw onto.
+        size ((w, h)): the size of the surface.
+    Methods:
+        update(): step the transition, returns True while busy
     """
     
-    def __init__(self):
-        self.complete = False
-        self.speed = 1
+    def __init__(self, surface, fps):
+        """
+        Defines an animated transition base.
+        
+        surface is where to draw on.
+        fps determines how often we will draw.
+        """
+        
+        self.surface = surface
+        self.size = surface.get_size()
+        self.delay = 1000 / fps
+        self.lasttime = 0
     
-    def update(self):
+    def canupdate(self, time):
+        """
+        Tests if it is time to update again
+        time is the current game ticks. It is used to calculate when to update
+            so that animations appear constant across varying fps.
+        """
+        
+        if time - self.lasttime > self.delay:
+            self.lasttime = time
+            return True
+        
+    def update(self, time):
+        """
+        Step the transition.
+        use canupdate(time) to test if it is time to redraw.
+        Returns True when the transition is done.
+        """
+        
+        if self.canupdate(time):
+            return True
+
+
+class SlideinTransition(TransitionBase):
+    """
+    Starts with the words "connecting..." centered.
+    A small centered square below the words elongates horizontally 
+        into a long rectangle.
+    Elongate the rectangle vertically to fill up the space.
+    The words disappear.
+    """
+    
+    def __init__(self, surface, fps, font):
+        """
+        surface is where to draw on.
+        font is for drawing the title text.
+        """
+        
+        super(SlideinTransition, self).__init__(surface, fps)
+        self.font = font
+        self.resizingwidth = True
+        self.resizingheight = False
+        self.box = pygame.Rect(0, 0, 10, 10)
+        # center the box according to full size
+        self.box.center = (self.size[0] / 2, self.size[1] / 2)
+        # prerender the words and center them
+        self.fontpix = self.font.render('connecting...', False, color.green)
+        self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
+        #self.fontloc = self.fontloc.move(0, -self.fontpix.get_height())
+        self.fontloc.center = (self.size[0] / 2, self.size[1] / 2)
+        # reduce the size now to draw animations within a margin
+        self.size = (self.size[0] -100, self.size[1] -100)
+        
+    def update(self, time):
         """
         Step the transition.
         """
         
-        
-class SlideinTransition(Transition):
-    """
-    Starts with a small centered square.
-    Elengate the square horizontally into a long rectangle.
-    Elongate the rectangle vertically to fill up the space.
-    """
-    
-    def __init__(self):
-        pass
+        if self.canupdate(time):
+            if self.resizingheight:
+                self.box = self.box.inflate(0, 120)
+                self.resizingheight = self.box.h < self.size[1]
+            elif self.resizingwidth:
+                self.box = self.box.inflate(120, 0)
+                self.resizingwidth = self.box.w < self.size[0]
+                self.resizingheight = not self.resizingwidth
+            
+        pygame.draw.rect(self.surface, color.black, self.box)
+        pygame.draw.rect(self.surface, color.blue, self.box, 3)
+        self.surface.blit(self.fontpix, self.fontloc)
+        return self.resizingwidth or self.resizingheight
