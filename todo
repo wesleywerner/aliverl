@@ -1,5 +1,7 @@
 * implement a player walked path for 'follower' ai modes to pick up on if they cross it. (a future ability will reduce your path history)
 
+* add a 'ondeath' object action that triggers during combat
+
 * implement abilities
 
 * add the UI button class
