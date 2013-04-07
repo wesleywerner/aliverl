@@ -84,8 +84,7 @@ class KeyboardMouse(object):
         if event.key in (pygame.K_SPACE, pygame.K_RETURN, pygame.K_KP_ENTER):
             self.view.nextdialogue()
         elif event.key == pygame.K_ESCAPE:
-            # skip all dialogue by going back to the previous model state
-            self.evManager.Post(StateChangeEvent(None))
+            self.view.closedialogue()
         
     def menukeys(self, event):
         """

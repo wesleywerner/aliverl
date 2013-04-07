@@ -95,7 +95,6 @@ class GraphicalView(object):
             self.transmutesprite(event)
         elif isinstance(event, DialogueEvent):
             self.dialoguewords = event.words[::-1]
-            self.transition = None
         elif isinstance(event, NextLevelEvent):
             self.preparelevel()
             self.erasefog()
@@ -212,11 +211,23 @@ class GraphicalView(object):
             # remove one dialogue screen and refire the vent for the remaining
             self.dialoguewords.pop()
             if self.dialoguewords:
+                self.transition = None
                 self.evManager.Post(DialogueEvent(self.dialoguewords[::-1]))
             else:
                 # no dialogue left, pop the model stack back to whence it came.
+                self.transitionstep = 0
+                self.transition = None
                 self.evManager.Post(StateChangeEvent(None))
-
+    
+    def closedialogue(self):
+        """
+        Close running dialogues and reset for next time.
+        """
+        
+        self.transitionstep = 0
+        self.transition = None
+        self.evManager.Post(StateChangeEvent(None))
+        
     def drawborders(self):
         """
         Draw game borders.
@@ -603,7 +614,7 @@ class TransitionBase(object):
         
         self.surface = surface
         self.size = surface.get_size()
-        self.delay = 1000 / fps
+        self.delay = 500 / fps
         self.lasttime = 0
     
     def canupdate(self, time):
@@ -664,7 +675,7 @@ class SlideinTransition(TransitionBase):
         
         if self.canupdate(time):
             if self.resizingheight:
-                self.box = self.box.inflate(0, 120)
+                self.box = self.box.inflate(0, 60)
                 self.resizingheight = self.box.h < self.size[1]
             elif self.resizingwidth:
                 self.box = self.box.inflate(60, 0)
@@ -672,7 +683,7 @@ class SlideinTransition(TransitionBase):
                 self.resizingheight = not self.resizingwidth
             
         pygame.draw.rect(self.surface, color.black, self.box)
-        pygame.draw.rect(self.surface, color.blue, self.box, 3)
+        pygame.draw.rect(self.surface, color.blue, self.box, 1)
         self.surface.blit(self.fontpix, self.fontloc)
         return self.resizingwidth or self.resizingheight
 
@@ -700,7 +711,6 @@ class TerminalPrinter(TransitionBase):
         self.yposition = 0
         self.done = False
         self.lastfontheight = 0
-        self.delay = self.delay * 0.5
         
     def update(self, time):
         """
