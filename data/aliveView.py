@@ -83,7 +83,7 @@ class GraphicalView(object):
         if isinstance(event, TickEvent):
             self.render()
             self.clock.tick(self.gamefps)
-        elif isinstance(event, PlayerMovedEvent):
+        elif isinstance(event, CharacterMovedEvent):
             self.movesprite(event)
             self.erasefog()
         elif isinstance(event, MessageEvent):

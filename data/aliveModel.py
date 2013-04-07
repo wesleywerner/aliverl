@@ -174,46 +174,49 @@ class GameEngine(object):
         
         if not self.gamerunning:
             return False
+
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
         
-        # increase turn 
-        self.turn += 1
-        
-        # other object collision detection
-        for obj in self.objects:
-            if obj.x == newx and obj.y == newy:
-                # test for any triggers on this object.
-                # this will happen if it blocks us (terminals)
-                # or not (touch plates). even AI can have triggers.
-                if (character is self.player) and (not self.processtriggers(obj)):
-                    return False
-                # these objects means combat!
-                if obj.type in ('ai', 'player'):
-                    # only combat if one or the other is the player
-                    if (obj is self.player) or (character is self.player):
-                        self.evManager.Post(CombatEvent(character, obj))
-                    return False
-                elif obj.gid in self.story.blocklist:
-                    return False
+        collider = self.getcharacterat((newx, newy))
+        if collider:
+            # let the player process collider triggers
+            if (character is self.player) and (not self.processtriggers(collider)):
+                return False
+            # both ai and player can initiate combat
+            if collider.type in ('ai', 'player'):
+                # but only if one or the other is the player
+                if (collider is self.player) or (character is self.player):
+                    self.evManager.Post(CombatEvent(character, collider))
+                return False
+            # collider is in the blocklist
+            if collider.gid in self.story.blocklist:
+                return False
+
         # tile collisions
         for layer in self.level.tmx.tilelayers:
             gid = layer.at((newx, newy - FIX_YOFFSET))
             if gid in self.story.blocklist:
                 trace.write('tile collision with %s' % (gid))
                 return False
+
         # accept movement
         character.x, character.y = (newx, newy)
         character.px, character.py = (newx*self.level.tmx.tile_width, 
                                       newy*self.level.tmx.tile_height)
-        # update what we can see
-        self.lookaround()
-        # heal turn
-        self.healcharacters()
-        # ai move turn
-        self.movecomputer()
-        self.evManager.Post(PlayerMovedEvent(id(character), direction))
-        #if character is self.player:
+        # turn management
+        if character is self.player:
+            # increase turn 
+            self.turn += 1
+            # update what we can see
+            self.lookaround()
+            # heal turn
+            self.healcharacters()
+            # ai move turn
+            self.movecomputer()
+        
+        # tell other listeners this character has moved
+        self.evManager.Post(CharacterMovedEvent(id(character), direction))
             #self.evManager.Post(ShiftViewportEvent(character.getpixelxy()))
 
     def movecomputer(self):

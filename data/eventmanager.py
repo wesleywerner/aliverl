@@ -54,16 +54,17 @@ class PlayerMoveRequestEvent(Event):
         self.direction = direction
 
     def __str__(self):
-        return '%s offset %s' % (self.name, self.direction)
+        return ''
+        #return '%s offset %s' % (self.name, self.direction)
     
-class PlayerMovedEvent(Event):
+class CharacterMovedEvent(Event):
     """
     Request to move the player object.
     Direction (x, y): tile offset to move.
     """
     
     def __init__(self, objectid, direction):
-        self.name = 'Player moved event'
+        self.name = 'Character moved event'
         self.direction = direction
         self.objectid = objectid
     
