@@ -9,3 +9,10 @@
 * save game state
 
 * find music to play randomly from a playlist. remove from playlist once played.
+
+* if a 'ai' object type is not defined in story.py then it fails:
+
+    line 214, in movecharacter self.healcharacters()
+    File "aliveModel.py", line 279, in healcharacters
+        if npc.health < npc.maxhealth:
+    AttributeError: 'Mapobject' object has no attribute 'health'
