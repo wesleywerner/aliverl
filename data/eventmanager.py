@@ -63,10 +63,10 @@ class CharacterMovedEvent(Event):
     Direction (x, y): tile offset to move.
     """
     
-    def __init__(self, objectid, direction):
+    def __init__(self, obj, direction):
         self.name = 'Character moved event'
         self.direction = direction
-        self.objectid = objectid
+        self.obj = obj
     
     def __str__(self):
         return ''

@@ -177,14 +177,25 @@ class GameEngine(object):
 
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
-        
-        collider = self.getcharacterat((newx, newy))
-        if collider:
-            # let the player process collider triggers
-            if (character is self.player) and (not self.processtriggers(collider)):
-                return False
-            # both ai and player can initiate combat
-            if collider.type in ('ai', 'player'):
+        colliders = self.getcharactersat((newx, newy))
+
+        # turn management
+        if character is self.player:
+            # increase turn 
+            self.turn += 1
+            # update what we can see
+            self.lookaround()
+            # heal turn
+            self.healcharacters()
+            # ai move turn
+            self.movecomputer()
+            # player can trigger objects
+            for collider in colliders:
+                self.processtriggers(collider)
+
+        for collider in colliders:
+            # initiate combat
+            if collider.type in ('ai', 'player') and character.type != 'friend':
                 # but only if one or the other is the player
                 if (collider is self.player) or (character is self.player):
                     self.evManager.Post(CombatEvent(character, collider))
@@ -197,34 +208,22 @@ class GameEngine(object):
         for layer in self.level.tmx.tilelayers:
             gid = layer.at((newx, newy - FIX_YOFFSET))
             if gid in self.story.blocklist:
-                trace.write('tile collision with %s' % (gid))
                 return False
 
         # accept movement
         character.x, character.y = (newx, newy)
         character.px, character.py = (newx*self.level.tmx.tile_width, 
                                       newy*self.level.tmx.tile_height)
-        # turn management
-        if character is self.player:
-            # increase turn 
-            self.turn += 1
-            # update what we can see
-            self.lookaround()
-            # heal turn
-            self.healcharacters()
-            # ai move turn
-            self.movecomputer()
-        
-        # tell other listeners this character has moved
-        self.evManager.Post(CharacterMovedEvent(id(character), direction))
-            #self.evManager.Post(ShiftViewportEvent(character.getpixelxy()))
+
+        # notify listeners this character has moved
+        self.evManager.Post(CharacterMovedEvent(character, direction))
 
     def movecomputer(self):
         """
         Moves all the ai characters.
         """
         
-        for obj in [e for e in self.objects if e.type == 'ai' and not e.dead]:
+        for obj in [e for e in self.objects if e.type in ('ai', 'friend') and not e.dead]:
             #TODO implement intelligent ai movement
             if random.randint(0, 1):
                 x = random.randint(-1, 1)
@@ -258,14 +257,12 @@ class GameEngine(object):
         else:
             return None
     
-    def getcharacterat(self, xy):
+    def getcharactersat(self, xy):
         """
-        Get character by location.
+        Get a list of characters at xy.
         """
         
-        match = [e for e in self.objects if e.getxy() == xy]
-        if match:
-            return match[0]
+        return [e for e in self.objects if e.getxy() == xy]
         
     def healcharacters(self):
         """
@@ -338,11 +335,12 @@ class GameEngine(object):
                             transmute_id = int(options[0])
                     # do not transmute to blocklist gid's if anyone is 
                     # standing on the finger target (cant close doors)
-                    fingerfriend = self.getcharacterat(obj.getxy())
-                    if fingerfriend and fingerfriend is not obj and \
-                                    transmute_id in self.story.blocklist:
-                        trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
-                        return False
+                    fingerfriends = self.getcharactersat(obj.getxy())
+                    print(fingerfriends)
+                    for ff in fingerfriends:
+                        if ff is not obj and transmute_id in self.story.blocklist:
+                            trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
+                            return False
                     # transmorgify!
                     obj.gid = transmute_id
                     self.evManager.Post(UpdateObjectGID(obj, obj.gid))

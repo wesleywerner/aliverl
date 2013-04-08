@@ -472,11 +472,11 @@ class GraphicalView(object):
         """
         
         tmx = self.model.level.tmx
+        oid = id(event.obj)
         for sprite in self.spritegroup:
-            if sprite.name == event.objectid:
-                sprite.rect = sprite.rect.move(
-                    event.direction[0] * tmx.tile_width,
-                    event.direction[1] * tmx.tile_height)
+            if sprite.name == oid:
+                sprite.rect.topleft = ((event.obj.x * tmx.tile_width),
+                                        (event.obj.y * tmx.tile_height) - FIX_YOFFSET)
                 return
 
     def removesprite(self, mapobject):

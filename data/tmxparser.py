@@ -205,6 +205,13 @@ class Mapobject(ObjectHelper):
 
         return (self.x, self.y)
 
+    def setxy(self, xy):
+        """
+        Set a new (x, y)
+        """
+        
+        self.x, self.y = xy
+
 
 class TilesetParser(dict):
     """
