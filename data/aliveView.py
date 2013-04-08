@@ -315,6 +315,8 @@ class GraphicalView(object):
                     outlines.append(line[:maxpos].strip())
                     line = line[maxpos:].strip()
                 else:
+                    if len(line) == 0:
+                        line = ' '
                     outlines.append(line)
                     break
         return outlines
