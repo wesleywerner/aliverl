@@ -193,11 +193,16 @@ class GraphicalView(object):
                                     canvas, self.playarea, self.gamefps, 
                                     self.largefont, 'connecting...')
             elif self.transitionstep == 1:
-                words = self.wrapLines(self.dialoguewords[-1], 25)
+                wordcolor = color.green
+                words = self.dialoguewords[-1]
+                # words may be (color, words)
+                if type(words) is tuple:
+                    wordcolor, words = words
+                words = self.wrapLines(words, 25)
                 canvas.blit(self.dialoguebackground, self.playarea)
                 self.transition = TerminalPrinter(
                                     canvas, self.playarea, self.gamefps, 
-                                    self.largefont, words)
+                                    self.largefont, words, wordcolor)
         else:
             if (self.transition.done and not self.transition.waitforkey):
                 # chain next transition (except 2 which waits for keypress)
@@ -714,7 +719,7 @@ class TerminalPrinter(TransitionBase):
     Simulates typing out blocks of text onto the screen.
     """
     
-    def __init__(self, surface, viewport, fps, font, words):
+    def __init__(self, surface, viewport, fps, font, words, wordcolor):
         """
         surface is where to draw on.
         font is for drawing the title text.
@@ -723,6 +728,7 @@ class TerminalPrinter(TransitionBase):
         
         super(TerminalPrinter, self).__init__(surface, viewport, fps)
         self.words = words
+        self.wordcolor = wordcolor
         self.font = font
         self.xpadding = 32
         self.ypadding = 32
@@ -747,7 +753,7 @@ class TerminalPrinter(TransitionBase):
                 self.done = self.lineindex == len(self.words)
             if not self.done:
                 c = self.words[self.lineindex][self.charindex]
-                glyph = self.font.render(c, False, color.green)
+                glyph = self.font.render(c, False, self.wordcolor)
                 self.surface.blit(glyph, 
                                     (self.xposition + self.xpadding, 
                                     self.yposition + self.ypadding))
