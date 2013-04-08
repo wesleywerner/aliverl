@@ -9,7 +9,7 @@
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="32" y="64"/>
+  <object name="player" type="player" gid="97" x="64" y="64"/>
   <object name="cap 1" gid="65" x="160" y="96">
    <properties>
     <property name="on finger" value="transmute=69"/>
@@ -25,12 +25,12 @@
   <object name="door switch" type="term" gid="42" x="96" y="96">
    <properties>
     <property name="fingers" value="entry door"/>
-    <property name="message once" value="The door opens. You see glowing tubes and adventure ahead ..."/>
+    <property name="message once" value="Access granted. You see glowing tubes and adventure ahead."/>
    </properties>
   </object>
   <object name="welcome term" type="term" gid="55" x="0" y="64">
    <properties>
-    <property name="dialogue" value="welcome to the game"/>
+    <property name="dialogue" value="welcome email"/>
    </properties>
   </object>
   <object type="term" gid="41" x="192" y="32">
@@ -76,8 +76,13 @@
   </object>
   <object gid="65" x="192" y="96"/>
   <object name="ice" type="ai" gid="105" x="160" y="320"/>
-  <object name="ice" type="ai" gid="113" x="128" y="256"/>
+  <object name="ice" type="friend" gid="113" x="320" y="256"/>
   <object name="virus" type="ai" gid="121" x="192" y="256"/>
   <object name="zombie" type="ai" gid="129" x="96" y="352"/>
+  <object name="touchplate" type="door" gid="8" x="32" y="64">
+   <properties>
+    <property name="message" value="You see a message blink on the terminal ahead."/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

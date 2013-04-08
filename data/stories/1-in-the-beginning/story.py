@@ -1,3 +1,4 @@
+import color
 # the title of this story
 title = 'in the beginning...'
 description = 'you awaken to consciousness'
@@ -9,6 +10,7 @@ blocklist = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15,
             37, 38, 39, # long door frames
             65, 66, 67, 68, # flat capacitors
             73, 74, 75, 76, # long capacitors
+            105, 113, 121, 129, # npc's
             ]
 
 # list of levels in this story
@@ -197,7 +199,14 @@ animations = {
 }
 
 dialogue = {
-
+    'welcome email': {
+        'type': 'email',
+        'words': [
+            (color.text, "[secure message received]\n\nTO: AI #1223\nFROM: NODE ADMIN\nSUBJECT: REBOOT REQUIRED\n \nThe file server has crashed. Request you find it's access point and reboot it.\n \n-EOF-"),
+            (color.green, "Crashed... again?!\n\nThat server sure is unstable.\n\nLet me find that access point, it is on this level somewhere."),
+                ]
+    },
+    
     'welcome to the game': {
         'type': 'story',
         'words': ["A wave of static tickles my sensors as I enter the BBS node.",
