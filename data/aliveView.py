@@ -293,23 +293,27 @@ class GraphicalView(object):
         self.messages = self.messages[-20:]
         
     def wrapLines(self, message, maxlength):
-        """ Takes a long string and returns a list of lines. 
-        maxlength is the characters per line. """
-        lines = []
-        while len(message) > maxlength:
-            cutoff = message.find(' ', maxlength)
-            if cutoff > 0:
-                lines.insert(0,message[:cutoff])
-                message = message[cutoff:]
-            else:
-                lines.insert(0, message)
-                message = ''
-        # add any remainder
-        if len(message) > 0:
-            lines.insert(0, message)
-        # unreverse the order
-        lines.reverse()
-        return lines
+        """
+        Takes a long string and returns a list of lines.
+        maxlength is the characters per line.
+        """
+        
+        # first split any newlines
+        inlines = message.split('\n')
+        outlines = []
+        # chop up any lines longer than maxlength
+        for line in inlines:
+            while True:
+                maxpos = line.find(' ', maxlength)
+                if maxpos > 0:
+                    # split this line into smaller chunks
+                    outlines.append(line[:maxpos].strip())
+                    line = line[maxpos:].strip()
+                else:
+                    outlines.append(line)
+                    break
+        return outlines
+
 
     def renderLines(self, lines, font, antialias, fontcolor, colorize=None, background=None):
         """ # Simple functions to easily render pre-wrapped text onto a single
