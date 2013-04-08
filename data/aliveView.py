@@ -157,6 +157,10 @@ class GraphicalView(object):
                 self.helpimages = pygame.image.load('images/help-1.png').convert()
             self.screen.blit(self.helpimages, (0, 0))
         
+        if self.transition:
+            self.transition.update(pygame.time.get_ticks())
+            self.screen.blit(self.transition.surface, (0, 0))
+
         somewords = self.largefont.render(sometext, True, color.green)
         self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
@@ -177,30 +181,33 @@ class GraphicalView(object):
     def drawdialogue(self):
         """
         Draw current dialogue words.
+        transitionstep is an indicator for this call for chaining transitions.
         """
-        
-        if not self.transition:
-            if self.transitionstep == 0:
-                canvas = pygame.Surface(self.playarea.size)
-                canvas.set_colorkey(color.magenta)
-                canvas.fill(color.magenta)
-                self.transition = SlideinTransition(
-                                    canvas, self.gamefps, self.largefont)
-            elif self.transitionstep == 1:
-                canvas = pygame.Surface(self.playarea.size)
-                canvas.blit(self.dialoguebackground, (0, 0))
-                words = self.wrapLines(self.dialoguewords[-1], 25)
-                self.transition = TerminalPrinter(
-                                    canvas, self.gamefps, self.largefont, words)
 
-        if self.transition.update(pygame.time.get_ticks()):
-            self.screen.blit(self.transition.surface, self.playarea)
-        else:
-            # this transition has ended. move to the next.
-            # the last transition in these steps always update() to True
+        if not self.transition:
+            canvas = pygame.Surface(self.screen.get_size())
+            canvas.set_colorkey(color.magenta)
+            canvas.fill(color.magenta)
             if self.transitionstep == 0:
-                self.transitionstep = 1
+                self.transition = SlideinTransition(
+                                    canvas, self.playarea, self.gamefps, 
+                                    self.largefont, 'connecting...')
+            elif self.transitionstep == 1:
+                words = self.wrapLines(self.dialoguewords[-1], 25)
+                canvas.blit(self.dialoguebackground, self.playarea)
+                self.transition = TerminalPrinter(
+                                    canvas, self.playarea, self.gamefps, 
+                                    self.largefont, words)
+        else:
+            if (self.transition.done and not self.transition.waitforkey):
+                # chain next transition (except 2 which waits for keypress)
+                self.transitionstep += 1
                 self.transition = None
+                # end the sequence
+                if self.transitionstep > 1:
+                    self.transition = None
+                    self.transitionstep = 0
+                    self.evManager.Post(StateChangeEvent(None))
 
     def nextdialogue(self):
         """
@@ -215,8 +222,8 @@ class GraphicalView(object):
                 self.evManager.Post(DialogueEvent(self.dialoguewords[::-1]))
             else:
                 # no dialogue left, pop the model stack back to whence it came.
-                self.transitionstep = 0
                 self.transition = None
+                self.transitionstep = 0
                 self.evManager.Post(StateChangeEvent(None))
     
     def closedialogue(self):
@@ -224,8 +231,8 @@ class GraphicalView(object):
         Close running dialogues and reset for next time.
         """
         
-        self.transitionstep = 0
         self.transition = None
+        self.transitionstep = 0
         self.evManager.Post(StateChangeEvent(None))
         
     def drawborders(self):
@@ -604,18 +611,25 @@ class TransitionBase(object):
         update(): step the transition, returns True while busy
     """
     
-    def __init__(self, surface, fps):
+    def __init__(self, surface, viewport, fps):
         """
         Defines an animated transition base.
         
         surface is where to draw on.
-        fps determines how often we will draw.
+        viewport tells us the area to draw within surface.
+        fps isused to calculate constant redraw speed for any fps.
+        
+        Attributes:
+            done (bit): set to True when the animation is complete.
+            waitforkey (bit): flags to wait for user keypress.
         """
         
         self.surface = surface
-        self.size = surface.get_size()
+        self.viewport = viewport
         self.delay = 500 / fps
         self.lasttime = 0
+        self.done = False
+        self.waitforkey = False
     
     def canupdate(self, time):
         """
@@ -632,7 +646,7 @@ class TransitionBase(object):
         """
         Step the transition.
         use canupdate(time) to test if it is time to redraw.
-        Returns True when the transition is done.
+        Returns True while transitioning.
         """
         
         if self.canupdate(time):
@@ -648,25 +662,28 @@ class SlideinTransition(TransitionBase):
     The words disappear.
     """
     
-    def __init__(self, surface, fps, font):
+    def __init__(self, surface, viewport, fps, font, title):
         """
         surface is where to draw on.
         font is for drawing the title text.
+        title is the words to display during.
         """
         
-        super(SlideinTransition, self).__init__(surface, fps)
-        self.resizingwidth = True
-        self.resizingheight = False
+        super(SlideinTransition, self).__init__(surface, viewport, fps)
         self.box = pygame.Rect(0, 0, 10, 10)
         # center the box according to full size
-        self.box.center = (self.size[0] / 2, self.size[1] / 2)
+        self.box.center = viewport.center
         # prerender the words and center them
-        self.fontpix = font.render('connecting...', False, color.green)
+        self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
-        #self.fontloc = self.fontloc.move(0, -self.fontpix.get_height())
-        self.fontloc.center = (self.size[0] / 2, self.size[1] / 2)
+        self.fontloc.center = viewport.center
         # reduce the size now to draw animations within a margin
-        self.size = (self.size[0] -32, self.size[1] -32)
+        self.size = (self.viewport.width -32, self.viewport.height -32)
+        # toggle delta direction
+        self.xdelta = 60
+        self.ydelta = 60
+        self.resizingwidth = True
+        self.resizingheight = False
         
     def update(self, time):
         """
@@ -675,17 +692,17 @@ class SlideinTransition(TransitionBase):
         
         if self.canupdate(time):
             if self.resizingheight:
-                self.box = self.box.inflate(0, 60)
+                self.box = self.box.inflate(0, self.ydelta)
                 self.resizingheight = self.box.h < self.size[1]
             elif self.resizingwidth:
-                self.box = self.box.inflate(60, 0)
+                self.box = self.box.inflate(self.xdelta, 0)
                 self.resizingwidth = self.box.w < self.size[0]
                 self.resizingheight = not self.resizingwidth
-            
-        pygame.draw.rect(self.surface, color.black, self.box)
-        pygame.draw.rect(self.surface, color.blue, self.box, 1)
-        self.surface.blit(self.fontpix, self.fontloc)
-        return self.resizingwidth or self.resizingheight
+            pygame.draw.rect(self.surface, color.black, self.box)
+            pygame.draw.rect(self.surface, color.blue, self.box, 1)
+            self.surface.blit(self.fontpix, self.fontloc)
+            self.done = not self.resizingwidth and not self.resizingheight
+        return not self.done
 
 
 class TerminalPrinter(TransitionBase):
@@ -693,24 +710,24 @@ class TerminalPrinter(TransitionBase):
     Simulates typing out blocks of text onto the screen.
     """
     
-    def __init__(self, surface, fps, font, words):
+    def __init__(self, surface, viewport, fps, font, words):
         """
         surface is where to draw on.
         font is for drawing the title text.
         words is a list of strings to print. one row per list item.
         """
         
-        super(TerminalPrinter, self).__init__(surface, fps)
+        super(TerminalPrinter, self).__init__(surface, viewport, fps)
         self.words = words
         self.font = font
         self.xpadding = 32
         self.ypadding = 32
         self.lineindex = 0
         self.charindex = 0
-        self.xposition = 0
-        self.yposition = 0
+        self.xposition, self.yposition = self.viewport.topleft
         self.done = False
         self.lastfontheight = 0
+        self.waitforkey = True
         
     def update(self, time):
         """
@@ -720,7 +737,7 @@ class TerminalPrinter(TransitionBase):
         if self.canupdate(time) and not self.done:
             if self.charindex == len(self.words[self.lineindex]):
                 self.lineindex += 1
-                self.xposition = 0
+                self.xposition = self.viewport.left
                 self.charindex = 0
                 self.yposition += self.lastfontheight
                 self.done = self.lineindex == len(self.words)

@@ -9,7 +9,7 @@
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="64" y="288"/>
+  <object name="player" type="player" gid="97" x="32" y="64"/>
   <object name="cap 1" gid="65" x="160" y="96">
    <properties>
     <property name="on finger" value="transmute=69"/>
