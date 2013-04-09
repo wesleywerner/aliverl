@@ -202,8 +202,9 @@ dialogue = {
     'welcome email': {
         'type': 'email',
         'words': [
-            (color.text, "[secure message received]\n\nTO: AI #1223\nFROM: NODE ADMIN\nSUBJECT: REBOOT REQUIRED\n \nThe file server has crashed. Request you find it's access point and reboot it.\n \n-EOF-"),
-            (color.green, "Crashed... again?!\n\nThat server sure is unstable.\n\nLet me find that access point, it is on this level somewhere."),
+            (color.text, "** secure email **\n\nTO: AI #1223\nFROM: NODE ADMIN\nSUBJECT: REBOOT REQUIRED\n \nThe file server has crashed. Request you find it's access point and reboot it.\n \n-EOF-"),
+            (color.green, "Crashed... again?!\n\nThat server sure is unstable.\n\nSince when did I feel annoyed? And why do I feel like cookies? ..."),
+            (color.green, "Let me find that access point, it is on this level somewhere."),
                 ]
     },
     
