@@ -136,8 +136,6 @@ class GameEngine(object):
         self.level = GameLevel(nextlevel, levelfilename)
         self.loadcharacters()
         self.evManager.Post(NextLevelEvent(levelfilename))
-        #self.evManager.Post(ShiftViewportEvent(self.player.getpixelxy()))
-        print(len(self.story.entrymessages), nextlevel)
         if len(self.story.entrymessages) <= nextlevel:
             self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
 
@@ -336,7 +334,6 @@ class GameEngine(object):
                     # do not transmute to blocklist gid's if anyone is 
                     # standing on the finger target (cant close doors)
                     fingerfriends = self.getcharactersat(obj.getxy())
-                    print(fingerfriends)
                     for ff in fingerfriends:
                         if ff is not obj and transmute_id in self.story.blocklist:
                             trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
