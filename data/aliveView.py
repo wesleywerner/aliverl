@@ -182,9 +182,17 @@ class GraphicalView(object):
         """
         Draw current dialogue words.
         transitionstep is an indicator for this call for chaining transitions.
+        
+        transitionstep is used to control chaining transitions together.
+        values (0, 2) signal to create a new transition.
+        when in (1, 3) it means switch to the next one.
+        
         """
 
-        if not self.transition:
+        if (self.transition and (not self.transition.done or self.transition.waitforkey)):
+            return False
+        
+        if self.transitionstep in (0, 2):
             canvas = pygame.Surface(self.screen.get_size())
             canvas.set_colorkey(color.magenta)
             canvas.fill(color.magenta)
@@ -192,53 +200,49 @@ class GraphicalView(object):
                 self.transition = SlideinTransition(
                                     canvas, self.playarea, self.gamefps, 
                                     self.largefont, 'connecting...')
-            elif self.transitionstep == 1:
-                wordcolor = color.green
-                words = self.dialoguewords[-1]
-                # words may be (color, words)
-                if type(words) is tuple:
-                    wordcolor, words = words
-                words = self.wrapLines(words, 25)
-                canvas.blit(self.dialoguebackground, self.playarea)
-                self.transition = TerminalPrinter(
-                                    canvas, self.playarea, self.gamefps, 
-                                    self.largefont, words, wordcolor)
-        else:
-            if (self.transition.done and not self.transition.waitforkey):
-                # chain next transition (except 2 which waits for keypress)
+            elif self.transitionstep == 2:
+                if self.dialoguewords:
+                    wordcolor = color.green
+                    words = self.dialoguewords[-1]
+                    # words may be (color, words)
+                    if type(words) is tuple:
+                        wordcolor, words = words
+                    words = self.wrapLines(words, 25)
+                    canvas.blit(self.dialoguebackground, self.playarea)
+                    self.transition = TerminalPrinter(
+                                        canvas, self.playarea, self.gamefps, 
+                                        self.largefont, words, wordcolor)
+            if not self.transition.waitforkey:
                 self.transitionstep += 1
-                self.transition = None
-                # end the sequence
-                if self.transitionstep > 1:
-                    self.transition = None
-                    self.transitionstep = 0
-                    self.evManager.Post(StateChangeEvent(None))
+        else:
+            # automatic chain from open animation to text printer
+            if self.transitionstep == 1:
+                self.transitionstep += 1
 
     def nextdialogue(self):
         """
         Move to the next dialogue line
         """
-        
+
         if self.dialoguewords:
-            # remove one dialogue screen and refire the vent for the remaining
-            self.dialoguewords.pop()
-            if self.dialoguewords:
-                self.transition = None
+            # show each dialogue page as the transition finishes
+            if self.transition.done:
+                self.dialoguewords.pop()
+                self.transition.waitforkey = False
                 self.evManager.Post(DialogueEvent(self.dialoguewords[::-1]))
-            else:
-                # no dialogue left, pop the model stack back to whence it came.
-                self.transition = None
-                self.transitionstep = 0
-                self.evManager.Post(StateChangeEvent(None))
+        if not self.dialoguewords:
+            # no dialogue left, pop the model stack back to whence it came.
+            self.transition = None
+            self.transitionstep = 0
+            self.evManager.Post(StateChangeEvent(None))
     
     def closedialogue(self):
         """
         Close running dialogues and reset for next time.
         """
         
-        self.transition = None
-        self.transitionstep = 0
-        self.evManager.Post(StateChangeEvent(None))
+        self.dialoguewords = []
+        self.nextdialogue()
         
     def drawborders(self):
         """
@@ -762,4 +766,4 @@ class TerminalPrinter(TransitionBase):
                 glyphx, self.lastfontheight = glyph.get_size()
                 self.xposition += glyphx
             self.charindex += 1
-        return True
+        return self.done
