@@ -223,6 +223,8 @@ class GameEngine(object):
         
         for obj in [e for e in self.objects if e.type in ('ai', 'friend') and not e.dead]:
             #TODO implement intelligent ai movement
+            if obj.mode == 'idle':
+                return
             if random.randint(0, 1):
                 x = random.randint(-1, 1)
                 y = random.randint(-1, 1)
