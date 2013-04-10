@@ -119,19 +119,6 @@ Defines player and AI character stats. This matches to the level object's name. 
         * leftright: patrols left and right, turning around when blocked.
         * sniffer: follows the player's scent if on the trail.
 
-**level defines**
-
-* type: ai
-    * defines an enemy object. 
-* type: player
-    * sets the player object on a level. this is the one required object on any level.
-* type: friend
-    * friends do not fight
-* property: exit
-    * interacting with this object exits the level and moves to the next.
-
-
-
 ~~~python
     # The title and description of this story
     title = 'in the beginning...'
@@ -220,6 +207,23 @@ We configure the close animation keyframe (33) to [35, 34, 33]. The sequence rev
 
 We end with our key frames because with no loop the animation stops on the last frame.
 
+### Object Reference
+
+You may apply these properties to level objects for more effect.
+
+**types**
+
+* player
+    * sets the player object on a level. this is the one required object on any level.
+* ai
+    * sets an enemy object. 
+* friend
+    * sets a friend object.
+
+**extended properties**  
+_these are added via the Name-Value property list._
+
+* none as of yet
 
 
 
