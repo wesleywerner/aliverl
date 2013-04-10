@@ -35,7 +35,7 @@ characterstats = {
             'mana': 0,
             'maxmana': 5,
             'manarate': 6,
-            'mode': '',
+            'modes': [],
             },
     'working ai': {
             'attack': 0,
@@ -47,7 +47,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'mode': 'idle',
+            'modes': [],
             },
     'ice': {
             'attack': 1,
@@ -59,7 +59,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'mode': 'patrol',
+            'modes': ['random'],
             },
     'virus': {
             'attack': 1,
@@ -71,7 +71,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'mode': 'patrol',
+            'modes': [],
             },
     'zombie': {
             'attack': 1,
@@ -83,7 +83,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'mode': 'patrol',
+            'modes': [],
             },
         }
 

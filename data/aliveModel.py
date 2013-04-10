@@ -150,7 +150,7 @@ class GameEngine(object):
         defaultproperties = {'dead':False, 'seen':False, 'attack':0, 'health':0,
                              'maxhealth':0,'healrate':0, 'speed':0,
                              'stealth':0, 'mana':0, 'maxmana':5, 'manarate': 6,
-                             'mode': ''
+                             'modes': []
                              }
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
@@ -225,14 +225,20 @@ class GameEngine(object):
         Moves all the ai characters.
         """
         
-        for obj in [e for e in self.objects if e.type in ('ai', 'friend') and not e.dead]:
-            #TODO implement intelligent ai movement
-            if obj.mode == 'idle':
-                return
-            if random.randint(0, 1):
-                x = random.randint(-1, 1)
-                y = random.randint(-1, 1)
-                self.movecharacter(obj, (x, y))
+        for obj in [e for e in self.objects 
+                            if e.type in ('ai', 'friend') and not e.dead]:
+            x, y = (0, 0)
+            for mode in obj.modes:
+                if mode == 'random':
+                    if random.randint(0, 1):
+                        x = random.randint(-1, 1)
+                        y = random.randint(-1, 1)
+            # normalize positions then move
+            x = (x < -1) and -1 or x
+            x = (x > 1) and 1 or x
+            y = (y < -1) and -1 or y
+            y = (y > 1) and 1 or y
+            self.movecharacter(obj, (x, y))
     
     def lookaround(self):
         """
