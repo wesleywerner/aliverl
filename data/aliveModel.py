@@ -2,6 +2,7 @@ import os
 import sys
 import math
 import random
+import const
 from tmxparser import TMXParser
 from eventmanager import *
 
@@ -218,9 +219,9 @@ class GameEngine(object):
         
         # update scent trail
         if character is self.player:
-            self.player.properties['trail'].insert(0, (newx, newy))
-            self.player.properties['trail'] = self.player.properties['trail'][:3]
-            print(self.player.properties['trail'])
+            p = self.player.properties
+            p['trail'].insert(0, (newx, newy))
+            self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
             
         # notify listeners this character has moved
         self.evManager.Post(CharacterMovedEvent(character, direction))
@@ -246,7 +247,9 @@ class GameEngine(object):
         """
         
         for obj in [e for e in self.objects 
-                            if e.type in ('ai', 'friend') and not e.dead]:
+                            if e.type in ('ai', 'friend') 
+                            and not e.dead
+                            and (e.speed > 0) and (int(self.turn % e.speed) == 0)]:
             x, y = (0, 0)
             for mode in obj.modes:
                 if mode == 'random':

@@ -43,7 +43,7 @@ characterstats = {
             'health': 2,
             'maxhealth': 2,
             'healrate': 2,
-            'speed': 2,
+            'speed': 1,
             'stealth': 0,
             'mana': 5,
             'maxmana': 5,
