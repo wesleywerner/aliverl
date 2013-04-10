@@ -469,7 +469,8 @@ class GameEngine(object):
         Remove a character from play.
         """
 
-        self.objects.remove(character)
+        if character in self.objects:
+            self.objects.remove(character)
 
     def changestate(self, state):
         """
