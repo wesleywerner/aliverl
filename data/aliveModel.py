@@ -207,10 +207,8 @@ class GameEngine(object):
                 return False
 
         # tile collisions
-        for layer in self.level.tmx.tilelayers:
-            gid = layer.at((newx, newy - FIX_YOFFSET))
-            if gid in self.story.blocklist:
-                return False
+        if self.tileblocks((newx, newy)):
+            return False
 
         # accept movement
         character.x, character.y = (newx, newy)
@@ -219,6 +217,21 @@ class GameEngine(object):
 
         # notify listeners this character has moved
         self.evManager.Post(CharacterMovedEvent(character, direction))
+
+    def tileblocks(self, xy):
+        """
+        Returns if the tile at (x, y) blocks:
+        """
+        
+        for layer in self.level.tmx.tilelayers:
+            gid = layer.at((xy[0], xy[1] - FIX_YOFFSET))
+            if gid in self.story.blocklist:
+                return True
+        # test objects too
+        objects = self.getcharactersat(xy)
+        for obj in objects:
+            if obj.gid in self.story.blocklist:
+                return True
 
     def movecomputer(self):
         """
@@ -233,12 +246,39 @@ class GameEngine(object):
                     if random.randint(0, 1):
                         x = random.randint(-1, 1)
                         y = random.randint(-1, 1)
+                if mode == 'updown':
+                    if 'movingup' in obj.properties:
+                        if self.tileblocks((obj.x, obj.y-1)):
+                            del obj.properties['movingup']
+                            obj.properties['movingdown'] = True
+                        y += -1
+                    elif 'movingdown' in obj.properties:
+                        if self.tileblocks((obj.x, obj.y+1)):
+                            del obj.properties['movingdown']
+                            obj.properties['movingup'] = True
+                        y += +1
+                    else:
+                        # start the sequence
+                        obj.properties['movingdown'] = True
+                if mode == 'leftright':
+                    if 'movingleft' in obj.properties:
+                        if self.tileblocks((obj.x-1, obj.y)):
+                            del obj.properties['movingleft']
+                            obj.properties['movingright'] = True
+                        x += -1
+                    elif 'movingright' in obj.properties:
+                        if self.tileblocks((obj.x+1, obj.y)):
+                            del obj.properties['movingright']
+                            obj.properties['movingleft'] = True
+                        x += +1
+                    else:
+                        # start the sequence
+                        obj.properties['movingleft'] = True
                 if mode == 'magnet':
                     playerxy = self.player.getxy()
                     objxy = obj.getxy()
                     if self.distance(playerxy, objxy) <= 4:
                         x, y = self.movetowards(objxy, playerxy)
-                        print('magnetized towards', x, y)
             # normalize positions then move
             x = (x < -1) and -1 or x
             x = (x > 1) and 1 or x

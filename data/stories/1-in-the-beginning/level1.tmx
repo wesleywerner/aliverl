@@ -9,7 +9,7 @@
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="64" y="64"/>
+  <object name="player" type="player" gid="97" x="32" y="224"/>
   <object name="cap 1" gid="65" x="160" y="96">
    <properties>
     <property name="on finger" value="transmute=69"/>
@@ -76,9 +76,9 @@
   </object>
   <object gid="65" x="192" y="96"/>
   <object name="ice" type="ai" gid="105" x="160" y="320"/>
-  <object name="ice" type="friend" gid="113" x="320" y="256"/>
+  <object name="working ai" type="friend" gid="113" x="128" y="256"/>
   <object name="virus" type="ai" gid="121" x="192" y="256"/>
-  <object name="zombie" type="ai" gid="129" x="96" y="352"/>
+  <object name="zombieX" type="ai" gid="129" x="96" y="352"/>
   <object name="touchplate" type="door" gid="8" x="32" y="64">
    <properties>
     <property name="message" value="You see a message blink on the terminal ahead."/>
