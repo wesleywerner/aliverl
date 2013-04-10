@@ -233,6 +233,12 @@ class GameEngine(object):
                     if random.randint(0, 1):
                         x = random.randint(-1, 1)
                         y = random.randint(-1, 1)
+                if mode == 'magnet':
+                    playerxy = self.player.getxy()
+                    objxy = obj.getxy()
+                    if self.distance(playerxy, objxy) <= 4:
+                        x, y = self.movetowards(objxy, playerxy)
+                        print('magnetized towards', x, y)
             # normalize positions then move
             x = (x < -1) and -1 or x
             x = (x > 1) and 1 or x
@@ -256,6 +262,25 @@ class GameEngine(object):
         
         return math.sqrt((pointa[0] - pointb[0])**2 + (pointa[1] - pointb[1])**2)
     
+    def movetowards(self, pointa, pointb):
+        """
+        Returns the (x, y) offsets required to move pointa towards pointb.
+        """
+
+        deltax = pointb[0] - pointa[0]
+        deltay = pointb[1] - pointa[1]
+
+        # theta is the angle (in radians) of the direction in which to move
+        theta = math.atan2(deltay, deltax)
+
+        # r is the distance to move
+        r = 1.0
+
+        deltax = r * math.cos(theta)
+        deltay = r * math.sin(theta)
+
+        return (int(round(deltax)), int(round(deltay)))
+
     def getcharacter(self, objectid):
         """
         Get characters object by it's id().

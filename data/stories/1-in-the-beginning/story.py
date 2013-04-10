@@ -59,7 +59,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'modes': ['random'],
+            'modes': ['random', 'magnet'],
             },
     'virus': {
             'attack': 1,
