@@ -10,6 +10,7 @@ blocklist = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15,
             37, 38, 39, # long door frames
             65, 66, 67, 68, # flat capacitors
             73, 74, 75, 76, # long capacitors
+            97, # player
             105, 113, 121, 129, # npc's
             ]
 
@@ -47,7 +48,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'modes': [],
+            'modes': ['leftright'],
             },
     'ice': {
             'attack': 1,
@@ -59,7 +60,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'modes': ['leftright', 'updown'],
+            'modes': ['leftright', 'magnet'],
             },
     'virus': {
             'attack': 1,
