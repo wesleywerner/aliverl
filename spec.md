@@ -74,6 +74,64 @@ Each story lives in the "_data/stories/< story name >/_" directory, this definit
 
 ## Story definition
 
+This describes what values can be defined in the story definition.
+
+### blocklists
+
+Tile GIDs in this list will block any character from moving onto it, for map tiles and objects, player and AI characters.
+
+    blocklist = [1, 2, 3]
+
+### levels
+
+List of the levels in this story.
+
+    levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
+
+### characterstats
+
+Defines player and AI character stats. This matches to the level object's name. If you create a level object with a name that is not defined here it will inherit default stats: idle with no attack or defence.
+
+* attack
+    * damage dealt to and opponent's health during a combat turn
+* health
+    * starting health of a character
+    * if this drops to zero the character dies
+* maxhealth
+    * maximum health this character can heal up to
+* healrate
+    * heal 1 point of health every this many turns
+* speed
+    * move this character every this many turns (computer characters only)
+* stealth
+    * unused
+* mana
+    * starting mana of a character
+* maxmana
+    * maximum mana this character can heal up to
+* manarate
+    * heal 1 point of mana every this many turns
+* modes
+    * a list of AI behaviours
+        * random: moves in random directions.
+        * magnet: moves towards the player while in sight.
+        * updown: patrols up and down, turning around when blocked.
+        * leftright: patrols left and right, turning around when blocked.
+        * hunter: follows the player's scent if crossed.
+
+**level defines**
+
+* type: ai
+    * defines an enemy object. 
+* type: player
+    * sets the player object on a level. this is the one required object on any level.
+* type: friend
+    * friends do not fight
+* property: exit
+    * interacting with this object exits the level and moves to the next.
+
+
+
 ~~~python
     # The title and description of this story
     title = 'in the beginning...'
@@ -103,31 +161,7 @@ Each story lives in the "_data/stories/< story name >/_" directory, this definit
     #
     # Use lowercase keys please.
     
-    'player': {
-            'attack': 1,
-            'health': 4,
-            'maxhealth': 4,
-            'healrate': 4,
-            'speed': 2,
-            'stealth': 0,
-            'mana': 0,
-            'maxmana': 5,
-            'manarate': 6,
-            'mode': '',
-            },
-    'enemy': {
-            'attack': 1,
-            'health': 2,
-            'maxhealth': 2,
-            'healrate': 2,
-            'speed': 2,
-            'stealth': 0,
-            'mana': 5,
-            'maxmana': 5,
-            'manarate': 2,
-            'mode': 'patrol',
-            },
-        }
+    #TODO PASTE SAMPLE
     
     # Define sprite animations for map objects.
     # Placing any object on the map with these gid's will apply
@@ -153,14 +187,8 @@ Each story lives in the "_data/stories/< story name >/_" directory, this definit
     # dialogue 'type' is not yet used by the engine.
     dialogue = {
 
-        'welcome_term': {
-            'type': '',
-            'words': ["This is the first screen of a dialogue.",
-                      "This is the second screen.",
-                      "We use double quotes here.",
-                      ]
-                        },
-        }
+    #TODO PASTE SAMPLE
+    
 ~~~
 
 ## Story levels
@@ -191,14 +219,6 @@ We configure the open animation keyframe (36) to run frames [34, 35, 36]. We end
 We configure the close animation keyframe (33) to [35, 34, 33]. The sequence reversed, and we also end on the keyframe.
 
 We end with our key frames because with no loop the animation stops on the last frame.
-
-#### Object reference
-
-Objects will block character movement as defined in the story.py blocklist. You may use these extra objects properties to make them better:
-
-* type: ai
-* type: player
-* property: exit
 
 
 
