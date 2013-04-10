@@ -48,7 +48,7 @@ characterstats = {
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'modes': ['leftright'],
+            'modes': ['leftright', 'sniffer'],
             },
     'ice': {
             'attack': 1,

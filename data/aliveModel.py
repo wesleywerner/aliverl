@@ -161,6 +161,7 @@ class GameEngine(object):
                 # remember the player object
                 if obj.type == 'player':
                     self.player = obj
+                    self.player.properties['trail'] = []
                 if objname in self.story.characterstats.keys():
                     # apply all properties from story to this object
                     [setattr(obj, k, v) 
@@ -214,7 +215,13 @@ class GameEngine(object):
         character.x, character.y = (newx, newy)
         character.px, character.py = (newx*self.level.tmx.tile_width, 
                                       newy*self.level.tmx.tile_height)
-
+        
+        # update scent trail
+        if character is self.player:
+            self.player.properties['trail'].insert(0, (newx, newy))
+            self.player.properties['trail'] = self.player.properties['trail'][:3]
+            print(self.player.properties['trail'])
+            
         # notify listeners this character has moved
         self.evManager.Post(CharacterMovedEvent(character, direction))
 
@@ -279,6 +286,14 @@ class GameEngine(object):
                     objxy = obj.getxy()
                     if self.distance(playerxy, objxy) <= 4:
                         x, y = self.movetowards(objxy, playerxy)
+                if mode == 'sniffer':
+                    #TODO sniffer dog
+                    objxy = obj.getxy()
+                    trail = self.player.properties['trail']
+                    if objxy in trail:
+                        idx = trail.index(objxy) - 1
+                        if idx >= 0:
+                            x, y = self.movetowards(objxy, trail[idx])
             # normalize positions then move
             x = (x < -1) and -1 or x
             x = (x > 1) and 1 or x

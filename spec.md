@@ -117,7 +117,7 @@ Defines player and AI character stats. This matches to the level object's name. 
         * magnet: moves towards the player while in sight.
         * updown: patrols up and down, turning around when blocked.
         * leftright: patrols left and right, turning around when blocked.
-        * hunter: follows the player's scent if crossed.
+        * sniffer: follows the player's scent if on the trail.
 
 **level defines**
 
