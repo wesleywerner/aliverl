@@ -147,7 +147,11 @@ class GameEngine(object):
         
         self.player = None
         self.objects = []
-        defaultproperties = {'dead':False, 'seen':False}
+        defaultproperties = {'dead':False, 'seen':False, 'attack':0, 'health':0,
+                             'maxhealth':0,'healrate':0, 'speed':0,
+                             'stealth':0, 'mana':0, 'maxmana':5, 'manarate': 6,
+                             'mode': ''
+                             }
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
                 # set default properties
@@ -157,10 +161,10 @@ class GameEngine(object):
                 # remember the player object
                 if obj.type == 'player':
                     self.player = obj
-                if objname in self.story.stats.keys():
+                if objname in self.story.characterstats.keys():
                     # apply all properties from story to this object
                     [setattr(obj, k, v) 
-                        for k, v in self.story.stats[objname].items()
+                        for k, v in self.story.characterstats[objname].items()
                         ]
         if self.player is None:
             trace.error('there is no player character set on this map. Good luck!')

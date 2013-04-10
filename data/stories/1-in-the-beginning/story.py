@@ -24,7 +24,7 @@ entrymessages = ['Welcome to Alive! Press F1 for help.',
                 ]
 
 # define all character stats
-stats = {
+characterstats = {
     'player': {
             'attack': 1,
             'health': 4,
@@ -36,6 +36,18 @@ stats = {
             'maxmana': 5,
             'manarate': 6,
             'mode': '',
+            },
+    'working ai': {
+            'attack': 0,
+            'health': 2,
+            'maxhealth': 2,
+            'healrate': 2,
+            'speed': 2,
+            'stealth': 0,
+            'mana': 5,
+            'maxmana': 5,
+            'manarate': 2,
+            'mode': 'idle',
             },
     'ice': {
             'attack': 1,
