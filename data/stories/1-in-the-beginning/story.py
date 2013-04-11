@@ -4,10 +4,12 @@ title = 'in the beginning...'
 description = 'you awaken to consciousness'
 
 # a list of tiles that block character movement
-blocklist = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 
-            16, 17, 18, 19, 20, 21, 22, 23, # wall tiles up to here
+blocklist = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, # wall tiles
+            16, 17, 18, 19, 20, 21, 22, 23, # wall tiles
             33, 34, 35, # flat door frames
             37, 38, 39, # long door frames
+            41, 42, 43, 44, 45, 46, 47, 48, # horizontal terminals
+            49, 50, 51, 52, 53, 54, 55, 56, # vertical terminals
             65, 66, 67, 68, # flat capacitors
             73, 74, 75, 76, # long capacitors
             97, # player
@@ -38,17 +40,17 @@ characterstats = {
             'manarate': 6,
             'modes': [],
             },
-    'working ai': {
+    'busy ai': {
             'attack': 0,
             'health': 2,
             'maxhealth': 2,
             'healrate': 2,
-            'speed': 1,
+            'speed': 4,
             'stealth': 0,
             'mana': 5,
             'maxmana': 5,
             'manarate': 2,
-            'modes': ['leftright', 'sniffer'],
+            'modes': ['leftright'],
             },
     'ice': {
             'attack': 1,
