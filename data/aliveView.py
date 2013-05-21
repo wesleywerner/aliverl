@@ -37,7 +37,6 @@ class GraphicalView(object):
         fogcanvas (Surface): overlay for visibility fog.
         playarea (Rect): location on screen to draw gameplay.
         statsarea (Rect): area to draw player stats.
-        messagearea (Rect): area to draw the recent messages.
         viewport (Rect): which portion of the game map we are looking at.
         spritegroup (Group): contains all animated, movable objects in play.
         helpimages (Surface): stores the F1 help screens.
@@ -66,9 +65,9 @@ class GraphicalView(object):
         self.fogcanvas = None
         self.playarea = None
         self.statsarea = None
-        self.messagearea = None
         self.viewport = None
         self.spritegroup = None
+        self.scrollertexts = None
         self.helpimages = None
         self.transition = None
         self.transitionstep = 0
@@ -147,6 +146,7 @@ class GraphicalView(object):
             self.drawstats()
             self.drawmessages()
             self.drawplayground()
+            self.drawscrollertext()
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
@@ -176,8 +176,18 @@ class GraphicalView(object):
         self.spritegroup.draw(self.objectcanvas)
         self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
         #self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
+    
+    
+    def drawscrollertext(self):
+        """
+        Draw any scrolling text sprites.
+        """
         
-        
+        self.scrollertexts.update(pygame.time.get_ticks())
+        self.scrollertexts.draw(self.objectcanvas)
+        self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
+    
+    
     def drawdialogue(self):
         """
         Draw current dialogue words.
@@ -290,14 +300,14 @@ class GraphicalView(object):
         Draw recent game messages.
         """
         
-        self.screen.blit(
-                        self.renderLines(
-                            self.messages[-8:],
-                            self.smallfont,
-                            False,
-                            (0, 20, 0),
-                            (0, 20, 0)),
-                        self.messagearea.topleft)
+        return
+        messagebmp = self.renderLines(
+                    self.messages[-8:],
+                    self.smallfont,
+                    False,
+                    (0, 20, 0),
+                    (0, 20, 0))
+        self.screen.blit(messagebmp, (0, 0))
         # cull
         self.messages = self.messages[-20:]
         
@@ -458,6 +468,9 @@ class GraphicalView(object):
         if not self.spritegroup:
             self.spritegroup = pygame.sprite.Group()
         self.spritegroup.empty()
+        if not self.scrollertexts:
+            self.scrollertexts = pygame.sprite.Group()
+        self.scrollertexts.empty()
         
         tmx = self.model.level.tmx
         for obj in self.model.objects:
@@ -526,12 +539,11 @@ class GraphicalView(object):
         result = pygame.init()
         pygame.font.init()
         pygame.display.set_caption('Alive')
-        windowsize = pygame.Rect(0, 0, 800, 512)
+        windowsize = pygame.Rect(0, 0, 600, 600)
         self.viewport = pygame.Rect(0, 0, 512, 512)
-        self.playarea = pygame.Rect((windowsize.w - self.viewport.w, 0), self.viewport.size)
+        self.playarea = pygame.Rect((75, 66), self.viewport.size)
         self.screen = pygame.display.set_mode(windowsize.size)
-        self.statsarea = pygame.Rect(16, 300, self.playarea.left, 100)
-        self.messagearea = pygame.Rect(15, 360, 260, 140)
+        self.statsarea = pygame.Rect(200, 22, 400, 40)
         self.clock = pygame.time.Clock()
         self.spritegroup = pygame.sprite.Group()
         # load resources
@@ -540,6 +552,7 @@ class GraphicalView(object):
         self.defaultbackground = image.load('images/background.png').convert()
         self.menubackground = image.load('images/menu.png').convert()
         self.borders = image.load('images/playscreen.png').convert()
+        self.borders.set_colorkey(color.magenta)
         self.dialoguebackground = image.load('images/dialog.png').convert()
         self.isinitialized = True
 
@@ -552,7 +565,6 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, name, rect, *groups):
         """
         rect(Rect) of the sprite on screen.
-        fps(int) frames per seconds to rotate through.
         *groups(sprite.Group) add sprite to these groups.
         """
         
@@ -566,13 +578,13 @@ class Sprite(pygame.sprite.Sprite):
         self._last_update = 0
         self._frame = 0
         self._hasframes = False
-        self.image = None
         self.fps = 1
         self.loop = -1
     
     def addimage(self, image, fps, loop):
         """
         Allows adding of a animated sprite image.
+        The fps applies to all frames. It overwrites the previous fps value.
         """
         
         self._images.append(image)
@@ -613,8 +625,22 @@ class Sprite(pygame.sprite.Sprite):
                     self._frame = -1
             self.image = self._images[self._frame]
             self._last_update = t
+
+
+class TextScrollSprite(Sprite):
+    """
+    Scrolls text (or any list of images really) for a short period, stops,
+    and disappears.
+    """
     
-    
+    def update(self, t):
+        """
+        Let the base Sprite update(), then scroll our position.
+        """
+        super(TextScrollSprite, self).update(t)
+        self.rect = self.rect.move(0, -1)
+
+
 class TransitionBase(object):
     """
     Base for animated screen transitions.
