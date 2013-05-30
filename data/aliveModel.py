@@ -188,6 +188,7 @@ class GameEngine(object):
             # increase turn 
             self.turn += 1
             # update what we can see
+            # FIXME potential bug: lookaround() uses outdated player position
             self.lookaround()
             # heal turn
             self.healcharacters()
@@ -439,6 +440,7 @@ class GameEngine(object):
 
             # once shots actions (append once to any action)
             if action.endswith('once'):
+                #FIXME fingering an object itself removes this property during the fingered call, causing a keyerror whence returning to here.
                 del obj.properties[action]
         # signal caller all is OK
         return True
