@@ -12,6 +12,7 @@ blocklist = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, # wall tiles
             49, 50, 51, 52, 53, 54, 55, 56, # vertical terminals
             65, 66, 67, 68, # flat capacitors
             73, 74, 75, 76, # long capacitors
+            81, 82, 83, 84, # micro chip
             97, # player
             105, 113, 121, 129, # npc's
             ]
@@ -186,6 +187,12 @@ animations = {
             'frames': [77, 78, 79, 80],
             'fps': 6,
             'loop': 0,
+            },
+    # micro chip
+    81: {
+            'frames': [81, 82, 83, 84],
+            'fps': 8,
+            'loop': -1,
             },
     # blue ice
     105: {
