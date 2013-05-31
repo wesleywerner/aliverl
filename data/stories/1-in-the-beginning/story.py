@@ -247,8 +247,8 @@ dialogue = {
                 ]  
         }, 
 
-    'a_switch': {
-        'type': 'news',
-        'words': 'xyz' 
+    'reboot file server': {
+        'type': 'terminal',
+        'words': ["--cleverness here--"]
         }, 
     }

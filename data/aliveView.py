@@ -209,7 +209,8 @@ class GraphicalView(object):
             if self.transitionstep == 0:
                 self.transition = SlideinTransition(
                                     canvas, self.playarea, self.gamefps, 
-                                    self.largefont, 'connecting...')
+                                    self.largefont, 'connecting...',
+                                    self.dialoguebackground)
             elif self.transitionstep == 2:
                 if self.dialoguewords:
                     wordcolor = color.green
@@ -703,7 +704,7 @@ class SlideinTransition(TransitionBase):
     The words disappear.
     """
     
-    def __init__(self, surface, viewport, fps, font, title):
+    def __init__(self, surface, viewport, fps, font, title, background=None):
         """
         surface is where to draw on.
         font is for drawing the title text.
@@ -712,6 +713,7 @@ class SlideinTransition(TransitionBase):
         
         super(SlideinTransition, self).__init__(surface, viewport, fps)
         self.box = pygame.Rect(0, 0, 10, 10)
+        self.background = background
         # center the box according to full size
         self.box.center = viewport.center
         # prerender the words and center them
@@ -739,8 +741,9 @@ class SlideinTransition(TransitionBase):
                 self.box = self.box.inflate(self.xdelta, 0)
                 self.resizingwidth = self.box.w < self.size[0]
                 self.resizingheight = not self.resizingwidth
-            pygame.draw.rect(self.surface, color.black, self.box)
-            pygame.draw.rect(self.surface, color.blue, self.box, 1)
+            if self.background:
+                self.surface.blit(self.background, self.box.topleft, (0, 0, self.box.width, self.box.height))
+            pygame.draw.rect(self.surface, color.green, self.box, 1)
             self.surface.blit(self.fontpix, self.fontloc)
             self.done = not self.resizingwidth and not self.resizingheight
         return not self.done
