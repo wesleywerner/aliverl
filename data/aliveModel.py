@@ -157,7 +157,6 @@ class GameEngine(object):
             for obj in objectgroup:
                 # set default properties
                 [ setattr(obj, k, v) for k, v in defaultproperties.items() ]
-                self.objects.append(obj)
                 objname = obj.name.lower()
                 # remember the player object
                 if obj.type == 'player':
@@ -168,6 +167,19 @@ class GameEngine(object):
                     [setattr(obj, k, v) 
                         for k, v in self.story.characterstats[objname].items()
                         ]
+                # add multiple personalities from the map itself
+                for k, v in obj.properties.items():
+                    if k in defaultproperties.keys():
+                        try:
+                            # try numberfy the value
+                            setattr(obj, k, int(v))
+                        except ValueError:
+                            # that did not work, keep it a string
+                            setattr(obj, k, v)
+                        # we know that 'modes' is a list
+                        if k == 'modes':
+                            setattr(obj, k, v.split(','))
+                self.objects.append(obj)
         if self.player is None:
             trace.error('there is no player character set on this map. Good luck!')
 

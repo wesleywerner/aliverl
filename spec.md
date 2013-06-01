@@ -66,15 +66,13 @@ Unlock a terminal with another, the former will then show a storyline when acces
 1. "locked terminal actions":
     * **on finger**: _give=dialogue=foo storyline_
 
-# Game stories
+# Story definition format
 
 Stories are campaigns the player can enjoy. They consist of multiple levels with story dialogue. Each story defines it's own tileset and character stats.
 
-Each story lives in the "_data/stories/< story name >/_" directory, this definition file is named "_story.py_". Story files use valid python syntax.
+Each story lives in the `data/stories/< story name >/` directory, this definition file is named `story.py`. Story files use valid python syntax.
 
-## Story definition
-
-This describes what values can be defined in the story definition.
+Here is the format of what can be defined in the story definition.
 
 ### blocklists
 
@@ -90,7 +88,7 @@ List of the levels in this story.
 
 ### characterstats
 
-Defines player and AI character stats. This matches to the level object's name. If you create a level object with a name that is not defined here it will inherit default stats: idle with no attack or defence.
+Here we define the player and AI stats and behaviours. You may have many level objects that share the same name, and hence share these same stats. Any missing values will sanely default to idle, non hostile behaviour.
 
 * attack
     * damage dealt to and opponent's health during a combat turn
@@ -100,9 +98,9 @@ Defines player and AI character stats. This matches to the level object's name. 
 * maxhealth
     * maximum health this character can heal up to
 * healrate
-    * heal 1 point of health every this many turns
+    * heal 1 point of health every x turns
 * speed
-    * move this character every this many turns (computer characters only)
+    * move this character every x turns (computer characters only)
 * stealth
     * unused
 * mana
@@ -110,14 +108,33 @@ Defines player and AI character stats. This matches to the level object's name. 
 * maxmana
     * maximum mana this character can heal up to
 * manarate
-    * heal 1 point of mana every this many turns
+    * heal 1 point of mana every x turns
 * modes
-    * a list of AI behaviours
+    * a list of computer controlled movement behaviours
         * random: moves in random directions.
         * magnet: moves towards the player while in sight.
         * updown: patrols up and down, turning around when blocked.
         * leftright: patrols left and right, turning around when blocked.
         * sniffer: follows the player's scent if on the trail.
+
+As a courtesy, you may overwrite any of these story-level stats on the map level by adding it as a Name/Value object property in the map editor. Try to keep combat related stats within the story definition, as this will make balancing your levels easier later on.
+
+**example**
+    
+    characterstats = {
+        'player': {
+                'attack': 1,
+                'health': 4,
+                'maxhealth': 4,
+                'healrate': 4,
+                'speed': 2,
+                'stealth': 0,
+                'mana': 0,
+                'maxmana': 5,
+                'manarate': 6,
+                'modes': [],
+                },
+        }
 
 ~~~python
     # The title and description of this story
