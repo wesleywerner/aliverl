@@ -3,26 +3,33 @@
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" trans="ff00ff" width="256" height="960"/>
  </tileset>
- <layer name="map" width="16" height="16">
+ <layer name="walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJylUssOwjAMy7pxQIwb/QMOQ7vxF3w+CCbx+hdSKdWMldFKRLLWZHHsVO1FJBAaw0ExQi3QeavYiB8nyr2+VFuT9l7RKiL1RuLlrzd3WPDk8Vk/mH4gDv6PwPf0jwV99LF0L//w804YvGOK1Q/9s+INeFF+KfifFL3M70Qonyr4O+tN+zTmN82IFfwbnAdA7r9W+o+m35l+9lTrH98L5iX+Xb7v+0n5w/ryTETn1DwkHx/TOB0i
+   eJyNkksOwjAMRF0gC9SyqERvwKL3vwkFKrXAXbBVR4wmH4j0lCb2+Nd0IrIjGofPDZxtPymtpMvuRjiPAPsdKfdFCZmYrIt7Lj/nqek5v7H3HRfahx/5c3elOqJvL9s8a/pOtvlEAvnGb+wJ6z9QH6jv5Tt3u7sq7wqTpP3jXOdKjMnt3H+ce3D77DaL83KdgK2UfyT9Q7kp9z/1LekX5amsFb3VP5B+KfS/FvJjHSUtxjC/s6Tvl/9zCav3A/FKNM8=
   </data>
  </layer>
+ <layer name="map doodads" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFlACTgXYAEjAe4fYbUqjfiCquIA0MdPoBAN7jATI=
+  </data>
+ </layer>
+ <objectgroup name="object doodads" width="16" height="16">
+  <object gid="89" x="128" y="320"/>
+ </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="32" y="64"/>
-  <object name="cap above" gid="65" x="224" y="160">
+  <object name="player" type="player" gid="97" x="96" y="192"/>
+  <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
-    <property name="on finger" value="transmute=69"/>
+    <property name="on finger 1" value="transmute=69"/>
    </properties>
   </object>
   <object gid="65" x="288" y="160"/>
-  <object gid="65" x="288" y="96"/>
   <object name="entry door" type="door" gid="37" x="416" y="64">
    <properties>
     <property name="on finger" value="transmute=37,40"/>
    </properties>
   </object>
-  <object name="door switch" type="term" gid="42" x="384" y="32">
+  <object name="door switch" type="term" gid="45" x="384" y="32">
    <properties>
     <property name="fingers" value="entry door"/>
     <property name="message once" value="Access granted. You see glowing tubes and adventure ahead."/>
@@ -38,7 +45,7 @@
     <property name="on finger" value="transmute=33,36"/>
    </properties>
   </object>
-  <object name="broken term" type="term" gid="41" x="448" y="256">
+  <object name="broken term" type="term" gid="41" x="288" y="32">
    <properties>
     <property name="message 1" value="*bzzzt*"/>
     <property name="message 2 once" value="This terminal is offline."/>
@@ -48,8 +55,6 @@
    <properties>
     <property name="message once" value="This term is locked."/>
     <property name="on finger 1" value="give=fingers=gate"/>
-    <property name="on finger 2" value="give=message once=*pop*"/>
-    <property name="on finger 4" value="give=fingers once=cap above"/>
    </properties>
   </object>
   <object name="gate" type="door" gid="33" x="288" y="256">
@@ -64,31 +69,53 @@
    </properties>
   </object>
   <object gid="65" x="256" y="160"/>
-  <object name="busy AI" type="friend" gid="113" x="224" y="64">
-   <properties>
-    <property name="message" value="the AI seems too busy to respond to you."/>
-   </properties>
-  </object>
-  <object name="touchplate" gid="8" x="64" y="64">
+  <object name="touchplate" gid="8" x="96" y="64">
    <properties>
     <property name="message" value="You see a message blink on the terminal ahead."/>
    </properties>
   </object>
-  <object gid="73" x="288" y="384"/>
-  <object gid="73" x="320" y="384"/>
-  <object gid="73" x="352" y="384"/>
-  <object type="term" gid="47" x="320" y="416"/>
-  <object type="term" gid="43" x="320" y="352"/>
-  <object type="term" gid="51" x="384" y="384"/>
-  <object type="term" gid="55" x="256" y="384"/>
-  <object type="term" gid="41" x="384" y="448"/>
-  <object type="term" gid="41" x="256" y="448"/>
-  <object type="term" gid="45" x="384" y="320"/>
-  <object type="term" gid="45" x="256" y="320"/>
-  <object name="entry door" type="door" gid="33" x="128" y="96">
+  <object gid="73" x="192" y="64"/>
+  <object gid="73" x="320" y="64"/>
+  <object gid="73" x="352" y="64"/>
+  <object gid="73" x="288" y="64"/>
+  <object gid="81" x="320" y="384"/>
+  <object gid="43" x="224" y="32"/>
+  <object gid="49" x="0" y="128"/>
+  <object name="central control" type="term" gid="43" x="320" y="416">
    <properties>
-    <property name="fingers" value="entry door"/>
-    <property name="on finger" value="transmute=36"/>
+    <property name="on finger 1" value="transmute=47"/>
+    <property name="on finger 2" value="give=dialogue=reboot file server"/>
+    <property name="on finger 3" value="give=fingers once=escape hatch"/>
+   </properties>
+  </object>
+  <object gid="65" x="384" y="224"/>
+  <object gid="65" x="416" y="224"/>
+  <object gid="65" x="224" y="160"/>
+  <object name="faulty term" type="term" gid="42" x="480" y="288">
+   <properties>
+    <property name="fingers once" value="faulty cap"/>
+    <property name="message" value="*pop*"/>
+   </properties>
+  </object>
+  <object name="unlock central control" type="term" gid="47" x="416" y="512">
+   <properties>
+    <property name="fingers once" value="central control"/>
+    <property name="message once" value="you unlock the central control terminal"/>
+   </properties>
+  </object>
+  <object name="escape hatch" type="door" gid="37" x="160" y="384">
+   <properties>
+    <property name="on finger" value="transmute=40"/>
+   </properties>
+  </object>
+  <object name="busy AI" type="friend" gid="105" x="224" y="64">
+   <properties>
+    <property name="message" value="The AI seems too busy to respond."/>
+   </properties>
+  </object>
+  <object name="busy AI" type="friend" gid="105" x="32" y="320">
+   <properties>
+    <property name="modes" value="updown"/>
    </properties>
   </object>
  </objectgroup>

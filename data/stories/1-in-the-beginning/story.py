@@ -194,6 +194,12 @@ animations = {
             'fps': 8,
             'loop': -1,
             },
+    # exit portal
+    89: {
+            'frames': [89, 90, 91, 92],
+            'fps': 10,
+            'loop': -1,
+            },
     # blue ice
     105: {
             'frames': [105, 106, 107, 108],
