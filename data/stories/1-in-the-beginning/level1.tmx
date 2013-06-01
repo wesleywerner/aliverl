@@ -14,7 +14,11 @@
   </data>
  </layer>
  <objectgroup name="object doodads" width="16" height="16">
-  <object gid="89" x="128" y="320"/>
+  <object name="exit portal" gid="89" x="128" y="320">
+   <properties>
+    <property name="exit" value=""/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="objects" width="16" height="16">
   <object name="player" type="player" gid="97" x="96" y="192"/>
@@ -116,6 +120,16 @@
   <object name="busy AI" type="friend" gid="105" x="32" y="320">
    <properties>
     <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object name="touchplate" gid="8" x="128" y="224">
+   <properties>
+    <property name="message once" value="You see a high-speed portal ahead."/>
+   </properties>
+  </object>
+  <object name="touchplate" gid="8" x="128" y="288">
+   <properties>
+    <property name="message once" value="The portal leads to another node..."/>
    </properties>
   </object>
  </objectgroup>
