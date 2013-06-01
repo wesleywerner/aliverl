@@ -74,15 +74,32 @@ Each story lives in the `data/stories/< story name >/` directory, this definitio
 
 Here is the format of what can be defined in the story definition.
 
+### What is a GID
+
+The game tileset is an image composed of many square pictures. Starting at top left and moving right (like how you would read a book), the first tile is #1, the second #1, and so forth. These are the Graphic ID's of the tiles, also known as a GID. 
+
+### title and description
+
+These values name and describe your story.
+
+**example**
+
+    title = 'in the beginning...'
+    description = 'you awaken to consciousness'
+
 ### blocklists
 
-Tile GIDs in this list will block any character from moving onto it, for map tiles and objects, player and AI characters.
+This is a list of GID's that will block any player or AI character from moving onto it.
+
+**example**
 
     blocklist = [1, 2, 3]
 
 ### levels
 
-List of the levels in this story.
+This is a list of the levels in this storyline.
+
+**example**
 
     levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
 
@@ -136,64 +153,51 @@ As a courtesy, you may overwrite any of these story-level stats on the map level
                 },
         }
 
-~~~python
-    # The title and description of this story
-    title = 'in the beginning...'
-    description = 'you awaken to consciousness'
-    
-    # The list of levels to play
-    levels = ['level1.tmx', 'level3.tmx', 'level3.tmx', ]
+### animations
 
-    # The list of tiles that block character movement
-    blocklist = [1, 2, 3, 4, 5, 6, 7, ]
+Here we have a dictionary that defines object animations. These consist of a sequence of GID's and a few other values that determine how animations are displayed. Only object layers can animate, not tile layers.
 
-    # Character stats for the entire story:
-    # We match the characters by name, placing an 'ai' type object on the map
-    # with a name that matches here will apply these stats to it.
-    #
-    #   'character name': {
-    #        'attack': damage dealth when hitting
-    #        'health': damage taken before death
-    #        'maxhealth': heal up to this point
-    #        'healrate': heal 1 unit every this many turns
-    #        'speed': move every this many turns
-    #        'stealth': 
-    #        'mana': energy used for special abilities
-    #        'maxmana': heal mana up to this point
-    #        'manarate': heal 1 unit mana every this many turns
-    #        'mode': behaviour of this unit
-    #
-    # Use lowercase keys please.
-    
-    #TODO PASTE SAMPLE
-    
-    # Define sprite animations for map objects.
-    # Placing any object on the map with these gid's will apply
-    # an animation of frames for the given fps (frames per second).
-    
+The dictionary key equals the GID of the tile to animate. Thus any map object that uses this GID will automatically animate to the settings defined here.
+
+**frames**
+
+The list of GID frames to animate.
+
+Let us say our tileset has some door images that go from closed to open over 4 frames:
+
+    (closed) 33, 34, 35, 36 (open).
+
+* We configure the open animation keyframe (36) to run frames [34, 35, 36]. We end with the keyframe.
+* We configure the close animation keyframe (33) as [35, 34, 33]. The open sequence in reverse. We also end on the keyframe.
+* We end with our key frames because with no loop set, the animation stops on the last frame.
+* This clever reuse of frames allow us to create two different animations using the same images.
+
+**frames per second**
+
+fps set how fast the animation runs. An animation with 3 frames, running at 3 fps, will take 1 second to complete.
+
+**loop**
+
+Indicates how many times to loop the animation. -1 will loop forever, 0 will run the animation once and stop, and any other postive value will loop that many times.
+
+**example**
+
     animations = {
-        # flat door open
+        # open the door
         36: {
                 'frames': [34, 35, 36],
-                'fps': 8,
+                'fps': 3,
                 'loop': 0,
                 },
-        # flat door close
+        # close the door
         33: {
                 'frames': [35, 34, 33],
-                'fps': 8,
+                'fps': 3,
                 'loop': 0,
                 },
     }
 
-    # Define story dialogues by a key name.
-    # The type will determine the look of the message displayed.
-    # dialogue 'type' is not yet used by the engine.
-    dialogue = {
-
-    #TODO PASTE SAMPLE
-    
-~~~
+_Note: When using object triggers to transmorgify one object into another, the object will inherit and play it's new animations._
 
 ## Story levels
 
@@ -213,16 +217,6 @@ Each map has a tileset, an image divided into 32x32 sized blocks of tile images.
 1. You are now ready to create your level :]
 * Place walls and doodads "map" tile layer.
 * Place interactable game objects on the "objects" Object Layer.
-
-### Creating animations
-
-Animations are configured in your story.py file under the 'animations' section. Assume our tileset has door images that go from closed to open over 4 frames: (closed) 33, 34, 35, 36 (open).
-
-We configure the open animation keyframe (36) to run frames [34, 35, 36]. We end with the keyframe.
-
-We configure the close animation keyframe (33) to [35, 34, 33]. The sequence reversed, and we also end on the keyframe.
-
-We end with our key frames because with no loop the animation stops on the last frame.
 
 ### Object Reference
 
