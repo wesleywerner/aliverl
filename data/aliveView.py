@@ -87,6 +87,7 @@ class GraphicalView(object):
             self.erasefog()
         elif isinstance(event, MessageEvent):
             self.messages.extend(self.wrapLines(event.message, 30))
+            self.show_message_tooltip(event.message)
         elif isinstance(event, KillCharacterEvent):
             self.removesprite(event.character)
             self.messages.append('The %s dies' % (event.character.name))
@@ -146,7 +147,7 @@ class GraphicalView(object):
             self.drawstats()
             self.drawmessages()
             self.drawplayground()
-            self.drawscrollertext()
+            self.draw_scroller_text()
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
@@ -178,14 +179,18 @@ class GraphicalView(object):
         #self.screen.blit(self.fogcanvas, self.playarea, self.viewport)
     
     
-    def drawscrollertext(self):
+    def draw_scroller_text(self):
         """
         Draw any scrolling text sprites.
         """
         
-        self.scrollertexts.update(pygame.time.get_ticks())
-        self.scrollertexts.draw(self.objectcanvas)
-        self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
+        if self.scrollertexts:
+            self.scrollertexts.update(pygame.time.get_ticks())
+            self.scrollertexts.draw(self.objectcanvas)
+            self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
+            for sprite in self.scrollertexts:
+                if sprite.done:
+                    self.scrollertexts.remove(sprite)
     
     
     def drawdialogue(self):
@@ -469,9 +474,6 @@ class GraphicalView(object):
         if not self.spritegroup:
             self.spritegroup = pygame.sprite.Group()
         self.spritegroup.empty()
-        if not self.scrollertexts:
-            self.scrollertexts = pygame.sprite.Group()
-        self.scrollertexts.empty()
         
         tmx = self.model.level.tmx
         for obj in self.model.objects:
@@ -486,6 +488,68 @@ class GraphicalView(object):
                     )
             self.setspriteframes(obj)
 
+    def create_text_sprite(self, message, fontcolor, position, destination):
+        """
+        Creates a scrolling text sprite.
+        position is the (x, y).
+        destination is the (x, y).
+        """
+        
+        if not self.scrollertexts:
+            self.scrollertexts = pygame.sprite.Group()
+            self.scrollertexts.empty()
+        
+        bmp = self.draw_border_font(self.smallfont, message, color.white, color.black)
+        # limit the message position within sane boundaries
+        if position[0] + bmp.get_width() > self.viewport.width:
+            position = (position[0] - bmp.get_width(), position[1])
+            destination = (destination[0] - bmp.get_width(), destination[1])
+        # do not draw off the left
+        if position[0] < 1:
+            position = (2, position[1])
+            destination = (2, destination[1])
+        s = MovingSprite('', 
+                        pygame.Rect(position, bmp.get_size()), 
+                        destination,
+                        1,
+                        self.scrollertexts)
+        s.addimage(bmp, 10, 0)
+
+    def draw_border_font(self, font, text, fcolor, bcolor):
+        """
+        Draws a font with a border.
+        Returns the resulting surface.
+        """
+        
+        w, h = font.size(text)
+        size = w + 2, h + 2
+        
+        s = pygame.Surface(size)
+        s.set_colorkey(color.magenta)
+        s.fill(color.magenta)
+            
+        bg = font.render(text, False, bcolor)
+        fg = font.render(text, False, fcolor)
+        
+        si = 1
+        dirs = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
+        for dx, dy in dirs: s.blit(bg, (si + dx * si, si + dy *si))
+        s.blit(fg, (si, si))
+
+        return s
+        
+    def show_message_tooltip(self, message):
+        """
+        Creates a scrolling event message tooltip.
+        """
+        
+        pxy = self.model.player.getpixelxy()
+        self.create_text_sprite(message, 
+                                color.white, 
+                                (pxy[0], pxy[1] - FIX_YOFFSET), 
+                                (pxy[0], pxy[1] - FIX_YOFFSET - 20))
+
+    
     def movesprite(self, event):
         """
         Move the sprite by the event details.
@@ -607,6 +671,16 @@ class Sprite(pygame.sprite.Sprite):
             del self._images[-1]
         self._hasframes = False
 
+    def canupdate(self, t):
+        """
+        Tests if it is time to update again
+        time is the current game ticks. It is used to calculate when to update
+            so that animations appear constant across varying fps.
+        """
+        
+        if t - self._last_update > self._delay:
+            return True
+    
     def update(self, t):
         """
         Update the sprite animation if enough time has passed.
@@ -615,7 +689,8 @@ class Sprite(pygame.sprite.Sprite):
         
         if not self._hasframes:
             return
-        if t - self._last_update > self._delay:
+        if self.canupdate(t):
+            self._last_update = t
             self._frame += 1
             if self._frame >= len(self._images): 
                 self._frame = 0
@@ -625,21 +700,33 @@ class Sprite(pygame.sprite.Sprite):
                     self._hasframes = False
                     self._frame = -1
             self.image = self._images[self._frame]
-            self._last_update = t
 
 
-class TextScrollSprite(Sprite):
+class MovingSprite(Sprite):
     """
-    Scrolls text (or any list of images really) for a short period, stops,
-    and disappears.
+    A sprite with a vector that slides it to a destination.
     """
     
+    def __init__(self, name, rect, destination, speed, *groups):
+        super(MovingSprite, self).__init__(name, rect, *groups)
+        self.destination = destination
+        self.speed = speed
+        self.done = False
+    
     def update(self, t):
-        """
-        Let the base Sprite update(), then scroll our position.
-        """
-        super(TextScrollSprite, self).update(t)
-        self.rect = self.rect.move(0, -1)
+        # update location
+        super(MovingSprite, self).update(t)
+        if self.canupdate(t):
+            self._last_update = t
+            if self.rect.left < self.destination[0]:
+                self.rect.left += self.speed
+            if self.rect.left > self.destination[0]:
+                self.rect.left -= self.speed
+            if self.rect.top < self.destination[1]:
+                self.rect.top += self.speed
+            if self.rect.top > self.destination[1]:
+                self.rect.top -= self.speed
+            self.done = self.rect.topleft == self.destination
 
 
 class TransitionBase(object):
@@ -657,9 +744,9 @@ class TransitionBase(object):
         """
         Defines an animated transition base.
         
-        surface is where to draw on.
-        viewport tells us the area to draw within surface.
-        fps isused to calculate constant redraw speed for any fps.
+        surface (Surface) is where to draw on.
+        viewport (Rect) tells us the area to draw within surface.
+        fps (int) isused to calculate constant redraw speed for any fps.
         
         Attributes:
             done (bit): set to True when the animation is complete.
@@ -692,7 +779,7 @@ class TransitionBase(object):
         """
         
         if self.canupdate(time):
-            return True
+            return not self.done
 
 
 class SlideinTransition(TransitionBase):
