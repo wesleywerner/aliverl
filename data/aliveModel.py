@@ -52,13 +52,13 @@ class GameEngine(object):
         if isinstance(event, QuitEvent):
             self.running = False
         elif isinstance(event, StateChangeEvent):
-            self.changestate(event.state)
+            self.change_state(event.state)
         elif isinstance(event, PlayerMoveRequestEvent):
-            self.movecharacter(self.player, event.direction)
+            self.move_object(self.player, event.direction)
         elif isinstance(event, CombatEvent):
-            self.combatcharacters(event)
+            self.combat_turn(event)
         elif isinstance(event, KillCharacterEvent):
-            self.killcharacter(event.character)
+            self.kill_object(event.character)
 
     def run(self):
         """
@@ -76,7 +76,7 @@ class GameEngine(object):
             newTick = TickEvent()
             self.evManager.Post(newTick)
         
-    def begingame(self):
+    def begin_game(self):
         """
         Begins a new game.
         event.story contains the campaign to play.
@@ -84,15 +84,15 @@ class GameEngine(object):
         
         #TODO allow selecting the storyline, pass it in here
         self.settings.storyname = '1-in-the-beginning'
-        if self.loadstory(self.settings.storyname):
+        if self.load_story(self.settings.storyname):
             self.turn = 0
             self.level = None
-            self.levelup()
+            self.warp_level()
             self.gamerunning = True
             if self.state.peek() != STATE_PLAY:
-                self.changestate(STATE_PLAY)
+                self.change_state(STATE_PLAY)
 
-    def endgame(self):
+    def end_game(self):
         """
         Makes the game over.
         """
@@ -101,10 +101,10 @@ class GameEngine(object):
             popped = self.state.pop()
             if not popped or popped == STATE_PLAY:
                 break
-        self.changestate(STATE_GAMEOVER)
+        self.change_state(STATE_GAMEOVER)
         self.gamerunning = False
     
-    def loadstory(self, storyname):
+    def load_story(self, storyname):
         """
         Loads the story data for the given story name.
         The name is essentially the directory name of the story.
@@ -123,7 +123,7 @@ class GameEngine(object):
         except Exception as e:
             trace.error(e)
     
-    def levelup(self):
+    def warp_level(self):
         """
         Proceed to the next level.
         """
@@ -135,12 +135,12 @@ class GameEngine(object):
         trace.write('warping to level: %s ' % (nextlevel,))
         levelfilename = os.path.join(self.story.path, self.story.levels[nextlevel-1])
         self.level = GameLevel(nextlevel, levelfilename)
-        self.loadcharacters()
+        self.load_objects()
         self.evManager.Post(NextLevelEvent(levelfilename))
         if len(self.story.entrymessages) <= nextlevel:
             self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
 
-    def loadcharacters(self):
+    def load_objects(self):
         """
         Apply any character stats to the level object list.
         Stats are stored in the current story.
@@ -183,7 +183,7 @@ class GameEngine(object):
         if self.player is None:
             trace.error('there is no player character set on this map. Good luck!')
 
-    def movecharacter(self, character, direction):
+    def move_object(self, character, direction):
         """
         Moves the given character by offset direction (x, y)
         """
@@ -193,22 +193,22 @@ class GameEngine(object):
 
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
-        colliders = self.getcharactersat((newx, newy))
+        colliders = self.get_object_by_xy((newx, newy))
 
         # turn management
         if character is self.player:
             # increase turn 
             self.turn += 1
             # update what we can see
-            # FIXME potential bug: lookaround() uses outdated player position
-            self.lookaround()
+            # FIXME potential bug: look_around() uses outdated player position
+            self.look_around()
             # heal turn
-            self.healcharacters()
+            self.heal_turn()
             # ai move turn
-            self.movecomputer()
+            self.ai_movement_turn()
             # player can trigger objects
             for collider in colliders:
-                self.processtriggers(collider)
+                self.trigger_object(collider)
 
         for collider in colliders:
             # initiate combat
@@ -222,7 +222,7 @@ class GameEngine(object):
                 return False
 
         # tile collisions
-        if self.tileblocks((newx, newy)):
+        if self.tile_is_solid((newx, newy)):
             return False
 
         # accept movement
@@ -239,7 +239,7 @@ class GameEngine(object):
         # notify listeners this character has moved
         self.evManager.Post(CharacterMovedEvent(character, direction))
 
-    def tileblocks(self, xy):
+    def tile_is_solid(self, xy):
         """
         Returns if the tile at (x, y) blocks:
         """
@@ -249,12 +249,12 @@ class GameEngine(object):
             if gid in self.story.blocklist:
                 return True
         # test objects too
-        objects = self.getcharactersat(xy)
+        objects = self.get_object_by_xy(xy)
         for obj in objects:
             if obj.gid in self.story.blocklist:
                 return True
 
-    def movecomputer(self):
+    def ai_movement_turn(self):
         """
         Moves all the ai characters.
         """
@@ -271,12 +271,12 @@ class GameEngine(object):
                         y = random.randint(-1, 1)
                 if mode == 'updown':
                     if 'movingup' in obj.properties:
-                        if self.tileblocks((obj.x, obj.y-1)):
+                        if self.tile_is_solid((obj.x, obj.y-1)):
                             del obj.properties['movingup']
                             obj.properties['movingdown'] = True
                         y += -1
                     elif 'movingdown' in obj.properties:
-                        if self.tileblocks((obj.x, obj.y+1)):
+                        if self.tile_is_solid((obj.x, obj.y+1)):
                             del obj.properties['movingdown']
                             obj.properties['movingup'] = True
                         y += +1
@@ -285,12 +285,12 @@ class GameEngine(object):
                         obj.properties['movingdown'] = True
                 if mode == 'leftright':
                     if 'movingleft' in obj.properties:
-                        if self.tileblocks((obj.x-1, obj.y)):
+                        if self.tile_is_solid((obj.x-1, obj.y)):
                             del obj.properties['movingleft']
                             obj.properties['movingright'] = True
                         x += -1
                     elif 'movingright' in obj.properties:
-                        if self.tileblocks((obj.x+1, obj.y)):
+                        if self.tile_is_solid((obj.x+1, obj.y)):
                             del obj.properties['movingright']
                             obj.properties['movingleft'] = True
                         x += +1
@@ -300,8 +300,8 @@ class GameEngine(object):
                 if mode == 'magnet':
                     playerxy = self.player.getxy()
                     objxy = obj.getxy()
-                    if self.distance(playerxy, objxy) <= 4:
-                        x, y = self.movetowards(objxy, playerxy)
+                    if self.get_distance(playerxy, objxy) <= 4:
+                        x, y = self.get_direction(objxy, playerxy)
                 if mode == 'sniffer':
                     #TODO sniffer dog
                     objxy = obj.getxy()
@@ -309,31 +309,31 @@ class GameEngine(object):
                     if objxy in trail:
                         idx = trail.index(objxy) - 1
                         if idx >= 0:
-                            x, y = self.movetowards(objxy, trail[idx])
+                            x, y = self.get_direction(objxy, trail[idx])
             # normalize positions then move
             x = (x < -1) and -1 or x
             x = (x > 1) and 1 or x
             y = (y < -1) and -1 or y
             y = (y > 1) and 1 or y
-            self.movecharacter(obj, (x, y))
+            self.move_object(obj, (x, y))
     
-    def lookaround(self):
+    def look_around(self):
         """
         Marks any other objects within the player characters range as seen.
         """
         
         pxy = (self.player.x, self.player.y)
         for obj in self.objects:
-            obj.seen = self.distance(pxy, (obj.x, obj.y)) <= 3
+            obj.seen = self.get_distance(pxy, (obj.x, obj.y)) <= 3
     
-    def distance(self, pointa, pointb):
+    def get_distance(self, pointa, pointb):
         """
         Returns the distance between two cartesian points.
         """
         
         return math.sqrt((pointa[0] - pointb[0])**2 + (pointa[1] - pointb[1])**2)
     
-    def movetowards(self, pointa, pointb):
+    def get_direction(self, pointa, pointb):
         """
         Returns the (x, y) offsets required to move pointa towards pointb.
         """
@@ -352,7 +352,7 @@ class GameEngine(object):
 
         return (int(round(deltax)), int(round(deltay)))
 
-    def getcharacter(self, objectid):
+    def get_object_by_id(self, objectid):
         """
         Get characters object by it's id().
         """
@@ -363,14 +363,14 @@ class GameEngine(object):
         else:
             return None
     
-    def getcharactersat(self, xy):
+    def get_object_by_xy(self, xy):
         """
         Get a list of characters at xy.
         """
         
         return [e for e in self.objects if e.getxy() == xy]
         
-    def healcharacters(self):
+    def heal_turn(self):
         """
         Each turn characters gets a chance to heal.
         """
@@ -388,7 +388,7 @@ class GameEngine(object):
                 if self.turn % npc.manarate == 0:
                     npc.mana += 1
     
-    def processtriggers(self, obj, isfingered=False):
+    def trigger_object(self, obj, isfingered=False):
         """
         Process any triggers on an object.
         Returns True on OK, False if level is changing, abort caller loop.
@@ -402,11 +402,11 @@ class GameEngine(object):
             # finger somebody else
             if not isfingered and action.startswith('fingers'):
                 for fn in [e for e in self.objects if e.name == action_value]:
-                    self.processtriggers(fn, isfingered=True)
+                    self.trigger_object(fn, isfingered=True)
             
             # next level
             if action == 'exit':
-                self.levelup()
+                self.warp_level()
                 return False
             # show a message
             if action.startswith('message'):
@@ -414,7 +414,7 @@ class GameEngine(object):
             
             # show a dialog
             if action.startswith('dialogue'):
-                self.showdialogue(action_value)
+                self.show_dialogue(action_value)
 
             # fingered characters only
             if action.startswith('on finger') and isfingered and \
@@ -441,7 +441,7 @@ class GameEngine(object):
                             transmute_id = int(options[0])
                     # do not transmute to blocklist gid's if anyone is 
                     # standing on the finger target (cant close doors)
-                    fingerfriends = self.getcharactersat(obj.getxy())
+                    fingerfriends = self.get_object_by_xy(obj.getxy())
                     for ff in fingerfriends:
                         if ff is not obj and transmute_id in self.story.blocklist:
                             trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
@@ -458,7 +458,7 @@ class GameEngine(object):
         return True
         
     
-    def combatcharacters(self, event):
+    def combat_turn(self, event):
         """
         Begin a combat round.
         """
@@ -487,16 +487,16 @@ class GameEngine(object):
         # death
         if a.health < 1:
             if a is self.player:
-                self.endgame()
+                self.end_game()
             else:
                 self.evManager.Post(KillCharacterEvent(a))
         if d.health < 1:
             if d is self.player:
-                self.endgame()
+                self.end_game()
             else:
                 self.evManager.Post(KillCharacterEvent(d))
 
-    def killcharacter(self, character):
+    def kill_object(self, character):
         """
         Remove a character from play.
         """
@@ -504,7 +504,7 @@ class GameEngine(object):
         if character in self.objects:
             self.objects.remove(character)
 
-    def changestate(self, state):
+    def change_state(self, state):
         """
         Process game state change events.
         """
@@ -519,9 +519,9 @@ class GameEngine(object):
             self.evManager.Post(QuitEvent())
         if state == STATE_PLAY and not self.gamerunning:
             # start a new game
-            self.begingame()
+            self.begin_game()
 
-    def showdialogue(self, key):
+    def show_dialogue(self, key):
         """
         Update the model state to show a dialogue screen.
         keys is a list of dialogue key names.

@@ -83,24 +83,24 @@ class GraphicalView(object):
             self.render()
             self.clock.tick(self.gamefps)
         elif isinstance(event, CharacterMovedEvent):
-            self.movesprite(event)
-            self.erasefog()
+            self.move_sprite(event)
+            self.erase_fog()
         elif isinstance(event, MessageEvent):
-            self.messages.extend(self.wrapLines(event.message, 30))
+            self.messages.extend(self.wrap_text(event.message, 30))
             self.show_message_tooltip(event.message)
         elif isinstance(event, KillCharacterEvent):
-            self.removesprite(event.character)
+            self.kill_sprite(event.character)
             self.messages.append('The %s dies' % (event.character.name))
         elif isinstance(event, UpdateObjectGID):
-            self.transmutesprite(event)
+            self.transmute_sprite(event)
         elif isinstance(event, DialogueEvent):
             self.dialoguewords = event.words[::-1]
         elif isinstance(event, NextLevelEvent):
-            self.preparelevel()
-            self.erasefog()
-            self.createsprites()
+            self.load_level()
+            self.erase_fog()
+            self.create_sprites()
         elif isinstance(event, ShiftViewportEvent):
-            self.adjustviewport(event)
+            self.adjust_viewport(event)
         elif isinstance(event, InitializeEvent):
             self.initialize()
         elif isinstance(event, QuitEvent):
@@ -136,17 +136,16 @@ class GraphicalView(object):
             sometext = 'The game menu is now showing. Space to play, escape to quit.'
             
         elif state == aliveModel.STATE_DIALOG:
-            self.drawborders()
-            self.drawstats()
-            self.drawmessages()
-            self.drawplayground()
-            self.drawdialogue()
+            self.draw_borders()
+            self.draw_player_stats()
+            self.draw_sprites()
+            self.draw_dialogue()
             
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
-            self.drawborders()
-            self.drawstats()
-            self.drawmessages()
-            self.drawplayground()
+            self.draw_borders()
+            self.draw_player_stats()
+            #self.draw_game_messages()
+            self.draw_sprites()
             self.draw_scroller_text()
             
             if state == aliveModel.STATE_GAMEOVER:
@@ -166,7 +165,7 @@ class GraphicalView(object):
         self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
     
-    def drawplayground(self):
+    def draw_sprites(self):
         """
         Draw the play area: level tiles and objects.
         """
@@ -193,7 +192,7 @@ class GraphicalView(object):
                     self.scrollertexts.remove(sprite)
     
     
-    def drawdialogue(self):
+    def draw_dialogue(self):
         """
         Draw current dialogue words.
         transitionstep is an indicator for this call for chaining transitions.
@@ -223,7 +222,7 @@ class GraphicalView(object):
                     # words may be (color, words)
                     if type(words) is tuple:
                         wordcolor, words = words
-                    words = self.wrapLines(words, 25)
+                    words = self.wrap_text(words, 25)
                     canvas.blit(self.dialoguebackground, self.playarea)
                     self.transition = TerminalPrinter(
                                         canvas, self.playarea, self.gamefps, 
@@ -235,7 +234,7 @@ class GraphicalView(object):
             if self.transitionstep == 1:
                 self.transitionstep += 1
 
-    def nextdialogue(self):
+    def next_dialogue(self):
         """
         Move to the next dialogue line
         """
@@ -252,22 +251,22 @@ class GraphicalView(object):
             self.transitionstep = 0
             self.evManager.Post(StateChangeEvent(None))
     
-    def closedialogue(self):
+    def close_dialogue(self):
         """
         Close running dialogues and reset for next time.
         """
         
         self.dialoguewords = []
-        self.nextdialogue()
+        self.next_dialogue()
         
-    def drawborders(self):
+    def draw_borders(self):
         """
         Draw game borders.
         """
         
         self.screen.blit(self.borders, (0, 0))
         
-    def drawstats(self):
+    def draw_player_stats(self):
         """
         Draw the player stats onto statscanvas.
         """
@@ -301,13 +300,12 @@ class GraphicalView(object):
         self.statscanvas.blit(pmana, (xposition + (phealth.get_width() * 1.5), yposition))
         self.screen.blit(self.statscanvas, self.statsarea)
     
-    def drawmessages(self):
+    def draw_game_messages(self):
         """
         Draw recent game messages.
         """
         
-        return
-        messagebmp = self.renderLines(
+        messagebmp = self.draw_text(
                     self.messages[-8:],
                     self.smallfont,
                     False,
@@ -317,7 +315,7 @@ class GraphicalView(object):
         # cull
         self.messages = self.messages[-20:]
         
-    def wrapLines(self, message, maxlength):
+    def wrap_text(self, message, maxlength):
         """
         Takes a long string and returns a list of lines.
         maxlength is the characters per line.
@@ -342,7 +340,7 @@ class GraphicalView(object):
         return outlines
 
 
-    def renderLines(self, lines, font, antialias, fontcolor, colorize=None, background=None):
+    def draw_text(self, lines, font, antialias, fontcolor, colorize=None, background=None):
         """ # Simple functions to easily render pre-wrapped text onto a single
         # surface with a uniform background.
         # Author: George Paci
@@ -384,10 +382,10 @@ class GraphicalView(object):
             result.blit(surfaces[i], (0,i*fontHeight))
         return result
 
-    def renderTextBlock(self, text, font, antialias, fontcolor, colorize=None, background=None):
+    def draw_text_block(self, text, font, antialias, fontcolor, colorize=None, background=None):
         """ renders block text with newlines. """
         brokenText = text.replace("\r\n","\n").replace("\r","\n")
-        return self.renderLines(
+        return self.draw_text(
                         brokenText.split("\n"), 
                         font, 
                         antialias, 
@@ -396,7 +394,7 @@ class GraphicalView(object):
                         background
                         )
 
-    def preparelevel(self):
+    def load_level(self):
         """
         Prepare the View's resource to display the level given in event param.
         """
@@ -434,7 +432,7 @@ class GraphicalView(object):
                         self.levelcanvas.blit(tile, 
                                     (x * tmx.tile_width, y * tmx.tile_height))
     
-    def erasefog(self):
+    def erase_fog(self):
         """
         Partially clear some fog around the player.
         We do this by clearing (filling) the fogcanvas with magenta.
@@ -447,7 +445,7 @@ class GraphicalView(object):
         self.fogcanvas.fill(color.magenta, clearing)
         
     
-    def setspriteframes(self, obj):
+    def set_sprite_defaults(self, obj):
         """
         Apply sprite settings to an object from the story animations setting.
         """
@@ -466,7 +464,7 @@ class GraphicalView(object):
             for f in obj.frames:
                 sprite.addimage(self.tsp[f], obj.fps, obj.loop)
 
-    def createsprites(self):
+    def create_sprites(self):
         """
         Create all the sprites that represent all level objects.
         """
@@ -486,7 +484,7 @@ class GraphicalView(object):
                         tmx.tile_height),
                     self.spritegroup
                     )
-            self.setspriteframes(obj)
+            self.set_sprite_defaults(obj)
 
     def create_text_sprite(self, message, fontcolor, position, destination):
         """
@@ -499,7 +497,7 @@ class GraphicalView(object):
             self.scrollertexts = pygame.sprite.Group()
             self.scrollertexts.empty()
         
-        bmp = self.draw_border_font(self.smallfont, message, color.white, color.black)
+        bmp = self.draw_outlined_text(self.smallfont, message, color.white, color.black)
         # limit the message position within sane boundaries
         if position[0] + bmp.get_width() > self.viewport.width:
             position = (position[0] - bmp.get_width(), position[1])
@@ -515,7 +513,7 @@ class GraphicalView(object):
                         self.scrollertexts)
         s.addimage(bmp, 10, 0)
 
-    def draw_border_font(self, font, text, fcolor, bcolor):
+    def draw_outlined_text(self, font, text, fcolor, bcolor):
         """
         Draws a font with a border.
         Returns the resulting surface.
@@ -550,7 +548,7 @@ class GraphicalView(object):
                                 (pxy[0], pxy[1] - FIX_YOFFSET - 20))
 
     
-    def movesprite(self, event):
+    def move_sprite(self, event):
         """
         Move the sprite by the event details.
         """
@@ -563,7 +561,7 @@ class GraphicalView(object):
                                         (event.obj.y * tmx.tile_height) - FIX_YOFFSET)
                 return
 
-    def removesprite(self, mapobject):
+    def kill_sprite(self, mapobject):
         """
         Remove a character from play and from the sprite list.
         """
@@ -571,22 +569,22 @@ class GraphicalView(object):
         if match:
             self.spritegroup.remove(match[0])
     
-    def transmutesprite(self, event):
+    def transmute_sprite(self, event):
         """
         Change a sprite image by object gid.
         """
         
         event.obj.gid = event.gid
-        self.setspriteframes(event.obj)
+        self.set_sprite_defaults(event.obj)
     
-    def adjustviewport(self, event):
+    def adjust_viewport(self, event):
         """
         Auto center the viewport if the player gets too close to any edge.
         """
         
         pass
 
-    def playmusic(self, level):
+    def play_music(self, level):
         playlist = [
             'audio/universalnetwork2_real.xm',
             'audio/kbmonkey-ditty.it'
