@@ -404,17 +404,18 @@ class GameEngine(object):
                 for fn in [e for e in self.objects if e.name == action_value]:
                     self.trigger_object(fn, isfingered=True)
             
-            # next level
-            if action == 'exit':
-                self.warp_level()
-                return False
-            # show a message
-            if action.startswith('message'):
-                self.evManager.Post(MessageEvent(action_value))
-            
-            # show a dialog
-            if action.startswith('dialogue'):
-                self.show_dialogue(action_value)
+            # these actions are only triggered by direct interaction
+            if not isfingered:
+                # next level
+                if action == 'exit':
+                    self.warp_level()
+                    return False
+                # show a message
+                if action.startswith('message'):
+                    self.evManager.Post(MessageEvent(action_value))
+                # show a dialog
+                if action.startswith('dialogue'):
+                    self.show_dialogue(action_value)
 
             # fingered characters only
             if action.startswith('on finger') and isfingered and \
