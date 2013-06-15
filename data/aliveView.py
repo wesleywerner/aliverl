@@ -15,6 +15,12 @@ from tmxparser import TilesetParser
 # https://github.com/bjorn/tiled/issues/91
 FIX_YOFFSET=0
 
+# tile id of seen fog overlay
+FOG_GID = 16
+
+# tile id of unseen tiles
+UNSEEN_GID = 24
+
 class GraphicalView(object):
     """
     Draws the model state onto the screen.
@@ -179,6 +185,17 @@ class GraphicalView(object):
         self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
     
     
+    def draw_fog(self):
+        """
+        Overlay fog on the level for that which is out of player view.
+        """
+        
+        for y in range(tmx.height):
+            for x in range(tmx.width):
+                # lookup list of which positions has been seen 
+                # and overlay those with FOG_GID, the rest with UNSEEN_GID
+                seen = self.model.level.seen_tiles[x][y]
+
     def draw_scroller_text(self):
         """
         Draw any scrolling text sprites.

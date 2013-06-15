@@ -345,13 +345,24 @@ class GameEngine(object):
         """
         Marks any other objects within the player characters range as seen.
         """
-        
+
         pxy = (self.player.x, self.player.y)
-        for obj in self.objects:
-            obj.in_range = self.get_distance(pxy, (obj.x, obj.y)) <= 3
-            # if it is in range and not yet seen: remember it.
-            # otherwise we keep the same value.
-            obj.seen = obj.in_range and not obj.seen or obj.seen
+
+        # look around the map at what is in view range
+        for y in range(0, self.level.tmx.height):
+            for x in range(0, self.level.tmx.width):
+                in_range = self.get_distance(pxy, (x, y)) <= 3
+                # mark this level tile as seen
+                if in_range:
+                    self.level.seen_tiles[x][y] = 2
+                elif self.level.seen_tiles[x][y] == 2:
+                    # set previous in_range positions that are now out of range
+                    self.level.seen_tiles[x][y] = 1
+                # and look out for objects too
+                objects = self.get_object_by_xy((x, y))
+                for obj in objects:
+                    obj.in_range = in_range
+                    obj.seen = obj.in_range and not obj.seen or obj.seen
     
     def get_distance(self, pointa, pointb):
         """
@@ -578,10 +589,15 @@ class GameLevel(object):
         number (int): the current level number.
         filename (str): relative path to the level file.
         data (TMXParser): tmx file data.
+        seen_tiles (list): a 2D lookup of map positions that has been seen.
+                            seen_tiles[x][y] = True or False
         """
+
         self.number = number
         self.filename = filename
         self.tmx = TMXParser(filename)
+        self.seen_tiles = [[0 for y in range(0, self.tmx.height)] 
+                                    for x in range(0, self.tmx.width)]
         trace.write('loaded tmx data OK')
 
 
