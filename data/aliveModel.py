@@ -137,6 +137,9 @@ class GameEngine(object):
         self.level = GameLevel(nextlevel, levelfilename)
         self.load_objects()
         self.evManager.Post(NextLevelEvent(levelfilename))
+        # trigger move events for any viewers to update their views
+        self.look_around()
+        self.evManager.Post(PlayerMovedEvent())
         if len(self.story.entrymessages) <= nextlevel:
             self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
 
