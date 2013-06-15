@@ -349,7 +349,7 @@ class GameEngine(object):
         pxy = (self.player.x, self.player.y)
 
         # look around the map at what is in view range
-        for y in range(0, self.level.tmx.height):
+        for y in range(0, self.level.tmx.height + FIX_YOFFSET):
             for x in range(0, self.level.tmx.width):
                 in_range = self.get_distance(pxy, (x, y)) <= 3
                 # mark this level tile as seen
@@ -598,7 +598,7 @@ class GameLevel(object):
         self.number = number
         self.filename = filename
         self.tmx = TMXParser(filename)
-        self.seen_tiles = [[0 for y in range(0, self.tmx.height)] 
+        self.seen_tiles = [[0 for y in range(0, self.tmx.height + FIX_YOFFSET)] 
                                     for x in range(0, self.tmx.width)]
         trace.write('loaded tmx data OK')
 
