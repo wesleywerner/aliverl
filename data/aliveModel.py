@@ -54,7 +54,7 @@ class GameEngine(object):
         elif isinstance(event, StateChangeEvent):
             self.change_state(event.state)
         elif isinstance(event, PlayerMoveRequestEvent):
-            self.move_object(self.player, event.direction)
+            self.move_player(event.direction)
         elif isinstance(event, CombatEvent):
             self.combat_turn(event)
         elif isinstance(event, KillCharacterEvent):
@@ -183,9 +183,48 @@ class GameEngine(object):
         if self.player is None:
             trace.error('there is no player character set on this map. Good luck!')
 
+    def move_player(self, direction):
+        """
+        Move the player in direction.
+        If the move succeeds, we also take care of updating turn details:
+            * look_around() for objects in sight
+            * heal_turn() for everyone
+            * ai_movement_turn()
+        """
+        
+        if not self.move_object(self.player, direction):
+            return False
+        # at this point the player made a successful move.
+        # her x-y is up to date with the new position.
+        
+        # so let us take care of some turn stuff:
+        self.turn += 1
+        # update what we can see
+        self.look_around()
+        # heal turn for player and AI
+        self.heal_turn()
+        # move turn for AI
+        self.ai_movement_turn()
+        # update scent trail
+        p = self.player.properties
+        p['trail'].insert(0, (self.player.x, self.player.y))
+        self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
+        
+        # notify the view to update it's visible sprites
+        self.evManager.Post(PlayerMovedEvent())
+            
+        # notify the view to update it's sprites visibilies
+        self.evManager.Post(CharacterMovedEvent(self.player, direction))
+
     def move_object(self, character, direction):
         """
-        Moves the given character by offset direction (x, y)
+        Moves the given character by offset direction (x, y).
+        Notifies all listeners of this if the move
+        is successfull via the CharacterMovedEvent.
+        
+        Returns False if the move failed (blocked by tile or combat),
+        and True if the move succeeded.
+        
         """
         
         if not self.gamerunning:
@@ -195,23 +234,13 @@ class GameEngine(object):
                       character.y + direction[1])
         colliders = self.get_object_by_xy((newx, newy))
 
-        # turn management
+        # only player can activate object triggers
         if character is self.player:
-            # increase turn 
-            self.turn += 1
-            # update what we can see
-            # FIXME potential bug: look_around() uses outdated player position
-            self.look_around()
-            # heal turn
-            self.heal_turn()
-            # ai move turn
-            self.ai_movement_turn()
-            # player can trigger objects
             for collider in colliders:
                 self.trigger_object(collider)
 
+        # initiate combat for player and AI
         for collider in colliders:
-            # initiate combat
             if collider.type in ('ai', 'player') and character.type != 'friend':
                 # but only if one or the other is the player
                 if (collider is self.player) or (character is self.player):
@@ -230,14 +259,9 @@ class GameEngine(object):
         character.px, character.py = (newx*self.level.tmx.tile_width, 
                                       newy*self.level.tmx.tile_height)
         
-        # update scent trail
-        if character is self.player:
-            p = self.player.properties
-            p['trail'].insert(0, (newx, newy))
-            self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
-            
-        # notify listeners this character has moved
+        # notify the view to update it's sprite positions
         self.evManager.Post(CharacterMovedEvent(character, direction))
+        return True
 
     def tile_is_solid(self, xy):
         """

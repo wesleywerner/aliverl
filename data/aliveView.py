@@ -37,7 +37,9 @@ class GraphicalView(object):
         playarea (Rect): location on screen to draw gameplay.
         statsarea (Rect): area to draw player stats.
         viewport (Rect): which portion of the game map we are looking at.
-        spritegroup (Group): contains all animated, movable objects in play.
+        allsprites (Group): contains all animated, movable objects in play.
+        visible_sprites (Group): only contains sprites visible to the player.
+        sprite_lookup (Dict): a sprite name-value lookup.
         helpimages (Surface): stores the F1 help screens.
         transition (TransitionBase): current animated screen transition.
         transitionstep (int): transition counter.
@@ -65,6 +67,8 @@ class GraphicalView(object):
         self.statsarea = None
         self.viewport = None
         self.allsprites = None
+        self.visible_sprites = None
+        self.sprite_lookup = {}
         self.scrollertexts = None
         self.helpimages = None
         self.transition = None
@@ -82,6 +86,8 @@ class GraphicalView(object):
             self.clock.tick(self.gamefps)
         elif isinstance(event, CharacterMovedEvent):
             self.move_sprite(event)
+        elif isinstance(event, PlayerMovedEvent):
+            self.update_visible_sprites()
         elif isinstance(event, MessageEvent):
             self.messages.extend(self.wrap_text(event.message, 30))
             self.show_message_tooltip(event.message)
@@ -169,7 +175,7 @@ class GraphicalView(object):
         self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
         self.objectcanvas.fill(color.magenta)
         self.allsprites.update(pygame.time.get_ticks())
-        self.allsprites.draw(self.objectcanvas)
+        self.visible_sprites.draw(self.objectcanvas)
         self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
     
     
@@ -451,19 +457,25 @@ class GraphicalView(object):
         
         if not self.allsprites:
             self.allsprites = pygame.sprite.Group()
+        if not self.visible_sprites:
+            self.visible_sprites = pygame.sprite.Group()
         self.allsprites.empty()
-        
+        self.visible_sprites.empty()
+        self.sprite_lookup = {}
+
         tmx = self.model.level.tmx
         for obj in self.model.objects:
             x = (obj.x * tmx.tile_width)
             y = (obj.y * tmx.tile_height) - FIX_YOFFSET
+            sprite_name = id(obj)
             s = Sprite(
-                    id(obj),
+                    sprite_name,
                     Rect(x, y, 
                         tmx.tile_width, 
                         tmx.tile_height),
                     self.allsprites
                     )
+            self.sprite_lookup[sprite_name] = s
             self.set_sprite_defaults(obj)
 
     def create_text_sprite(self, message, fontcolor, position, destination):
@@ -556,6 +568,24 @@ class GraphicalView(object):
         
         event.obj.gid = event.gid
         self.set_sprite_defaults(event.obj)
+    
+    def update_visible_sprites(self):
+        """
+        Update the visible_sprites group to only include those within
+        the player's view, or on certain other conditions.
+        """
+        
+        for obj in self.model.objects:
+            # get the sprite name and reference
+            sprite_name = id(obj)
+            sprite = self.sprite_lookup[sprite_name]
+            
+            # add and remove sprites from the visible group
+            # if they have been seen
+            if obj.seen:
+                self.visible_sprites.add(sprite)
+            else:
+                self.visible_sprites.remove(sprite)
     
     def adjust_viewport(self, event):
         """
