@@ -361,7 +361,9 @@ class GameEngine(object):
                 # and look out for objects too
                 objects = self.get_object_by_xy((x, y))
                 for obj in objects:
+                    # mark object is in_range
                     obj.in_range = in_range
+                    # and only mark as seen if not yet seen and is in_range
                     obj.seen = obj.in_range and not obj.seen or obj.seen
     
     def get_distance(self, pointa, pointb):
