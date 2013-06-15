@@ -151,7 +151,7 @@ class GameEngine(object):
         defaultproperties = {'dead':False, 'seen':False, 'attack':0, 'health':0,
                              'maxhealth':0,'healrate':0, 'speed':0,
                              'stealth':0, 'mana':0, 'maxmana':5, 'manarate': 6,
-                             'modes': []
+                             'modes': [], 'in_range':False,
                              }
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
@@ -347,8 +347,11 @@ class GameEngine(object):
         """
         
         pxy = (self.player.x, self.player.y)
-        for obj in [o for o in self.objects if not o.seen]:
-            obj.seen = self.get_distance(pxy, (obj.x, obj.y)) <= 3
+        for obj in self.objects:
+            obj.in_range = self.get_distance(pxy, (obj.x, obj.y)) <= 3
+            # if it is in range and not yet seen: remember it.
+            # otherwise we keep the same value.
+            obj.seen = obj.in_range and not obj.seen or obj.seen
     
     def get_distance(self, pointa, pointb):
         """

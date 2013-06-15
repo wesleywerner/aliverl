@@ -582,7 +582,12 @@ class GraphicalView(object):
             
             # add and remove sprites from the visible group
             # if they have been seen
-            if obj.seen:
+            if obj.type in ('ai', 'friend'):
+                if obj.in_range:
+                    self.visible_sprites.add(sprite)
+                else:
+                    self.visible_sprites.remove(sprite)
+            elif obj.seen:
                 self.visible_sprites.add(sprite)
             else:
                 self.visible_sprites.remove(sprite)
