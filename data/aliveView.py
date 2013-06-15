@@ -152,7 +152,6 @@ class GraphicalView(object):
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
             self.draw_borders()
             self.draw_player_stats()
-            #self.draw_game_messages()
             self.draw_sprites()
             self.draw_scroller_text()
             
@@ -182,6 +181,7 @@ class GraphicalView(object):
         self.objectcanvas.fill(color.magenta)
         self.allsprites.update(pygame.time.get_ticks())
         self.visible_sprites.draw(self.objectcanvas)
+        self.draw_fog()
         self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
     
     
@@ -189,12 +189,25 @@ class GraphicalView(object):
         """
         Overlay fog on the level for that which is out of player view.
         """
-        
-        for y in range(tmx.height):
-            for x in range(tmx.width):
+
+        unseen_sprite = self.tsp[UNSEEN_GID]
+        fog_sprite = self.tsp[FOG_GID]
+
+        tmx = self.model.level.tmx
+        for y in range(0, tmx.height):
+            for x in range(0, tmx.width):
                 # lookup list of which positions has been seen 
                 # and overlay those with FOG_GID, the rest with UNSEEN_GID
                 seen = self.model.level.seen_tiles[x][y]
+
+                # not yet seen
+                if seen == 0:
+                    self.objectcanvas.blit(unseen_sprite,
+                                    (x * tmx.tile_width, y * tmx.tile_height))
+                # seen but out of range
+                elif seen == 1:
+                    self.objectcanvas.blit(fog_sprite,
+                                    (x * tmx.tile_width, y * tmx.tile_height))
 
     def draw_scroller_text(self):
         """
