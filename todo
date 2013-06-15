@@ -1,3 +1,6 @@
+* implement a line of sight function
+* use los function for marking tiles and objects as seen
+
 * add an abilities screen that shows available upgrades
 
 * add the UI button class
@@ -18,7 +21,3 @@
     File "aliveModel.py", line 279, in healcharacters
         if npc.health < npc.maxhealth:
     AttributeError: 'Mapobject' object has no attribute 'health'
-
-# done
-
-* implement a player walked path for 'follower' ai modes to pick up on if they cross it. (a future ability will reduce your path history)
