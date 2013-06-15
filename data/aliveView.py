@@ -64,7 +64,7 @@ class GraphicalView(object):
         self.playarea = None
         self.statsarea = None
         self.viewport = None
-        self.spritegroup = None
+        self.allsprites = None
         self.scrollertexts = None
         self.helpimages = None
         self.transition = None
@@ -168,8 +168,8 @@ class GraphicalView(object):
 
         self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
         self.objectcanvas.fill(color.magenta)
-        self.spritegroup.update(pygame.time.get_ticks())
-        self.spritegroup.draw(self.objectcanvas)
+        self.allsprites.update(pygame.time.get_ticks())
+        self.allsprites.draw(self.objectcanvas)
         self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
     
     
@@ -432,7 +432,7 @@ class GraphicalView(object):
         
         defaultvalues = {'frames':[], 'fps':0, 'loop': 0}
         anims = self.model.story.animations
-        sprite = [e for e in self.spritegroup if e.name == id(obj)][0]
+        sprite = [e for e in self.allsprites if e.name == id(obj)][0]
         if sprite:
             if obj.gid in anims.keys():
                 [setattr(obj, k, v) for k, v in anims[obj.gid].items()]
@@ -449,9 +449,9 @@ class GraphicalView(object):
         Create all the sprites that represent all level objects.
         """
         
-        if not self.spritegroup:
-            self.spritegroup = pygame.sprite.Group()
-        self.spritegroup.empty()
+        if not self.allsprites:
+            self.allsprites = pygame.sprite.Group()
+        self.allsprites.empty()
         
         tmx = self.model.level.tmx
         for obj in self.model.objects:
@@ -462,7 +462,7 @@ class GraphicalView(object):
                     Rect(x, y, 
                         tmx.tile_width, 
                         tmx.tile_height),
-                    self.spritegroup
+                    self.allsprites
                     )
             self.set_sprite_defaults(obj)
 
@@ -535,7 +535,7 @@ class GraphicalView(object):
         
         tmx = self.model.level.tmx
         oid = id(event.obj)
-        for sprite in self.spritegroup:
+        for sprite in self.allsprites:
             if sprite.name == oid:
                 sprite.rect.topleft = ((event.obj.x * tmx.tile_width),
                                         (event.obj.y * tmx.tile_height) - FIX_YOFFSET)
@@ -545,9 +545,9 @@ class GraphicalView(object):
         """
         Remove a character from play and from the sprite list.
         """
-        match = [e for e in self.spritegroup if e.name == id(mapobject)]
+        match = [e for e in self.allsprites if e.name == id(mapobject)]
         if match:
-            self.spritegroup.remove(match[0])
+            self.allsprites.remove(match[0])
     
     def transmute_sprite(self, event):
         """
@@ -588,7 +588,7 @@ class GraphicalView(object):
         self.screen = pygame.display.set_mode(windowsize.size)
         self.statsarea = pygame.Rect(200, 22, 400, 40)
         self.clock = pygame.time.Clock()
-        self.spritegroup = pygame.sprite.Group()
+        self.allsprites = pygame.sprite.Group()
         # load resources
         self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
         self.largefont = pygame.font.Font('bitwise.ttf', 30)
