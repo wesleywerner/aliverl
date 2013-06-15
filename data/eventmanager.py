@@ -57,6 +57,17 @@ class PlayerMoveRequestEvent(Event):
         return ''
         #return '%s offset %s' % (self.name, self.direction)
     
+class PlayerMovedEvent(Event):
+    """
+    The player has successfully moved.
+    """
+    
+    def __init__(self):
+        self.name = 'Player moved event'
+
+    def __str__(self):
+        return ''
+
 class CharacterMovedEvent(Event):
     """
     Request to move the player object.
