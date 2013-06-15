@@ -347,7 +347,7 @@ class GameEngine(object):
         """
         
         pxy = (self.player.x, self.player.y)
-        for obj in self.objects:
+        for obj in [o for o in self.objects if not o.seen]:
             obj.seen = self.get_distance(pxy, (obj.x, obj.y)) <= 3
     
     def get_distance(self, pointa, pointb):
