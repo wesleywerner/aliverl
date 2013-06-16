@@ -205,6 +205,8 @@ Levels are built with the Tiled map editor. This documents the process of creati
 
 You can get it from the official website: [http://www.mapeditor.org](http://www.mapeditor.org)
 
+**Important:** _Set your Tiled Preferences to store layer data as `Base 64 (zlib compressed)`_
+
 ### Tileset
 
 Each map has a tileset, an image divided into 32x32 sized blocks of tile images. Each level can have it's own tileset image, or share the same image. This is a PNG file, it should not have a transparency layer, instead all magenta #ff00ff pixels are rendered transparent. The image size _must_ be in multiples of 32. This helps the rendering engine index the tiles properly.
