@@ -140,7 +140,7 @@ class GameEngine(object):
         # trigger move events for any viewers to update their views
         self.look_around()
         self.evManager.Post(PlayerMovedEvent())
-        if len(self.story.entrymessages) <= nextlevel:
+        if len(self.story.entrymessages) >= nextlevel:
             self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
 
     def load_objects(self):
