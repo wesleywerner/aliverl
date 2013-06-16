@@ -142,7 +142,7 @@ class GraphicalView(object):
             sometext = 'Intro screen is now drawing. Space to skip.'
             
         elif state == aliveModel.STATE_MENU:
-            sometext = 'The game menu is now showing. Space to play, escape to quit.'
+            self.draw_menu()
             
         elif state == aliveModel.STATE_DIALOG:
             self.draw_borders()
@@ -172,7 +172,14 @@ class GraphicalView(object):
         somewords = self.largefont.render(sometext, True, color.green)
         self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
-    
+
+    def draw_menu(self):
+        """
+        Draw the main menu.
+        """
+        
+        self.screen.blit(self.menubackground, (0, 0))
+
     def draw_sprites(self):
         """
         Draw the play area: level tiles and objects.
