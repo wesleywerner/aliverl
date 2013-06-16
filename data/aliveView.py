@@ -95,8 +95,9 @@ class GraphicalView(object):
         elif isinstance(event, PlayerMovedEvent):
             self.update_visible_sprites()
         elif isinstance(event, MessageEvent):
-            self.messages.extend(self.wrap_text(event.message, 30))
-            self.show_message_tooltip(event.message)
+            if self.messages[-1] != event.message:
+                self.messages.extend(self.wrap_text(event.message, 30))
+                self.show_message_tooltip(event.message)
         elif isinstance(event, KillCharacterEvent):
             self.kill_sprite(event.character)
             self.messages.append('The %s dies' % (event.character.name))
