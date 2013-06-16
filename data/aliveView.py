@@ -852,7 +852,7 @@ class SlideinTransition(TransitionBase):
         """
         
         super(SlideinTransition, self).__init__(surface, viewport, fps)
-        self.box = pygame.Rect(0, 0, 10, 10)
+        self.box = pygame.Rect(0, 0, 100, 20)
         # center the box according to full size
         self.box.center = viewport.center
         # prerender the words and center them
