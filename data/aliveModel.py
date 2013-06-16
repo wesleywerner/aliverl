@@ -151,16 +151,24 @@ class GameEngine(object):
         """
         Load the blocking tiles matrix from map data.
         """
-        
+
+        matrix = self.level.matrix['block']
         # for each level cell
         for y in range(0, self.level.tmx.height):
             for x in range(0, self.level.tmx.width):
                 # and for every map tile layer
                 for layer in self.level.tmx.tilelayers:
                     # is this map tile in our story blocklist?
-                    gid = layer.at((x, y - FIX_YOFFSET))
+                    gid = layer.at((x, y))
                     if gid in self.story.blocklist:
-                        self.level.matrix['block'][x][y] = 1
+                        matrix[x][y] = 1
+        # also include all blocking objects
+        for objectgroup in self.level.tmx.objectgroups:
+            for obj in objectgroup:
+                if obj.gid in self.story.blocklist and obj.type != 'player':
+                    print('this object blocks our view', obj.name)
+                    matrix[obj.x][obj.y] = 1
+
 
 
     def load_objects(self):
@@ -384,7 +392,7 @@ class GameEngine(object):
                 # set to 1 (seen) if it is 2 (in view)
                 matrix[x][y] = matrix[x][y] == 2 and 1 or matrix[x][y]
                 # same for objects who were in range
-                objects = self.get_object_by_xy((x, y - FIX_YOFFSET))
+                objects = self.get_object_by_xy((x, y))
                 for obj in objects:
                     obj.in_range = False
 
@@ -415,7 +423,7 @@ class GameEngine(object):
 
         #pxy = (self.player.x, self.player.y)
         ## look around the map at what is in view range
-        #for y in range(0, self.level.tmx.height + FIX_YOFFSET):
+        #for y in range(0, self.level.tmx.height):
             #for x in range(0, self.level.tmx.width):
                 #in_range = self.get_distance(pxy, (x, y)) <= 3
                 ## mark this level tile as seen
@@ -555,6 +563,9 @@ class GameEngine(object):
                             return False
                     # transmorgify!
                     obj.gid = transmute_id
+                    # update the level block matrix with our new aquired status
+                    matrix = self.level.matrix['block']
+                    matrix[obj.x][obj.y] = int(obj.gid in self.story.blocklist)
                     self.evManager.Post(UpdateObjectGID(obj, obj.gid))
 
             # once shots actions (append once to any action)
