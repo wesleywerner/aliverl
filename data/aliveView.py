@@ -11,12 +11,6 @@ from eventmanager import *
 from tmxparser import TMXParser
 from tmxparser import TilesetParser
 
-# fixes a bug in tiled map editor.
-# it saves objects y-position with one tile's worth more.
-# its value is set later on. remove when bug is fixed :P
-# https://github.com/bjorn/tiled/issues/91
-FIX_YOFFSET=0
-
 # tile id of seen fog overlay
 FOG_GID = 16
 
@@ -463,8 +457,6 @@ class GraphicalView(object):
         """
         
         tmx = self.model.level.tmx
-        global FIX_YOFFSET
-        FIX_YOFFSET = tmx.tile_height
         # load the tileset parser
         tilesetfile = os.path.join('images', tmx.tilesets[0].source)
         self.tsp = TilesetParser(
@@ -528,7 +520,7 @@ class GraphicalView(object):
         tmx = self.model.level.tmx
         for obj in self.model.objects:
             x = (obj.x * tmx.tile_width)
-            y = (obj.y * tmx.tile_height) - FIX_YOFFSET
+            y = (obj.y * tmx.tile_height)
             sprite_name = id(obj)
             s = Sprite(
                     sprite_name,
@@ -598,8 +590,8 @@ class GraphicalView(object):
         pxy = self.model.player.getpixelxy()
         self.create_text_sprite(message, 
                                 color.white, 
-                                (pxy[0], pxy[1] - FIX_YOFFSET), 
-                                (pxy[0], pxy[1] - FIX_YOFFSET - 20))
+                                (pxy[0], pxy[1]), 
+                                (pxy[0], pxy[1] - 20))
 
     
     def move_sprite(self, event):
@@ -612,7 +604,7 @@ class GraphicalView(object):
         for sprite in self.allsprites:
             if sprite.name == oid:
                 sprite.rect.topleft = ((event.obj.x * tmx.tile_width),
-                                        (event.obj.y * tmx.tile_height) - FIX_YOFFSET)
+                                        (event.obj.y * tmx.tile_height))
                 return
 
     def kill_sprite(self, mapobject):
