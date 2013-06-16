@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
-  <image source="alive-tileset.png" trans="ff00ff" width="256" height="832"/>
+  <image source="alive-tileset.png" trans="ff00ff" width="256" height="960"/>
   <tile id="0">
    <properties>
     <property name="blocks" value="1"/>
@@ -114,41 +114,6 @@
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
-  <object gid="30" x="480" y="224"/>
-  <object gid="30" x="480" y="160"/>
-  <object gid="31" x="480" y="96"/>
-  <object gid="6" x="448" y="288"/>
-  <object gid="7" x="128" y="416"/>
-  <object gid="7" x="128" y="448"/>
-  <object name="player" gid="57" x="160" y="224"/>
-  <object gid="16" x="160" y="160"/>
-  <object name="door 1" type="door" gid="6" x="256" y="96">
-   <properties>
-    <property name="fingers once" value="door 1"/>
-    <property name="on_finger" value="transmute=14"/>
-   </properties>
-  </object>
-  <object name="cap 1" type="cap" gid="25" x="320" y="96">
-   <properties>
-    <property name="on finger" value="transmute=27"/>
-   </properties>
-  </object>
-  <object name="cap 2" type="cap" gid="25" x="352" y="96">
-   <properties>
-    <property name="on finger" value="transmute=27"/>
-   </properties>
-  </object>
-  <object name="switch 1" type="switch" gid="30" x="288" y="160">
-   <properties>
-    <property name="fingers" value="cap 1"/>
-    <property name="fingers 2" value="cap 2"/>
-    <property name="message once" value="The capacitors pop. Looks like a way through..."/>
-   </properties>
-  </object>
-  <object gid="30" x="384" y="160">
-   <properties>
-    <property name="message once" value="A surge of static passes through you"/>
-   </properties>
-  </object>
+  <object name="player" type="player" gid="97" x="160" y="160"/>
  </objectgroup>
 </map>
