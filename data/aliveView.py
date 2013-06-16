@@ -229,7 +229,7 @@ class GraphicalView(object):
             for x in range(0, tmx.width):
                 # lookup list of which positions has been seen 
                 # and overlay those with FOG_GID, the rest with UNSEEN_GID
-                seen = self.model.level.seen_tiles[x][y]
+                seen = self.model.level.matrix['seen'][x][y]
 
                 # not yet seen
                 if seen == 0:

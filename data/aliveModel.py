@@ -5,6 +5,7 @@ import random
 import traceback
 import const
 import trace
+import rlhelper
 from tmxparser import TMXParser
 from eventmanager import *
 
@@ -142,6 +143,7 @@ class GameEngine(object):
         trace.write('warping to level: %s ' % (nextlevel,))
         levelfilename = os.path.join(self.story.path, self.story.levels[nextlevel-1])
         self.level = GameLevel(nextlevel, levelfilename)
+        self.load_matrix()
         self.load_objects()
         self.evManager.Post(NextLevelEvent(levelfilename))
         # trigger move events for any viewers to update their views
@@ -149,6 +151,22 @@ class GameEngine(object):
         self.evManager.Post(PlayerMovedEvent())
         if len(self.story.entrymessages) >= nextlevel:
             self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
+
+    def load_matrix(self):
+        """
+        Load the blocking tiles matrix from map data.
+        """
+        
+        # for each level cell
+        for y in range(0, self.level.tmx.height):
+            for x in range(0, self.level.tmx.width):
+                # and for every map tile layer
+                for layer in self.level.tmx.tilelayers:
+                    # is this map tile in our story blocklist?
+                    gid = layer.at((x, y - FIX_YOFFSET))
+                    if gid in self.story.blocklist:
+                        self.level.matrix['block'][x][y] = 1
+
 
     def load_objects(self):
         """
@@ -350,31 +368,74 @@ class GameEngine(object):
             y = (y < -1) and -1 or y
             y = (y > 1) and 1 or y
             self.move_object(obj, (x, y))
-    
+
     def look_around(self):
         """
         Marks any other objects within the player characters range as seen.
         """
 
-        pxy = (self.player.x, self.player.y)
+        RANGE = 3
+        px, py = (self.player.x, self.player.y)
+        # store the level seen matrix
+        matrix = self.level.matrix['seen']
+        # store the level blocked matrix
+        blocked_matrix = self.level.matrix['block']
+        # store the map width and height
+        w, h = (len(matrix), len(matrix[0]))
 
-        # look around the map at what is in view range
-        for y in range(0, self.level.tmx.height + FIX_YOFFSET):
-            for x in range(0, self.level.tmx.width):
-                in_range = self.get_distance(pxy, (x, y)) <= 3
-                # mark this level tile as seen
-                if in_range:
-                    self.level.seen_tiles[x][y] = 2
-                elif self.level.seen_tiles[x][y] == 2:
-                    # set previous in_range positions that are now out of range
-                    self.level.seen_tiles[x][y] = 1
-                # and look out for objects too
-                objects = self.get_object_by_xy((x, y))
+        # reset any in-view tiles as "seen"
+        for y in range(0, h):
+            for x in range(0, w):
+                # set to 1 (seen) if it is 2 (in view)
+                matrix[x][y] = matrix[x][y] == 2 and 1 or matrix[x][y]
+                # same for objects who were in range
+                objects = self.get_object_by_xy((x, y - FIX_YOFFSET))
                 for obj in objects:
-                    # mark object is in_range
-                    obj.in_range = in_range
-                    # and only mark as seen if not yet seen and is in_range
-                    obj.seen = obj.in_range and not obj.seen or obj.seen
+                    obj.in_range = False
+
+        # we only need to scan for seen tiles and objects in our RANGE vicinity
+        # look around the map at what is in view range
+        for y in range(py - RANGE, py + RANGE):
+            for x in range(px - RANGE, px + RANGE):
+
+                # constrain our view to the level boundaries
+                if x < 0 or y < 0 or x > w - 1 or y > h - 1:
+                    continue
+
+                # the distance will round our view to a nice ellipse
+                if self.get_distance((px, py), (x, y)) <= RANGE:
+
+                    # test if we also have line of sight to this position
+                    if rlhelper.line_of_sight(blocked_matrix, px, py, x, y):
+
+                        # mark this matrix tile as in view
+                        matrix[x][y] = 2
+
+                        # and any objects too
+                        objects = self.get_object_by_xy((x, y))
+                        for obj in objects:
+                            # mark object is in_range
+                            obj.in_range = True
+                            obj.seen = True
+
+        #pxy = (self.player.x, self.player.y)
+        ## look around the map at what is in view range
+        #for y in range(0, self.level.tmx.height + FIX_YOFFSET):
+            #for x in range(0, self.level.tmx.width):
+                #in_range = self.get_distance(pxy, (x, y)) <= 3
+                ## mark this level tile as seen
+                #if in_range:
+                    #self.level.matrix['seen'][x][y] = 2
+                #elif self.level.matrix['seen'][x][y] == 2:
+                    ## set previous in_range positions that are now out of range
+                    #self.level.matrix['seen'][x][y] = 1
+                ## and look out for objects too
+                #objects = self.get_object_by_xy((x, y))
+                #for obj in objects:
+                    ## mark object is in_range
+                    #obj.in_range = in_range
+                    ## and only mark as seen if not yet seen and is in_range
+                    #obj.seen = obj.in_range and not obj.seen or obj.seen
     
     def get_distance(self, pointa, pointb):
         """
@@ -601,16 +662,21 @@ class GameLevel(object):
         number (int): the current level number.
         filename (str): relative path to the level file.
         data (TMXParser): tmx file data.
-        seen_tiles (list): a 2D lookup of map positions that has been seen.
-                            seen_tiles[x][y] = True or False
         """
 
         self.number = number
         self.filename = filename
         self.tmx = TMXParser(filename)
-        self.seen_tiles = [[0 for y in range(0, self.tmx.height + FIX_YOFFSET)] 
-                                    for x in range(0, self.tmx.width)]
         trace.write('loaded tmx data OK')
+        
+        # store the level map data in our map matrix.
+        self.matrix = {}
+        w = self.tmx.width
+        h = self.tmx.height
+        # store a matrix of tiles that block (for line of sight checks)
+        self.matrix['block'] = rlhelper.make_matrix(w, h, 0)
+        # and a matrix of tiles seen (it update as the player moves around)
+        self.matrix['seen'] = rlhelper.make_matrix(w, h, 0)
 
 
 # State machine constants for the StateMachine class below
