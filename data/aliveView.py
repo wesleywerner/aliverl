@@ -72,6 +72,7 @@ class GraphicalView(object):
         self.playarea = None
         self.statsarea = None
         self.viewport = None
+        self.windowsize = None
         self.allsprites = None
         self.visible_sprites = None
         self.sprite_lookup = {}
@@ -251,8 +252,8 @@ class GraphicalView(object):
             canvas.fill(color.magenta)
             if self.transitionstep == 0:
                 self.transition = SlideinTransition(
-                                    canvas, self.playarea, self.gamefps, 
-                                    self.largefont, 'connecting...',
+                                    canvas, self.windowsize, self.gamefps, 
+                                    self.smallfont, 'connecting . . .',
                                     self.dialoguebackground)
             elif self.transitionstep == 2:
                 if self.dialoguewords:
@@ -264,8 +265,9 @@ class GraphicalView(object):
                     words = self.wrap_text(words, 25)
                     canvas.blit(self.dialoguebackground, self.playarea)
                     self.transition = TerminalPrinter(
-                                        canvas, self.playarea, self.gamefps, 
-                                        self.largefont, words, wordcolor)
+                                        canvas, self.windowsize, self.gamefps, 
+                                        self.largefont, words, wordcolor,
+                                        self.dialoguebackground)
             if not self.transition.waitforkey:
                 self.transitionstep += 1
         else:
@@ -655,10 +657,10 @@ class GraphicalView(object):
         result = pygame.init()
         pygame.font.init()
         pygame.display.set_caption('Alive')
-        windowsize = pygame.Rect(0, 0, 600, 600)
+        self.windowsize = pygame.Rect(0, 0, 600, 600)
         self.viewport = pygame.Rect(0, 0, 512, 512)
         self.playarea = pygame.Rect((75, 66), self.viewport.size)
-        self.screen = pygame.display.set_mode(windowsize.size)
+        self.screen = pygame.display.set_mode(self.windowsize.size)
         self.statsarea = pygame.Rect(200, 22, 400, 40)
         self.clock = pygame.time.Clock()
         self.allsprites = pygame.sprite.Group()
@@ -851,18 +853,27 @@ class SlideinTransition(TransitionBase):
         
         super(SlideinTransition, self).__init__(surface, viewport, fps)
         self.box = pygame.Rect(0, 0, 10, 10)
-        self.background = background
         # center the box according to full size
         self.box.center = viewport.center
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
         self.fontloc.center = viewport.center
-        # reduce the size now to draw animations within a margin
-        self.size = (self.viewport.width -32, self.viewport.height -32)
+        self.size = (self.viewport.width, self.viewport.height)
+        # center the background image
+        self.background = None
+        if background:
+            # make a background surface
+            bgpos = ((self.size[0] - background.get_width()) / 2, 
+                   (self.size[1] - background.get_height()) / 2)
+            self.background = pygame.Surface(self.size)
+            # fill it with black
+            self.background.fill(color.black)
+            # paint over the given image
+            self.background.blit(background, bgpos)
         # toggle delta direction
-        self.xdelta = 60
-        self.ydelta = 60
+        self.xdelta = 30
+        self.ydelta = 30
         self.resizingwidth = True
         self.resizingheight = False
         
@@ -880,7 +891,8 @@ class SlideinTransition(TransitionBase):
                 self.resizingwidth = self.box.w < self.size[0]
                 self.resizingheight = not self.resizingwidth
             if self.background:
-                self.surface.blit(self.background, self.box.topleft, (0, 0, self.box.width, self.box.height))
+                # draw the background image cut from the same area of our box
+                self.surface.blit(self.background, self.box.topleft, self.box)
             pygame.draw.rect(self.surface, color.green, self.box, 1)
             self.surface.blit(self.fontpix, self.fontloc)
             self.done = not self.resizingwidth and not self.resizingheight
@@ -892,7 +904,14 @@ class TerminalPrinter(TransitionBase):
     Simulates typing out blocks of text onto the screen.
     """
     
-    def __init__(self, surface, viewport, fps, font, words, wordcolor):
+    def __init__(self,
+                surface,
+                viewport,
+                fps,
+                font,
+                words,
+                wordcolor,
+                background=None):
         """
         surface is where to draw on.
         font is for drawing the title text.
@@ -901,23 +920,40 @@ class TerminalPrinter(TransitionBase):
         
         super(TerminalPrinter, self).__init__(surface, viewport, fps)
         self.words = words
+        self.text = ""
         self.wordcolor = wordcolor
         self.font = font
-        self.xpadding = 32
-        self.ypadding = 32
+        self.xpadding = 72
+        self.ypadding = 72
         self.lineindex = 0
         self.charindex = 0
+        self.viewport = viewport
         self.xposition, self.yposition = self.viewport.topleft
         self.done = False
         self.lastfontheight = 0
         self.waitforkey = True
-        
+        self.size = (self.viewport.width, self.viewport.height)
+        # center the background image
+        self.background = None
+        if background:
+            # make a background surface
+            bgpos = ((self.size[0] - background.get_width()) / 2, 
+                   (self.size[1] - background.get_height()) / 2)
+            self.background = pygame.Surface(self.size)
+            # fill it with black
+            self.background.fill(color.black)
+            # paint over the given image
+            self.background.blit(background, bgpos)
+
     def update(self, time):
         """
         Step the transition.
         """
 
         if self.canupdate(time) and not self.done:
+            if self.background:
+                # draw the background image cut from the same area of our box
+                self.surface.blit(self.background, self.viewport.topleft)
             if self.charindex == len(self.words[self.lineindex]):
                 self.lineindex += 1
                 self.xposition = self.viewport.left
@@ -927,7 +963,7 @@ class TerminalPrinter(TransitionBase):
             if not self.done:
                 c = self.words[self.lineindex][self.charindex]
                 glyph = self.font.render(c, False, self.wordcolor)
-                self.surface.blit(glyph, 
+                self.background.blit(glyph, 
                                     (self.xposition + self.xpadding, 
                                     self.yposition + self.ypadding))
                 glyphx, self.lastfontheight = glyph.get_size()
