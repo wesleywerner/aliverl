@@ -18,30 +18,35 @@ class KeyboardMouse(object):
         Called by an event in the message queue.
         """
 
-        if isinstance(event, TickEvent):
-            # Called for each game tick. We check our keyboard presses here.
-            for event in pygame.event.get():
-                # always handle window closing events
-                if event.type == pygame.QUIT:
-                    self.evManager.Post(QuitEvent())
-                
-                # all key downs
-                if event.type == pygame.KEYDOWN:
-                    state = self.model.state.peek()
-                    if state == aliveModel.STATE_INTRO:
-                        self.intro_keys(event)
-                    elif state == aliveModel.STATE_MENU:
-                        self.menu_keys(event)
-                    elif state == aliveModel.STATE_PLAY:
-                        self.play_keys(event)
-                    elif state == aliveModel.STATE_GAMEOVER:
-                        self.game_over_keys(event)
-                    elif state == aliveModel.STATE_DIALOG:
-                        self.dialogue_keys(event)
-                    else:
-                        # allow escaping from unhandled states
-                        self.evManager.Post(StateChangeEvent(None))
-    
+        try:
+            if isinstance(event, TickEvent):
+                # Called for each game tick. We check our keyboard presses here.
+                for event in pygame.event.get():
+                    # always handle window closing events
+                    if event.type == pygame.QUIT:
+                        self.evManager.Post(QuitEvent())
+                    
+                    # all key downs
+                    if event.type == pygame.KEYDOWN:
+                        state = self.model.state.peek()
+                        if state == aliveModel.STATE_INTRO:
+                            self.intro_keys(event)
+                        elif state == aliveModel.STATE_MENU:
+                            self.menu_keys(event)
+                        elif state == aliveModel.STATE_PLAY:
+                            self.play_keys(event)
+                        elif state == aliveModel.STATE_GAMEOVER:
+                            self.game_over_keys(event)
+                        elif state == aliveModel.STATE_DIALOG:
+                            self.dialogue_keys(event)
+                        elif state == aliveModel.STATE_CRASH:
+                            self.crash_keys(event)
+                        else:
+                            # allow escaping from unhandled states
+                            self.evManager.Post(StateChangeEvent(None))
+        except:
+            self.evManager.Post(CrashEvent())
+
     def play_keys(self, event):
         """
         Handles game play keys.
@@ -110,4 +115,14 @@ class KeyboardMouse(object):
         """
         
         if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
+            self.evManager.Post(StateChangeEvent(None))
+
+    def crash_keys(self, event):
+        """
+        Handles the emergency crash kart keys.
+        """
+        
+        if event.key == pygame.K_ESCAPE:
+            self.evManager.Post(QuitEvent())
+        elif event.key == pygame.K_RETURN:
             self.evManager.Post(StateChangeEvent(None))

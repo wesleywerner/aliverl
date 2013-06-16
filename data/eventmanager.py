@@ -202,7 +202,19 @@ class UpdateObjectGID(Event):
     
     def __str__(self):
         return '%s <%s %s to %s>' % (self.name, self.obj.name, self.action, self.gid)
+
+class CrashEvent(Event):
+    """
+    Something went terribly wrong.
+    """
     
+    def __init__(self):
+        self.name = 'Crash event'
+    
+    def __str__(self):
+        return str(self.name)
+
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.

@@ -2,7 +2,9 @@ import os
 import sys
 import math
 import random
+import traceback
 import const
+import trace
 from tmxparser import TMXParser
 from eventmanager import *
 
@@ -59,6 +61,11 @@ class GameEngine(object):
             self.combat_turn(event)
         elif isinstance(event, KillCharacterEvent):
             self.kill_object(event.character)
+        elif isinstance(event, CrashEvent):
+            self.change_state(STATE_CRASH)
+            error_message = str(traceback.format_exc())
+            print(error_message)
+            trace.log_crash(error_message)
 
     def run(self):
         """
@@ -614,6 +621,7 @@ STATE_ABOUT = 4
 STATE_PLAY = 5
 STATE_DIALOG = 6
 STATE_GAMEOVER = 7
+STATE_CRASH = 8
 
 class StateMachine(object):
     """

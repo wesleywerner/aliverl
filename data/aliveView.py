@@ -1,9 +1,11 @@
 import os
+import sys
 import pygame
 from pygame import image
 from pygame.locals import *
 import trace
 import color
+import const
 import aliveModel
 from eventmanager import *
 from tmxparser import TMXParser
@@ -88,34 +90,40 @@ class GraphicalView(object):
         Called by an event in the message queue.
         """
 
-        if isinstance(event, TickEvent):
-            self.render()
-            self.clock.tick(self.gamefps)
-        elif isinstance(event, CharacterMovedEvent):
-            self.move_sprite(event)
-        elif isinstance(event, PlayerMovedEvent):
-            self.update_visible_sprites()
-        elif isinstance(event, MessageEvent):
-            if self.messages[-1] != event.message:
-                self.messages.extend(self.wrap_text(event.message, 30))
-                self.show_message_tooltip(event.message)
-        elif isinstance(event, KillCharacterEvent):
-            self.kill_sprite(event.character)
-            self.messages.append('The %s dies' % (event.character.name))
-        elif isinstance(event, UpdateObjectGID):
-            self.transmute_sprite(event)
-        elif isinstance(event, DialogueEvent):
-            self.dialoguewords = event.words[::-1]
-        elif isinstance(event, NextLevelEvent):
-            self.load_level()
-            self.create_sprites()
-        elif isinstance(event, ShiftViewportEvent):
-            self.adjust_viewport(event)
-        elif isinstance(event, InitializeEvent):
-            self.initialize()
-        elif isinstance(event, QuitEvent):
-            self.isinitialized = False
-            pygame.quit()
+        try:
+            if isinstance(event, TickEvent):
+                self.render()
+                self.clock.tick(self.gamefps)
+            elif isinstance(event, CharacterMovedEvent):
+                self.move_sprite(event)
+            elif isinstance(event, PlayerMovedEvent):
+                self.update_visible_sprites()
+            elif isinstance(event, MessageEvent):
+                if self.messages[-1] != event.message:
+                    self.messages.extend(self.wrap_text(event.message, 30))
+                    self.show_message_tooltip(event.message)
+            elif isinstance(event, KillCharacterEvent):
+                self.kill_sprite(event.character)
+                self.messages.append('The %s dies' % (event.character.name))
+            elif isinstance(event, UpdateObjectGID):
+                self.transmute_sprite(event)
+            elif isinstance(event, DialogueEvent):
+                self.dialoguewords = event.words[::-1]
+            elif isinstance(event, NextLevelEvent):
+                self.load_level()
+                self.create_sprites()
+            elif isinstance(event, ShiftViewportEvent):
+                self.adjust_viewport(event)
+            elif isinstance(event, InitializeEvent):
+                self.initialize()
+            elif isinstance(event, QuitEvent):
+                self.isinitialized = False
+                pygame.quit()
+        except Exception, e:
+            # we explicitly catch Exception, since sys.exit() will throw
+            # a SystemExit, and we want that one to not catch here.
+            # That means we drop to the terminal if sys.exit() is used.
+            self.evManager.Post(CrashEvent())
     
     def widgetclick(self, context, code):
         """
@@ -135,12 +143,28 @@ class GraphicalView(object):
         if not self.isinitialized:
             return
 
+        try:
+            state = self.model.state.peek()
+            if state == aliveModel.STATE_CRASH:
+                somewords = self.draw_text(const.CRASH_MESSAGE,
+                                            self.smallfont
+                                            , False,
+                                            color.yellow)
+                self.screen.blit(somewords, (0, 0))
+                pygame.display.flip()
+                return
+        except Exception, e:
+            # these lines pose an interesting problem:
+            # if the crash message crashes, we go down hard.
+            print('\n'.join(const.CRASH_MESSAGE))
+            import traceback
+            print('\n' + str(traceback.format_exc()))
+            sys.exit(1)
+
         self.screen.blit(self.defaultbackground, (0, 0))
-        state = self.model.state.peek()
-        sometext = ''
-        
+
         if state == aliveModel.STATE_INTRO:
-            sometext = 'Intro screen is now drawing. Space to skip.'
+            pass
             
         elif state == aliveModel.STATE_MENU:
             self.draw_menu()
@@ -159,7 +183,7 @@ class GraphicalView(object):
             
             if state == aliveModel.STATE_GAMEOVER:
                 #TODO Overlay a game over message.
-                sometext = 'You have died :('
+                pass
         
         elif state == aliveModel.STATE_HELP:
             if not self.helpimages:
@@ -170,8 +194,6 @@ class GraphicalView(object):
             self.transition.update(pygame.time.get_ticks())
             self.screen.blit(self.transition.surface, (0, 0))
 
-        somewords = self.largefont.render(sometext, True, color.green)
-        self.screen.blit(somewords, (0, 0))
         pygame.display.flip()
 
     def draw_menu(self):
