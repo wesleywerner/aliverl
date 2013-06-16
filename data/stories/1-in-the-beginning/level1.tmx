@@ -21,7 +21,7 @@
   </object>
  </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="32" y="64"/>
+  <object name="player" type="player" gid="97" x="64" y="64"/>
   <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
     <property name="on finger 1" value="transmute=69"/>
@@ -36,7 +36,6 @@
   <object name="door switch" type="term" gid="45" x="384" y="32">
    <properties>
     <property name="fingers" value="entry door"/>
-    <property name="message once" value="Access granted. You see glowing tubes and adventure ahead."/>
    </properties>
   </object>
   <object name="welcome term" type="term" gid="55" x="160" y="64">
@@ -49,15 +48,10 @@
     <property name="on finger" value="transmute=33,36"/>
    </properties>
   </object>
-  <object name="broken term" type="term" gid="41" x="288" y="32">
-   <properties>
-    <property name="message 1" value="*bzzzt*"/>
-    <property name="message 2 once" value="This terminal is offline."/>
-   </properties>
-  </object>
+  <object name="broken term" type="term" gid="41" x="288" y="32"/>
   <object name="broken term" type="term" gid="41" x="224" y="256">
    <properties>
-    <property name="message once" value="This term is locked."/>
+    <property name="message once" value="terminal locked"/>
     <property name="on finger 1" value="give=fingers=gate"/>
    </properties>
   </object>
@@ -68,14 +62,14 @@
   </object>
   <object name="unlocker" type="term" gid="55" x="160" y="224">
    <properties>
-    <property name="dialogue once" value="unlock the gate"/>
+    <property name="dialogue once" value="unlock a terminal"/>
     <property name="fingers once" value="broken term"/>
    </properties>
   </object>
   <object gid="65" x="256" y="160"/>
   <object name="touchplate" gid="8" x="96" y="64">
    <properties>
-    <property name="message" value="You see a message blink on the terminal ahead."/>
+    <property name="message once" value="You see a message blink on the terminal ahead."/>
    </properties>
   </object>
   <object gid="73" x="192" y="64"/>
@@ -85,7 +79,7 @@
   <object gid="81" x="320" y="384"/>
   <object gid="43" x="224" y="32"/>
   <object gid="49" x="0" y="128"/>
-  <object name="central control" type="term" gid="43" x="320" y="416">
+  <object name="central console" type="term" gid="43" x="320" y="416">
    <properties>
     <property name="on finger 1" value="transmute=47"/>
     <property name="on finger 2" value="give=dialogue=reboot file server"/>
@@ -98,13 +92,13 @@
   <object name="faulty term" type="term" gid="42" x="480" y="288">
    <properties>
     <property name="fingers once" value="faulty cap"/>
-    <property name="message" value="*pop*"/>
+    <property name="message once" value="*pop*"/>
    </properties>
   </object>
   <object name="unlock central control" type="term" gid="47" x="416" y="512">
    <properties>
-    <property name="fingers once" value="central control"/>
-    <property name="message once" value="you unlock the central control terminal"/>
+    <property name="fingers once" value="central console"/>
+    <property name="message once" value="central console activated"/>
    </properties>
   </object>
   <object name="escape hatch" type="door" gid="37" x="160" y="384">
@@ -130,6 +124,11 @@
   <object name="touchplate" gid="8" x="128" y="288">
    <properties>
     <property name="message once" value="The portal leads to another node..."/>
+   </properties>
+  </object>
+  <object name="touchplate" gid="8" x="448" y="128">
+   <properties>
+    <property name="message once" value="You see glowing tubes and adventure ahead."/>
    </properties>
   </object>
  </objectgroup>

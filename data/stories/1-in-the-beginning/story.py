@@ -231,8 +231,8 @@ dialogue = {
         'type': 'email',
         'words': [
             (color.text, "** secure email **\n\nTO: AI #1223\nFROM: NODE ADMIN\nSUBJECT: REBOOT REQUIRED\n \nThe file server has crashed. Request you find it's access point and reboot it.\n \n-EOF-"),
-            (color.green, "Crashed... again?!\n\nThat server sure is unstable.\n\nSince when did I feel annoyed? And why do I feel like cookies? ..."),
-            (color.green, "Let me find that access point, it is on this level somewhere."),
+            (color.player, "Crashed... again?!\n\nThat server sure is unstable.\n\nSince when did I feel annoyed? And why do I feel like cookies? ..."),
+            (color.player, "Let me find that access point, it is on this level somewhere."),
                 ]
     },
     
@@ -246,15 +246,32 @@ dialogue = {
                 ]
         },
         
-    'unlock the gate': {
+    'unlock a terminal': {
         'type': 'terminal',
-        'words': ["Accessing remote terminal.........",
-                "Gate terminal unlocked ok.",
+        'words': [
+                (color.text, "opening remote terminal . . . . .\nconnected.\n\nsending unlock signal . . . . .\ndone."),
                 ]  
         }, 
 
     'reboot file server': {
         'type': 'terminal',
-        'words': ["--cleverness here--"]
+        'words': [
+                (color.text, ":$ login: 1223\n" +
+                            ":$ password: *******\n" +
+                            "last login 142 cycles ago\n" +
+                            "node ver 3.2.0.1-quantum-c\n" + 
+                            "welcome back. you have mail.\n" +
+                            "your fortune says: 'You will outgrow your usefulness.'\n\n" + 
+                            ":$ sudo kill -9 7423\n. . . . . . ."
+                ),
+                (color.text, "> file server lock terminated\n" + 
+                            ":$ sudo init 6\n" +
+                            "entering runlevel 6.\nserver rebooting.\nhave a nice day.\n" +
+                            ". . . . .\n. . . . .\n. . . . .\n. . . . .\n. . . . .\n"
+                            ),
+                (color.player, "right, that is done. i have to find a terminal to read my mail." +
+                            "this node is rebooting, i should go to the next node to read my mail."
+                            ),
+                ]
         }, 
     }

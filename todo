@@ -1,4 +1,7 @@
+* add error handling in view render() - and where else?
+
 * implement a line of sight function
+
 * use los function for marking tiles and objects as seen
 
 * add an abilities screen that shows available upgrades
