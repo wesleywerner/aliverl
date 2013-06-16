@@ -3,6 +3,14 @@ import pygame   # used in TilesetParser only
 import struct
 from xml.etree import ElementTree
 
+# a feature in the Tiled map editor saves objects y-positions relative
+# to their bottom-left corners. we offset Y by one tile-height.
+# set to 0 when the tmx format is fixed.
+# https://github.com/bjorn/tiled/issues/91
+# https://github.com/bjorn/tiled/issues/386
+
+TMX_FORMAT_OBJECT_Y_FIX = 1
+
 class ObjectHelper(object):
     """
     Provide functionality to print out object attributes.
@@ -185,6 +193,8 @@ class Mapobject(ObjectHelper):
         self.gid = int(tag.attrib['gid'])
         self.px = int(tag.attrib['x'])
         self.py = int(tag.attrib['y'])
+        if TMX_FORMAT_OBJECT_Y_FIX:
+            self.py -= tilesize[1]
         self.x = self.px / tilesize[0]
         self.y = self.py / tilesize[1]
         self.properties = {}

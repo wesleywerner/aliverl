@@ -9,11 +9,6 @@ import rlhelper
 from tmxparser import TMXParser
 from eventmanager import *
 
-# fixes
-# a bug in tiled map editor saves objects y-position with one tile's worth more.
-# we offset Y by one tile less as workaround.
-# https://github.com/bjorn/tiled/issues/91
-FIX_YOFFSET=1
 
 class GameEngine(object):
     """
@@ -297,7 +292,7 @@ class GameEngine(object):
         """
         
         for layer in self.level.tmx.tilelayers:
-            gid = layer.at((xy[0], xy[1] - FIX_YOFFSET))
+            gid = layer.at((xy[0], xy[1]))
             if gid in self.story.blocklist:
                 return True
         # test objects too
