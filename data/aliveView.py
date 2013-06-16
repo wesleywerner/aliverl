@@ -434,7 +434,7 @@ class GraphicalView(object):
         global FIX_YOFFSET
         FIX_YOFFSET = tmx.tile_height
         # load the tileset parser
-        tilesetfile = os.path.join(self.model.story.path, tmx.tilesets[0].source)
+        tilesetfile = os.path.join('images', tmx.tilesets[0].source)
         self.tsp = TilesetParser(
                                 tilesetfile,
                                 (tmx.tile_width, tmx.tile_height), 
