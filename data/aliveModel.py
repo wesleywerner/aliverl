@@ -166,10 +166,7 @@ class GameEngine(object):
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
                 if obj.gid in self.story.blocklist and obj.type != 'player':
-                    print('this object blocks our view', obj.name)
                     matrix[obj.x][obj.y] = 1
-
-
 
     def load_objects(self):
         """
