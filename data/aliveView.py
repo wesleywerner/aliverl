@@ -614,6 +614,7 @@ class GraphicalView(object):
         match = [e for e in self.allsprites if e.name == id(mapobject)]
         if match:
             self.allsprites.remove(match[0])
+            self.visible_sprites.remove(match[0])
     
     def transmute_sprite(self, event):
         """
