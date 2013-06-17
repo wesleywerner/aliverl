@@ -78,6 +78,7 @@ class GraphicalView(object):
         self.transitionstep = 0
         self.messages = [''] * 20
         self.gamefps = 30
+        self.last_tip_pos = 0
     
     def notify(self, event):
         """
@@ -95,7 +96,14 @@ class GraphicalView(object):
             elif isinstance(event, MessageEvent):
                 if self.messages[-1] != event.message:
                     self.messages.extend(self.wrap_text(event.message, 30))
-                    self.show_message_tooltip(event.message)
+                    # avoid overlapping recent messages
+                    self.last_tip_pos += 14
+                    if abs(self.model.player.y - self.last_tip_pos) > 100:
+                        self.last_tip_pos = self.model.player.y
+                    pos = self.model.player.getpixelxy()
+                    pos = (pos[0], self.last_tip_pos)
+                    dest = (pos[0], pos[1] - 20)
+                    self.create_floating_tip(event.message, color.white, pos, dest)
             elif isinstance(event, KillCharacterEvent):
                 self.kill_sprite(event.character)
                 self.messages.append('The %s dies' % (event.character.name))
@@ -532,33 +540,6 @@ class GraphicalView(object):
             self.sprite_lookup[sprite_name] = s
             self.set_sprite_defaults(obj)
 
-    def create_text_sprite(self, message, fontcolor, position, destination):
-        """
-        Creates a scrolling text sprite.
-        position is the (x, y).
-        destination is the (x, y).
-        """
-        
-        if not self.scrollertexts:
-            self.scrollertexts = pygame.sprite.Group()
-            self.scrollertexts.empty()
-        
-        bmp = self.draw_outlined_text(self.smallfont, message, color.white, color.black)
-        # limit the message position within sane boundaries
-        if position[0] + bmp.get_width() > self.viewport.width:
-            position = (position[0] - bmp.get_width(), position[1])
-            destination = (destination[0] - bmp.get_width(), destination[1])
-        # do not draw off the left
-        if position[0] < 1:
-            position = (2, position[1])
-            destination = (2, destination[1])
-        s = MovingSprite('', 
-                        pygame.Rect(position, bmp.get_size()), 
-                        destination,
-                        1,
-                        self.scrollertexts)
-        s.addimage(bmp, 10, 0)
-
     def draw_outlined_text(self, font, text, fcolor, bcolor):
         """
         Draws a font with a border.
@@ -582,18 +563,33 @@ class GraphicalView(object):
 
         return s
         
-    def show_message_tooltip(self, message):
+    def create_floating_tip(self, message, fontcolor, pos, dest):
         """
-        Creates a scrolling event message tooltip.
-        """
+        Create a game message as a scrolling tooltip.
         
-        pxy = self.model.player.getpixelxy()
-        self.create_text_sprite(message, 
-                                color.white, 
-                                (pxy[0], pxy[1]), 
-                                (pxy[0], pxy[1] - 20))
+        """
 
-    
+        if not self.scrollertexts:
+            self.scrollertexts = pygame.sprite.Group()
+            self.scrollertexts.empty()
+        
+        bmp = self.draw_outlined_text(self.smallfont, message,
+                                        color.white, color.black)
+        # limit the message position within sane boundaries
+        if pos[0] + bmp.get_width() > self.viewport.width:
+            pos = (pos[0] - bmp.get_width(), pos[1])
+            dest = (dest[0] - bmp.get_width(), dest[1])
+        # do not draw off the left
+        if pos[0] < 1:
+            pos = (2, pos[1])
+            dest = (2, dest[1])
+        s = MovingSprite('', 
+                        pygame.Rect(pos, bmp.get_size()), 
+                        dest,
+                        1,
+                        self.scrollertexts)
+        s.addimage(bmp, 10, 0)
+
     def move_sprite(self, event):
         """
         Move the sprite by the event details.
