@@ -94,16 +94,8 @@ class GraphicalView(object):
             elif isinstance(event, PlayerMovedEvent):
                 self.update_visible_sprites()
             elif isinstance(event, MessageEvent):
-                if self.messages[-1] != event.message:
-                    self.messages.extend(self.wrap_text(event.message, 30))
-                    # avoid overlapping recent messages
-                    self.last_tip_pos += 14
-                    if abs(self.model.player.y - self.last_tip_pos) > 100:
-                        self.last_tip_pos = self.model.player.y
-                    pos = self.model.player.getpixelxy()
-                    pos = (pos[0], self.last_tip_pos)
-                    dest = (pos[0], pos[1] - 20)
-                    self.create_floating_tip(event.message, color.white, pos, dest)
+                self.create_floating_tip(event.message,
+                    event.fontcolor and event.fontcolor or color.text)
             elif isinstance(event, KillCharacterEvent):
                 self.kill_sprite(event.character)
                 self.messages.append('The %s dies' % (event.character.name))
@@ -563,7 +555,7 @@ class GraphicalView(object):
 
         return s
         
-    def create_floating_tip(self, message, fontcolor, pos, dest):
+    def create_floating_tip_at_xy(self, message, fontcolor, pos, dest):
         """
         Create a game message as a scrolling tooltip.
         
@@ -574,7 +566,7 @@ class GraphicalView(object):
             self.scrollertexts.empty()
         
         bmp = self.draw_outlined_text(self.smallfont, message,
-                                        color.white, color.black)
+                                        fontcolor, color.black)
         # limit the message position within sane boundaries
         if pos[0] + bmp.get_width() > self.viewport.width:
             pos = (pos[0] - bmp.get_width(), pos[1])
@@ -589,6 +581,26 @@ class GraphicalView(object):
                         1,
                         self.scrollertexts)
         s.addimage(bmp, 10, 0)
+
+    def create_floating_tip(self, message, fontcolor):
+        """
+        Create a floating tip from the message.
+        This calculates the positioning then calls create_floating_tip_at_xy.
+        """
+
+        if self.messages[-1] != message:
+            self.messages.extend(self.wrap_text(message, 30))
+            # avoid overlapping recent messages
+            self.last_tip_pos += 14
+            pos = self.model.player.getpixelxy()
+            # if the tip is too far from the player position
+            if abs(pos[1] - self.last_tip_pos) > 60:
+                # reset it closer to the player
+                self.last_tip_pos = self.model.player.py
+            # adjust the position relative to the last position
+            pos = (pos[0], self.last_tip_pos)
+            dest = (pos[0], pos[1] - 20)
+            self.create_floating_tip_at_xy(message, fontcolor, pos, dest)
 
     def move_sprite(self, event):
         """
