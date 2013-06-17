@@ -256,12 +256,10 @@ dialogue = {
     'reboot file server': {
         'type': 'terminal',
         'words': [
-                (color.text, ":$ login: 1223\n" +
-                            ":$ password: *******\n" +
+                (color.text, "login: 1223\n" +
+                            "password: *****\n" +
                             "last login 142 cycles ago\n" +
-                            "node ver 3.2.0.1-quantum-c\n" + 
-                            "welcome back. you have mail.\n" +
-                            "your fortune says: 'You will outgrow your usefulness.'\n\n" + 
+                            "node ver 3.2-quantum\n" + 
                             ":$ sudo kill -9 7423\n. . . . . . ."
                 ),
                 (color.text, "> file server lock terminated\n" + 
@@ -273,5 +271,12 @@ dialogue = {
                             "this node is rebooting, i should go to the next node to read my mail."
                             ),
                 ]
-        }, 
+        },
+    
+    'check mail': {
+        'type': 'terminal',
+        'words': [
+                "welcome back, node slave.\nyour fortune says: 'You will outgrow your usefulness.'\nyou have mail.",
+                ]
+        },
     }
