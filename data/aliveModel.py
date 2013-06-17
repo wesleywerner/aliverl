@@ -404,10 +404,11 @@ class GameEngine(object):
                     continue
 
                 # the distance will round our view to a nice ellipse
-                if self.get_distance((px, py), (x, y)) <= RANGE:
+                dist = self.get_distance((px, py), (x, y))
+                if dist <= RANGE:
 
                     # test if we also have line of sight to this position
-                    if rlhelper.line_of_sight(blocked_matrix, px, py, x, y):
+                    if dist <= 1.5 or rlhelper.line_of_sight(blocked_matrix, px, py, x, y):
 
                         # mark this matrix tile as in view
                         matrix[x][y] = 2
@@ -418,25 +419,6 @@ class GameEngine(object):
                             # mark object is in_range
                             obj.in_range = True
                             obj.seen = True
-
-        #pxy = (self.player.x, self.player.y)
-        ## look around the map at what is in view range
-        #for y in range(0, self.level.tmx.height):
-            #for x in range(0, self.level.tmx.width):
-                #in_range = self.get_distance(pxy, (x, y)) <= 3
-                ## mark this level tile as seen
-                #if in_range:
-                    #self.level.matrix['seen'][x][y] = 2
-                #elif self.level.matrix['seen'][x][y] == 2:
-                    ## set previous in_range positions that are now out of range
-                    #self.level.matrix['seen'][x][y] = 1
-                ## and look out for objects too
-                #objects = self.get_object_by_xy((x, y))
-                #for obj in objects:
-                    ## mark object is in_range
-                    #obj.in_range = in_range
-                    ## and only mark as seen if not yet seen and is in_range
-                    #obj.seen = obj.in_range and not obj.seen or obj.seen
     
     def get_distance(self, pointa, pointb):
         """
