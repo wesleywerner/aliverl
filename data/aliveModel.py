@@ -4,6 +4,7 @@ import math
 import random
 import traceback
 import const
+import color
 import trace
 import rlhelper
 from tmxparser import TMXParser
@@ -594,11 +595,13 @@ class GameEngine(object):
         if a_atk:
             d.health -= a_atk
             self.evManager.Post(
-                    MessageEvent('%s %s for %s' % (a_name, a_verb, a_atk)))
+                    MessageEvent('%s %s for %s' % (a_name, a_verb, a_atk),
+                                color.yellow))
         if d_atk:
             a.health -= d_atk
             self.evManager.Post(
-                    MessageEvent('%s %s for %s' % (d_name, d_verb, d_atk)))
+                    MessageEvent('%s %s for %s' % (d_name, d_verb, d_atk),
+                                color.yellow))
         # death
         if a.health < 1:
             if a is self.player:
