@@ -21,7 +21,7 @@
   </object>
  </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="416" y="448"/>
+  <object name="player" type="player" gid="97" x="32" y="64"/>
   <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
     <property name="on finger 1" value="transmute=69"/>
