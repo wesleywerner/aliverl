@@ -453,7 +453,8 @@ class GraphicalView(object):
 
     def load_level(self):
         """
-        Prepare the View's resource to display the level given in event param.
+        Prepare the View's canvases from the current model map data.
+        Note: we only support the first tilset as defined in the tmx.
         """
         
         tmx = self.model.level.tmx
@@ -489,20 +490,32 @@ class GraphicalView(object):
         """
         Apply sprite settings to an object from the story animations setting.
         """
+
+        # set defaults
+        defaults = {'frames':[], 'fps':0, 'loop': 0}
+        [setattr(obj, k, v) for k, v in defaults.items()]
+
+        # grab animation defs
+        anims = self.model.story.animations(obj.gid)
+
+        # grab our sprite
+        sprite = self.sprite_lookup[id(obj)]
         
-        defaultvalues = {'frames':[], 'fps':0, 'loop': 0}
-        anims = self.model.story.animations
-        sprite = [e for e in self.allsprites if e.name == id(obj)][0]
-        if sprite:
-            if obj.gid in anims.keys():
-                [setattr(obj, k, v) for k, v in anims[obj.gid].items()]
-            else:
-                [setattr(obj, k, v) for k, v in defaultvalues.items()]
-            if len(obj.frames) == 0:
-                obj.frames.append(obj.gid)
-            sprite.clear()
-            for f in obj.frames:
-                sprite.addimage(self.tsp[f], obj.fps, obj.loop)
+        # apply animation defs
+        if anims and sprite:
+            obj.frames = map(int, anims['frames'])
+            obj.fps = anims.as_float('fps')
+            obj.loop = anims.as_int('loop')
+        
+        # ensure at least 1 frame
+        if len(obj.frames) == 0:
+            obj.frames.append(obj.gid)
+        
+        # add all frame images
+        sprite.clear()
+        for f in obj.frames:
+            sprite.addimage(self.tsp[f], obj.fps, obj.loop)
+
 
     def create_sprites(self):
         """
@@ -521,15 +534,15 @@ class GraphicalView(object):
         for obj in self.model.objects:
             x = (obj.x * tmx.tile_width)
             y = (obj.y * tmx.tile_height)
-            sprite_name = id(obj)
+            sprite_id = id(obj)
             s = Sprite(
-                    sprite_name,
+                    sprite_id,
                     Rect(x, y, 
                         tmx.tile_width, 
                         tmx.tile_height),
                     self.allsprites
                     )
-            self.sprite_lookup[sprite_name] = s
+            self.sprite_lookup[sprite_id] = s
             self.set_sprite_defaults(obj)
 
     def draw_outlined_text(self, font, text, fcolor, bcolor):

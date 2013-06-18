@@ -6,6 +6,7 @@ import traceback
 import const
 import color
 import trace
+import story
 import rlhelper
 from tmxparser import TMXParser
 from eventmanager import *
@@ -24,7 +25,7 @@ class GameEngine(object):
         running (bool): True while the engine is online. Changed via QuitEvent().
         state (StateMachine): controls the game mode stack.
         level (GameLevel): stores level related data.
-        story (object): imports from story.py
+        story (ConfigObj): stores the story.conf data.
         player (MapObject): the player controlled map object.
         objects ([MapObject]): list of level objects.
         dialogue ([str]): List of dialogue strings in queue to display.
@@ -110,22 +111,16 @@ class GameEngine(object):
     
     def load_story(self, storyname):
         """
-        Loads the story data for the given story name.
-        The name is essentially the directory name of the story.
-        We expect the story.py file to exist.
-        """
+        Loads the story data for the given story as:
         
-        # this loads the 'story.py' file from the story directory.
-        try:
-            storypath = os.path.abspath(os.path.join('stories', storyname))
-            sys.path.append(storypath)
-            self.story = __import__('story')
-            setattr(self.story, 'path', storypath)
-            sys.path.remove(storypath)
-            trace.write('loaded story OK')
-            return True
-        except Exception as e:
-            trace.error(e)
+            'stories/<storyname>/story.conf'
+        """
+
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        full_path = os.path.join(base_path, 'stories', storyname, 'story.conf')
+        self.story = story.StoryData(full_path)
+        trace.write('loaded story OK')
+        return True
     
     def warp_level(self):
         """
@@ -136,17 +131,20 @@ class GameEngine(object):
             nextlevel = self.level.number + 1
         else:
             nextlevel = 1
+
         trace.write('warping to level: %s ' % (nextlevel,))
-        levelfilename = os.path.join(self.story.path, self.story.levels[nextlevel-1])
-        self.level = GameLevel(nextlevel, levelfilename)
+        self.level = GameLevel(nextlevel, self.story.level_file(nextlevel))
         self.load_matrix()
         self.load_objects()
-        self.evManager.Post(NextLevelEvent(levelfilename))
+        self.evManager.Post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.look_around()
         self.evManager.Post(PlayerMovedEvent())
-        if len(self.story.entrymessages) >= nextlevel:
-            self.evManager.Post(MessageEvent(self.story.entrymessages[nextlevel-1]))
+        
+        # show any level entry messages defined in the story
+        entry_message = self.story.entry_message(nextlevel)
+        if entry_message:
+            self.evManager.Post(MessageEvent(entry_message))
 
     def load_matrix(self):
         """
@@ -159,48 +157,77 @@ class GameEngine(object):
             for x in range(0, self.level.tmx.width):
                 # and for every map tile layer
                 for layer in self.level.tmx.tilelayers:
-                    # is this map tile in our story blocklist?
+                    # this tile blocks movement
                     gid = layer.at((x, y))
-                    if gid in self.story.blocklist:
+                    if self.story.tile_blocks(gid):
                         matrix[x][y] = 1
         # also include all blocking objects
         for objectgroup in self.level.tmx.objectgroups:
             for obj in objectgroup:
-                if obj.gid in self.story.blocklist and obj.type != 'player':
+                if obj.type != 'player' and self.story.tile_blocks(obj.gid):
                     matrix[obj.x][obj.y] = 1
 
     def load_objects(self):
         """
-        Apply any character stats to the level object list.
-        Stats are stored in the current story.
+        Load map objects and apply any stats defined in the story.conf
+        
         """
         
         self.player = None
         self.objects = []
-        defaultproperties = {'dead':False, 'seen':False, 'attack':0, 'health':0,
-                             'maxhealth':0,'healrate':0, 'speed':0,
-                             'stealth':0, 'mana':0, 'maxmana':5, 'manarate': 6,
-                             'modes': [], 'in_range':False,
-                             }
+        defaults = {'dead' : False,
+                     'seen' : False,
+                     'attack' : 0,
+                     'health' : 0,
+                     'maxhealth' : 0,
+                     'healrate' : 0,
+                     'speed' : 0,
+                     'stealth' : 0,
+                     'mana' : 0,
+                     'maxmana' : 5,
+                     'manarate' : 6,
+                     'modes' : [],
+                     'in_range' : False,
+                     }
+
+        # for each object group on this level (because maps can be layers)
         for objectgroup in self.level.tmx.objectgroups:
+        
+            # for each object in this group
             for obj in objectgroup:
-                # set default properties
-                [ setattr(obj, k, v) for k, v in defaultproperties.items() ]
-                objname = obj.name.lower()
+            
+                # apply defaults first
+                [setattr(obj, k, v) for k, v in defaults.items()]
+                
+                # grab it's name
+                oname = obj.name.lower()
+                
                 # remember the player object
                 if obj.type == 'player':
                     self.player = obj
                     self.player.properties['trail'] = []
-                if objname in self.story.characterstats.keys():
-                    # apply all properties from story to this object
-                    [setattr(obj, k, v) 
-                        for k, v in self.story.characterstats[objname].items()
-                        ]
-                # add multiple personalities from the map itself
+                
+                # apply character stats from the story config
+                stats = self.story.char_stats(oname)
+                if stats:
+                    obj.attack = stats.as_int('attack')
+                    obj.health = stats.as_int('health')
+                    obj.maxhealth = stats.as_int('maxhealth')
+                    obj.healrate = stats.as_int('healrate')
+                    obj.speed = stats.as_int('speed')
+                    obj.stealth = stats.as_int('stealth')
+                    obj.mana = stats.as_int('mana')
+                    obj.maxmana = stats.as_int('maxmana')
+                    obj.manarate = stats.as_int('manarate')
+                    obj.modes = stats.as_list('modes')
+
+                # the map object can override our "mode" behaviours.
+                # these are stored in the object's "properties" attribute.
+                # read any of them out and apply.
                 for k, v in obj.properties.items():
-                    if k in defaultproperties.keys():
+                    # only override known values
+                    if k in defaults.keys():
                         try:
-                            # try numberfy the value
                             setattr(obj, k, int(v))
                         except ValueError:
                             # that did not work, keep it a string
@@ -208,9 +235,13 @@ class GameEngine(object):
                         # we know that 'modes' is a list
                         if k == 'modes':
                             setattr(obj, k, v.split(','))
+                
+                # add this one to the collective
                 self.objects.append(obj)
+        
+        # show a courtesy message
         if self.player is None:
-            trace.error('there is no player character set on this map. Good luck!')
+            trace.error('Warning: No player character on this level. Good luck!')
 
     def move_player(self, direction):
         """
@@ -275,8 +306,8 @@ class GameEngine(object):
                 if (collider is self.player) or (character is self.player):
                     self.evManager.Post(CombatEvent(character, collider))
                 return False
-            # collider is in the blocklist
-            if collider.gid in self.story.blocklist:
+            # collider is blocked
+            if self.story.tile_blocks(collider.gid):
                 return False
 
         # tile collisions
@@ -299,12 +330,12 @@ class GameEngine(object):
         
         for layer in self.level.tmx.tilelayers:
             gid = layer.at((xy[0], xy[1]))
-            if gid in self.story.blocklist:
+            if self.story.tile_blocks(gid):
                 return True
         # test objects too
         objects = self.get_object_by_xy(xy)
         for obj in objects:
-            if obj.gid in self.story.blocklist:
+            if self.story.tile_blocks(obj.gid):
                 return True
 
     def ai_movement_turn(self):
@@ -534,18 +565,18 @@ class GameEngine(object):
                         else:
                             # use first index
                             transmute_id = int(options[0])
-                    # do not transmute to blocklist gid's if anyone is 
+                    # do not transmute to a blocking tile if anyone is 
                     # standing on the finger target (cant close doors)
                     fingerfriends = self.get_object_by_xy(obj.getxy())
                     for ff in fingerfriends:
-                        if ff is not obj and transmute_id in self.story.blocklist:
+                        if ff is not obj and self.story.tile_blocks(transmute_id):
                             trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
                             return False
                     # transmorgify!
                     obj.gid = transmute_id
                     # update the level block matrix with our new aquired status
                     matrix = self.level.matrix['block']
-                    matrix[obj.x][obj.y] = int(obj.gid in self.story.blocklist)
+                    matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
                     self.evManager.Post(UpdateObjectGID(obj, obj.gid))
 
             # once shots actions (append once to any action)
