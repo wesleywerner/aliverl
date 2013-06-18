@@ -40,7 +40,7 @@
   </object>
   <object name="welcome term" type="term" gid="55" x="160" y="64">
    <properties>
-    <property name="dialogue" value="welcome email"/>
+    <property name="dialogue" value="act 1 request reboot"/>
    </properties>
   </object>
   <object name="gate" type="door" gid="33" x="256" y="256">
@@ -62,7 +62,7 @@
   </object>
   <object name="unlocker" type="term" gid="55" x="160" y="224">
    <properties>
-    <property name="dialogue once" value="unlock a terminal"/>
+    <property name="dialogue once" value="act 1 unlock terminal"/>
     <property name="fingers once" value="broken term"/>
    </properties>
   </object>
@@ -82,8 +82,9 @@
   <object name="central console" type="term" gid="43" x="320" y="416">
    <properties>
     <property name="on finger 1" value="transmute=47"/>
-    <property name="on finger 2" value="give=dialogue=reboot file server"/>
+    <property name="on finger 2" value="give=dialogue once=act 1 reboot server"/>
     <property name="on finger 3" value="give=fingers once=escape hatch"/>
+    <property name="on finger 4" value="give=message=*server rebooting*"/>
    </properties>
   </object>
   <object gid="65" x="384" y="224"/>
