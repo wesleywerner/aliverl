@@ -32,6 +32,17 @@ class StoryData(object):
 
         # store the path where the story conf lives
         self.path = os.path.dirname(config_path)
+        
+        # to format our config nicely we indent quoted paragraphs.
+        # here we secretly strip these leading spaces.
+        # do this for every screen in each dialogue.
+        dialogues = self.conf['dialogue']
+        for dialogue_key in dialogues.keys():
+            data = dialogues[dialogue_key]
+            for screen in data.keys():
+                stripped = '\n'.join([s.lstrip() for s 
+                                in data[screen]['datas'].split('\n')])
+                data[screen]['datas'] = stripped
 
     def animations(self, gid):
         """

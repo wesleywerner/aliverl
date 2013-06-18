@@ -1,4 +1,5 @@
 * look at moving story dialogue to a conf file (or all story for that matter)
+* change all calls from xy parameters to x, y
 * trigger events after x turns:
   * process triggers from a list
 
