@@ -658,11 +658,12 @@ class GameEngine(object):
         keys is a list of dialogue key names.
         """
         
-        if key in self.story.dialogue:
-            words = self.story.dialogue[key]['words']
-            # tell anybody the words that should display
-            self.evManager.Post(DialogueEvent(words))
-            # match the model state
+        dialogue = self.story.dialogue(key)
+        
+        if dialogue:
+            # tell everyone about the words about to display
+            self.evManager.Post(DialogueEvent(dialogue))
+            # change our state to dialogue mode
             self.evManager.Post(StateChangeEvent(STATE_DIALOG))
         else:
             trace.write('dialogue "%s" not found in story definition' % (key))

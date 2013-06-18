@@ -44,7 +44,6 @@ class GraphicalView(object):
         sprite_lookup (Dict): a sprite name-value lookup.
         helpimages (Surface): stores the F1 help screens.
         transition (TransitionBase): current animated screen transition.
-        transitionstep (int): transition counter.
         messages (list): list of recent game messages.
 
         Note: The viewport defines which area of the level we see as the 
@@ -75,10 +74,10 @@ class GraphicalView(object):
         self.scrollertexts = None
         self.helpimages = None
         self.transition = None
-        self.transitionstep = 0
         self.messages = [''] * 20
         self.gamefps = 30
         self.last_tip_pos = 0
+        self.transition_queue = []
     
     def notify(self, event):
         """
@@ -102,7 +101,7 @@ class GraphicalView(object):
             elif isinstance(event, UpdateObjectGID):
                 self.transmute_sprite(event)
             elif isinstance(event, DialogueEvent):
-                self.dialoguewords = event.words[::-1]
+                self.queue_dialogue(event.dialogue)
             elif isinstance(event, NextLevelEvent):
                 self.load_level()
                 self.create_sprites()
@@ -250,70 +249,89 @@ class GraphicalView(object):
     
     def draw_dialogue(self):
         """
-        Draw current dialogue words.
-        transitionstep is an indicator for this call for chaining transitions.
+        Step any queued transitions:
         
-        transitionstep is used to control chaining transitions together.
-        values (0, 2) signal to create a new transition.
-        when in (1, 3) it means switch to the next one.
+         1. if there is no transition:
+               create one from a queue
+         2. if there is a transition:
+               if it is not done:
+                   return
+               if it is waiting for a key:
+                   return
+               else:
+                   create one from a queue
         
         """
 
-        if (self.transition and (not self.transition.done or self.transition.waitforkey)):
-            return False
+        if self.transition:
+            if not self.transition.done:
+                return
+            if self.transition.waitforkey:
+                return
         
-        if self.transitionstep in (0, 2):
-            canvas = pygame.Surface(self.screen.get_size())
-            canvas.set_colorkey(color.magenta)
-            canvas.fill(color.magenta)
-            if self.transitionstep == 0:
-                self.transition = SlideinTransition(
-                                    canvas, self.windowsize, self.gamefps, 
-                                    self.smallfont, 'connecting . . .',
-                                    self.dialoguebackground)
-            elif self.transitionstep == 2:
-                if self.dialoguewords:
-                    wordcolor = color.green
-                    words = self.dialoguewords[-1]
-                    # words may be (color, words)
-                    if type(words) is tuple:
-                        wordcolor, words = words
-                    words = self.wrap_text(words, 25)
-                    canvas.blit(self.dialoguebackground, self.playarea)
-                    self.transition = TerminalPrinter(
-                                        canvas, self.windowsize, self.gamefps, 
-                                        self.largefont, words, wordcolor,
-                                        self.dialoguebackground)
-            if not self.transition.waitforkey:
-                self.transitionstep += 1
+        # create one from a queue
+        if self.transition_queue:
+            self.transition = self.transition_queue.pop()
         else:
-            # automatic chain from open animation to text printer
-            if self.transitionstep == 1:
-                self.transitionstep += 1
+            self.evManager.Post(StateChangeEvent(None))
+        
+    def queue_dialogue(self, dialogue):
+        """
+        Queue a dialogue for display.
+
+        """
+
+        # we only need one slide-in transition for many screens.
+        terminal_slidein_added = False
+        
+        # a dialogue may contain multiple screens. Keep this in mind.
+        for dialogue_screen in dialogue.keys():
+            
+            datas = dialogue[dialogue_screen]
+            
+            # we may add other transitions depending on the screen "type".
+            # for now we only have terminals.
+            if datas['type'] in ('story', 'terminal'):
+
+                # Start with a Slide-in Transition
+                if not terminal_slidein_added:
+                    terminal_slidein_added = True
+                    canvas = pygame.Surface(self.screen.get_size())
+                    canvas.set_colorkey(color.magenta)
+                    canvas.fill(color.magenta)
+                    self.transition_queue.insert(0,
+                                            SlideinTransition(
+                                            canvas, self.windowsize, self.gamefps, 
+                                            self.smallfont, 'connecting . . .',
+                                            self.dialoguebackground))
+                
+                # Follow up with a Terminal Printer Transition
+                text_color = getattr(color, datas['color'])
+                words = datas['datas']
+                words = self.wrap_text(words, 25)
+                canvas = pygame.Surface(self.screen.get_size())
+                canvas.set_colorkey(color.magenta)
+                canvas.fill(color.magenta)
+                canvas.blit(self.dialoguebackground, self.playarea)
+                self.transition_queue.insert(0,
+                                        TerminalPrinter(
+                                        canvas, self.windowsize, self.gamefps, 
+                                        self.largefont, words, text_color,
+                                        self.dialoguebackground))
 
     def next_dialogue(self):
         """
         Move to the next dialogue line
         """
-
-        if self.dialoguewords:
-            # show each dialogue page as the transition finishes
-            if self.transition.done:
-                self.dialoguewords.pop()
-                self.transition.waitforkey = False
-                self.evManager.Post(DialogueEvent(self.dialoguewords[::-1]))
-        if not self.dialoguewords:
-            # no dialogue left, pop the model stack back to whence it came.
-            self.transition = None
-            self.transitionstep = 0
-            self.evManager.Post(StateChangeEvent(None))
-    
+        
+        self.transition = None
+        
     def close_dialogue(self):
         """
         Close running dialogues and reset for next time.
         """
         
-        self.dialoguewords = []
+        self.transition_queue = []
         self.next_dialogue()
         
     def draw_borders(self):

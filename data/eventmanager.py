@@ -171,9 +171,9 @@ class DialogueEvent(Event):
     A game dialogue moment ensues.
     """
     
-    def __init__(self, words):
+    def __init__(self, dialogue):
         self.name = 'Dialogue event'
-        self.words = words
+        self.dialogue = dialogue
 
 
 class KillCharacterEvent(Event):
