@@ -708,26 +708,33 @@ class GraphicalView(object):
         """
         
         # setup pygame
-        result = pygame.init()
-        pygame.font.init()
-        pygame.display.set_caption('Alive')
-        self.windowsize = pygame.Rect(0, 0, 600, 600)
-        self.viewport = pygame.Rect(0, 0, 512, 512)
-        self.playarea = pygame.Rect((75, 66), self.viewport.size)
-        self.screen = pygame.display.set_mode(self.windowsize.size)
-        self.statsarea = pygame.Rect(200, 22, 400, 40)
-        self.clock = pygame.time.Clock()
-        self.allsprites = pygame.sprite.Group()
-        # load resources
-        self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
-        self.largefont = pygame.font.Font('bitwise.ttf', 30)
-        self.defaultbackground = image.load('images/background.png').convert()
-        self.menubackground = image.load('images/menu.png').convert()
-        self.borders = image.load('images/playscreen.png').convert()
-        self.borders.set_colorkey(color.magenta)
-        self.dialoguebackground = image.load('images/dialog.png').convert()
-        self.isinitialized = True
-
+        try:
+            result = pygame.init()
+            pygame.font.init()
+            pygame.display.set_caption('Alive')
+            self.windowsize = pygame.Rect(0, 0, 800, 600)
+            self.viewport = pygame.Rect(0, 0, 512, 512)
+            self.playarea = pygame.Rect((75, 66), self.viewport.size)
+            self.screen = pygame.display.set_mode(self.windowsize.size) #, pygame.FULLSCREEN)
+            self.statsarea = pygame.Rect(200, 22, 400, 40)
+            self.clock = pygame.time.Clock()
+            self.allsprites = pygame.sprite.Group()
+            # load resources
+            self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
+            self.largefont = pygame.font.Font('bitwise.ttf', 30)
+            self.defaultbackground = image.load('images/background.png').convert()
+            self.menubackground = image.load('images/menu.png').convert()
+            self.borders = image.load('images/playscreen.png').convert()
+            self.borders.set_colorkey(color.magenta)
+            self.dialoguebackground = image.load('images/dialog.png').convert()
+            self.isinitialized = True
+        except Exception, e:
+            # these lines pose an interesting problem:
+            # if the crash message crashes, we go down hard.
+            print('\n'.join(const.CRASH_MESSAGE))
+            import traceback
+            print('\n' + str(traceback.format_exc()))
+            sys.exit(1)
 
 class Sprite(pygame.sprite.Sprite):
     """
