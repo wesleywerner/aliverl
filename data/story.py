@@ -113,7 +113,7 @@ class StoryData(object):
         
         # keep in mind our list is 0-based: position 0 stores level 1.
         level_keys = self.conf['levels'].keys()
-        if level_number < len(level_keys):
+        if level_number <= len(level_keys):
             return level_keys[level_number - 1]
 
     def tile_blocks(self, gid):
