@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
-  <image source="alive-tileset.png" trans="ff00ff" width="256" height="832"/>
+  <image source="alive-tileset.png" trans="ff00ff" width="256" height="960"/>
   <tile id="0">
    <properties>
     <property name="blocks" value="1"/>
@@ -113,22 +113,63 @@
    </properties>
   </tile>
  </tileset>
+ <layer name="doodads" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztk1kKwDAIRL3/7boFst2l6YcwNQum2L8MSIToy0CUyF5biQyxT/bI+kvwnILngBlKpAHvVPI8+EMPX3noz4Jn6S8O/PE7Ge41wj5tz9I/4r9NVO9cEnUa8YwdVM+YBz7mI7nOyZ5CI1/+3j0PJ1J732Inn9UNHm5n2A==
+  </data>
+ </layer>
  <layer name="map" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYAJiRjSaF4h5oGxkjCyOTQ83AwTwo9G4ADcePSBxTiDmA2IpNJoVKicJxXxQmpWAHnx2weSo6T5hKB+EBWngPmRAbvjB3DcQ4SfCAEk7LGi0KJIcMhYloGewA3x5hxw9+MIWFyA3PeMC5KaXUffR333k5B18egBrFwtA
+   eJzNU10LgCAMHEEPZhZ9+FDP/f/fmOINZCiVSDU4hrtuXsP1RNQkYBz6B3XmNIUYRdYRF0eqHmuUw+GwOwzI/tyC34AB+Y6m1F9Kc+cu2e9P/nh2X81vpfB2FtQmnC04rjNnLzRdwkNp+F5zxX6+F++O9M57Jf/XXGjefC8Kd9bctxU9a/jT0Xf0UJPz52dvK/lT6PWHfZOwGS5XZ+4E/1gP8Q==
   </data>
  </layer>
  <objectgroup name="objects" width="20" height="20">
-  <object name="capacitor 1" type="cap" gid="25" x="320" y="96">
-   <properties>
-    <property name="on_finger" value="transmute=14"/>
-   </properties>
-  </object>
   <object name="switch 1" type="switch" gid="46" x="384" y="128">
    <properties>
     <property name="fingers" value="capacitor 1"/>
    </properties>
   </object>
-  <object name="player" type="player" gid="57" x="288" y="192"/>
+  <object gid="65" x="576" y="224"/>
+  <object gid="65" x="576" y="160"/>
+  <object gid="65" x="576" y="96"/>
+  <object gid="65" x="448" y="96"/>
+  <object gid="65" x="448" y="160"/>
+  <object gid="65" x="448" y="224"/>
+  <object gid="65" x="448" y="448"/>
+  <object gid="65" x="576" y="448"/>
+  <object gid="65" x="576" y="512"/>
+  <object gid="65" x="448" y="512"/>
+  <object gid="65" x="448" y="576"/>
+  <object gid="65" x="576" y="576"/>
+  <object gid="65" x="160" y="576"/>
+  <object gid="65" x="160" y="512"/>
+  <object gid="65" x="160" y="448"/>
+  <object gid="65" x="32" y="448"/>
+  <object gid="65" x="32" y="512"/>
+  <object gid="65" x="32" y="576"/>
+  <object gid="65" x="32" y="224"/>
+  <object gid="65" x="32" y="160"/>
+  <object gid="65" x="32" y="96"/>
+  <object gid="65" x="160" y="96"/>
+  <object gid="65" x="160" y="160"/>
+  <object gid="65" x="160" y="224"/>
+  <object gid="33" x="512" y="288"/>
+  <object gid="33" x="512" y="384"/>
+  <object gid="33" x="320" y="384"/>
+  <object gid="33" x="288" y="384"/>
+  <object gid="33" x="288" y="288"/>
+  <object gid="33" x="320" y="288"/>
+  <object gid="33" x="96" y="384"/>
+  <object gid="33" x="96" y="288"/>
+  <object gid="41" x="608" y="320"/>
+  <object gid="41" x="608" y="352"/>
+  <object gid="41" x="0" y="320"/>
+  <object gid="41" x="0" y="352"/>
+  <object gid="81" x="512" y="576"/>
+  <object gid="81" x="512" y="512"/>
+  <object gid="81" x="512" y="448"/>
+  <object gid="81" x="512" y="224"/>
+  <object gid="81" x="512" y="160"/>
+  <object gid="81" x="512" y="96"/>
  </objectgroup>
 </map>
