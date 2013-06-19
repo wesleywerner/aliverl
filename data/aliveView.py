@@ -317,6 +317,7 @@ class GraphicalView(object):
                                         self.largefont,
                                         words,
                                         text_color,
+                                        80, 80,
                                         self.dialoguebackground))
 
     def next_dialogue(self):
@@ -921,17 +922,19 @@ class SlideinTransition(TransitionBase):
                 title,
                 background=None):
         """
-        rect (Rect) tells us how large our canvas should be.
-                The topleft component is informative only:
-                to let us know where on the screen our image will be draw to.
+        rect:
+            (Rect) tells us how large our canvas should be.
+            The topleft component is informative only:
+            to let us know where on the screen our image will be draw to.
 
-        background_color (r, g, b) fills our canvas with the given color on
-                creation.
+        background_color:
+            (r, g, b) fills our canvas with the given color on creation.
 
-        fps (int) is used to calculate constant redraw speed for any fps.
+        fps:
+            (int) used to calculate constant redraw speed for any fps.
 
-        font is use for drawing any title text.
-        title is the words to display during.
+        font:
+            is use for drawing any title text.
         """
 
         super(SlideinTransition, self).__init__(rect, background_color, fps)
@@ -987,7 +990,7 @@ class SlideinTransition(TransitionBase):
 
 class TerminalPrinter(TransitionBase):
     """
-    Simulates typing out blocks of text onto the screen.
+    Simulates typing text onto a screen.
     """
     
     def __init__(self,
@@ -997,11 +1000,31 @@ class TerminalPrinter(TransitionBase):
                 font,
                 words,
                 wordcolor,
+                words_x_offset,
+                words_y_offset,
                 background=None):
         """
-        surface is where to draw on.
-        font is for drawing the title text.
-        words is a list of strings to print. one row per list item.
+        rect:
+            (Rect) tells us how large our canvas should be.
+            The topleft component is informative only:
+            to let us know where on the screen our image will be draw to.
+
+        background_color:
+            (r, g, b) fills our canvas with the given color on creation.
+
+        fps:
+            (int) used to calculate constant redraw speed for any fps.
+
+        font:
+            is use for drawing any title text.
+
+        title:
+            is the words to display during.
+
+        words_x_offset, words_y_offset:
+            how much to offset the word position.
+            If background given this is relative to the rect - background sizes.
+
         """
         
         super(TerminalPrinter, self).__init__(rect, background_color, fps)
@@ -1009,8 +1032,8 @@ class TerminalPrinter(TransitionBase):
         self.text = ""
         self.wordcolor = wordcolor
         self.font = font
-        self.xpadding = 72
-        self.ypadding = 72
+        self.xpadding = words_x_offset
+        self.ypadding = words_y_offset
         self.lineindex = 0
         self.charindex = 0
         self.rect = rect
@@ -1025,6 +1048,9 @@ class TerminalPrinter(TransitionBase):
             # make a background surface
             bgpos = ((self.size[0] - background.get_width()) / 2, 
                    (self.size[1] - background.get_height()) / 2)
+            self.xpadding = words_x_offset + bgpos[0]
+            self.ypadding = words_y_offset + bgpos[1]
+            # create a new background the same size as our canvas
             self.background = pygame.Surface(self.size)
             # fill it with black
             self.background.fill(color.black)
