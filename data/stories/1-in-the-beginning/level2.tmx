@@ -108,12 +108,39 @@
    </properties>
   </tile>
  </tileset>
+ <layer name="doodads" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJy1UQEKwCAI9P+/a7TAaH+Zg4TL2WC2HRyWdXoW0b9IwkPYhFtAXyCWp4tOz4s5oGfQ14DeQ9S/vtmqf4b1F2g97nT36vnHHP4LQufjrks0+sdaOIvWzuZ8psE89o32t/q3/fW/qtnPcphfxQngOlNV
+  </data>
+ </layer>
  <layer name="map" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJytUtEOwiAQqzIeJuoyow+L//+fQmyTGzsWsuySpnC7Xo/BHcD1IB4ZCf+4YR31XqH6OSNmjOwVyBfyQAZzikie2Ev9arZRPL6E9PLv0Sdn3fLXeSyioz/b36uFqW35a17978Dvdv5g1qp7VvPv+Y+sX8iC9dddxx29sOA8/8R86732+Jf9q0Pf8u+d3/N/Y31XA7bvz8sVfDJ+Ru4F1A==
+   eJytktsKgDAMQ+tlD9u8oOiD//+jTkigzipTLITM2exUZici9Uf1SVHeVYBPSS7J46wqc0rAYTn4CDb5uevyRp78knw01nd8fo+WM/J/861eq3I+523hDd7r+Ru1Zt+Qzf/E9+jf4JTm867dQ57a5D9+xH4wcqX843kuyN/xS+e3+Iuc76qV6/9n7R1ak3ZN1wWC
   </data>
  </layer>
  <objectgroup name="objects" width="16" height="16">
   <object name="player" type="player" gid="97" x="160" y="160"/>
+  <object gid="65" x="352" y="96"/>
+  <object gid="65" x="320" y="128"/>
+  <object gid="33" x="256" y="96"/>
+  <object gid="37" x="64" y="256"/>
+  <object gid="33" x="96" y="352"/>
+  <object gid="33" x="448" y="288"/>
+  <object gid="37" x="288" y="256"/>
+  <object gid="33" x="160" y="288"/>
+  <object gid="37" x="128" y="416"/>
+  <object gid="37" x="128" y="448"/>
+  <object gid="65" x="448" y="480"/>
+  <object gid="65" x="448" y="448"/>
+  <object gid="65" x="448" y="416"/>
+  <object gid="65" x="448" y="384"/>
+  <object gid="65" x="448" y="352"/>
+  <object gid="65" x="448" y="320"/>
+  <object gid="65" x="320" y="320"/>
+  <object gid="65" x="320" y="352"/>
+  <object gid="65" x="320" y="384"/>
+  <object gid="65" x="320" y="416"/>
+  <object gid="65" x="320" y="448"/>
+  <object gid="65" x="320" y="480"/>
  </objectgroup>
 </map>
