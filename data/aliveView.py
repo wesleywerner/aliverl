@@ -185,7 +185,7 @@ class GraphicalView(object):
         
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
-            self.screen.blit(self.transition.surface, (0, 0))
+            self.screen.blit(self.transition.image, (0, 0))
 
         pygame.display.flip()
 
@@ -296,27 +296,27 @@ class GraphicalView(object):
                 # Start with a Slide-in Transition
                 if not terminal_slidein_added:
                     terminal_slidein_added = True
-                    canvas = pygame.Surface(self.screen.get_size())
-                    canvas.set_colorkey(color.magenta)
-                    canvas.fill(color.magenta)
                     self.transition_queue.insert(0,
                                             SlideinTransition(
-                                            canvas, self.windowsize, self.gamefps, 
-                                            self.smallfont, 'connecting . . .',
+                                            self.windowsize,
+                                            color.magenta,
+                                            self.gamefps,
+                                            self.smallfont,
+                                            'connecting . . .',
                                             self.dialoguebackground))
                 
                 # Follow up with a Terminal Printer Transition
                 text_color = getattr(color, datas['color'])
                 words = datas['datas']
                 words = self.wrap_text(words, 25)
-                canvas = pygame.Surface(self.screen.get_size())
-                canvas.set_colorkey(color.magenta)
-                canvas.fill(color.magenta)
-                canvas.blit(self.dialoguebackground, self.playarea)
                 self.transition_queue.insert(0,
                                         TerminalPrinter(
-                                        canvas, self.windowsize, self.gamefps, 
-                                        self.largefont, words, text_color,
+                                        self.windowsize,
+                                        color.magenta,
+                                        self.gamefps,
+                                        self.largefont,
+                                        words,
+                                        text_color,
                                         self.dialoguebackground))
 
     def next_dialogue(self):
@@ -854,76 +854,101 @@ class TransitionBase(object):
         update(): step the transition, returns True while busy
     """
     
-    def __init__(self, surface, viewport, fps):
+    def __init__(self, rect, background_color, fps):
         """
-        Defines an animated transition base.
+        Defines a base for animations transition effects.
+        Simply: a canvas that draws itself each update() -- permitting fps.
         
-        surface (Surface) is where to draw on.
-        viewport (Rect) tells us the area to draw within surface.
-        fps (int) isused to calculate constant redraw speed for any fps.
-        
+        rect (Rect) tells us how large our canvas should be.
+                The topleft component serves to let us know where on
+                the screen our canvas will be draw to.
+
+        background_color (r, g, b) fills our canvas with the given color on
+                creation.
+
+        fps (int) is used to calculate constant redraw speed for any fps.
+
         Attributes:
-            done (bit): set to True when the animation is complete.
-            waitforkey (bit): flags to wait for user keypress.
+            done (bool):
+                True when our animation is complete.
+            waitforkey (bool): A flag to let our callers know to wait for
+                user keypress.
         """
-        
-        self.surface = surface
-        self.viewport = viewport
+
+        self.image = pygame.Surface(rect.size)
+        self.image.set_colorkey(color.magenta)
+        self.image.fill(background_color)
+        self.rect = rect
+        #TODO: up fps divisor to 1000?
         self.delay = 500 / fps
         self.lasttime = 0
         self.done = False
         self.waitforkey = False
-    
-    def canupdate(self, time):
+
+    def can_update(self, time):
         """
-        Tests if it is time to update again
-        time is the current game ticks. It is used to calculate when to update
-            so that animations appear constant across varying fps.
+        Tests if it is time to update again. time is the current game ticks.
         """
-        
+
         if time - self.lasttime > self.delay:
             self.lasttime = time
             return True
-        
+
     def update(self, time):
         """
         Step the transition.
-        use canupdate(time) to test if it is time to redraw.
-        Returns True while transitioning.
+        use can_update(time) to test if it is time to redraw.
+        This call is left empty for you to override.
         """
-        
-        if self.canupdate(time):
-            return not self.done
+
+        if self.can_update(time):
+            pass
 
 
 class SlideinTransition(TransitionBase):
     """
-    Starts with the words "connecting..." centered.
-    A small centered square below the words elongates horizontally 
-        into a long rectangle.
-    Elongate the rectangle vertically to fill up the space.
-    The words disappear.
+    A rectangle that stays centered on the canvas, grows in width
+    until it touches the screen edges.
+    Then the rectangle grows in height, while staying centered, until
+    touching the top-bottom.
     """
-    
-    def __init__(self, surface, viewport, fps, font, title, background=None):
+
+    def __init__(self,
+                rect,
+                background_color,
+                fps,
+                font,
+                title,
+                background=None):
         """
-        surface is where to draw on.
-        font is for drawing the title text.
+        rect (Rect) tells us how large our canvas should be.
+                The topleft component is informative only:
+                to let us know where on the screen our image will be draw to.
+
+        background_color (r, g, b) fills our canvas with the given color on
+                creation.
+
+        fps (int) is used to calculate constant redraw speed for any fps.
+
+        font is use for drawing any title text.
         title is the words to display during.
         """
+
+        super(SlideinTransition, self).__init__(rect, background_color, fps)
         
-        super(SlideinTransition, self).__init__(surface, viewport, fps)
+        # box is our sliding rectangle that will expand to the screen.
         self.box = pygame.Rect(0, 0, 100, 20)
         # center the box according to full size
-        self.box.center = viewport.center
+        self.box.center = rect.center
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
-        self.fontloc.center = viewport.center
-        self.size = (self.viewport.width, self.viewport.height)
+        self.fontloc.center = rect.center
+        self.size = (self.rect.width, self.rect.height)
         # center the background image
         self.background = None
         if background:
+            #TODO may not be neccessary if we just store background_image :p
             # make a background surface
             bgpos = ((self.size[0] - background.get_width()) / 2, 
                    (self.size[1] - background.get_height()) / 2)
@@ -943,7 +968,7 @@ class SlideinTransition(TransitionBase):
         Step the transition.
         """
         
-        if self.canupdate(time):
+        if self.can_update(time):
             if self.resizingheight:
                 self.box = self.box.inflate(0, self.ydelta)
                 self.resizingheight = self.box.h < self.size[1]
@@ -953,9 +978,9 @@ class SlideinTransition(TransitionBase):
                 self.resizingheight = not self.resizingwidth
             if self.background:
                 # draw the background image cut from the same area of our box
-                self.surface.blit(self.background, self.box.topleft, self.box)
-            pygame.draw.rect(self.surface, color.green, self.box, 1)
-            self.surface.blit(self.fontpix, self.fontloc)
+                self.image.blit(self.background, self.box.topleft, self.box)
+            pygame.draw.rect(self.image, color.green, self.box, 1)
+            self.image.blit(self.fontpix, self.fontloc)
             self.done = not self.resizingwidth and not self.resizingheight
         return not self.done
 
@@ -966,8 +991,8 @@ class TerminalPrinter(TransitionBase):
     """
     
     def __init__(self,
-                surface,
-                viewport,
+                rect,
+                background_color,
                 fps,
                 font,
                 words,
@@ -979,7 +1004,7 @@ class TerminalPrinter(TransitionBase):
         words is a list of strings to print. one row per list item.
         """
         
-        super(TerminalPrinter, self).__init__(surface, viewport, fps)
+        super(TerminalPrinter, self).__init__(rect, background_color, fps)
         self.words = words
         self.text = ""
         self.wordcolor = wordcolor
@@ -988,12 +1013,12 @@ class TerminalPrinter(TransitionBase):
         self.ypadding = 72
         self.lineindex = 0
         self.charindex = 0
-        self.viewport = viewport
-        self.xposition, self.yposition = self.viewport.topleft
+        self.rect = rect
+        self.xposition, self.yposition = self.rect.topleft
         self.done = False
         self.lastfontheight = 0
         self.waitforkey = True
-        self.size = (self.viewport.width, self.viewport.height)
+        self.size = (self.rect.width, self.rect.height)
         # center the background image
         self.background = None
         if background:
@@ -1011,13 +1036,13 @@ class TerminalPrinter(TransitionBase):
         Step the transition.
         """
 
-        if self.canupdate(time) and not self.done:
+        if self.can_update(time) and not self.done:
             if self.background:
                 # draw the background image cut from the same area of our box
-                self.surface.blit(self.background, self.viewport.topleft)
+                self.image.blit(self.background, self.rect.topleft)
             if self.charindex == len(self.words[self.lineindex]):
                 self.lineindex += 1
-                self.xposition = self.viewport.left
+                self.xposition = self.rect.left
                 self.charindex = 0
                 self.yposition += self.lastfontheight
                 self.done = self.lineindex == len(self.words)
