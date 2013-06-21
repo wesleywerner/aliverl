@@ -331,6 +331,7 @@ class GameEngine(object):
         for layer in self.level.tmx.tilelayers:
             gid = layer.at((xy[0], xy[1]))
             if self.story.tile_blocks(gid):
+                trace.write('Tile gid %s is solid and blocks us' % gid)
                 return True
         # test objects too
         objects = self.get_object_by_xy(xy)
@@ -668,6 +669,25 @@ class GameEngine(object):
         else:
             trace.write('dialogue "%s" not found in story definition' % (key))
 
+    @property
+    def tile_width(self):
+        """
+        Quick acccess for the level tmx tile width
+
+        """
+
+        if self.level:
+            return self.level.tmx.tile_width
+
+    @property
+    def tile_height(self):
+        """
+        Quick acccess for the level tmx tile height
+
+        """
+
+        if self.level:
+            return self.level.tmx.tile_height
 
 class GameLevel(object):
     """
