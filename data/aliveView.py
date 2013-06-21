@@ -92,6 +92,7 @@ class GraphicalView(object):
                 self.move_sprite(event)
             elif isinstance(event, PlayerMovedEvent):
                 self.update_visible_sprites()
+                self.update_viewport()
             elif isinstance(event, MessageEvent):
                 self.create_floating_tip(event.message,
                     event.fontcolor and event.fontcolor or color.text)
@@ -105,8 +106,8 @@ class GraphicalView(object):
             elif isinstance(event, NextLevelEvent):
                 self.load_level()
                 self.create_sprites()
-            elif isinstance(event, ShiftViewportEvent):
-                self.adjust_viewport(event)
+            #elif isinstance(event, ShiftViewportEvent):
+                #self.adjust_viewport(event)
             elif isinstance(event, InitializeEvent):
                 self.initialize()
             elif isinstance(event, QuitEvent):
@@ -686,10 +687,50 @@ class GraphicalView(object):
                 self.visible_sprites.add(sprite)
             else:
                 self.visible_sprites.remove(sprite)
-    
-    def adjust_viewport(self, event):
+
+    def update_viewport(self):
         """
         Auto center the viewport if the player gets too close to any edge.
+        """
+
+        # make some values easier to read
+        px, py = self.model.player.getpixelxy()
+        vp = self.viewport
+        tw = self.model.tile_width
+        th = self.model.tile_height
+
+        # no point to shift if the level size is within our viewport limits
+        tmx = self.model.level.tmx
+        if (tmx.width * tw <= vp.width and
+            tmx.height * th <= vp.height):
+            return
+
+        # how close to edges we need to be to shfit the view (in tiles)
+        A = 4 * tw
+        B = 4 * th
+
+        x_min, y_min = (vp.left + A, vp.top + B)
+        x_max, y_max = (vp.left + vp.width - A, vp.top + vp.height - B)
+
+        if px < x_min:
+            self.viewport = vp.move(-A, 0)
+        if px > x_max:
+            self.viewport = vp.move(A, 0)
+        if py < y_min:
+            self.viewport = vp.move(0, -A)
+        if py > y_max:
+            self.viewport = vp.move(0, A)
+        vp = self.viewport
+
+        # snap to top-left edges
+        if vp.left < 0:
+            vp.left = 0
+        if vp.top < 0:
+            vp.top = 0
+
+    def adjust_viewport(self, event):
+        """
+        
         """
         
         pass
