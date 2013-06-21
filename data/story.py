@@ -68,9 +68,11 @@ class StoryData(object):
 
         """
 
+        name = name.lower()
         stats = self.conf['characters']
-        if stats.has_key(name):
-            return stats[name]
+        for key in stats.keys():
+            if key.lower() == name:
+                return stats[key]
 
     def dialogue(self, key):
         """
