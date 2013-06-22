@@ -81,7 +81,7 @@ class StoryData(object):
         """
 
         dialogues = self.conf['dialogue']
-        if dialogues.has_key(key):
+        if key in dialogues.keys():
             return dialogues[key]
 
     def entry_message(self, level_number):
@@ -93,7 +93,7 @@ class StoryData(object):
         key = self.level_key(level_number)
         if key:
             level = self.conf['levels'][key]
-            if level.has_key('entry message'):
+            if 'entry message' in level.keys():
                 return level['entry message']
 
     def level_file(self, level_number):
