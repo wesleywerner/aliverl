@@ -301,6 +301,8 @@ class GameEngine(object):
 
         newx, newy = (character.x + direction[0],
                       character.y + direction[1])
+        if not self.location_inside_map(newx, newy):
+            return False
         colliders = self.get_object_by_xy((newx, newy))
 
         # only player can activate object triggers
@@ -332,6 +334,18 @@ class GameEngine(object):
         # notify the view to update it's sprite positions
         self.evManager.Post(CharacterMovedEvent(character, direction))
         return True
+
+    def location_inside_map(self, x, y):
+        """
+        Tests if the tile position at x, y is inside map coordinates.
+
+        """
+
+        return (x >= 0 and
+            y >= 0 and
+            x < self.level.tmx.width and
+            y < self.level.tmx.height)
+
 
     def tile_is_solid(self, xy):
         """
