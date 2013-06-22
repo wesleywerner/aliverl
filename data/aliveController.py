@@ -2,6 +2,7 @@ import pygame
 import aliveModel
 from eventmanager import *
 
+
 class KeyboardMouse(object):
     """
     Handles keyboard input.
@@ -20,12 +21,11 @@ class KeyboardMouse(object):
 
         try:
             if isinstance(event, TickEvent):
-                # Called for each game tick. We check our keyboard presses here.
                 for event in pygame.event.get():
                     # always handle window closing events
                     if event.type == pygame.QUIT:
                         self.evManager.Post(QuitEvent())
-                    
+
                     # all key downs
                     if event.type == pygame.KEYDOWN:
                         state = self.model.state.peek()
@@ -51,7 +51,7 @@ class KeyboardMouse(object):
         """
         Handles game play keys.
         """
-        
+
         movement = {
                     pygame.K_h: (-1, +0),
                     pygame.K_l: (+1, +0),
@@ -80,22 +80,22 @@ class KeyboardMouse(object):
         else:
             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
-    
+
     def dialogue_keys(self, event):
         """
         Handles dialogue keys.
         """
-        
+
         if event.key in (pygame.K_SPACE, pygame.K_RETURN, pygame.K_KP_ENTER):
             self.view.next_dialogue()
         elif event.key == pygame.K_ESCAPE:
             self.view.close_dialogue()
-        
+
     def menu_keys(self, event):
         """
         Handles menu keys.
         """
-        
+
         if event.key in (pygame.K_SPACE, pygame.K_RETURN):
             self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
         elif event.key == pygame.K_ESCAPE:
@@ -105,7 +105,7 @@ class KeyboardMouse(object):
         """
         Handles intro keys.
         """
-        
+
         if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
             self.evManager.Post(StateChangeEvent(None))
 
@@ -113,7 +113,7 @@ class KeyboardMouse(object):
         """
         Handles game over keys.
         """
-        
+
         if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
             self.evManager.Post(StateChangeEvent(None))
 
@@ -121,7 +121,7 @@ class KeyboardMouse(object):
         """
         Handles the emergency crash kart keys.
         """
-        
+
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(QuitEvent())
         elif event.key == pygame.K_RETURN:

@@ -8,17 +8,18 @@ def make_matrix(width, height, initial_value):
 
     return [[initial_value for y in range(0, height)] for x in range(0, width)]
 
+
 def get_line_segments(x1, y1, x2, y2):
     """
     Returns a list of line segments that make up a line between two points.
     Returns [(x1, y1), (x2, y2), ...]
 
     Source: http://roguebasin.roguelikedevelopment.org/index.php?title=Bresenham%27s_Line_Algorithm
-    
+
     """
 
     points = []
-    issteep = abs(y2-y1) > abs(x2-x1)
+    issteep = abs(y2 - y1) > abs(x2 - x1)
     if issteep:
         x1, y1 = y1, x1
         x2, y2 = y2, x2
@@ -28,7 +29,7 @@ def get_line_segments(x1, y1, x2, y2):
         y1, y2 = y2, y1
         rev = True
     deltax = x2 - x1
-    deltay = abs(y2-y1)
+    deltay = abs(y2 - y1)
     error = int(deltax / 2)
     y = y1
     ystep = None
@@ -49,6 +50,7 @@ def get_line_segments(x1, y1, x2, y2):
     if rev:
         points.reverse()
     return points
+
 
 def line_of_sight(matrix, x1, y1, x2, y2):
     """

@@ -14,6 +14,7 @@
 import os
 from configobj4 import ConfigObj
 
+
 class StoryData(object):
     """
     Provides a high-level wrapper for reading game story data from story.conf.
@@ -32,7 +33,7 @@ class StoryData(object):
 
         # store the path where the story conf lives
         self.path = os.path.dirname(config_path)
-        
+
         # to format our config nicely we indent quoted paragraphs.
         # here we secretly strip these leading spaces.
         # do this for every screen in each dialogue.
@@ -40,7 +41,7 @@ class StoryData(object):
         for dialogue_key in dialogues.keys():
             data = dialogues[dialogue_key]
             for screen in data.keys():
-                stripped = '\n'.join([s.lstrip() for s 
+                stripped = '\n'.join([s.lstrip() for s
                                 in data[screen]['datas'].split('\n')])
                 data[screen]['datas'] = stripped
 
@@ -48,7 +49,7 @@ class StoryData(object):
         """
         Return animation settings for a GID.
         """
-        
+
         anims = self.conf['animations']
         for key, value in anims.items():
             if value.as_int('gid') == gid:
@@ -78,7 +79,7 @@ class StoryData(object):
         """
         Returns dialogue words for the given key.
         """
-        
+
         dialogues = self.conf['dialogue']
         if dialogues.has_key(key):
             return dialogues[key]
@@ -88,7 +89,7 @@ class StoryData(object):
         Return the entry message for a level, or None if empty.
 
         """
-        
+
         key = self.level_key(level_number)
         if key:
             level = self.conf['levels'][key]
@@ -112,7 +113,7 @@ class StoryData(object):
         Returns None if the level does not exist.
 
         """
-        
+
         # keep in mind our list is 0-based: position 0 stores level 1.
         level_keys = self.conf['levels'].keys()
         if level_number <= len(level_keys):

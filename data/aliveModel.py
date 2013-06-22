@@ -20,17 +20,25 @@ class GameEngine(object):
     def __init__(self, evManager):
         """
         evManager controls Post()ing and notify()ing events.
-        
+
         Attributes:
-        running (bool): True while the engine is online. Changed via QuitEvent().
-        state (StateMachine): controls the game mode stack.
-        level (GameLevel): stores level related data.
-        story (ConfigObj): stores the story.conf data.
-        player (MapObject): the player controlled map object.
-        objects ([MapObject]): list of level objects.
-        dialogue ([str]): List of dialogue strings in queue to display.
+
+        running (bool):
+            True while the engine is online. Changed via QuitEvent().
+        state (StateMachine):
+            controls the game mode stack.
+        level (GameLevel):
+            stores level related data.
+        story (ConfigObj):
+            stores the story.conf data.
+        player (MapObject):
+            the player controlled map object.
+        objects ([MapObject]):
+            list of level objects.
+        dialogue ([str]):
+            List of dialogue strings in queue to display.
         """
-        
+
         self.evManager = evManager
         evManager.RegisterListener(self)
         self.running = True
@@ -46,7 +54,7 @@ class GameEngine(object):
 
     def notify(self, event):
         """
-        Called by an event in the message queue. 
+        Called by an event in the message queue.
         """
 
         if isinstance(event, QuitEvent):
@@ -70,9 +78,9 @@ class GameEngine(object):
         Starts the game engine loop.
 
         This pumps a Tick event into the message queue for each loop.
-        The loop ends when this object hears a QuitEvent in notify(). 
+        The loop ends when this object hears a QuitEvent in notify().
         """
-        
+
         self.evManager.Post(StateChangeEvent(STATE_MENU))
         #self.evManager.Post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
@@ -80,13 +88,13 @@ class GameEngine(object):
         while self.running:
             newTick = TickEvent()
             self.evManager.Post(newTick)
-        
+
     def begin_game(self):
         """
         Begins a new game.
         event.story contains the campaign to play.
         """
-        
+
         #TODO allow selecting the storyline, pass it in here
         self.settings.storyname = '1-in-the-beginning'
         if self.load_story(self.settings.storyname):
@@ -101,18 +109,18 @@ class GameEngine(object):
         """
         Makes the game over.
         """
-        
+
         while True:
             popped = self.state.pop()
             if not popped or popped == STATE_PLAY:
                 break
         self.change_state(STATE_GAMEOVER)
         self.gamerunning = False
-    
+
     def load_story(self, storyname):
         """
         Loads the story data for the given story as:
-        
+
             'stories/<storyname>/story.conf'
         """
 
@@ -121,12 +129,12 @@ class GameEngine(object):
         self.story = story.StoryData(full_path)
         trace.write('loaded story OK')
         return True
-    
+
     def warp_level(self):
         """
         Proceed to the next level.
         """
-        
+
         if self.level:
             nextlevel = self.level.number + 1
         else:
@@ -140,7 +148,7 @@ class GameEngine(object):
         # trigger move events for any viewers to update their views
         self.look_around()
         self.evManager.Post(PlayerMovedEvent())
-        
+
         # show any level entry messages defined in the story
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:
@@ -170,43 +178,43 @@ class GameEngine(object):
     def load_objects(self):
         """
         Load map objects and apply any stats defined in the story.conf
-        
+
         """
-        
+
         self.player = None
         self.objects = []
-        defaults = {'dead' : False,
-                     'seen' : False,
-                     'attack' : 0,
-                     'health' : 0,
-                     'maxhealth' : 0,
-                     'healrate' : 0,
-                     'speed' : 0,
-                     'stealth' : 0,
-                     'mana' : 0,
-                     'maxmana' : 5,
-                     'manarate' : 6,
-                     'modes' : [],
-                     'in_range' : False,
+        defaults = {'dead': False,
+                     'seen': False,
+                     'attack': 0,
+                     'health': 0,
+                     'maxhealth': 0,
+                     'healrate': 0,
+                     'speed': 0,
+                     'stealth': 0,
+                     'mana': 0,
+                     'maxmana': 5,
+                     'manarate': 6,
+                     'modes': [],
+                     'in_range': False,
                      }
 
         # for each object group on this level (because maps can be layers)
         for objectgroup in self.level.tmx.objectgroups:
-        
+
             # for each object in this group
             for obj in objectgroup:
-            
+
                 # apply defaults first
                 [setattr(obj, k, v) for k, v in defaults.items()]
-                
+
                 # grab it's name
                 oname = obj.name.lower()
-                
+
                 # remember the player object
                 if obj.type == 'player':
                     self.player = obj
                     self.player.properties['trail'] = []
-                
+
                 # apply character stats from the story config
                 stats = self.story.char_stats(oname)
                 if stats:
@@ -235,13 +243,14 @@ class GameEngine(object):
                         # we know that 'modes' is a list
                         if k == 'modes':
                             setattr(obj, k, v.split(','))
-                
+
                 # add this one to the collective
                 self.objects.append(obj)
-        
+
         # show a courtesy message
         if self.player is None:
-            trace.error('Warning: No player character on this level. Good luck!')
+            trace.error('Warning: No player character on this level. ' +
+                        'Good luck!')
 
     def move_player(self, direction):
         """
@@ -251,12 +260,12 @@ class GameEngine(object):
             * heal_turn() for everyone
             * ai_movement_turn()
         """
-        
+
         if not self.move_object(self.player, direction):
             return False
         # at this point the player made a successful move.
         # her x-y is up to date with the new position.
-        
+
         # so let us take care of some turn stuff:
         self.turn += 1
         # update what we can see
@@ -269,10 +278,10 @@ class GameEngine(object):
         p = self.player.properties
         p['trail'].insert(0, (self.player.x, self.player.y))
         self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
-        
+
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
-            
+
         # notify the view to update it's sprites visibilies
         self.evManager.Post(CharacterMovedEvent(self.player, direction))
 
@@ -281,12 +290,12 @@ class GameEngine(object):
         Moves the given character by offset direction (x, y).
         Notifies all listeners of this if the move
         is successfull via the CharacterMovedEvent.
-        
+
         Returns False if the move failed (blocked by tile or combat),
         and True if the move succeeded.
-        
+
         """
-        
+
         if not self.gamerunning:
             return False
 
@@ -301,7 +310,8 @@ class GameEngine(object):
 
         # initiate combat for player and AI
         for collider in colliders:
-            if collider.type in ('ai', 'player') and character.type != 'friend':
+            if (collider.type in ('ai', 'player') and
+                    character.type != 'friend'):
                 # but only if one or the other is the player
                 if (collider is self.player) or (character is self.player):
                     self.evManager.Post(CombatEvent(character, collider))
@@ -316,9 +326,9 @@ class GameEngine(object):
 
         # accept movement
         character.x, character.y = (newx, newy)
-        character.px, character.py = (newx*self.level.tmx.tile_width, 
-                                      newy*self.level.tmx.tile_height)
-        
+        character.px, character.py = (newx * self.level.tmx.tile_width,
+                                      newy * self.level.tmx.tile_height)
+
         # notify the view to update it's sprite positions
         self.evManager.Post(CharacterMovedEvent(character, direction))
         return True
@@ -327,7 +337,7 @@ class GameEngine(object):
         """
         Returns if the tile at (x, y) blocks:
         """
-        
+
         for layer in self.level.tmx.tilelayers:
             gid = layer.at((xy[0], xy[1]))
             if self.story.tile_blocks(gid):
@@ -343,11 +353,12 @@ class GameEngine(object):
         """
         Moves all the ai characters.
         """
-        
-        for obj in [e for e in self.objects 
-                            if e.type in ('ai', 'friend') 
-                            and not e.dead
-                            and (e.speed > 0) and (int(self.turn % e.speed) == 0)]:
+
+        for obj in [e for e in self.objects
+                            if e.type in ('ai', 'friend') and
+                            not e.dead and
+                            (e.speed > 0) and
+                            (int(self.turn % e.speed) == 0)]:
             x, y = (0, 0)
             for mode in obj.modes:
                 if mode == 'random':
@@ -356,12 +367,12 @@ class GameEngine(object):
                         y = random.randint(-1, 1)
                 if mode == 'updown':
                     if 'movingup' in obj.properties:
-                        if self.tile_is_solid((obj.x, obj.y-1)):
+                        if self.tile_is_solid((obj.x, obj.y - 1)):
                             del obj.properties['movingup']
                             obj.properties['movingdown'] = True
                         y += -1
                     elif 'movingdown' in obj.properties:
-                        if self.tile_is_solid((obj.x, obj.y+1)):
+                        if self.tile_is_solid((obj.x, obj.y + 1)):
                             del obj.properties['movingdown']
                             obj.properties['movingup'] = True
                         y += +1
@@ -370,12 +381,12 @@ class GameEngine(object):
                         obj.properties['movingdown'] = True
                 if mode == 'leftright':
                     if 'movingleft' in obj.properties:
-                        if self.tile_is_solid((obj.x-1, obj.y)):
+                        if self.tile_is_solid((obj.x - 1, obj.y)):
                             del obj.properties['movingleft']
                             obj.properties['movingright'] = True
                         x += -1
                     elif 'movingright' in obj.properties:
-                        if self.tile_is_solid((obj.x+1, obj.y)):
+                        if self.tile_is_solid((obj.x + 1, obj.y)):
                             del obj.properties['movingright']
                             obj.properties['movingleft'] = True
                         x += +1
@@ -440,7 +451,8 @@ class GameEngine(object):
                 if dist <= RANGE:
 
                     # test if we also have line of sight to this position
-                    if dist <= 1.5 or rlhelper.line_of_sight(blocked_matrix, px, py, x, y):
+                    if (dist <= 1.5 or
+                        rlhelper.line_of_sight(blocked_matrix, px, py, x, y)):
 
                         # mark this matrix tile as in view
                         matrix[x][y] = 2
@@ -451,14 +463,15 @@ class GameEngine(object):
                             # mark object is in_range
                             obj.in_range = True
                             obj.seen = True
-    
+
     def get_distance(self, pointa, pointb):
         """
         Returns the distance between two cartesian points.
         """
-        
-        return math.sqrt((pointa[0] - pointb[0])**2 + (pointa[1] - pointb[1])**2)
-    
+
+        return math.sqrt((pointa[0] - pointb[0]) ** 2 +
+                        (pointa[1] - pointb[1]) ** 2)
+
     def get_direction(self, pointa, pointb):
         """
         Returns the (x, y) offsets required to move pointa towards pointb.
@@ -482,20 +495,20 @@ class GameEngine(object):
         """
         Get characters object by it's id().
         """
-        
+
         match = [e for e in self.objects if id(e) == objectid]
         if match:
             return match[0]
         else:
             return None
-    
+
     def get_object_by_xy(self, xy):
         """
         Get a list of characters at xy.
         """
-        
+
         return [e for e in self.objects if e.getxy() == xy]
-        
+
     def heal_turn(self):
         """
         Each turn characters gets a chance to heal.
@@ -513,15 +526,17 @@ class GameEngine(object):
             if npc.mana < npc.maxmana:
                 if self.turn % npc.manarate == 0:
                     npc.mana += 1
-    
+
     def trigger_object(self, obj, isfingered=False):
         """
         Process any triggers on an object.
         Returns True on OK, False if level is changing, abort caller loop.
         """
-        
-        trace.write('trigger %s%s' % (obj.name, (isfingered) and (' via finger') or ('')))
-        
+
+        trace.write(('trigger %s%s' %
+                    (obj.name, (isfingered) and
+                    (' via finger') or (''))))
+
         for action in obj.properties.keys():
             action_value = obj.properties[action]
 
@@ -529,7 +544,7 @@ class GameEngine(object):
             if not isfingered and action.startswith('fingers'):
                 for fn in [e for e in self.objects if e.name == action_value]:
                     self.trigger_object(fn, isfingered=True)
-            
+
             # these actions are only triggered by direct interaction
             if not isfingered:
                 # next level
@@ -559,19 +574,23 @@ class GameEngine(object):
                     else:
                         if str(obj.gid) in options:
                             # rotate the list with the current
-                            # index as offset. 
+                            # index as offset.
                             idx = options.index(str(obj.gid)) - 1
-                            transmute_id = int(list(options[idx:] + options[:idx])[0])
-                            trace.write('Rotate tile index %s to %s' % (obj.gid, transmute_id))
+                            transmute_id = int(list(options[idx:] +
+                                options[:idx])[0])
+                            trace.write('Rotate tile index %s to %s' %
+                                (obj.gid, transmute_id))
                         else:
                             # use first index
                             transmute_id = int(options[0])
-                    # do not transmute to a blocking tile if anyone is 
+                    # do not transmute to a blocking tile if anyone is
                     # standing on the finger target (cant close doors)
                     fingerfriends = self.get_object_by_xy(obj.getxy())
                     for ff in fingerfriends:
-                        if ff is not obj and self.story.tile_blocks(transmute_id):
-                            trace.write('hey, you cant transmorgify a tile to a solid if someone is standing on it :p')
+                        if (ff is not obj and
+                                self.story.tile_blocks(transmute_id)):
+                            trace.write('hey, you cant transmorgify a tile ' +
+                                'to a solid if someone is standing on it :p')
                             return False
                     # transmorgify!
                     obj.gid = transmute_id
@@ -582,17 +601,18 @@ class GameEngine(object):
 
             # once shots actions (append once to any action)
             if action.endswith('once'):
-                #FIXME fingering an object itself removes this property during the fingered call, causing a keyerror whence returning to here.
+                #FIXME fingering an object itself removes this property
+                # during the fingered call, causing a keyerror whence
+                # returning to here.
                 del obj.properties[action]
         # signal caller all is OK
         return True
-        
-    
+
     def combat_turn(self, event):
         """
         Begin a combat round.
         """
-        
+
         if not self.gamerunning:
             return False
         a = event.attacker
@@ -640,7 +660,7 @@ class GameEngine(object):
         """
         Process game state change events.
         """
-        
+
         # popping dialogue removes one line of dialog text
         if not state and \
                         len(self.dialogue) > 0 and \
@@ -658,9 +678,9 @@ class GameEngine(object):
         Update the model state to show a dialogue screen.
         keys is a list of dialogue key names.
         """
-        
+
         dialogue = self.story.dialogue(key)
-        
+
         if dialogue:
             # tell everyone about the words about to display
             self.evManager.Post(DialogueEvent(dialogue))
@@ -689,16 +709,17 @@ class GameEngine(object):
         if self.level:
             return self.level.tmx.tile_height
 
+
 class GameLevel(object):
     """
     Contains level specific data.
     Nothing here should persist across levels.
     """
-    
-    def __init__ (self, number, filename):
+
+    def __init__(self, number, filename):
         """
         Attributes:
-        
+
         number (int): the current level number.
         filename (str): relative path to the level file.
         data (TMXParser): tmx file data.
@@ -708,7 +729,7 @@ class GameLevel(object):
         self.filename = filename
         self.tmx = TMXParser(filename)
         trace.write('loaded tmx data OK')
-        
+
         # store the level map data in our map matrix.
         self.matrix = {}
         w = self.tmx.width
@@ -729,16 +750,17 @@ STATE_DIALOG = 6
 STATE_GAMEOVER = 7
 STATE_CRASH = 8
 
+
 class StateMachine(object):
     """
     Manages a stack based state machine.
     peek(), pop() and push() perform as traditionally expected.
     peeking and popping an empty stack returns None.
     """
-    
-    def __init__ (self):
+
+    def __init__(self):
         self.statestack = []
-    
+
     def peek(self):
         """
         Returns the current state without altering the stack.
@@ -749,7 +771,7 @@ class StateMachine(object):
         except IndexError:
             # empty stack
             return None
-    
+
     def pop(self):
         """
         Returns the current state and remove it from the stack.
@@ -760,7 +782,7 @@ class StateMachine(object):
         except IndexError:
             # empty stack
             return None
-    
+
     def push(self, state):
         """
         Push a new state onto the stack.
@@ -768,35 +790,35 @@ class StateMachine(object):
         """
         self.statestack.append(state)
         return state
-    
+
     def process(self, state):
         """
         Process the given state.
         Returns False if the state stack is empty.
         """
-        
+
         if state:
             self.push(state)
         else:
             self.pop()
         return len(self.statestack) > 0
-    
+
     def contains(self, state):
         """
         Returns if a state is in the list.
         """
-        
+
         return state in self.statestack
-        
+
 
 class Settings(object):
     """
     Stores persistant settings.
     """
 
-    def __init__ (self):
+    def __init__(self):
         """
-        
+
         """
 
         self.storyname = None

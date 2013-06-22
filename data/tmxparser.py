@@ -11,15 +11,18 @@ from xml.etree import ElementTree
 
 TMX_FORMAT_OBJECT_Y_FIX = 1
 
+
 class ObjectHelper(object):
     """
     Provide functionality to print out object attributes.
     """
-    
+
     def __repr__(self):
         return '%s has %s at 0x%x\n\n' % \
-            ( type(self), ', '.join( [ '%s=%s' % (k, v) for k, v in self.__dict__.items() ] ) , 
-            id(self) )
+            (type(self), ', '.join(['%s=%s' % (k, v)
+                                for k, v in self.__dict__.items()]),
+            id(self))
+
 
 class TMXParser(ObjectHelper):
     """
@@ -30,11 +33,11 @@ class TMXParser(ObjectHelper):
     def __init__(self, filename):
         """
         filename(str) of the .tmx file to load.
-        
+
         Note that layers are merged together.
-        
+
         Attributes:
-        
+
             version: map build version.
             orientation: orthogonal or isometric.
             width: map tiles wide.
@@ -48,14 +51,14 @@ class TMXParser(ObjectHelper):
             tilelayers: list of Tilelayer.
             objectgroups: list of Mapobjects.
         """
-        
+
         with open(filename) as f:
             map = ElementTree.fromstring(f.read())
-        
+
         self.version = map.attrib['version']
         self.orientation = map.attrib['orientation']
         self.width = int(map.attrib['width'])
-        self.height  = int(map.attrib['height'])
+        self.height = int(map.attrib['height'])
         self.tile_width = int(map.attrib['tilewidth'])
         self.tile_height = int(map.attrib['tileheight'])
         self.px_width = self.width * self.tile_width
@@ -70,25 +73,25 @@ class TMXParser(ObjectHelper):
 
         for tag in map.findall('layer'):
             self.tilelayers.append(Tilelayer(tag))
-        
+
         for tag in map.findall('objectgroup'):
-            self.objectgroups.append(Objectgroup(tag, 
+            self.objectgroups.append(Objectgroup(tag,
                                     (self.tile_width, self.tile_height)))
-    
+
     def tilesize(self, multiplier=1):
         """
         Return (tile_width, tile_height).
         """
-        
+
         return (self.tile_width * multiplier, self.tile_height * multiplier)
-        
+
 
 class Tileset(ObjectHelper):
     """
     Stores tmx tileset information.
     """
 
-    def __init__ (self, tag):
+    def __init__(self, tag):
         self.source = tag.attrib['source']
         self.width = int(tag.attrib['width'])
         self.height = int(tag.attrib['height'])
@@ -97,48 +100,47 @@ class Tileset(ObjectHelper):
         else:
             self.trans = 'ff00ff'
             print('no transparency key set for this tmx map. Using magenta.')
-            
-        
+
 
 class Tilelayer(ObjectHelper):
     """
     Stores tmx map layer data.
-    
+
     """
 
-    def __init__ (self, tag):
+    def __init__(self, tag):
         self.name = tag.attrib['name']
         self.width = int(tag.attrib['width'])
         self.height = int(tag.attrib['height'])
-        
+
         data = tag.find('data')
         self.encoding = data.attrib['encoding']
         self.compression = data.attrib['compression']
         data = data.text.strip()
         data = data.decode('base64').decode('zlib')
-        data = struct.unpack('<%di' % (len(data)/4,), data)
+        data = struct.unpack('<%di' % (len(data) / 4,), data)
         self.data = data
         assert len(data) == self.width * self.height
-        
+
     def at(self, pos):
         """
         Return the gid at the given (x, y) index coordinate.
         """
-        
+
         return self.data[pos[0] + (pos[1] * self.width)]
-        
-        
+
+
 class Objectgroup(ObjectHelper):
     """
     Stores a list of map objects.
     """
 
-    def __init__ (self, tag, tilesize):
+    def __init__(self, tag, tilesize):
         """
         Create an object group from xml tag.
         tilesize is (w, h).
         """
-        
+
         self.name = tag.attrib['name']
         self.width = int(tag.attrib['width'])
         self.height = int(tag.attrib['height'])
@@ -146,8 +148,8 @@ class Objectgroup(ObjectHelper):
         for tag in tag.findall('object'):
             self.container.append(Mapobject(tag, tilesize))
 
-    def add(self,n,k,comment):
-        self.container.append([n,k,comment])
+    def add(self, n, k, comment):
+        self.container.append([n, k, comment])
 
     def __str__(self):
         return str(self.container)
@@ -159,14 +161,14 @@ class Objectgroup(ObjectHelper):
         return self.container[key]
 
     def __len__(self):
-        return len(self.container)        
+        return len(self.container)
 
 
 class Mapobject(ObjectHelper):
     """
     Stores a map object.
     Attributes:
-    
+
         name: object name as given in the map editor.
         gid: graphic id
         px: pixel x position
@@ -176,12 +178,12 @@ class Mapobject(ObjectHelper):
         properties: dict of map defined propeties
     """
 
-    def __init__ (self, tag, tilesize):
+    def __init__(self, tag, tilesize):
         """
         Create this item from a xml tag.
         tilesize is (w, h)
         """
-        
+
         if 'name' in tag.attrib.keys():
             self.name = tag.attrib['name']
         else:
@@ -200,14 +202,14 @@ class Mapobject(ObjectHelper):
         self.properties = {}
         for prop in tag.findall('properties/property'):
             self.properties[prop.attrib['name']] = prop.attrib['value']
-    
+
     def getpixelxy(self):
         """
         Return (self.px, self.py).
         """
-        
+
         return (self.px, self.py)
-        
+
     def getxy(self):
         """
         Return (self.x, self.y)
@@ -219,7 +221,7 @@ class Mapobject(ObjectHelper):
         """
         Set a new (x, y)
         """
-        
+
         self.x, self.y = xy
 
 
@@ -229,28 +231,28 @@ class TilesetParser(dict):
     Relies on pygame to load images.
     you may use len() on this object to get the number of tiles.
     """
-    
+
     def __init__(self, filename, tilesize, colorkey):
         """
         filename(str) of the image to load.
         tilesize((x, y)) of each tile size.
         colorkey((r, g, b)) of the transparency key. no alpha here.
         """
-        
+
         self._tiles = {}
         image = pygame.image.load(filename).convert()
         image.set_colorkey(colorkey)
         w, h = image.get_size()
         w, h = (w / tilesize[0], h / tilesize[1])
-        
+
         for y in range(0, h):
             for x in range(0, w):
                 gid = x + (y * w) + 1
                 self._tiles[gid] = image.subsurface(
                                     pygame.Rect(
-                                            (x * tilesize[0], y * tilesize[1]), 
+                                            (x * tilesize[0], y * tilesize[1]),
                                             tilesize))
-        
+
     def __getitem__(self, gid):
         """
         Get a tile image by graphic index.
@@ -258,28 +260,30 @@ class TilesetParser(dict):
 
         if gid in self._tiles.keys():
             return self._tiles[gid]
-    
+
     def __len__(self):
         """
         Return the number of image tiles.
         """
-        
+
         return len(self._tiles)
 
 
 if __name__ == '__main__':
     import pygame
     pygame.init()
-    
+
     def test_tilsetparser():
         screen = pygame.display.set_mode((640, 32))
-        tsp = TilesetParser('stories/1-in-the-beginning/alive-tileset.png', (32, 32), (255, 0, 255))
+        tsp = TilesetParser(
+            'stories/1-in-the-beginning/alive-tileset.png',
+            (32, 32), (255, 0, 255))
         print('loaded ', len(tsp), 'tiles')
         print('showing the first 20')
         for x in range(1, 20):
-            screen.blit(tsp[x], ((x-1)*32, 0))
+            screen.blit(tsp[x], ((x - 1) * 32, 0))
             pygame.display.flip()
-    
+
     def test_tmxparser():
         screen = pygame.display.set_mode((640, 32))
         tmx = TMXParser('stories/1-in-the-beginning/level1.tmx')
@@ -292,20 +296,20 @@ if __name__ == '__main__':
             print(td.at((1, 1)))
         for o in tmx.objectgroups:
             print(o)
-    
+
     def test_tmxrendering():
         screen = pygame.display.set_mode((640, 480))
-        tsp = TilesetParser('stories/1-in-the-beginning/alive-tileset.png', 
+        tsp = TilesetParser('stories/1-in-the-beginning/alive-tileset.png',
                             (32, 32), (255, 0, 255))
         tmx = TMXParser('stories/1-in-the-beginning/level1.tmx')
         # draw tiles
         for y in range(tmx.height):
             for x in range(tmx.width):
                 for layer in tmx.tilelayers:
-                    gid = layer.at((x, y)) 
+                    gid = layer.at((x, y))
                     tile = tsp[gid]
                     if tile:
-                        screen.blit(tile, 
+                        screen.blit(tile,
                                     (x * tmx.tile_width, y * tmx.tile_height))
         # draw objects
         for grp in tmx.objectgroups:
@@ -314,18 +318,18 @@ if __name__ == '__main__':
                 if tile:
                     x = (obj.x * tmx.tile_width)
                     # a bug in the map editor
-                    # saves the y position for objects 
+                    # saves the y position for objects
                     # one tile too much
                     y = (obj.y * tmx.tile_height) - tmx.tile_height
                     screen.blit(tile, (x, y))
-                
+
         # flip the bird
         pygame.display.flip()
         while True:
             event = pygame.event.wait()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return
-        
+
     test_tmxparser()
     #test_tilsetparser()
     test_tmxrendering()
