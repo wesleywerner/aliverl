@@ -486,8 +486,8 @@ class GraphicalView(object):
         """
 
         tmx = self.model.level.tmx
-        # load the tileset parser
-        tilesetfile = os.path.join('images', tmx.tilesets[0].source)
+        story = self.model.story
+        tilesetfile = os.path.join(story.path, tmx.tilesets[0].source)
         self.tsp = TilesetParser(
                                 tilesetfile,
                                 (tmx.tile_width, tmx.tile_height),

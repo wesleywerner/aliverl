@@ -96,7 +96,7 @@ class GameEngine(object):
         """
 
         #TODO allow selecting the storyline, pass it in here
-        self.settings.storyname = '1-in-the-beginning'
+        self.settings.storyname = 'ascension'
         if self.load_story(self.settings.storyname):
             self.turn = 0
             self.level = None
