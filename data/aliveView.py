@@ -724,20 +724,19 @@ class GraphicalView(object):
         x_max, y_max = (vp.left + vp.width - A, vp.top + vp.height - B)
 
         if px < x_min:
-            self.viewport = vp.move(-A, 0)
+            self.viewport = self.viewport.move(-A, 0)
         if px > x_max:
-            self.viewport = vp.move(A, 0)
+            self.viewport = self.viewport.move(A, 0)
         if py < y_min:
-            self.viewport = vp.move(0, -A)
+            self.viewport = self.viewport.move(0, -A)
         if py > y_max:
-            self.viewport = vp.move(0, A)
-        vp = self.viewport
+            self.viewport = self.viewport.move(0, A)
 
         # snap to top-left edges
-        if vp.left < 0:
-            vp.left = 0
-        if vp.top < 0:
-            vp.top = 0
+        if self.viewport.left < 0:
+            self.viewport.left = 0
+        if self.viewport.top < 0:
+            self.viewport.top = 0
 
     def adjust_viewport(self, event):
         """
