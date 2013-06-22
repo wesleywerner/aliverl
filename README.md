@@ -20,7 +20,7 @@ Alive is a tiled turn based RPG. You play the role of an Artificial Intelligent 
 
 This game is still in development, it is not yet ready for general play. The framework is still young, but functional. The content is still lacking.
 
-The file spec.md documents technical details on the engine, and how game levels are made.
+The theme is dark with neon highlights in the upper RGB range. The color theme is blue, with primary and secondary colors for effect.
 
 # What this game will feature
 
@@ -37,11 +37,11 @@ The file spec.md documents technical details on the engine, and how game levels 
 
 # Requirements
 
-You require that Python and PyGame is installed. The packaged releases should come bundled with everything. 
+You require that Python and PyGame is installed. The packaged releases should come bundled with everything.
 
 # Contact
 
-You may contact me at wez at darknet dot co dot za 
+You may contact me at wez at darknet dot co dot za
 
 # License
 
