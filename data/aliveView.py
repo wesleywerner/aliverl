@@ -764,7 +764,6 @@ class GraphicalView(object):
         Auto center the viewport if the player gets too close to any edge.
         """
 
-        print(self.viewport)
         # make some values easier to read
         px, py = self.model.player.getpixelxy()
         vp = self.viewport
