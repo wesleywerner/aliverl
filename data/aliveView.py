@@ -557,17 +557,13 @@ class GraphicalView(object):
                                 color.magenta
                                 )
 
-        # draw tiles
-        if not self.levelcanvas:
-            self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
-            self.levelcanvas.set_colorkey(color.magenta)
-        if not self.objectcanvas:
-            self.objectcanvas = pygame.Surface(self.levelcanvas.get_size())
-            self.objectcanvas.set_colorkey(color.magenta)
-        if not self.statscanvas:
-            self.statscanvas = pygame.Surface(self.statsarea.size)
-            self.statscanvas.set_colorkey(color.magenta)
+        self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
+        self.levelcanvas.set_colorkey(color.magenta)
         self.levelcanvas.fill(color.magenta)
+        self.objectcanvas = pygame.Surface(self.levelcanvas.get_size())
+        self.objectcanvas.set_colorkey(color.magenta)
+        self.statscanvas = pygame.Surface(self.statsarea.size)
+        self.statscanvas.set_colorkey(color.magenta)
         for y in range(tmx.height):
             for x in range(tmx.width):
                 for layer in tmx.tilelayers:
@@ -768,6 +764,7 @@ class GraphicalView(object):
         Auto center the viewport if the player gets too close to any edge.
         """
 
+        print(self.viewport)
         # make some values easier to read
         px, py = self.model.player.getpixelxy()
         vp = self.viewport
