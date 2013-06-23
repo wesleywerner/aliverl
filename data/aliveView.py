@@ -127,6 +127,9 @@ class GraphicalView(object):
             elif isinstance(event, QuitEvent):
                 self.isinitialized = False
                 pygame.quit()
+            elif isinstance(event, DebugEvent):
+                if event.request_type == 'animation cheatsheet':
+                    self.draw_animations_cheatsheet()
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
             # a SystemExit, and we want that one to not catch here.
@@ -204,6 +207,53 @@ class GraphicalView(object):
             self.screen.blit(self.transition.image, (0, 0))
 
         pygame.display.flip()
+
+    def draw_animations_cheatsheet(self):
+        """
+        Draw a cheatsheet for the animations defined in this story
+        and save it to a file.
+        """
+
+        size = (1200, 600)
+        surf = pygame.Surface(size)
+        surf.fill(color.black)
+        x, y = (10, 50)
+        column_width = 0
+        tmx = self.model.level.tmx
+        level_file = os.path.basename(self.model.level.filename)
+        image_filename = '/tmp/anims-%s.png' % level_file
+        fnt = self.largefont.render('Alive animations', False, color.green)
+        title_width = fnt.get_width()
+        surf.blit(fnt, (10, 10))
+        fnt = self.smallfont.render(level_file, False, color.white)
+        surf.blit(fnt, (40 + title_width, 20))
+
+        data = self.model.story.raw_animation_data()
+        for key, value in data.items():
+            gid = value.as_int('gid')
+            tile = self.tsp[gid]
+            surf.blit(tile, (x, y))
+            fnt = self.smallfont.render(str(gid) + ': ' + key, False, color.white)
+            surf.blit(fnt, (x + tmx.tile_width, y))
+            this_width = x + tmx.tile_width + fnt.get_width()
+            if this_width > column_width:
+                column_width = this_width
+            y += tmx.tile_height * 1.5
+
+            if y > size[1] - tmx.tile_height:
+                y = 50
+                x = column_width
+                column_width = 0
+
+        pygame.image.save(surf, image_filename)
+        self.create_floating_tip(
+            'saved animation cheatsheet as ' + image_filename, color.white)
+
+        ## apply animation defs
+        #if anims and sprite:
+            #obj.frames = map(int, anims['frames'])
+            #obj.fps = anims.as_float('fps')
+            #obj.loop = anims.as_int('loop')
 
     def draw_menu(self):
         """
