@@ -65,6 +65,7 @@ class KeyboardMouse(object):
         Handles game play keys.
         """
 
+        mods = pygame.key.get_mods()
         movement = {
                     pygame.K_h: (-1, +0),
                     pygame.K_l: (+1, +0),
@@ -84,14 +85,20 @@ class KeyboardMouse(object):
                     pygame.K_KP1: (-1, +1),
                     pygame.K_KP3: (+1, +1),
                     }
+        debug_keys = {
+                    pygame.K_F2: 'animation cheatsheet',
+                    pygame.K_F3: 'resurrect player',
+                    pygame.K_F4: 'warp to next level',
+                    }
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
         elif event.key == pygame.K_F1:
             self.evManager.Post(StateChangeEvent(aliveModel.STATE_HELP))
         elif event.key in movement.keys():
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
-        elif event.key == pygame.K_F2:
-            self.evManager.Post(DebugEvent('animation cheatsheet'))
+        elif mods & pygame.KMOD_CTRL:
+            if event.key in debug_keys.keys():
+                self.evManager.Post(DebugEvent(debug_keys[event.key]))
         else:
             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
