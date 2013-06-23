@@ -317,7 +317,7 @@ class GameEngine(object):
                       character.y + direction[1])
         if not self.location_inside_map(new_x, new_y):
             return False
-        colliders = self.get_object_by_xy((new_x, new_y))
+        colliders = self.get_object_by_xy(new_x, new_y)
 
         # only player can activate object triggers
         if character is self.player:
@@ -337,7 +337,7 @@ class GameEngine(object):
                 return False
 
         # tile collisions
-        if self.tile_is_solid((new_x, new_y)):
+        if self.tile_is_solid(new_x, new_y):
             return False
 
         # accept movement
@@ -366,12 +366,12 @@ class GameEngine(object):
             x < self.level.tmx.width and
             y < self.level.tmx.height)
 
-    def tile_is_solid(self, xy):
+    def tile_is_solid(self, x, y):
         """
         Returns if the tile at (x, y) blocks:
         """
 
-        return self.level.matrix['block'][xy[0]][xy[1]]
+        return self.level.matrix['block'][x][y]
 
     def ai_movement_turn(self):
         """
@@ -391,12 +391,12 @@ class GameEngine(object):
                         y = random.randint(-1, 1)
                 if mode == 'updown':
                     if 'movingup' in obj.properties:
-                        if self.tile_is_solid((obj.x, obj.y - 1)):
+                        if self.tile_is_solid(obj.x, obj.y - 1):
                             del obj.properties['movingup']
                             obj.properties['movingdown'] = True
                         y += -1
                     elif 'movingdown' in obj.properties:
-                        if self.tile_is_solid((obj.x, obj.y + 1)):
+                        if self.tile_is_solid(obj.x, obj.y + 1):
                             del obj.properties['movingdown']
                             obj.properties['movingup'] = True
                         y += +1
@@ -405,12 +405,12 @@ class GameEngine(object):
                         obj.properties['movingdown'] = True
                 if mode == 'leftright':
                     if 'movingleft' in obj.properties:
-                        if self.tile_is_solid((obj.x - 1, obj.y)):
+                        if self.tile_is_solid(obj.x - 1, obj.y):
                             del obj.properties['movingleft']
                             obj.properties['movingright'] = True
                         x += -1
                     elif 'movingright' in obj.properties:
-                        if self.tile_is_solid((obj.x + 1, obj.y)):
+                        if self.tile_is_solid(obj.x + 1, obj.y):
                             del obj.properties['movingright']
                             obj.properties['movingleft'] = True
                         x += +1
@@ -457,7 +457,7 @@ class GameEngine(object):
                 # set to 1 (seen) if it is 2 (in view)
                 seen_mx[x][y] = seen_mx[x][y] == 2 and 1 or seen_mx[x][y]
                 # same for objects who were in range
-                objects = self.get_object_by_xy((x, y))
+                objects = self.get_object_by_xy(x, y)
                 for obj in objects:
                     obj.in_range = False
 
@@ -482,7 +482,7 @@ class GameEngine(object):
                         seen_mx[x][y] = 2
 
                         # and any objects too
-                        objects = self.get_object_by_xy((x, y))
+                        objects = self.get_object_by_xy(x, y)
                         for obj in objects:
                             # mark object is in_range
                             obj.in_range = True
@@ -526,12 +526,12 @@ class GameEngine(object):
         else:
             return None
 
-    def get_object_by_xy(self, xy):
+    def get_object_by_xy(self, x, y):
         """
-        Get a list of characters at xy.
+        Get a list of characters at x, y.
         """
 
-        return [e for e in self.objects if e.getxy() == xy]
+        return [e for e in self.objects if e.getxy() == (x, y)]
 
     def heal_turn(self):
         """
@@ -609,7 +609,7 @@ class GameEngine(object):
                             transmute_id = int(options[0])
                     # do not transmute to a blocking tile if anyone is
                     # standing on the finger target (cant close doors)
-                    fingerfriends = self.get_object_by_xy(obj.getxy())
+                    fingerfriends = self.get_object_by_xy(*obj.getxy())
                     for ff in fingerfriends:
                         if (ff is not obj and
                                 self.story.tile_blocks(transmute_id)):
