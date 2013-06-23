@@ -5,7 +5,7 @@
  </tileset>
  <layer name="walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJylkk0OgkAMhesPCzOwQOUGLOb+NxGVBNS72CZt8igUSZzky0Db1+kbKIloD+yAKGZ7xSSarrPGMsQygCst6CmILeVNXzMXd95W/Ymm/oWD7rgw3/w5P9ZZrXiofuhLpgUKV2vP6AnnPzofqK/13frcmM8KHc394732Kz06zXv/du+F5nvNSZ+36ghy0fnZ6Z/MnXls1CenH5gXM67oZf7G6YfA/xicj3NEWuwhdVea/7/+O0fIvF8u5TTi
+   eJydUkEOgkAMrCgHs3jAyA888P+fiEoi0b/YjW0ydGlRm0wWmE7bKdsQUQXYCKoAyh8YieZxXPjmRXJy1/QJzqXc/gf9nkp/WzkxkO9W+v/jv6XPPiN9wzgDapOrz+gJ598ZH6hv5V3rXBivAAOV/nGvY1BjEN76173Xwo/C5TpP0RFwXv/e6O+MK+P2pT4Z/UPmngJ9nr8zetVZTE5/nMPTYo2cd6Ly/tr/7CHP+waKNDQk
   </data>
  </layer>
  <layer name="map doodads" width="16" height="16">
@@ -21,7 +21,7 @@
   </object>
  </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="32" y="64"/>
+  <object name="player" type="player" gid="97" x="192" y="224"/>
   <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
     <property name="on finger 1" value="transmute=69"/>
@@ -69,10 +69,6 @@
    </properties>
   </object>
   <object gid="65" x="256" y="160"/>
-  <object gid="73" x="192" y="64"/>
-  <object gid="73" x="320" y="64"/>
-  <object gid="73" x="352" y="64"/>
-  <object gid="73" x="288" y="64"/>
   <object gid="81" x="320" y="384"/>
   <object gid="43" x="224" y="32"/>
   <object gid="49" x="0" y="96"/>
@@ -87,7 +83,7 @@
   <object gid="65" x="384" y="224"/>
   <object gid="65" x="416" y="224"/>
   <object gid="65" x="224" y="160"/>
-  <object name="faulty term" type="term" gid="42" x="480" y="288">
+  <object name="faulty term" type="term" gid="42" x="448" y="256">
    <properties>
     <property name="fingers once" value="faulty cap"/>
     <property name="message once" value="*pop*"/>
@@ -129,32 +125,27 @@
     <property name="message once" value="You see glowing tubes and adventure ahead."/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="384" y="416">
+  <object name="busy AI" type="friend" gid="105" x="416" y="480">
    <properties>
     <property name="message" value="The AI seems too busy to respond."/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="256" y="416">
+  <object name="busy AI" type="friend" gid="105" x="288" y="480">
    <properties>
     <property name="message" value="The AI seems too busy to respond."/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="192" y="416">
+  <object name="busy AI" type="friend" gid="105" x="448" y="384">
    <properties>
     <property name="modes" value="updown"/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="192" y="320">
-   <properties>
-    <property name="modes" value="updown"/>
-   </properties>
-  </object>
-  <object gid="49" x="192" y="512"/>
+  <object gid="49" x="224" y="512"/>
   <object gid="43" x="288" y="512"/>
   <object gid="41" x="160" y="448"/>
   <object gid="41" x="480" y="480"/>
-  <object gid="41" x="160" y="288"/>
-  <object gid="49" x="448" y="256"/>
+  <object gid="41" x="160" y="320"/>
+  <object gid="49" x="480" y="416"/>
   <object name="entry door" type="door" gid="37" x="160" y="128">
    <properties>
     <property name="on finger" value="transmute=40"/>
@@ -167,7 +158,14 @@
     <property name="on finger" value="give=fingers once=entry door"/>
    </properties>
   </object>
-  <object gid="43" x="32" y="128"/>
-  <object gid="43" x="64" y="128"/>
+  <object gid="85" x="32" y="128"/>
+  <object gid="86" x="192" y="64"/>
+  <object gid="87" x="320" y="64"/>
+  <object gid="85" x="448" y="320"/>
+  <object gid="87" x="448" y="448"/>
+  <object gid="88" x="352" y="480"/>
+  <object gid="86" x="192" y="480"/>
+  <object gid="87" x="416" y="288"/>
+  <object gid="85" x="192" y="288"/>
  </objectgroup>
 </map>
