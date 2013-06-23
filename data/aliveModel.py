@@ -444,20 +444,20 @@ class GameEngine(object):
         Marks any other objects within the player characters range as seen.
         """
 
-        RANGE = 3
+        RANGE = 6
         px, py = (self.player.x, self.player.y)
         # store the level seen matrix
-        matrix = self.level.matrix['seen']
+        seen_mx = self.level.matrix['seen']
         # store the level blocked matrix
-        blocked_matrix = self.level.matrix['block']
+        blocked_mx = self.level.matrix['block']
         # store the map width and height
-        w, h = (len(matrix), len(matrix[0]))
+        w, h = (len(seen_mx), len(seen_mx[0]))
 
         # reset any in-view tiles as "seen"
         for y in range(0, h):
             for x in range(0, w):
                 # set to 1 (seen) if it is 2 (in view)
-                matrix[x][y] = matrix[x][y] == 2 and 1 or matrix[x][y]
+                seen_mx[x][y] = seen_mx[x][y] == 2 and 1 or seen_mx[x][y]
                 # same for objects who were in range
                 objects = self.get_object_by_xy((x, y))
                 for obj in objects:
@@ -478,10 +478,10 @@ class GameEngine(object):
 
                     # test if we also have line of sight to this position
                     if (dist <= 1.5 or
-                        rlhelper.line_of_sight(blocked_matrix, px, py, x, y)):
+                        rlhelper.line_of_sight(blocked_mx, px, py, x, y)):
 
                         # mark this matrix tile as in view
-                        matrix[x][y] = 2
+                        seen_mx[x][y] = 2
 
                         # and any objects too
                         objects = self.get_object_by_xy((x, y))
