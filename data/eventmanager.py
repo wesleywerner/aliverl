@@ -249,7 +249,7 @@ class DebugEvent(Event):
         self.request_type = request_type
 
     def __str__(self):
-        return self.request_type
+        return 'debug command: ' + self.request_type
 
 
 class EventManager(object):
