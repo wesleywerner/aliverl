@@ -240,6 +240,18 @@ class CrashEvent(Event):
         return str(self.name)
 
 
+class DebugEvent(Event):
+    """
+    Represents a Debug request event.
+    """
+
+    def __init__(self, request_type):
+        self.request_type = request_type
+
+    def __str__(self):
+        return self.request_type
+
+
 class EventManager(object):
     """
     We coordinate communication between the Model, View, and Controller.
