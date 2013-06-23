@@ -1,6 +1,4 @@
 * need a view method to draw all animations in a png
-* in progress: model blocked matrix needs updating on object_move. currently the tile_blocks() still loops through those.
-* change all calls from xy parameters to x, y
 * trigger events after x turns:
   * process triggers from a list
 
