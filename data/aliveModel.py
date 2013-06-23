@@ -281,12 +281,12 @@ class GameEngine(object):
 
         # so let us take care of some turn stuff:
         self.turn += 1
-        # update what we can see
-        self.look_around()
         # heal turn for player and AI
         self.heal_turn()
         # move turn for AI
         self.ai_movement_turn()
+        # update what we can see
+        self.look_around()
         # update scent trail
         p = self.player.properties
         p['trail'].insert(0, (self.player.x, self.player.y))
