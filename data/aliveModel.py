@@ -312,11 +312,12 @@ class GameEngine(object):
         if not self.gamerunning:
             return False
 
-        newx, newy = (character.x + direction[0],
+        old_x, old_y = (character.x, character.y)
+        new_x, new_y = (character.x + direction[0],
                       character.y + direction[1])
-        if not self.location_inside_map(newx, newy):
+        if not self.location_inside_map(new_x, new_y):
             return False
-        colliders = self.get_object_by_xy((newx, newy))
+        colliders = self.get_object_by_xy((new_x, new_y))
 
         # only player can activate object triggers
         if character is self.player:
@@ -336,13 +337,19 @@ class GameEngine(object):
                 return False
 
         # tile collisions
-        if self.tile_is_solid((newx, newy)):
+        if self.tile_is_solid((new_x, new_y)):
             return False
 
         # accept movement
-        character.x, character.y = (newx, newy)
-        character.px, character.py = (newx * self.level.tmx.tile_width,
-                                      newy * self.level.tmx.tile_height)
+        character.x, character.y = (new_x, new_y)
+        character.px, character.py = (new_x * self.level.tmx.tile_width,
+                                      new_y * self.level.tmx.tile_height)
+
+        # update the level block matrix with this tile's old and new positions
+        if character is not self.player:
+            matrix = self.level.matrix['block']
+            matrix[old_x][old_y] = 0
+            matrix[new_x][new_y] = self.story.tile_blocks(character.gid)
 
         # notify the view to update it's sprite positions
         self.evManager.Post(CharacterMovedEvent(character, direction))
@@ -760,7 +767,7 @@ class GameLevel(object):
         self.matrix = {}
         w = self.tmx.width
         h = self.tmx.height
-        # store a matrix of tiles that block (for line of sight checks)
+        # store a matrix of tiles that block (for los and collision tests)
         self.matrix['block'] = rlhelper.make_matrix(w, h, 0)
         # and a matrix of tiles seen (it update as the player moves around)
         self.matrix['seen'] = rlhelper.make_matrix(w, h, 0)
