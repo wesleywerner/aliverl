@@ -11,8 +11,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
-text = (128, 128, 128)
-player = (0, 255, 0)
+text = (0, 128, 0)
+player = (0, 128, 128)
 black = (0, 0, 0)
 white = (255, 255, 255)
 blue = (0, 0, 255)
