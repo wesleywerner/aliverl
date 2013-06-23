@@ -371,16 +371,7 @@ class GameEngine(object):
         Returns if the tile at (x, y) blocks:
         """
 
-        for layer in self.level.tmx.tilelayers:
-            gid = layer.at((xy[0], xy[1]))
-            if self.story.tile_blocks(gid):
-                trace.write('Tile gid %s is solid and blocks us' % gid)
-                return True
-        # test objects too
-        objects = self.get_object_by_xy(xy)
-        for obj in objects:
-            if self.story.tile_blocks(obj.gid):
-                return True
+        return self.level.matrix['block'][xy[0]][xy[1]]
 
     def ai_movement_turn(self):
         """
