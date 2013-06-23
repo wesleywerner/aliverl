@@ -645,7 +645,8 @@ class GraphicalView(object):
         This calculates the positioning then calls create_floating_tip_at_xy.
         """
 
-        if self.messages[-1] != message:
+        # allow the same message to popup again and again
+        if True: #or self.messages[-1] != message:
             self.messages.extend(self.wrap_text(message, 30))
             # avoid overlapping recent messages
             self.last_tip_pos += 14
