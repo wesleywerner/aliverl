@@ -5,7 +5,7 @@
  </tileset>
  <layer name="walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJyNkksOwjAMRF0gC9SyqERvwKL3vwkFKrXAXbBVR4wmH4j0lCb2+Nd0IrIjGofPDZxtPymtpMvuRjiPAPsdKfdFCZmYrIt7Lj/nqek5v7H3HRfahx/5c3elOqJvL9s8a/pOtvlEAvnGb+wJ6z9QH6jv5Tt3u7sq7wqTpP3jXOdKjMnt3H+ce3D77DaL83KdgK2UfyT9Q7kp9z/1LekX5amsFb3VP5B+KfS/FvJjHSUtxjC/s6Tvl/9zCav3A/FKNM8=
+   eJylkk0OgkAMhesPCzOwQOUGLOb+NxGVBNS72CZt8igUSZzky0Db1+kbKIloD+yAKGZ7xSSarrPGMsQygCst6CmILeVNXzMXd95W/Ymm/oWD7rgw3/w5P9ZZrXiofuhLpgUKV2vP6AnnPzofqK/13frcmM8KHc394732Kz06zXv/du+F5nvNSZ+36ghy0fnZ6Z/MnXls1CenH5gXM67oZf7G6YfA/xicj3NEWuwhdVea/7/+O0fIvF8u5TTi
   </data>
  </layer>
  <layer name="map doodads" width="16" height="16">
@@ -21,41 +21,43 @@
   </object>
  </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="384" y="352"/>
+  <object name="player" type="player" gid="97" x="32" y="64"/>
   <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
     <property name="on finger 1" value="transmute=69"/>
    </properties>
   </object>
   <object gid="65" x="288" y="160"/>
-  <object name="entry door" type="door" gid="37" x="416" y="64">
+  <object name="passage door" type="door" gid="37" x="416" y="64">
    <properties>
     <property name="on finger" value="transmute=37,40"/>
    </properties>
   </object>
   <object name="door switch" type="term" gid="45" x="384" y="32">
    <properties>
-    <property name="fingers" value="entry door"/>
+    <property name="fingers" value="passage door"/>
    </properties>
   </object>
-  <object name="welcome term" type="term" gid="55" x="160" y="64">
+  <object name="welcome term" type="term" gid="55" x="128" y="64">
    <properties>
     <property name="dialogue" value="act 1 request reboot"/>
+    <property name="fingers once" value="entry touchplate"/>
    </properties>
   </object>
-  <object name="gate" type="door" gid="33" x="256" y="256">
+  <object name="node gate" type="door" gid="33" x="256" y="256">
    <properties>
     <property name="on finger" value="transmute=33,36"/>
    </properties>
   </object>
   <object name="broken term" type="term" gid="41" x="256" y="32"/>
-  <object name="broken term" type="term" gid="41" x="224" y="256">
+  <object name="locked passage term" type="term" gid="41" x="224" y="256">
    <properties>
     <property name="message once" value="terminal locked"/>
-    <property name="on finger 1" value="give=fingers=gate"/>
+    <property name="on finger 1" value="give=fingers=node gate"/>
+    <property name="on finger 2" value="transmute=45"/>
    </properties>
   </object>
-  <object name="gate" type="door" gid="33" x="288" y="256">
+  <object name="node gate" type="door" gid="33" x="288" y="256">
    <properties>
     <property name="on finger" value="transmute=33,36"/>
    </properties>
@@ -63,22 +65,17 @@
   <object name="unlocker" type="term" gid="55" x="160" y="224">
    <properties>
     <property name="dialogue once" value="act 1 unlock terminal"/>
-    <property name="fingers once" value="broken term"/>
+    <property name="fingers once" value="locked passage term"/>
    </properties>
   </object>
   <object gid="65" x="256" y="160"/>
-  <object name="touchplate" gid="8" x="96" y="64">
-   <properties>
-    <property name="message once" value="You see a message blink on the terminal ahead."/>
-   </properties>
-  </object>
   <object gid="73" x="192" y="64"/>
   <object gid="73" x="320" y="64"/>
   <object gid="73" x="352" y="64"/>
   <object gid="73" x="288" y="64"/>
   <object gid="81" x="320" y="384"/>
   <object gid="43" x="224" y="32"/>
-  <object gid="49" x="0" y="128"/>
+  <object gid="49" x="0" y="96"/>
   <object name="central console" type="term" gid="43" x="320" y="416">
    <properties>
     <property name="on finger 1" value="transmute=47"/>
@@ -157,6 +154,20 @@
   <object gid="41" x="160" y="448"/>
   <object gid="41" x="480" y="480"/>
   <object gid="41" x="160" y="288"/>
-  <object gid="49" x="192" y="256"/>
+  <object gid="49" x="448" y="256"/>
+  <object name="entry door" type="door" gid="37" x="160" y="128">
+   <properties>
+    <property name="on finger" value="transmute=40"/>
+   </properties>
+  </object>
+  <object gid="52" x="0" y="64"/>
+  <object gid="49" x="96" y="32"/>
+  <object name="entry touchplate" gid="8" x="128" y="128">
+   <properties>
+    <property name="on finger" value="give=fingers once=entry door"/>
+   </properties>
+  </object>
+  <object gid="43" x="32" y="128"/>
+  <object gid="43" x="64" y="128"/>
  </objectgroup>
 </map>
