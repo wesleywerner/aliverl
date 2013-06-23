@@ -90,6 +90,8 @@ class KeyboardMouse(object):
             self.evManager.Post(StateChangeEvent(aliveModel.STATE_HELP))
         elif event.key in movement.keys():
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
+        elif event.key == pygame.K_F2:
+            self.evManager.Post(DebugEvent('animation cheatsheet'))
         else:
             inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
