@@ -275,7 +275,8 @@ class GameEngine(object):
         """
 
         if not self.move_object(self.player, direction):
-            return False
+            pass
+            #return False
         # at this point the player made a successful move.
         # her x-y is up to date with the new position.
 
