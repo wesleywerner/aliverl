@@ -1,11 +1,11 @@
 # level one
 
-* You are a bot code working in a node. Wandering in your small space, you see a terminal blink to life with a waiting message.
-* The message reads: the server crashed, you are tasked to find the node control and reboot the server. A door opens and you venture out.
+* You are wandering in your small space when you see a terminal blink to life with a waiting message.
+* The message reads: the server crashed, you are ordered to find the node control and reboot the server. A door opens and you venture out.
 * You pass some vacuum tubes and an AI too busy with it's work to notice you.
 * Entering the central node room, you unlock the console and login, and issue the server reboot command.
-* The terminal says you have mail as it shuts down, but can't read it in the node that is now rebooting.
-* You tell yourself to go to the next node to be able to read your mail. Off you go.
+* The terminal says you have mail as it shuts down.
+* You tell yourself to enter next node and read your mail. Off you go.
 
 # level two
 
