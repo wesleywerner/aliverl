@@ -89,6 +89,7 @@ class KeyboardMouse(object):
                     pygame.K_F2: 'animation cheatsheet',
                     pygame.K_F3: 'resurrect player',
                     pygame.K_F4: 'warp to next level',
+                    pygame.K_F5: 'clear fog',
                     }
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))

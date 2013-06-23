@@ -80,6 +80,8 @@ class GameEngine(object):
             self.combat_turn(event)
         elif isinstance(event, KillCharacterEvent):
             self.kill_object(event.character)
+        elif isinstance(event, DebugEvent):
+            self.debug_action(event)
         elif isinstance(event, CrashEvent):
             self.change_state(STATE_CRASH)
             error_message = str(traceback.format_exc())
@@ -714,10 +716,29 @@ class GameEngine(object):
         else:
             trace.write('dialogue "%s" not found in story definition' % (key))
 
+    def debug_action(self, event):
+        """
+        Perform some debugesque action.
+        These are considered cheating if you are not debugging ;)
+
+        """
+
+        if event.request_type == 'warp to next level':
+            self.warp_level()
+        elif event.request_type == 'resurrect player':
+            pass
+        elif event.request_type == 'clear fog':
+            self.level.matrix['seen'] = rlhelper.make_matrix(
+                self.level_width, self.level_height, 1)
+            for obj in self.objects:
+                obj.seen = True
+            self.look_around()
+            self.evManager.Post(PlayerMovedEvent())
+
     @property
     def tile_width(self):
         """
-        Quick acccess for the level tmx tile width
+        Quick access for the level tmx tile width
 
         """
 
@@ -727,12 +748,30 @@ class GameEngine(object):
     @property
     def tile_height(self):
         """
-        Quick acccess for the level tmx tile height
+        Quick access for the level tmx tile height
 
         """
 
         if self.level:
             return self.level.tmx.tile_height
+
+    @property
+    def level_width(self):
+        """
+        Quick access for the level width in tiles.
+
+        """
+
+        return self.level.tmx.width
+
+    @property
+    def level_height(self):
+        """
+        Quick access for the level height in tiles.
+
+        """
+
+        return self.level.tmx.height
 
 
 class GameLevel(object):
