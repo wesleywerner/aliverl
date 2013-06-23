@@ -55,6 +55,13 @@ class StoryData(object):
             if value.as_int('gid') == gid:
                 return value
 
+    def raw_animation_data(self):
+        """
+        Returns all animation data.
+        """
+
+        return self.conf['animations']
+
     def characters(self):
         """
         Return a list of character names as defined in the conf.
