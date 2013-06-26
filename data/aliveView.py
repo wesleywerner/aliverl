@@ -792,6 +792,11 @@ class GraphicalView(object):
         if py > y_max:
             self.viewport = self.viewport.move(0, A)
 
+        # if the player is not inside the viewport, center her.
+        # this may occur on level warps.
+        if not self.viewport.collidepoint(px, py):
+            self.viewport.center = (px, py)
+
         # snap to top-left edges
         if self.viewport.left < 0:
             self.viewport.left = 0
