@@ -57,8 +57,6 @@ class KeyboardMouse(object):
                         else:
                             # allow escaping from unhandled states
                             self.evManager.Post(StateChangeEvent(None))
-            elif isinstance(event, InitializeEvent):
-                pygame.key.set_repeat(250, 250)
         except:
             self.evManager.Post(CrashEvent())
 
