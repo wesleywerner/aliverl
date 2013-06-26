@@ -797,6 +797,11 @@ class GraphicalView(object):
             self.viewport.left = 0
         if self.viewport.top < 0:
             self.viewport.top = 0
+        # and the bottom-right edges
+        if self.viewport.right > tmx.width * tw:
+            self.viewport.right = tmx.width * tw
+        if self.viewport.bottom > tmx.height * th:
+            self.viewport.bottom = tmx.height * th
 
     def adjust_viewport(self, event):
         """
@@ -831,6 +836,7 @@ class GraphicalView(object):
             self.statsarea = pygame.Rect(200, 22, 400, 40)
             self.clock = pygame.time.Clock()
             self.allsprites = pygame.sprite.Group()
+            pygame.key.set_repeat(200, 150)
             # load resources
             self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
             self.largefont = pygame.font.Font('bitwise.ttf', 30)
