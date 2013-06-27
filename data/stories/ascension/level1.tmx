@@ -21,51 +21,51 @@
   </object>
  </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="192" y="224"/>
+  <object name="player" type="player" gid="97" x="32" y="64"/>
   <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
-    <property name="on finger 1" value="transmute=69"/>
+    <property name="pop me" value="@ontrigger @transmute 69"/>
    </properties>
   </object>
   <object gid="65" x="288" y="160"/>
   <object name="passage door" type="door" gid="37" x="416" y="64">
    <properties>
-    <property name="on finger" value="transmute=37,40"/>
+    <property name="open this door" value="@ontrigger @transmute @repeat 37, 40"/>
    </properties>
   </object>
   <object name="door switch" type="term" gid="45" x="384" y="32">
    <properties>
-    <property name="fingers" value="passage door"/>
+    <property name="open the door" value="@trigger @repeat passage door"/>
    </properties>
   </object>
   <object name="welcome term" type="term" gid="55" x="128" y="64">
    <properties>
-    <property name="dialogue" value="act 1 request reboot"/>
-    <property name="fingers once" value="entry touchplate"/>
+    <property name="dialogue" value="@dialogue @repeat act 1 request reboot"/>
+    <property name="enable entry door touchplate" value="@trigger entry touchplate"/>
    </properties>
   </object>
   <object name="node gate" type="door" gid="33" x="256" y="256">
    <properties>
-    <property name="on finger" value="transmute=33,36"/>
+    <property name="rotate this door" value="@ontrigger @transmute @repeat 33,36"/>
    </properties>
   </object>
   <object name="broken term" type="term" gid="41" x="256" y="32"/>
   <object name="locked passage term" type="term" gid="41" x="224" y="256">
    <properties>
-    <property name="message once" value="terminal locked"/>
-    <property name="on finger 1" value="give=fingers=node gate"/>
-    <property name="on finger 2" value="transmute=45"/>
+    <property name="change tile" value="@ontrigger @transmute 45"/>
+    <property name="locked message" value="@message console locked"/>
+    <property name="open the gates" value="@ontrigger @give %trigger %repeat node gate"/>
    </properties>
   </object>
   <object name="node gate" type="door" gid="33" x="288" y="256">
    <properties>
-    <property name="on finger" value="transmute=33,36"/>
+    <property name="rotate this door" value="@ontrigger @transmute @repeat 33,36"/>
    </properties>
   </object>
   <object name="unlocker" type="term" gid="55" x="160" y="224">
    <properties>
-    <property name="dialogue once" value="act 1 unlock terminal"/>
-    <property name="fingers once" value="locked passage term"/>
+    <property name="show dialogue" value="@dialogue act 1 unlock terminal"/>
+    <property name="unlock console" value="@trigger locked passage term"/>
    </properties>
   </object>
   <object gid="65" x="256" y="160"/>
@@ -85,8 +85,8 @@
   <object gid="65" x="224" y="160"/>
   <object name="faulty term" type="term" gid="42" x="448" y="256">
    <properties>
-    <property name="fingers once" value="faulty cap"/>
-    <property name="message once" value="*pop*"/>
+    <property name="pop a cap" value="@trigger faulty cap"/>
+    <property name="pop message" value="@message *pop*"/>
    </properties>
   </object>
   <object name="unlock central control" type="term" gid="47" x="416" y="512">
@@ -148,14 +148,14 @@
   <object gid="49" x="480" y="416"/>
   <object name="entry door" type="door" gid="37" x="160" y="128">
    <properties>
-    <property name="on finger" value="transmute=40"/>
+    <property name="open this door" value="@ontrigger @transmute 40"/>
    </properties>
   </object>
   <object gid="52" x="0" y="64"/>
   <object gid="49" x="96" y="32"/>
   <object name="entry touchplate" gid="8" x="128" y="128">
    <properties>
-    <property name="on finger" value="give=fingers once=entry door"/>
+    <property name="open the door" value="@ontrigger @give %trigger entry door"/>
    </properties>
   </object>
   <object gid="85" x="32" y="128"/>
