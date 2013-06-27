@@ -13,118 +13,118 @@ Stories are campaigns the player can enjoy. They consist of multiple levels, cha
 **Story template**
 
 ````
-[ info ]
+    [ info ]
 
-# the title of this story
-title = cookie madness
+    # the title of this story
+    title = cookie madness
 
-# and some descriptive for this story
-description = the AI's bake some binary cookies
+    # and some descriptive for this story
+    description = the AI's bake some binary cookies
 
-[ levels ]
-# Define the levels that make up this story. The order they appear here is the
-# same order they will get played in. The name matches the map filename.
-# You can define as many levels here as your heart wishes.
+    [ levels ]
+    # Define the levels that make up this story. The order they appear here is the
+    # same order they will get played in. The name matches the map filename.
+    # You can define as many levels here as your heart wishes.
 
-    [[ level1.tmx ]]
-    # entry messages are shown as floating popups when you enter the level.
+        [[ level1.tmx ]]
+        # entry messages are shown as floating popups when you enter the level.
 
-    entry message = You smell cookies...
+        entry message = You smell cookies...
 
-[ blocking tiles ]
-# This is a list of GID's that will block any player or AI character from moving onto it.
-# This applies to both map tile layers, and object layers.
-# You can place them all on one line too, I like to separate them for easier reading.
+    [ blocking tiles ]
+    # This is a list of GID's that will block any player or AI character from moving onto it.
+    # This applies to both map tile layers, and object layers.
+    # You can place them all on one line too, I like to separate them for easier reading.
 
-walls = 1, 2, 3, 4
-doors = 33, 34, 35
-terminals = 41, 42, 43
-player = 97
-npcs = 105, 113
+    walls = 1, 2, 3, 4
+    doors = 33, 34, 35
+    terminals = 41, 42, 43
+    player = 97
+    npcs = 105, 113
 
-[ characters ]
-# Map objects that match these by name, will inherit the attributes defined here.
-# We can quickly build levels by simply giving map object one of these names.
-# The meaning of these values are explained below.
+    [ characters ]
+    # Map objects that match these by name, will inherit the attributes defined here.
+    # We can quickly build levels by simply giving map object one of these names.
+    # The meaning of these values are explained below.
 
-    [[ player ]]
-    attack = 1
-    health = 4
-    maxhealth = 4
-    healrate = 4
-    speed = 2
-    stealth = 0
-    mana = 0
-    maxmana = 5
-    manarate = 6
-    modes =
+        [[ player ]]
+        attack = 1
+        health = 4
+        maxhealth = 4
+        healrate = 4
+        speed = 2
+        stealth = 0
+        mana = 0
+        maxmana = 5
+        manarate = 6
+        modes =
 
-    [[ cookie thief ]]
-    attack = 0
-    health = 2
-    maxhealth = 2
-    healrate = 2
-    speed = 4
-    stealth = 0
-    mana = 5
-    maxmana = 5
-    manarate = 2
-    modes = random
+        [[ cookie thief ]]
+        attack = 0
+        health = 2
+        maxhealth = 2
+        healrate = 2
+        speed = 4
+        stealth = 0
+        mana = 5
+        maxmana = 5
+        manarate = 2
+        modes = random
 
-[ animations ]
-# This section tells the game engine which map objects to animate.
-# The names are not used and only for your benefit, and they must be unique.
-# The meaning of these values are explained below.
+    [ animations ]
+    # This section tells the game engine which map objects to animate.
+    # The names are not used and only for your benefit, and they must be unique.
+    # The meaning of these values are explained below.
 
-    [[ flashing blue terminal ]]
-    gid = 41
-    frames = 41, 42
-    fps = 0.2
-    loop = -1
+        [[ flashing blue terminal ]]
+        gid = 41
+        frames = 41, 42
+        fps = 0.2
+        loop = -1
 
-    [[ idle green terminal ]]
-    gid = 43
-    frames = 43, 44
-    fps = 0.3
-    loop = -1
+        [[ idle green terminal ]]
+        gid = 43
+        frames = 43, 44
+        fps = 0.3
+        loop = -1
 
-[ dialogue ]
-# When the player interacts with computer terminals (or any object with a certain
-# action associated with it), you can have dialogue appear to the player.
-# Keep in mind that all dialogue defined here is available across all levels in
-# your story. So to make things easier we name them accordingly.
+    [ dialogue ]
+    # When the player interacts with computer terminals (or any object with a certain
+    # action associated with it), you can have dialogue appear to the player.
+    # Keep in mind that all dialogue defined here is available across all levels in
+    # your story. So to make things easier we name them accordingly.
 
-    [[ act 1 access mainframe ]]
-    # I chose "act 1" for my first level dialogues, followed by a memorable action
-    # name (this same name will get assigned to a map object action).
-    # You may name it whatever you please.
+        [[ act 1 access mainframe ]]
+        # I chose "act 1" for my first level dialogues, followed by a memorable action
+        # name (this same name will get assigned to a map object action).
+        # You may name it whatever you please.
 
-        [[[ screen 1 ]]]
-        # Dialogues can have multiple screens too, shown one after the other
-        # as the user keys through them. Each screen can have a different
-        # font color. The type sets which image and effects are used in this
-        # screen. At the moment we only have 'story' and 'terminal', and they
-        # both look the same. the datas is the words you want to appear, tripple
-        # quoted so that they can span multiple lines.
-        type = story
-        color = text
-        datas = """
-                You mix the cookie batter, some of it spill on the floor.
-                """
+            [[[ screen 1 ]]]
+            # Dialogues can have multiple screens too, shown one after the other
+            # as the user keys through them. Each screen can have a different
+            # font color. The type sets which image and effects are used in this
+            # screen. At the moment we only have 'story' and 'terminal', and they
+            # both look the same. the datas is the words you want to appear, tripple
+            # quoted so that they can span multiple lines.
+            type = story
+            color = text
+            datas = """
+                    You mix the cookie batter, some of it spill on the floor.
+                    """
 
-        [[[ screen 2 ]]]
-        type = story
-        color = text
-        datas = """
-                You reach for a towel, but it is missing!
-                """
+            [[[ screen 2 ]]]
+            type = story
+            color = text
+            datas = """
+                    You reach for a towel, but it is missing!
+                    """
 
-        [[[ screen 3 ]]]
-        type = story
-        color = player
-        datas = """
-                Who stole my towel?!
-                """
+            [[[ screen 3 ]]]
+            type = story
+            color = player
+            datas = """
+                    Who stole my towel?!
+                    """
 ````
 
 # character stats explained
