@@ -702,9 +702,10 @@ class GameEngine(object):
                 delay_index = commands.index('@delay') + 1
                 try:
                     delay_value = int(commands[delay_index].strip('@'))
-                    turns = trig.get('delay', delay_value) - 1
-                    trig['delay'] = turns
+                    turns = trig.get('delay', delay_value)
+
                     if turns > 0:
+                        trig['delay'] = turns - 1
                         requeue.append(trig)
                         delay_skip = True
                 except IndexError:
