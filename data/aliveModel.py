@@ -575,15 +575,23 @@ class GameEngine(object):
         trace.write(('trigger %s%s' %
                     (obj.name, (direct) and (' directly') or (''))))
         for key in obj.properties.keys():
-            values = obj.properties[key].split(' ')
-            on_trigger = '@ontrigger' in values
-            if (direct and not on_trigger) or (not direct and on_trigger):
-                self.trigger_queue.append({
-                    'name': key,
-                    'obj': obj,
-                    'direct': direct,
-                    'values': obj.properties[key],
-                    })
+            trace.write('key is ' + key)
+            prop = obj.properties[key]
+            #FIX AI use properties to store their movement mode.
+            # move this to the object level?
+            if type(prop) is str:
+                values = prop.split(' ')
+                commands = [v for v in values if v.startswith('@')]
+                user_data = ' '.join([v for v in values if not v.startswith('@')])
+                on_trigger = '@ontrigger' in commands
+                if (direct and not on_trigger) or (not direct and on_trigger):
+                    self.trigger_queue.append({
+                        'name': key,
+                        'obj': obj,
+                        'direct': direct,
+                        'commands': commands,
+                        'user_data': user_data
+                        })
 
         #############################################
 
@@ -681,27 +689,24 @@ class GameEngine(object):
 
         """
 
-        trace.write('PROCESSING ' + ','.join([d['name'] for d in self.trigger_queue]))
+        #trace.write('PROCESSING ' + ','.join([d['name'] for d in self.trigger_queue]))
         requeue = []
         while self.trigger_queue:
             trig = self.trigger_queue.pop()
             name = trig['name']
             direct = trig['direct']
             obj = trig['obj']
-            values = trig['values'].split(' ')
-            commands = [v for v in values if v.startswith('@')]
-            user_data_raw = [v for v in values if not v.startswith('@')]
-            user_data = ' '.join(user_data_raw)
+            commands = trig['commands']
+            user_data = trig['user_data']
             delay_skip = False
             if '@delay' in commands:
-                turns = trig.get('delay', int(user_data_raw[0])) - 1
-                trace.write('turns is ' + str(turns))
+                delay_index = commands.index('@delay') + 1
+                delay_value = int(commands[delay_index].strip('@'))
+                turns = trig.get('delay', delay_value) - 1
                 trig['delay'] = turns
                 if turns > 0:
-                    trig['values'] = ' '.join(commands) + ' ' + str(turns) + user_data[1:]
                     requeue.append(trig)
                     delay_skip = True
-
             if not delay_skip:
                 if '@trigger' in commands and direct:
                     _object_list = self.get_object_by_name(user_data)
@@ -723,7 +728,6 @@ class GameEngine(object):
                 if not '@repeat' in commands:
                     trace.write('remove interaction for %s' % obj.name)
                     del obj.properties[name]
-        trace.write(str(requeue))
         self.trigger_queue = requeue
 
     def transmute_object(self, obj, gid_list):
