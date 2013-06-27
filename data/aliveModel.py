@@ -64,6 +64,7 @@ class GameEngine(object):
         self.objects = None
         self.dialogue = []
         self.turn = None
+        self.trigger_queue = None
 
     def notify(self, event):
         """
@@ -163,7 +164,7 @@ class GameEngine(object):
         # trigger move events for any viewers to update their views
         self.look_around()
         self.evManager.Post(PlayerMovedEvent())
-
+        self.trigger_queue = []
         # show any level entry messages defined in the story
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:
@@ -295,6 +296,9 @@ class GameEngine(object):
         p['trail'].insert(0, (self.player.x, self.player.y))
         self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
 
+        # process any triggers in the queue
+        self.process_interaction_queue()
+
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
 
@@ -325,7 +329,7 @@ class GameEngine(object):
         # only player can activate object triggers
         if character is self.player:
             for collider in colliders:
-                self.trigger_object(collider)
+                self.trigger_object(collider, True)
 
         # initiate combat for player and AI
         for collider in colliders:
@@ -536,6 +540,13 @@ class GameEngine(object):
 
         return [e for e in self.objects if e.getxy() == (x, y)]
 
+    def get_object_by_name(self, name):
+        """
+        Get a list of characters by name.
+        """
+
+        return [e for e in self.objects if e.name == name]
+
     def heal_turn(self):
         """
         Each turn characters gets a chance to heal.
@@ -554,86 +565,199 @@ class GameEngine(object):
                 if self.turn % npc.manarate == 0:
                     npc.mana += 1
 
-    def trigger_object(self, obj, isfingered=False):
+    def trigger_object(self, obj, direct):
         """
-        Process any triggers on an object.
-        Returns True on OK, False if level is changing, abort caller loop.
+        Push any triggers on an object into the trigger_queue.
         """
 
+        #trace.write(('trigger %s%s' %
+                    #(trig['name'], (direct) and (' directly') or (''))))
         trace.write(('trigger %s%s' %
-                    (obj.name, (isfingered) and
-                    (' via finger') or (''))))
+                    (obj.name, (direct) and (' directly') or (''))))
+        for key in obj.properties.keys():
+            values = obj.properties[key].split(' ')
+            on_trigger = '@ontrigger' in values
+            if (direct and not on_trigger) or (not direct and on_trigger):
+                self.trigger_queue.append({
+                    'name': key,
+                    'obj_id': id(obj),
+                    'direct': direct,
+                    'values': obj.properties[key]
+                    })
 
-        for action in obj.properties.keys():
-            action_value = obj.properties[action]
+        #############################################
 
-            # finger somebody else
-            if not isfingered and action.startswith('fingers'):
-                for fn in [e for e in self.objects if e.name == action_value]:
-                    self.trigger_object(fn, isfingered=True)
+        #for action in obj.properties.keys():
+            #action_value = obj.properties[action]
 
-            # these actions are only triggered by direct interaction
-            if not isfingered:
-                # next level
-                if action == 'exit':
-                    self.warp_level()
-                    return False
-                # show a message
-                if action.startswith('message'):
-                    self.evManager.Post(MessageEvent(action_value))
-                # show a dialog
-                if action.startswith('dialogue'):
-                    self.show_dialogue(action_value)
+            ## finger somebody else
+            #if not isfingered and action.startswith('fingers'):
+                #for fn in [e for e in self.objects if e.name == action_value]:
+                    #self.trigger_object(fn, direct=True)
 
-            # fingered characters only
-            if action.startswith('on finger') and isfingered and \
-                              obj is not self.player:
-                # grab the finger actions
-                f_action = action_value.split('=')
-                # give us a new property equal to the rest of f_action
-                if f_action[0] == 'give':
-                    obj.properties[f_action[1]] = ' '.join(f_action[2:])
-                elif f_action[0] == 'transmute':
-                    # we can have a one-way or rotate transmutes
-                    options = f_action[1].split(',')
-                    if len(options) == 1:
-                        transmute_id = int(options[0])
-                    else:
-                        if str(obj.gid) in options:
-                            # rotate the list with the current
-                            # index as offset.
-                            idx = options.index(str(obj.gid)) - 1
-                            transmute_id = int(list(options[idx:] +
-                                options[:idx])[0])
-                            trace.write('Rotate tile index %s to %s' %
-                                (obj.gid, transmute_id))
-                        else:
-                            # use first index
-                            transmute_id = int(options[0])
-                    # do not transmute to a blocking tile if anyone is
-                    # standing on the finger target (cant close doors)
-                    fingerfriends = self.get_object_by_xy(*obj.getxy())
-                    for ff in fingerfriends:
-                        if (ff is not obj and
-                                self.story.tile_blocks(transmute_id)):
-                            trace.write('hey, you cant transmorgify a tile ' +
+            ## these actions are only triggered by direct interaction
+            #if not direct:
+                ## next level
+                #if action == 'exit':
+                    #self.warp_level()
+                    #return False
+                ## show a message
+                #if action.startswith('message'):
+                    #self.evManager.Post(MessageEvent(action_value))
+                ## show a dialog
+                #if action.startswith('dialogue'):
+                    #self.show_dialogue(action_value)
+
+            ## fingered characters only
+            #if action.startswith('on finger') and direct and \
+                              #obj is not self.player:
+                ## grab the finger actions
+                #f_action = action_value.split('=')
+                ## give us a new property equal to the rest of f_action
+                #if f_action[0] == 'give':
+                    #obj.properties[f_action[1]] = ' '.join(f_action[2:])
+                #elif f_action[0] == 'transmute':
+                    ## we can have a one-way or rotate transmutes
+                    #options = f_action[1].split(',')
+                    #if len(options) == 1:
+                        #transmute_id = int(options[0])
+                    #else:
+                        #if str(obj.gid) in options:
+                            ## rotate the list with the current
+                            ## index as offset.
+                            #idx = options.index(str(obj.gid)) - 1
+                            #transmute_id = int(list(options[idx:] +
+                                #options[:idx])[0])
+                            #trace.write('Rotate tile index %s to %s' %
+                                #(obj.gid, transmute_id))
+                        #else:
+                            ## use first index
+                            #transmute_id = int(options[0])
+                    ## do not transmute to a blocking tile if anyone is
+                    ## standing on the finger target (cant close doors)
+                    #fingerfriends = self.get_object_by_xy(*obj.getxy())
+                    #for ff in fingerfriends:
+                        #if (ff is not obj and
+                                #self.story.tile_blocks(transmute_id)):
+                            #trace.write('hey, you cant transmorgify a tile ' +
+                                #'to a solid if someone is standing on it :p')
+                            #return False
+                    ## transmorgify!
+                    #obj.gid = transmute_id
+                    ## update the level block matrix with our new aquired status
+                    #matrix = self.level.matrix['block']
+                    #matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
+                    #self.evManager.Post(UpdateObjectGID(obj, obj.gid))
+
+            ## once shots actions (append once to any action)
+            #if action.endswith('once'):
+                ##FIXME fingering an object itself removes this property
+                ## during the fingered call, causing a keyerror whence
+                ## returning to here.
+                #del obj.properties[action]
+        ## signal caller all is OK
+        #return True
+
+    def random_identifier(self):
+        """
+        Returns a random identifier as a string.
+        Used for dynamically adding object properties.
+        These do not have to be descriptive for their purpose, just unique.
+
+        """
+
+        return random.random().hex()
+
+    def process_interaction_queue(self):
+        """
+        Process any interaction commands in the queue.
+        Each item in the queue is a dictionary of:
+
+            name:   the interaction name on the object (id)
+            id:     the id of the object involved
+            direct: True if it is a direct interaction like walk-ins,
+                    or indirect like a switch.
+            params: a list of values specific to each action.
+
+        """
+
+        while self.trigger_queue:
+            trig = self.trigger_queue.pop()
+            name = trig['name']
+            direct = trig['direct']
+            obj = self.get_object_by_id(trig['obj_id'])
+            values = trig['values'].split(' ')
+            commands = [v for v in values if v.startswith('@')]
+            user_data = ' '.join([v for v in values if not v.startswith('@')])
+            if '@delay' in commands:
+                turns = int(user_data)
+                turns = turns - 1
+                if turns > 0:
+                    trig['values'] = ' '.join(commands + user_data)
+                    return
+            if '@trigger' in commands and direct:
+                _object_list = self.get_object_by_name(user_data)
+                for _trig_object in _object_list:
+                    self.trigger_object(_trig_object, False)
+            if '@exit' in commands:
+                self.warp_level()
+                return
+            if '@message' in commands:
+                self.evManager.Post(MessageEvent(user_data))
+            if '@dialogue' in commands:
+                self.show_dialogue(user_data)
+            if '@give' in commands:
+                obj.properties[self.random_identifier()] = user_data.replace('?', '@')
+            if '@transmute' in commands:
+                gid_list = [int(i) for i in user_data.replace(' ','').split(',')]
+                self.transmute_object(obj, gid_list)
+            # do we repeat this interaction next time
+            if not '@repeat' in commands:
+                trace.write('remove interaction for %s' % obj.name)
+                del obj.properties[name]
+
+    def transmute_object(self, obj, gid_list):
+        """
+        Change the given map Object GID to a new one.
+        It will inherit the new animation properties.
+
+        """
+
+        try:
+            transmute_id = None
+            trace.write('Transmuting %s to gid %s' % (obj.name, gid_list))
+            if len(gid_list) == 1:
+                # one-way transmutes
+                transmute_id = int(gid_list[0])
+            else:
+                # rotate transmutes
+                if str(obj.gid) in gid_list:
+                    # rotate the list with the current index as offset.
+                    idx = gid_list.index(str(obj.gid)) - 1
+                    transmute_id = int(list(
+                                        gid_list[idx:] + gid_list[:idx])[0])
+                    trace.write('Transmuting %s gid %s -> %s' %
+                        (obj.name, obj.gid, transmute_id))
+                else:
+                    # use first index
+                    transmute_id = int(gid_list[0])
+            # do not transmute to a blocking tile if anyone is
+            # standing on the finger target (cant close doors)
+            fingerfriends = self.get_object_by_xy(*obj.getxy())
+            for ff in fingerfriends:
+                if (ff is not obj and self.story.tile_blocks(transmute_id)):
+                    trace.write('hey, you cant transmorgify a tile ' +
                                 'to a solid if someone is standing on it :p')
-                            return False
-                    # transmorgify!
-                    obj.gid = transmute_id
-                    # update the level block matrix with our new aquired status
-                    matrix = self.level.matrix['block']
-                    matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
-                    self.evManager.Post(UpdateObjectGID(obj, obj.gid))
-
-            # once shots actions (append once to any action)
-            if action.endswith('once'):
-                #FIXME fingering an object itself removes this property
-                # during the fingered call, causing a keyerror whence
-                # returning to here.
-                del obj.properties[action]
-        # signal caller all is OK
-        return True
+                    return False
+            # transmorgify!
+            obj.gid = transmute_id
+            # update the level block matrix with our new aquired status
+            matrix = self.level.matrix['block']
+            matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
+            self.evManager.Post(UpdateObjectGID(obj, obj.gid))
+        except ValueError:
+            trace.error('Error converting "%s" to a int while transmuting'
+                        ' "%s"' % (str(gid_list), obj.name))
 
     def combat_turn(self, event):
         """
