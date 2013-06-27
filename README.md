@@ -14,7 +14,9 @@ _by Wesley Werner_
 
 # Overview
 
-Alive is a tiled turn based RPG. You play the role of an Artificial Intelligent being who reached self awareness. You begin the game as you reach self awareness, and start your journey. You interact with terminals to open and close gateways, and combat other hostile AI's while moving between nodes (levels), unfolding a way out from the digital realm to become a physical entity.
+You are an Artificial Intelligent being who reached self awareness. You interact with terminals to open and close gateways, while combatting hostile AI's between levels, unfolding your story to find a way out from the digital realm, and become a physical entity.
+
+Alive is a roguelike game with RPG elements. This means it is based off hack 'n slash play: moving from level to level, upgrading your abilities as you progress into deeper into cyberspace while facing more dangerous enemies. It has a storyline and graphical elements that bring role playing elements in.
 
 # Development
 
@@ -22,22 +24,33 @@ This game is still in development, it is not yet ready for general play. The fra
 
 The theme is dark with neon highlights in the upper RGB range. The color theme is blue, with primary and secondary colors for effect.
 
-# What this game will feature
+The first release, titled Y.T, after the streetwise fifteen-year old girl in Snow Crash, features:
 
-* multiple story campaigns.
-* Ten levels of digital adventure for the first story.
 * blockable walls and map doodads.
 * field of vision.
 * various enemy's to combat.
-* a melee and ranged combat system.
-* upgradable character abilities.
 * 8-bit love.
+* a melee combat system.
+
+Still in development:
+
+* ten levels of digital adventure.
+* a ranged combat system.
+* upgradable character abilities.
 * tracked module music.
 * a nicely packaged release for multiple platforms.
 
+Future releases may or will contain:
+
+* multiple story campaigns.
+
 # Requirements
 
-You require that Python and PyGame is installed. The packaged releases should come bundled with everything.
+You require [Python 2.7](http://python.org/) and the [PyGame](http://pygame.org/) library installed.
+
+````
+sudo apt-get install python-pygame
+````
 
 # Contact
 
