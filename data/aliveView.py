@@ -834,7 +834,7 @@ class GraphicalView(object):
             result = pygame.init()
             pygame.font.init()
             pygame.display.set_caption('Alive')
-            self.windowsize = pygame.Rect(0, 0, 800, 600)
+            self.windowsize = pygame.Rect(0, 0, 600, 600)
             self.viewport = pygame.Rect(0, 0, 512, 512)
             self.playarea = pygame.Rect((75, 66), self.viewport.size)
             self.screen = pygame.display.set_mode(self.windowsize.size)
