@@ -700,12 +700,15 @@ class GameEngine(object):
             delay_skip = False
             if '@delay' in commands:
                 delay_index = commands.index('@delay') + 1
-                delay_value = int(commands[delay_index].strip('@'))
-                turns = trig.get('delay', delay_value) - 1
-                trig['delay'] = turns
-                if turns > 0:
-                    requeue.append(trig)
-                    delay_skip = True
+                try:
+                    delay_value = int(commands[delay_index].strip('@'))
+                    turns = trig.get('delay', delay_value) - 1
+                    trig['delay'] = turns
+                    if turns > 0:
+                        requeue.append(trig)
+                        delay_skip = True
+                except IndexError:
+                    trace.error('There is no delay specified on %s' % obj.name)
             if not delay_skip:
                 if '@trigger' in commands and direct:
                     _object_list = self.get_object_by_name(user_data)
@@ -726,7 +729,12 @@ class GameEngine(object):
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
                     trace.write('remove interaction for %s' % obj.name)
-                    del obj.properties[name]
+                    if obj.properties.has_key(name):
+                        del obj.properties[name]
+                    else:
+                        trace.write(
+                            'Property %s on Object %s already deleted.' %
+                            (name, obj.name))
         self.trigger_queue = requeue
 
     def transmute_object(self, obj, gid_list):
