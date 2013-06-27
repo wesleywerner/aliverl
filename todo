@@ -1,4 +1,6 @@
-* need a view method to draw all animations in a png
+
+# RELEASE Y.T.
+
 * trigger events after x turns:
   * process triggers from a list
 
@@ -13,5 +15,7 @@
 * create the menu with story selection
 
 * save game state
+    This should be backwards compatible from older versions.
+    The configObj might be useful for this.
 
 * find music to play randomly from a playlist. remove from playlist once played.
