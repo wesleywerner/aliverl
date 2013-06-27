@@ -283,6 +283,9 @@ class GameEngine(object):
         # at this point the player made a successful move.
         # her x-y is up to date with the new position.
 
+        # process any triggers in the queue
+        self.process_interaction_queue()
+
         # so let us take care of some turn stuff:
         self.turn += 1
         # heal turn for player and AI
@@ -295,9 +298,6 @@ class GameEngine(object):
         p = self.player.properties
         p['trail'].insert(0, (self.player.x, self.player.y))
         self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
-
-        # process any triggers in the queue
-        self.process_interaction_queue()
 
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
@@ -580,9 +580,9 @@ class GameEngine(object):
             if (direct and not on_trigger) or (not direct and on_trigger):
                 self.trigger_queue.append({
                     'name': key,
-                    'obj_id': id(obj),
+                    'obj': obj,
                     'direct': direct,
-                    'values': obj.properties[key]
+                    'values': obj.properties[key],
                     })
 
         #############################################
@@ -681,40 +681,50 @@ class GameEngine(object):
 
         """
 
+        trace.write('PROCESSING ' + ','.join([d['name'] for d in self.trigger_queue]))
+        requeue = []
         while self.trigger_queue:
             trig = self.trigger_queue.pop()
             name = trig['name']
             direct = trig['direct']
-            obj = self.get_object_by_id(trig['obj_id'])
+            obj = trig['obj']
             values = trig['values'].split(' ')
             commands = [v for v in values if v.startswith('@')]
-            user_data = ' '.join([v for v in values if not v.startswith('@')])
+            user_data_raw = [v for v in values if not v.startswith('@')]
+            user_data = ' '.join(user_data_raw)
+            delay_skip = False
             if '@delay' in commands:
-                turns = int(user_data)
-                turns = turns - 1
+                turns = trig.get('delay', int(user_data_raw[0])) - 1
+                trace.write('turns is ' + str(turns))
+                trig['delay'] = turns
                 if turns > 0:
-                    trig['values'] = ' '.join(commands + user_data)
+                    trig['values'] = ' '.join(commands) + ' ' + str(turns) + user_data[1:]
+                    requeue.append(trig)
+                    delay_skip = True
+
+            if not delay_skip:
+                if '@trigger' in commands and direct:
+                    _object_list = self.get_object_by_name(user_data)
+                    for _trig_object in _object_list:
+                        self.trigger_object(_trig_object, False)
+                if '@exit' in commands:
+                    self.warp_level()
                     return
-            if '@trigger' in commands and direct:
-                _object_list = self.get_object_by_name(user_data)
-                for _trig_object in _object_list:
-                    self.trigger_object(_trig_object, False)
-            if '@exit' in commands:
-                self.warp_level()
-                return
-            if '@message' in commands:
-                self.evManager.Post(MessageEvent(user_data))
-            if '@dialogue' in commands:
-                self.show_dialogue(user_data)
-            if '@give' in commands:
-                obj.properties[self.random_identifier()] = user_data.replace('%', '@')
-            if '@transmute' in commands:
-                gid_list = [int(i) for i in user_data.replace(' ','').split(',')]
-                self.transmute_object(obj, gid_list)
-            # do we repeat this interaction next time
-            if not '@repeat' in commands:
-                trace.write('remove interaction for %s' % obj.name)
-                del obj.properties[name]
+                if '@message' in commands:
+                    self.evManager.Post(MessageEvent(user_data))
+                if '@dialogue' in commands:
+                    self.show_dialogue(user_data)
+                if '@give' in commands:
+                    obj.properties[self.random_identifier()] = user_data.replace('%', '@')
+                if '@transmute' in commands:
+                    gid_list = [int(i) for i in user_data.replace(' ','').split(',')]
+                    self.transmute_object(obj, gid_list)
+                # do we repeat this interaction next time
+                if not '@repeat' in commands:
+                    trace.write('remove interaction for %s' % obj.name)
+                    del obj.properties[name]
+        trace.write(str(requeue))
+        self.trigger_queue = requeue
 
     def transmute_object(self, obj, gid_list):
         """
