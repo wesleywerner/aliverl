@@ -222,63 +222,79 @@ _these are added via the Name-Value property list._
 
 ## Object Interactions
 
-Give map objects these properties to interact with the game. The actions match the start of the action name, you can add descriptive words after the name (like 'Foo'), you can't have two actions with the same name.
+Map objects can be interacted with in two ways: directly when the player walks into the object, or indirectly via a trigger. You define these interactions as custom properties for the map object in the map editor. The property name is descriptive only, and you can label it whatever suits you. The Value part is where the interaction command is defined.
 
-You may append an action name with the word 'once' for a one-time trigger. This applies to both walk-in actions and fingered actions.
+All commands begin with the @-symbol, and remainder text is put into a $user variable. The structure for a command is:
 
-Actions take the form of ** < action > **: _< value >_.
+    [@when] @command [@option] [$user]
 
-The GID mentioned is the numbered index of the tileset image.
+Optional commands are indicated by [].
 
-### Walk-in actions
+@when can be **any** of:
 
-_These trigger when bumping into an object._
+    @ontrigger
+        occurs when object is triggered indirectly, that is a player touching this object won't activate this trigger, but another object with a properly configured command will.
 
-* **message <foo once>**: _text_
-    print a message for the player.
+    @delay n
+        occurs after n turns.
 
-* **fingers <foo once>**: _target name_
-    process triggers on the named object.
-    objects with the same name will all get fingered.
-    fingered targets won't finger others (recursion prevention)
+@command can be **one** of:
 
-* **dialogue <foo once>**: _dialogue key_
-    show a game dialogue screen with the text defined with the key in story.py.
+    @message
+        display a game message stored in $user.
 
-* **exit**
-    exit for the next level.
+    @exit
+        warp to the next level.
 
-### Fingered target actions
+    @trigger
+        trigger all objects that match $user
 
-_These trigger objects being fingered._
+    @dialogue
+        display a story dialogue where the dialogue key matches $user.
 
-* on finger <foo once>: action
+    @give
+        give the containing object a new property equals $user.
+        note: prefix commands in $user with % instead of @.
 
-    * **give**: _newpropertyname=newpropertyvalue_
-        give this object a new property.
-    * **transmute**: _gid <,gid..n>_
-        change this object tile to another.
-        this affects it blocking characters and similar tests.
-        a comma list of GID's will rotate between each trigger (opening or closing doors).
+    @transmute
+        change this object tile to another by GID stored in $user.
+        this can be a single number one-way transmute, or a
+        comma separated list of GID's to rotate between each trigger
+        (assuming @repeat is specified).
 
-* **dialogue** _<foo once>_: dialogue key
-    show a dialog screen by key, as defined in the game story definition.
+@option can **any** of:
 
-### Examples
+    @repeat
+        repeat this interaction next time. by default commands only action once.
 
-Change a locked door tile to a non blockable open door tile.
+### Interaction Examples
 
-1. "switch actions":
-    * **fingers**: _locked door_
-    * **message**: _A secret door opens_
-1. "locked door actions"
-    * **on finger**: _transmute=2_
+A non-blocking transparent tile shows a game message as the player walks over it:
 
-Unlock a terminal with another, the former will then show a storyline when accessed.
+    @message @once You step through the portal
 
-1. "terminal 1 actions":
-    * **fingers**: _locked terminal_
-    * **message**: _The other terminal unlocks_
-1. "locked terminal actions":
-    * **on finger**: _give=dialogue=foo storyline_
+A blocking terminal tile opens a door object named "locked door":
 
+    @trigger locked door
+
+A blocking door tile changes to a non-blocking open door tile (GID 5) when triggered:
+
+    @ontrigger @transmute 5
+
+A wall switch repeatedly triggers a door on every interaction:
+
+    @trigger @repeat locked door
+
+And the door will repeatedly open and close itself by rotating between those two tiles:
+
+    @ontrigger @repeat @transmute 5, 4
+
+A more complex example: A computer shows story dialogue and unlocks a door, after which interacting with it only shows a message that the computer has locked.
+
+    @dialogue player reads email
+    @trigger locked door
+    @give %message %repeat this computer is now locked
+
+It is worth noting that the order of interactions is arbitrary, from the player perspective all actions happen at the same turn.
+
+Also noteworthy is that interactions triggered indirectly via @ontrigger ignore calling @trigger commands themselves. This is to prevent infinite recursion. For more on this, see Re
