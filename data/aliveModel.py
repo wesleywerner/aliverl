@@ -707,7 +707,7 @@ class GameEngine(object):
             if '@dialogue' in commands:
                 self.show_dialogue(user_data)
             if '@give' in commands:
-                obj.properties[self.random_identifier()] = user_data.replace('?', '@')
+                obj.properties[self.random_identifier()] = user_data.replace('%', '@')
             if '@transmute' in commands:
                 gid_list = [int(i) for i in user_data.replace(' ','').split(',')]
                 self.transmute_object(obj, gid_list)
