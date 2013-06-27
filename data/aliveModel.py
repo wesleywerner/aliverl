@@ -575,7 +575,6 @@ class GameEngine(object):
         trace.write(('trigger %s%s' %
                     (obj.name, (direct) and (' directly') or (''))))
         for key in obj.properties.keys():
-            trace.write('key is ' + key)
             prop = obj.properties[key]
             #FIX AI use properties to store their movement mode.
             # move this to the object level?
@@ -745,9 +744,9 @@ class GameEngine(object):
                 transmute_id = int(gid_list[0])
             else:
                 # rotate transmutes
-                if str(obj.gid) in gid_list:
+                if obj.gid in gid_list:
                     # rotate the list with the current index as offset.
-                    idx = gid_list.index(str(obj.gid)) - 1
+                    idx = gid_list.index(obj.gid) - 1
                     transmute_id = int(list(
                                         gid_list[idx:] + gid_list[:idx])[0])
                     trace.write('Transmuting %s gid %s -> %s' %
