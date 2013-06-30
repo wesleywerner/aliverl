@@ -72,11 +72,11 @@
   <object gid="81" x="320" y="384"/>
   <object gid="43" x="224" y="32"/>
   <object gid="49" x="0" y="96"/>
-  <object name="central console" type="term" gid="43" x="320" y="416">
+  <object name="cic terminal" type="term" gid="43" x="320" y="416">
    <properties>
     <property name="change to a green terminal" value="@ontrigger @transmute 47"/>
-    <property name="open that door" value="@ontrigger @give %trigger escape hatch"/>
-    <property name="reboot tip" value="@ontrigger @give %message %delay %2 *server reboots*"/>
+    <property name="open that door" value="@ontrigger @give %trigger %delay=5 escape hatch"/>
+    <property name="reboot tip" value="@ontrigger @give %message %delay=2 *server reboots*"/>
     <property name="show unlocking sequence" value="@ontrigger @give %dialogue act 1 reboot server"/>
    </properties>
   </object>
@@ -89,10 +89,10 @@
     <property name="pop message" value="@message *pop*"/>
    </properties>
   </object>
-  <object name="unlock central control" type="term" gid="47" x="416" y="512">
+  <object name="cic unlock switch" type="term" gid="47" x="416" y="512">
    <properties>
     <property name="unlock message" value="@message central console activated"/>
-    <property name="unlock that terminal" value="@trigger central console"/>
+    <property name="unlock that terminal" value="@trigger cic terminal"/>
    </properties>
   </object>
   <object name="escape hatch" type="door" gid="37" x="160" y="384">
