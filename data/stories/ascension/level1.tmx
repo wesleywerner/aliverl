@@ -102,7 +102,7 @@
   </object>
   <object name="busy AI" type="friend" gid="105" x="224" y="64">
    <properties>
-    <property name="message" value="The AI seems too busy to respond."/>
+    <property name="message" value="@message The AI seems too busy to respond."/>
    </properties>
   </object>
   <object name="busy AI" type="friend" gid="105" x="32" y="320">
@@ -122,12 +122,12 @@
   </object>
   <object name="busy AI" type="friend" gid="105" x="416" y="480">
    <properties>
-    <property name="message" value="The AI seems too busy to respond."/>
+    <property name="speed" value="1"/>
    </properties>
   </object>
   <object name="busy AI" type="friend" gid="105" x="288" y="480">
    <properties>
-    <property name="message" value="The AI seems too busy to respond."/>
+    <property name="message" value="@message The AI seems too busy to respond."/>
    </properties>
   </object>
   <object name="busy AI" type="friend" gid="105" x="448" y="384">
