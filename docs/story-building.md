@@ -235,7 +235,7 @@ Optional commands are indicated by [].
     @ontrigger
         occurs when object is triggered indirectly, that is a player touching this object won't activate this trigger, but another object with a properly configured command will.
 
-    @delay n
+    @delay=n
         occurs after n turns.
 
 @command can be **one** of:
