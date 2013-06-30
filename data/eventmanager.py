@@ -185,7 +185,7 @@ class MessageEvent(Event):
         self.fontcolor = fontcolor
 
     def __str__(self):
-        return self.message
+        return '"%s"' % self.message
 
 
 class DialogueEvent(Event):
