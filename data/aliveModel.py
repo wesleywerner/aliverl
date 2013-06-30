@@ -572,7 +572,7 @@ class GameEngine(object):
 
         #trace.write(('trigger %s%s' %
                     #(trig['name'], (direct) and (' directly') or (''))))
-        trace.write(('trigger %s%s' %
+        trace.write(('trigger "%s"%s' %
                     (obj.name, (direct) and (' directly') or (' indirctly'))))
         for key in obj.properties.keys():
             prop = obj.properties[key]
@@ -600,7 +600,7 @@ class GameEngine(object):
                         'user_data': user_data,
                         })
 
-    def random_identifier(self):
+    def random_identifier(self, prefix=''):
         """
         Returns a random identifier as a string.
         Used for dynamically adding object properties.
@@ -608,7 +608,7 @@ class GameEngine(object):
 
         """
 
-        return random.random().hex()
+        return '%s_%x' % (prefix, random.randint(0, 1000))
 
     def process_interaction_queue(self):
         """
@@ -633,14 +633,17 @@ class GameEngine(object):
             commands = trig['commands']
             user_data = trig['user_data']
             delay = trig['delay']
-            trace.write('interaction %s delay %s' % (name, delay))
             if delay > 0:
+                trace.write('interaction "%s" delayed %s turn(s)' %
+                    (name, delay))
                 trig['delay'] = delay - 1
                 requeue.append(trig)
             else:
                 if '@trigger' in commands and direct:
                     _object_list = self.get_object_by_name(user_data)
                     for _trig_object in _object_list:
+                        trace.write('"%s" triggers another object:' %
+                            (obj.name))
                         self.trigger_object(_trig_object, False)
                 if '@exit' in commands:
                     self.warp_level()
@@ -650,13 +653,16 @@ class GameEngine(object):
                 if '@dialogue' in commands:
                     self.show_dialogue(user_data)
                 if '@give' in commands:
-                    obj.properties[self.random_identifier()] = user_data.replace('%', '@')
+                    trace.write('giving "%s" interaction "%s"' %
+                        (obj.name, name))
+                    obj.properties[self.random_identifier(obj.name)] = (
+                        user_data.replace('%', '@'))
                 if '@transmute' in commands:
                     gid_list = [int(i) for i in user_data.replace(' ','').split(',')]
                     self.transmute_object(obj, gid_list)
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
-                    trace.write('remove interaction for %s' % obj.name)
+                    trace.write('kill interaction "%s" on "%s"' % (name, obj.name))
                     if obj.properties.has_key(name):
                         del obj.properties[name]
                     else:
