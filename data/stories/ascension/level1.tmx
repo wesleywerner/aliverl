@@ -5,12 +5,12 @@
  </tileset>
  <layer name="walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJydUkEOgkAMrCgHs3jAyA888P+fiEoi0b/YjW0ydGlRm0wWmE7bKdsQUQXYCKoAyh8YieZxXPjmRXJy1/QJzqXc/gf9nkp/WzkxkO9W+v/jv6XPPiN9wzgDapOrz+gJ598ZH6hv5V3rXBivAAOV/nGvY1BjEN76173Xwo/C5TpP0RFwXv/e6O+MK+P2pT4Z/UPmngJ9nr8zetVZTE5/nMPTYo2cd6Ly/tr/7CHP+waKNDQk
+   eJylUkkOgCAMrNvBAAeM/MCD/3+hNtKkFiiITSZFmaHTggWAkWGIGBXQvrth4B1b5l8pTIFb0xuWc9zzg36FtL8p5oOB74ef/jmPuB6eeWp6Kzwtgktr7InuiALXs+iD6338pnNqM5T+ef0ePdanuWMOJVFD/Zbamh7n51K6qkf//F30zE/6aNHvkL5fec8loN8LywME1g==
   </data>
  </layer>
  <layer name="map doodads" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFlACTgXYAEjAe4fYbUqjfiCquIA0MdPoBAN7jATI=
+   eJxjYBgFlACTgXYAEjCmolkXgfguHnyJgP3X8JhxCSqPD1xDUgMy5w6SnchyyMAQh/6rQHwZiK8Q0G+EQ/9NIL4NxLcI6Ed3P0gfNv/fQtKPK/3g0otsBjUAAJ46MX8=
   </data>
  </layer>
  <objectgroup name="object doodads" width="16" height="16">
@@ -161,6 +161,8 @@
   <object gid="88" x="352" y="480"/>
   <object gid="86" x="192" y="480"/>
   <object gid="87" x="416" y="288"/>
-  <object gid="85" x="192" y="288"/>
+  <object gid="73" x="192" y="448"/>
+  <object gid="73" x="192" y="320"/>
+  <object gid="73" x="192" y="288"/>
  </objectgroup>
 </map>
