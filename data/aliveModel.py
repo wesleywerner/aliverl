@@ -573,97 +573,32 @@ class GameEngine(object):
         #trace.write(('trigger %s%s' %
                     #(trig['name'], (direct) and (' directly') or (''))))
         trace.write(('trigger %s%s' %
-                    (obj.name, (direct) and (' directly') or (''))))
+                    (obj.name, (direct) and (' directly') or (' indirctly'))))
         for key in obj.properties.keys():
             prop = obj.properties[key]
             #FIX AI use properties to store their movement mode.
             # move this to the object level?
             if type(prop) is str:
+                # split the property at word boundaries.
+                # all commands start with "@".
+                # we only queue interactions if the player interacts with the
+                # object directly, unless the @ontrigger command is present.
+                # then objects only trigger via another object's @trigger.
+                # we also extract the value of @delay=n if present.
                 values = prop.split(' ')
                 commands = [v for v in values if v.startswith('@')]
                 user_data = ' '.join([v for v in values if not v.startswith('@')])
                 on_trigger = '@ontrigger' in commands
+                delay = [cmd for cmd in commands if cmd.startswith('@delay=')]
                 if (direct and not on_trigger) or (not direct and on_trigger):
                     self.trigger_queue.append({
                         'name': key,
                         'obj': obj,
                         'direct': direct,
                         'commands': commands,
-                        'user_data': user_data
+                        'delay': delay and int(delay[0].split('=')[1]) or 0,
+                        'user_data': user_data,
                         })
-
-        #############################################
-
-        #for action in obj.properties.keys():
-            #action_value = obj.properties[action]
-
-            ## finger somebody else
-            #if not isfingered and action.startswith('fingers'):
-                #for fn in [e for e in self.objects if e.name == action_value]:
-                    #self.trigger_object(fn, direct=True)
-
-            ## these actions are only triggered by direct interaction
-            #if not direct:
-                ## next level
-                #if action == 'exit':
-                    #self.warp_level()
-                    #return False
-                ## show a message
-                #if action.startswith('message'):
-                    #self.evManager.Post(MessageEvent(action_value))
-                ## show a dialog
-                #if action.startswith('dialogue'):
-                    #self.show_dialogue(action_value)
-
-            ## fingered characters only
-            #if action.startswith('on finger') and direct and \
-                              #obj is not self.player:
-                ## grab the finger actions
-                #f_action = action_value.split('=')
-                ## give us a new property equal to the rest of f_action
-                #if f_action[0] == 'give':
-                    #obj.properties[f_action[1]] = ' '.join(f_action[2:])
-                #elif f_action[0] == 'transmute':
-                    ## we can have a one-way or rotate transmutes
-                    #options = f_action[1].split(',')
-                    #if len(options) == 1:
-                        #transmute_id = int(options[0])
-                    #else:
-                        #if str(obj.gid) in options:
-                            ## rotate the list with the current
-                            ## index as offset.
-                            #idx = options.index(str(obj.gid)) - 1
-                            #transmute_id = int(list(options[idx:] +
-                                #options[:idx])[0])
-                            #trace.write('Rotate tile index %s to %s' %
-                                #(obj.gid, transmute_id))
-                        #else:
-                            ## use first index
-                            #transmute_id = int(options[0])
-                    ## do not transmute to a blocking tile if anyone is
-                    ## standing on the finger target (cant close doors)
-                    #fingerfriends = self.get_object_by_xy(*obj.getxy())
-                    #for ff in fingerfriends:
-                        #if (ff is not obj and
-                                #self.story.tile_blocks(transmute_id)):
-                            #trace.write('hey, you cant transmorgify a tile ' +
-                                #'to a solid if someone is standing on it :p')
-                            #return False
-                    ## transmorgify!
-                    #obj.gid = transmute_id
-                    ## update the level block matrix with our new aquired status
-                    #matrix = self.level.matrix['block']
-                    #matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
-                    #self.evManager.Post(UpdateObjectGID(obj, obj.gid))
-
-            ## once shots actions (append once to any action)
-            #if action.endswith('once'):
-                ##FIXME fingering an object itself removes this property
-                ## during the fingered call, causing a keyerror whence
-                ## returning to here.
-                #del obj.properties[action]
-        ## signal caller all is OK
-        #return True
 
     def random_identifier(self):
         """
@@ -697,20 +632,12 @@ class GameEngine(object):
             obj = trig['obj']
             commands = trig['commands']
             user_data = trig['user_data']
-            delay_skip = False
-            if '@delay' in commands:
-                delay_index = commands.index('@delay') + 1
-                try:
-                    delay_value = int(commands[delay_index].strip('@'))
-                    turns = trig.get('delay', delay_value)
-
-                    if turns > 0:
-                        trig['delay'] = turns - 1
-                        requeue.append(trig)
-                        delay_skip = True
-                except IndexError:
-                    trace.error('There is no delay specified on %s' % obj.name)
-            if not delay_skip:
+            delay = trig['delay']
+            trace.write('interaction %s delay %s' % (name, delay))
+            if delay > 0:
+                trig['delay'] = delay - 1
+                requeue.append(trig)
+            else:
                 if '@trigger' in commands and direct:
                     _object_list = self.get_object_by_name(user_data)
                     for _trig_object in _object_list:
