@@ -3,25 +3,18 @@
  <tileset firstgid="1" name="alive" tilewidth="32" tileheight="32">
   <image source="alive-tileset.png" trans="ff00ff" width="256" height="960"/>
  </tileset>
- <layer name="walls" width="16" height="16">
+ <layer name="floor doodads" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJylUkkOgCAMrNvBAAeM/MCD/3+hNtKkFiiITSZFmaHTggWAkWGIGBXQvrth4B1b5l8pTIFb0xuWc9zzg36FtL8p5oOB74ef/jmPuB6eeWp6Kzwtgktr7InuiALXs+iD6338pnNqM5T+ef0ePdanuWMOJVFD/Zbamh7n51K6qkf//F30zE/6aNHvkL5fec8loN8LywME1g==
+   eJzNkWEKgCAMhXf/22UmlHaXEhw+xjal+pEwFPc+N9+Ivl/bHecgwssa6Wf8Qv6/OM9xiFxsZ8s71Gu97BM6jx/1681P45PzRhCMxfN9fadAzSQY9Ky0PYKm5lfqHkteO6OmepupezvL80y0WSKDuix2K57MWVsXCqtbmQ==
   </data>
  </layer>
- <layer name="map doodads" width="16" height="16">
+ <layer name="floor" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFlACTgXYAEjCmolkXgfguHnyJgP3X8JhxCSqPD1xDUgMy5w6SnchyyMAQh/6rQHwZiK8Q0G+EQ/9NIL4NxLcI6Ed3P0gfNv/fQtKPK/3g0otsBjUAAJ46MX8=
+   eJzjYWBgYELCjFDMhAfD5HmBmJsBFQhhEcMFuHGoJaSfG4nGplaDBP2cDJj+Y4bSKkgYWV6UQvcjqyNFPw+am1hxqBVhQMQRDIDYLAyo/sClHwQIhSHMndTSL8iAmr5EcWkiwn5i7ManHxR+vBToJ9YN1NAPciu2PIoe19gwKIwB8pQEXw==
   </data>
  </layer>
- <objectgroup name="object doodads" width="16" height="16">
-  <object name="exit portal" gid="89" x="128" y="320">
-   <properties>
-    <property name="warp speed!" value="@exit"/>
-   </properties>
-  </object>
- </objectgroup>
  <objectgroup name="objects" width="16" height="16">
-  <object name="player" type="player" gid="97" x="352" y="448"/>
+  <object name="player" type="player" gid="97" x="32" y="64"/>
   <object name="faulty cap" gid="65" x="448" y="224">
    <properties>
     <property name="pop me" value="@ontrigger @transmute 69"/>
@@ -49,7 +42,6 @@
     <property name="rotate this door" value="@ontrigger @transmute @repeat 33,36"/>
    </properties>
   </object>
-  <object name="broken term" type="term" gid="41" x="256" y="32"/>
   <object name="locked passage term" type="term" gid="41" x="224" y="256">
    <properties>
     <property name="change tile" value="@ontrigger @transmute 45"/>
@@ -70,7 +62,6 @@
   </object>
   <object gid="65" x="256" y="160"/>
   <object gid="81" x="320" y="384"/>
-  <object gid="43" x="224" y="32"/>
   <object gid="49" x="0" y="96"/>
   <object name="cic terminal" type="term" gid="43" x="320" y="416">
    <properties>
@@ -105,12 +96,12 @@
     <property name="message" value="@message The AI seems too busy to respond."/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="32" y="320">
+  <object name="busy AI" type="friend" gid="105" x="64" y="288">
    <properties>
-    <property name="modes" value="updown"/>
+    <property name="modes" value="random"/>
    </properties>
   </object>
-  <object name="touchplate" gid="8" x="128" y="224">
+  <object name="touchplate" gid="8" x="32" y="352">
    <properties>
     <property name="message once" value="@message You see a high-speed portal..."/>
    </properties>
@@ -135,19 +126,12 @@
     <property name="modes" value="updown"/>
    </properties>
   </object>
-  <object gid="49" x="224" y="512"/>
-  <object gid="43" x="288" y="512"/>
-  <object gid="41" x="160" y="448"/>
-  <object gid="41" x="480" y="480"/>
-  <object gid="41" x="160" y="320"/>
-  <object gid="49" x="480" y="416"/>
+  <object gid="43" x="224" y="512"/>
   <object name="entry door" type="door" gid="37" x="160" y="128">
    <properties>
     <property name="open this door" value="@ontrigger @transmute 40"/>
    </properties>
   </object>
-  <object gid="52" x="0" y="64"/>
-  <object gid="49" x="96" y="32"/>
   <object name="entry touchplate" gid="8" x="128" y="128">
    <properties>
     <property name="open the door" value="@ontrigger @give %trigger entry door"/>
@@ -159,10 +143,19 @@
   <object gid="85" x="448" y="320"/>
   <object gid="87" x="448" y="448"/>
   <object gid="88" x="352" y="480"/>
-  <object gid="86" x="192" y="480"/>
   <object gid="87" x="416" y="288"/>
   <object gid="73" x="192" y="448"/>
   <object gid="73" x="192" y="320"/>
   <object gid="73" x="192" y="288"/>
+  <object gid="73" x="192" y="480"/>
+  <object name="exit portal" gid="89" x="96" y="224">
+   <properties>
+    <property name="warp speed!" value="@exit"/>
+   </properties>
+  </object>
+  <object gid="85" x="64" y="416"/>
+  <object gid="86" x="96" y="448"/>
+  <object gid="87" x="64" y="448"/>
+  <object gid="88" x="96" y="416"/>
  </objectgroup>
 </map>
