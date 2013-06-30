@@ -288,6 +288,7 @@ class GameEngine(object):
 
         # so let us take care of some turn stuff:
         self.turn += 1
+        trace.write('# TURN %s' % self.turn)
         # heal turn for player and AI
         self.heal_turn()
         # move turn for AI
