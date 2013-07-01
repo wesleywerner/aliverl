@@ -52,7 +52,13 @@ class GraphicalView(object):
         statscanvas (Surface): a rendering of player and level stats.
         playarea (Rect): location on screen to draw gameplay.
         statsarea (Rect): area to draw player stats.
-        viewport (Rect): which portion of the game map we are looking at.
+        viewport (Rect):
+            the portion of the game map we are looking at, like the viewport
+            of a ship. The level map may be larger than our screen, and the
+            viewport which part of that map we are viewing.
+            It moves around with the player character via the
+            update_viewport() method
+
         allsprites (Group): contains all animated, movable objects in play.
         visible_sprites (Group): only contains sprites visible to the player.
         sprite_lookup (Dict): a sprite name-value lookup.
@@ -60,11 +66,6 @@ class GraphicalView(object):
         transition (TransitionBase): current animated screen transition.
         messages (list): list of recent game messages.
 
-        Note: The viewport defines which area of the level we see as the
-        play area. a smaller viewport will render correctly, as long as
-        we move it with the player character via the ShiftViewportEvent.
-        It takes a tuple of (x,y) offset to move, by index, not pixels,
-        where index equals the number of tiles to shift.
         """
 
         self.evManager = evManager
@@ -120,8 +121,6 @@ class GraphicalView(object):
             elif isinstance(event, NextLevelEvent):
                 self.load_level()
                 self.create_sprites()
-            #elif isinstance(event, ShiftViewportEvent):
-                #self.adjust_viewport(event)
             elif isinstance(event, InitializeEvent):
                 self.initialize()
             elif isinstance(event, QuitEvent):
