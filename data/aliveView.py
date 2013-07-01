@@ -103,32 +103,43 @@ class GraphicalView(object):
             if isinstance(event, TickEvent):
                 self.render()
                 self.clock.tick(self.gamefps)
+
             elif isinstance(event, CharacterMovedEvent):
                 self.move_sprite(event)
+
             elif isinstance(event, PlayerMovedEvent):
                 self.update_visible_sprites()
                 self.update_viewport()
+
             elif isinstance(event, MessageEvent):
                 self.create_floating_tip(event.message,
                     event.fontcolor and event.fontcolor or color.text)
+
             elif isinstance(event, KillCharacterEvent):
                 self.kill_sprite(event.character)
                 self.messages.append('The %s dies' % (event.character.name))
+
             elif isinstance(event, UpdateObjectGID):
                 self.transmute_sprite(event)
+
             elif isinstance(event, DialogueEvent):
                 self.queue_dialogue(event.dialogue)
+
             elif isinstance(event, NextLevelEvent):
                 self.load_level()
                 self.create_sprites()
+
             elif isinstance(event, InitializeEvent):
                 self.initialize()
+
             elif isinstance(event, QuitEvent):
                 self.isinitialized = False
                 pygame.quit()
+
             elif isinstance(event, DebugEvent):
                 if event.request_type == 'animation cheatsheet':
                     self.draw_animations_cheatsheet()
+
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
             # a SystemExit, and we want that one to not catch here.
