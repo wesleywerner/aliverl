@@ -54,6 +54,8 @@ class KeyboardMouse(object):
                             self.dialogue_keys(event)
                         elif state == aliveModel.STATE_CRASH:
                             self.crash_keys(event)
+                        elif state == aliveModel.STATE_HELP:
+                            self.help_keys(event)
                         else:
                             # allow escaping from unhandled states
                             self.evManager.Post(StateChangeEvent(None))
@@ -113,6 +115,16 @@ class KeyboardMouse(object):
             self.view.next_dialogue()
         elif event.key == pygame.K_ESCAPE:
             self.view.close_dialogue()
+
+    def help_keys(self, event):
+        """
+        Handle help screen keys.
+        """
+
+        if event.key in (pygame.K_SPACE, pygame.K_RETURN):
+            self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
+        elif event.key == pygame.K_ESCAPE:
+            self.evManager.Post(StateChangeEvent(None))
 
     def menu_keys(self, event):
         """
