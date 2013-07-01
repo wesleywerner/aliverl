@@ -150,16 +150,9 @@ class GraphicalView(object):
 
             elif isinstance(event, StateChangeEvent):
                 if self.ui:
-                    if event.state:
-                        trace.write('setting context of ui to %s' % event.state)
-                        self.ui.set_context(event.state)
-                    else:
-                        #FIXME the model state is not yet updated at this point.
-                        # so the peek() returns and old value.
-                        # we need a better way to ensure the model is updated first
-                        trace.write('setting context of ui to %s' %
-                            self.model.state.peek())
-                        self.ui.set_context(self.model.state.peek())
+                    model_state = self.model.state.peek()
+                    trace.write('set ui context to game state %s' % model_state)
+                    self.ui.set_context(model_state)
 
                 if event.state == aliveModel.STATE_HELP:
                     self.show_help_screens()
