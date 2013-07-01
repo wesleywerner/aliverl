@@ -911,6 +911,20 @@ class GraphicalView(object):
         help_transition.waitforkey = True
         self.transition_queue.insert(0, help_transition)
 
+        # add subsequent screens as static (no animation required)
+        help_2 = StaticScreen(
+            rect=self.windowsize,
+            background_color=color.magenta,
+            fps=self.gamefps,
+            font=self.largefont,
+            words=None,
+            word_color=color.green,
+            words_x_offset=0,
+            words_y_offset=0,
+            background=help_screen
+            )
+        self.transition_queue.insert(0, help_2)
+
         # add a closing transition
         close_transition = SlideinTransition(
             rect=self.windowsize,
@@ -1095,6 +1109,40 @@ class TransitionBase(object):
 
         if self.can_update(time):
             pass
+
+
+class StaticScreen(TransitionBase):
+    """
+    Display a static screen with a background and some words.
+    This is not an animated transition.
+    """
+
+    def __init__(self,
+                rect=None,
+                background_color=color.magenta,
+                fps=30,
+                font=None,
+                words=None,
+                word_color=color.green,
+                words_x_offset=0,
+                words_y_offset=0,
+                background=None
+                ):
+        super(StaticScreen, self).__init__(rect, background_color, fps)
+        self.waitforkey = True
+        # use the supplied background image
+        if background:
+            # center it within our canvas
+            bgpos = ((rect.width - background.get_width()) / 2,
+                   (rect.height - background.get_height()) / 2)
+            self.xpadding = words_x_offset + bgpos[0]
+            self.ypadding = words_y_offset + bgpos[1]
+            self.image.blit(background, bgpos)
+        # draw the words on top
+        if words:
+            font_bmp = self.draw_text_block(
+                words.split("\n"), font, False, word_color)
+            self.image.blit(font_bmp, (words_x_offset, words_y_offset))
 
 
 class SlideinTransition(TransitionBase):
