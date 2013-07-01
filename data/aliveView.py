@@ -350,6 +350,7 @@ class GraphicalView(object):
         if self.transition_queue:
             self.transition = self.transition_queue.pop()
         else:
+            self.transition = None
             self.evManager.Post(StateChangeEvent(None))
 
     def queue_dialogue(self, dialogue):
@@ -399,6 +400,18 @@ class GraphicalView(object):
                     background=self.dialoguebackground
                     )
                 self.transition_queue.insert(0, new_transition)
+
+        # add a closing transition
+        close_transition = SlideinTransition(
+                        rect=self.windowsize,
+                        background_color=color.magenta,
+                        fps=self.gamefps,
+                        font=self.smallfont,
+                        title='',
+                        background=self.dialoguebackground,
+                        direction_reversed=True
+                        )
+        self.transition_queue.insert(0, close_transition)
 
     def next_dialogue(self):
         """
@@ -883,6 +896,8 @@ class GraphicalView(object):
         """
 
         help_screen = pygame.image.load('images/help-1.png').convert()
+
+        # add the first help screen
         help_transition = SlideinTransition(
             self.windowsize,
             color.magenta,
@@ -896,6 +911,19 @@ class GraphicalView(object):
         help_transition.waitforkey = True
         self.transition_queue.insert(0, help_transition)
 
+        # add a closing transition
+        close_transition = SlideinTransition(
+            self.windowsize,
+            color.magenta,
+            self.gamefps,
+            self.smallfont,
+            '',
+            help_screen,
+            boxcolor=color.blue,
+            pensize=3,
+            direction_reversed=True
+            )
+        self.transition_queue.insert(0, close_transition)
 
 
 
@@ -1087,6 +1115,7 @@ class SlideinTransition(TransitionBase):
                 background=None,
                 boxcolor=color.green,
                 pensize=1,
+                direction_reversed=False
                 ):
         """
         rect:
@@ -1102,16 +1131,26 @@ class SlideinTransition(TransitionBase):
 
         font:
             is use for drawing any title text.
+
+        title:
+            centered text drawn on the transition
+
+        background:
+            an image that underlays the transition
+
+        boxcolor:
+            color of the bounding box
+
+        pensize:
+            size of the box border
+
+        direction_reversed:
+            True to reverse the animation
+
         """
 
         super(SlideinTransition, self).__init__(rect, background_color, fps)
 
-        # box is our sliding rectangle that will expand to the screen.
-        self.box = pygame.Rect(0, 0, 100, 20)
-        # center the box according to full size
-        self.box.center = rect.center
-        if not font:
-            font = pygame.font.Font(None, 16)
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
@@ -1119,7 +1158,22 @@ class SlideinTransition(TransitionBase):
         self.size = (self.rect.width, self.rect.height)
         self.boxcolor = boxcolor
         self.pensize = pensize
+        self.background_color = background_color
+        self.direction_reversed = direction_reversed
+
         # center the background image
+        if direction_reversed:
+            # box fills the area and shrinks over time
+            self.box = rect.copy()
+        else:
+            # box starts small and expands over time
+            self.box = pygame.Rect(0, 0, 100, 20)
+
+        # center the box according to full size
+        self.box.center = rect.center
+        if not font:
+            font = pygame.font.Font(None, 16)
+
         self.background = None
         if background:
             #TODO may not be neccessary if we just store background_image :p
@@ -1127,8 +1181,7 @@ class SlideinTransition(TransitionBase):
             bgpos = ((self.size[0] - background.get_width()) / 2,
                    (self.size[1] - background.get_height()) / 2)
             self.background = pygame.Surface(self.size)
-            # fill it with black
-            self.background.fill(color.black)
+            self.background.fill(background_color)
             # paint over the given image
             self.background.blit(background, bgpos)
         # toggle delta direction
@@ -1136,6 +1189,12 @@ class SlideinTransition(TransitionBase):
         self.ydelta = 30
         self.resizingwidth = True
         self.resizingheight = False
+        # switch reversed mode
+        if self.direction_reversed:
+            self.xdelta *= -1
+            self.ydelta *= -1
+            self.resizingwidth = False
+            self.resizingheight = True
 
     def update(self, time):
         """
@@ -1145,13 +1204,25 @@ class SlideinTransition(TransitionBase):
         if self.can_update(time):
             if self.resizingheight:
                 self.box = self.box.inflate(0, self.ydelta)
-                self.resizingheight = self.box.h < self.size[1]
+                if self.direction_reversed:
+                    # because our delta resize is arbitrary
+                    # limit to within positive values
+                    if self.box.h < 0:
+                        self.box.h = 0
+                    # we are busy while the height is positive
+                    self.resizingheight = self.box.h > 0
+                else:
+                    # we are busy while the height is < max
+                    self.resizingheight = self.box.h < self.size[1]
             elif self.resizingwidth:
                 self.box = self.box.inflate(self.xdelta, 0)
                 self.resizingwidth = self.box.w < self.size[0]
-                self.resizingheight = not self.resizingwidth
+                if not self.direction_reversed:
+                    self.resizingheight = not self.resizingwidth
             if self.background:
+                # FIXME may need to fill with background_color (magenta) here
                 # draw the background image cut from the same area of our box
+                self.image.fill(self.background_color)
                 self.image.blit(self.background, self.box.topleft, self.box)
             pygame.draw.rect(self.image, self.boxcolor, self.box, self.pensize)
             self.image.blit(self.fontpix, self.fontloc)
