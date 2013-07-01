@@ -286,6 +286,7 @@ class EventManager(object):
         It will be broadcast to all listeners.
         """
 
-        not isinstance(event, TickEvent) and trace.write(str(event))
+        if type(event) not in (TickEvent, InputEvent):
+            trace.write(str(event))
         for listener in self.listeners.keys():
             listener.notify(event)
