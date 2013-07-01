@@ -62,7 +62,6 @@ class GraphicalView(object):
         allsprites (Group): contains all animated, movable objects in play.
         visible_sprites (Group): only contains sprites visible to the player.
         sprite_lookup (Dict): a sprite name-value lookup.
-        helpimages (Surface): stores the F1 help screens.
         transition (TransitionBase): current animated screen transition.
         messages (list): list of recent game messages.
 
@@ -87,7 +86,6 @@ class GraphicalView(object):
         self.visible_sprites = None
         self.sprite_lookup = {}
         self.scrollertexts = None
-        self.helpimages = None
         self.transition = None
         self.messages = [''] * 20
         self.gamefps = 30
@@ -139,6 +137,10 @@ class GraphicalView(object):
             elif isinstance(event, DebugEvent):
                 if event.request_type == 'animation cheatsheet':
                     self.draw_animations_cheatsheet()
+
+            elif isinstance(event, StateChangeEvent):
+                if event.state == aliveModel.STATE_HELP:
+                    self.show_help_screens()
 
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
@@ -207,10 +209,8 @@ class GraphicalView(object):
                 pass
 
         elif state == aliveModel.STATE_HELP:
-            if not self.helpimages:
-                self.helpimages = pygame.image.load(
-                    'images/help-1.png').convert()
-            self.screen.blit(self.helpimages, (0, 0))
+            # help is show via transition dialogues
+            self.draw_dialogue()
 
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
@@ -869,6 +869,25 @@ class GraphicalView(object):
             import traceback
             print('\n' + str(traceback.format_exc()))
             sys.exit(1)
+
+    def show_help_screens(self):
+        """
+        Queues the help screens as dialogues with transitions.
+
+        """
+
+        help_screen = pygame.image.load('images/help-1.png').convert()
+        help_transition = SlideinTransition(
+            self.windowsize,
+            color.magenta,
+            self.gamefps,
+            self.smallfont,
+            '',
+            help_screen)
+        help_transition.waitforkey = True
+        self.transition_queue.insert(0, help_transition)
+
+
 
 
 class Sprite(pygame.sprite.Sprite):
