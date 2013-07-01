@@ -373,29 +373,32 @@ class GraphicalView(object):
                 # Start with a Slide-in Transition
                 if not terminal_slidein_added:
                     terminal_slidein_added = True
-                    self.transition_queue.insert(0,
-                                            SlideinTransition(
-                                            self.windowsize,
-                                            color.magenta,
-                                            self.gamefps,
-                                            self.smallfont,
-                                            'connecting . . .',
-                                            self.dialoguebackground))
+                    new_transition = SlideinTransition(
+                        rect=self.windowsize,
+                        background_color=color.magenta,
+                        fps=self.gamefps,
+                        font=self.smallfont,
+                        title='connecting . . .',
+                        background=self.dialoguebackground
+                        )
+                    self.transition_queue.insert(0, new_transition)
 
                 # Follow up with a Terminal Printer Transition
                 text_color = getattr(color, datas['color'])
                 words = datas['datas']
                 words = self.wrap_text(words, 25)
-                self.transition_queue.insert(0,
-                                        TerminalPrinter(
-                                        self.windowsize,
-                                        color.magenta,
-                                        self.gamefps,
-                                        None, #self.largefont,
-                                        words,
-                                        text_color,
-                                        80, 80,
-                                        self.dialoguebackground))
+                new_transition = TerminalPrinter(
+                    rect=self.windowsize,
+                    background_color=color.magenta,
+                    fps=self.gamefps,
+                    font=self.largefont,
+                    words=words,
+                    word_color=text_color,
+                    words_x_offset=80,
+                    words_y_offset=80,
+                    background=self.dialoguebackground
+                    )
+                self.transition_queue.insert(0, new_transition)
 
     def next_dialogue(self):
         """
@@ -1167,7 +1170,7 @@ class TerminalPrinter(TransitionBase):
                 fps=30,
                 font=None,
                 words=None,
-                wordcolor=color.green,
+                word_color=color.green,
                 words_x_offset=0,
                 words_y_offset=0,
                 background=None):
@@ -1201,7 +1204,7 @@ class TerminalPrinter(TransitionBase):
         super(TerminalPrinter, self).__init__(rect, background_color, fps)
         self.words = words
         self.text = ""
-        self.wordcolor = wordcolor
+        self.word_color = word_color
         self.font = font
         self.xpadding = words_x_offset
         self.ypadding = words_y_offset
@@ -1247,7 +1250,7 @@ class TerminalPrinter(TransitionBase):
                 self.done = self.lineindex == len(self.words)
             if not self.done:
                 c = self.words[self.lineindex][self.charindex]
-                glyph = self.font.render(c, False, self.wordcolor)
+                glyph = self.font.render(c, True, self.word_color)
                 self.background.blit(glyph,
                                     (self.xposition + self.xpadding,
                                     self.yposition + self.ypadding))
