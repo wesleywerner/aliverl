@@ -258,8 +258,7 @@ class EventManager(object):
     """
 
     def __init__(self):
-        from weakref import WeakKeyDictionary
-        self.listeners = WeakKeyDictionary()
+        self.listeners = []
 
     def RegisterListener(self, listener):
         """
@@ -267,7 +266,7 @@ class EventManager(object):
         It will receive Post()ed events through it's notify(event) call.
         """
 
-        self.listeners[listener] = 1
+        self.listeners.append(listener)
 
     def UnregisterListener(self, listener):
         """
@@ -277,8 +276,8 @@ class EventManager(object):
         listeners who stop existing.
         """
 
-        if listener in self.listeners.keys():
-            del self.listeners[listener]
+        if listener in self.listeners:
+            self.listeners.remove(listener)
 
     def Post(self, event):
         """
@@ -288,5 +287,5 @@ class EventManager(object):
 
         if type(event) not in (TickEvent, InputEvent):
             trace.write(str(event))
-        for listener in self.listeners.keys():
+        for listener in self.listeners:
             listener.notify(event)
