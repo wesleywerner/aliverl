@@ -1072,7 +1072,6 @@ class TransitionBase(object):
         self.image.set_colorkey(color.magenta)
         self.image.fill(background_color)
         self.rect = rect
-        #TODO: up fps divisor to 1000?
         self.delay = 500 / fps
         self.lasttime = 0
         self.done = False
