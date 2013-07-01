@@ -391,7 +391,7 @@ class GraphicalView(object):
                                         self.windowsize,
                                         color.magenta,
                                         self.gamefps,
-                                        self.largefont,
+                                        None, #self.largefont,
                                         words,
                                         text_color,
                                         80, 80,
@@ -1014,7 +1014,7 @@ class TransitionBase(object):
         update(): step the transition, returns True while busy
     """
 
-    def __init__(self, rect, background_color, fps):
+    def __init__(self, rect=None, background_color=color.green, fps=30):
         """
         Defines a base for animations transition effects.
         Simply: a canvas that draws itself each update() -- permitting fps.
@@ -1035,6 +1035,8 @@ class TransitionBase(object):
                 user keypress.
         """
 
+        if not rect:
+            raise ValueError('TransitionBase rect cannot be None')
         self.image = pygame.Surface(rect.size)
         self.image.set_colorkey(color.magenta)
         self.image.fill(background_color)
@@ -1074,11 +1076,11 @@ class SlideinTransition(TransitionBase):
     """
 
     def __init__(self,
-                rect,
-                background_color,
-                fps,
-                font,
-                title,
+                rect=None,
+                background_color=color.magenta,
+                fps=30,
+                font=None,
+                title='',
                 background=None,
                 boxcolor=color.green,
                 pensize=1,
@@ -1105,6 +1107,8 @@ class SlideinTransition(TransitionBase):
         self.box = pygame.Rect(0, 0, 100, 20)
         # center the box according to full size
         self.box.center = rect.center
+        if not font:
+            font = pygame.font.Font(None, 16)
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
@@ -1158,14 +1162,14 @@ class TerminalPrinter(TransitionBase):
     """
 
     def __init__(self,
-                rect,
-                background_color,
-                fps,
-                font,
-                words,
-                wordcolor,
-                words_x_offset,
-                words_y_offset,
+                rect=None,
+                background_color=color.magenta,
+                fps=30,
+                font=None,
+                words=None,
+                wordcolor=color.green,
+                words_x_offset=0,
+                words_y_offset=0,
                 background=None):
         """
         rect:
@@ -1192,6 +1196,8 @@ class TerminalPrinter(TransitionBase):
 
         """
 
+        if not words:
+            raise ValueError('TerminalPrinter words cannot be None or empty')
         super(TerminalPrinter, self).__init__(rect, background_color, fps)
         self.words = words
         self.text = ""
@@ -1207,6 +1213,8 @@ class TerminalPrinter(TransitionBase):
         self.lastfontheight = 0
         self.waitforkey = True
         self.size = (self.rect.width, self.rect.height)
+        if not self.font:
+            self.font = pygame.font.Font(None, 40)
         # center the background image
         self.background = None
         if background:
