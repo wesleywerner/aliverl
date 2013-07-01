@@ -59,6 +59,9 @@ class KeyboardMouse(object):
                         else:
                             # allow escaping from unhandled states
                             self.evManager.Post(StateChangeEvent(None))
+                    elif event.type == pygame.KEYUP:
+                            self.evManager.Post(
+                                InputEvent(unicodechar=None, clickpos=None))
         except:
             self.evManager.Post(CrashEvent())
 
