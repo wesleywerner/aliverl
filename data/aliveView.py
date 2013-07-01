@@ -16,6 +16,7 @@ import sys
 import pygame
 from pygame import image
 from pygame.locals import *
+import ui
 import trace
 import color
 import const
@@ -92,6 +93,7 @@ class GraphicalView(object):
         self.gamefps = 30
         self.last_tip_pos = 0
         self.transition_queue = []
+        self.ui = None
 
     def notify(self, event):
         """
@@ -139,7 +141,26 @@ class GraphicalView(object):
                 if event.request_type == 'animation cheatsheet':
                     self.draw_animations_cheatsheet()
 
+            elif isinstance(event, InputEvent):
+                if self.ui:
+                    if event.char:
+                        self.ui.click(event.char)
+                    else:
+                        self.ui.unclick()
+
             elif isinstance(event, StateChangeEvent):
+                if self.ui:
+                    if event.state:
+                        trace.write('setting context of ui to %s' % event.state)
+                        self.ui.set_context(event.state)
+                    else:
+                        #FIXME the model state is not yet updated at this point.
+                        # so the peek() returns and old value.
+                        # we need a better way to ensure the model is updated first
+                        trace.write('setting context of ui to %s' %
+                            self.model.state.peek())
+                        self.ui.set_context(self.model.state.peek())
+
                 if event.state == aliveModel.STATE_HELP:
                     self.show_help_screens()
 
@@ -215,6 +236,11 @@ class GraphicalView(object):
             self.draw_player_stats()
             self.draw_sprites()
             self.draw_dialogue()
+
+        # update the ui and draw it to the screen
+        self.ui.hover(pygame.mouse.get_pos())
+        self.ui.update()
+        self.screen.blit(self.ui.image, (0, 0))
 
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
@@ -881,6 +907,7 @@ class GraphicalView(object):
             self.borders = image.load('images/playscreen.png').convert()
             self.borders.set_colorkey(color.magenta)
             self.dialoguebackground = image.load('images/dialog.png').convert()
+            self.setup_ui_manager()
             self.isinitialized = True
         except Exception, e:
             # these lines pose an interesting problem:
@@ -939,3 +966,39 @@ class GraphicalView(object):
             direction_reversed=True
             )
         self.transition_queue.insert(0, close_transition)
+
+    def setup_ui_manager(self):
+        """
+        Setup the UxManager which handles clickable buttons.
+        All controls are defined here, they are seperated into groups
+        by context equals game states.
+
+        """
+
+        self.ui = ui.UxManager(self.windowsize.size,
+            image_filename='images/ui.png',
+            font=self.smallfont,
+            click_callback=self.ui_click_event,
+            colorkey=color.magenta
+            )
+
+        # test button
+        button = ui.UxButton(
+            rect=(14, 69, 57, 45),
+            image_rect=(0, 0, 57, 45),
+            code='zap',
+            hotkey='z',
+            enabled=True,
+            border_color=None,
+            context=aliveModel.STATE_PLAY
+            )
+        self.ui.add(button)
+
+    def ui_click_event(self, context, ux):
+        """
+        Called on a ui element click or hotkey press.
+        check ux.code for the item involved.
+
+        """
+
+        trace.write('pressed button %s' % ux.code)
