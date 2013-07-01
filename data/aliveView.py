@@ -899,12 +899,12 @@ class GraphicalView(object):
 
         # add the first help screen
         help_transition = SlideinTransition(
-            self.windowsize,
-            color.magenta,
-            self.gamefps,
-            self.smallfont,
-            '',
-            help_screen,
+            rect=self.windowsize,
+            background_color=color.magenta,
+            fps=self.gamefps,
+            font=self.smallfont,
+            title='',
+            background=help_screen,
             boxcolor=color.blue,
             pensize=3
             )
@@ -913,12 +913,12 @@ class GraphicalView(object):
 
         # add a closing transition
         close_transition = SlideinTransition(
-            self.windowsize,
-            color.magenta,
-            self.gamefps,
-            self.smallfont,
-            '',
-            help_screen,
+            rect=self.windowsize,
+            background_color=color.magenta,
+            fps=self.gamefps,
+            font=self.smallfont,
+            title='',
+            background=help_screen,
             boxcolor=color.blue,
             pensize=3,
             direction_reversed=True
