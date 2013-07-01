@@ -277,6 +277,7 @@ class GameEngine(object):
             * ai_movement_turn()
         """
 
+        trace.write('# TURN %s' % self.turn)
         if not self.move_object(self.player, direction):
             pass
             #return False
@@ -288,7 +289,6 @@ class GameEngine(object):
 
         # so let us take care of some turn stuff:
         self.turn += 1
-        trace.write('# TURN %s' % self.turn)
         # heal turn for player and AI
         self.heal_turn()
         # move turn for AI
