@@ -118,8 +118,6 @@ class GameEngine(object):
             self.level = None
             self.warp_level()
             self.gamerunning = True
-            if self.state.peek() != STATE_PLAY:
-                self.change_state(STATE_PLAY)
 
     def end_game(self):
         """
