@@ -1,9 +1,6 @@
 
 # RELEASE Y.T.
 
-* trigger events after x turns:
-  * process triggers from a list
-
 * add an abilities screen that shows available upgrades
 
 * add the UI button class
