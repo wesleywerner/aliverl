@@ -121,10 +121,10 @@ class KeyboardMouse(object):
         Handle help screen keys.
         """
 
-        if event.key in (pygame.K_SPACE, pygame.K_RETURN):
-            self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
+        if event.key in (pygame.K_SPACE, pygame.K_RETURN, pygame.K_KP_ENTER):
+            self.view.next_dialogue()
         elif event.key == pygame.K_ESCAPE:
-            self.evManager.Post(StateChangeEvent(None))
+            self.view.close_dialogue()
 
     def menu_keys(self, event):
         """
