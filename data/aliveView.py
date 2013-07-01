@@ -886,7 +886,10 @@ class GraphicalView(object):
             self.gamefps,
             self.smallfont,
             '',
-            help_screen)
+            help_screen,
+            boxcolor=color.blue,
+            pensize=3
+            )
         help_transition.waitforkey = True
         self.transition_queue.insert(0, help_transition)
 
@@ -1076,7 +1079,10 @@ class SlideinTransition(TransitionBase):
                 fps,
                 font,
                 title,
-                background=None):
+                background=None,
+                boxcolor=color.green,
+                pensize=1,
+                ):
         """
         rect:
             (Rect) tells us how large our canvas should be.
@@ -1104,6 +1110,8 @@ class SlideinTransition(TransitionBase):
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
         self.fontloc.center = rect.center
         self.size = (self.rect.width, self.rect.height)
+        self.boxcolor = boxcolor
+        self.pensize = pensize
         # center the background image
         self.background = None
         if background:
@@ -1138,7 +1146,7 @@ class SlideinTransition(TransitionBase):
             if self.background:
                 # draw the background image cut from the same area of our box
                 self.image.blit(self.background, self.box.topleft, self.box)
-            pygame.draw.rect(self.image, color.green, self.box, 1)
+            pygame.draw.rect(self.image, self.boxcolor, self.box, self.pensize)
             self.image.blit(self.fontpix, self.fontloc)
             self.done = not self.resizingwidth and not self.resizingheight
         return not self.done
