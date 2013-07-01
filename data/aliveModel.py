@@ -768,11 +768,6 @@ class GameEngine(object):
         Process game state change events.
         """
 
-        # popping dialogue removes one line of dialog text
-        if not state and \
-                        len(self.dialogue) > 0 and \
-                        self.state.peek() == STATE_DIALOG:
-            self.dialogue.pop()
         # push or pop the given state
         if not self.state.process(state):
             self.evManager.Post(QuitEvent())
