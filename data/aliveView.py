@@ -210,6 +210,9 @@ class GraphicalView(object):
 
         elif state == aliveModel.STATE_HELP:
             # help is show via transition dialogues
+            self.draw_borders()
+            self.draw_player_stats()
+            self.draw_sprites()
             self.draw_dialogue()
 
         if self.transition:
