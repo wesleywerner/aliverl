@@ -167,6 +167,10 @@ class GameEngine(object):
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:
             self.evManager.Post(MessageEvent(entry_message))
+        entry_dialogue = self.story.entry_dialogue(nextlevel)
+        if entry_dialogue:
+            self.show_dialogue(entry_dialogue)
+
 
     def load_matrix(self):
         """
