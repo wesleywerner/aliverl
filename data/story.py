@@ -103,6 +103,18 @@ class StoryData(object):
             if 'entry message' in level.keys():
                 return level['entry message']
 
+    def entry_dialogue(self, level_number):
+        """
+        Get the entry dialogue for a level, or None if empty.
+
+        """
+
+        key = self.level_key(level_number)
+        if key:
+            level = self.conf['levels'][key]
+            if 'entry dialogue' in level.keys():
+                return level['entry dialogue']
+
     def level_file(self, level_number):
         """
         Returns the .tmx filename for the given level number.
