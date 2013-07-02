@@ -142,7 +142,7 @@ class UxButton(object):
         this_rect = self.calculated_rect()
         target.blit(source, self.rect, this_rect)
         if self.border_color:
-            pygame.draw.rectangle(target, self.border_color, this_rect, 1)
+            pygame.draw.rect(target, self.border_color, self.rect, 1)
 
 
 class UxManager(object):
