@@ -36,36 +36,56 @@ UNSEEN_GID = 24
 class GraphicalView(object):
     """
     Draws the model state onto the screen.
+
+    Attributes:
+
+    isinitialized (bool):
+        PyGame initialized OK and we are good to draw.
+
+    screen (Surface):
+        The surface representing the screen as returned by PyGame set_mode().
+
+    clock (Clock):
+        Keeps the fps constant when drawing.
+
+    smallfont (Font):
+        A small font.
+
+    largefont (Font):
+        A larger font.
+
+    image (Surface):
+        Where are rendering is draw to before blitting to the screen.
+
+    playarea (Rect):
+        location on screen to draw gameplay.
+
+    statsarea (Rect):
+        The area on image to draw player stats.
+
+    viewport (Rect):
+        The portion of the game map we are looking at, like the viewport
+        of a ship. The level map may be larger than our image, and the
+        viewport defines which part of that map we are viewing.
+        It moves around with the player character via the
+        update_viewport() call.
+
+    #TODO swap out for one dictionary
+    allsprites (Group): contains all animated, movable objects in play.
+    visible_sprites (Group): only contains sprites visible to the player.
+    sprite_lookup (Dict): a sprite name-value lookup.
+
+    #TODO remove any use the transition_queue directly, or better yet
+    #       create a virtual property to access the queue
+    transition (TransitionBase): current animated screen transition.
+    messages (list): list of recent game messages.
+
     """
 
     def __init__(self, evManager, model):
         """
         evManager controls Post()ing and notify()ing events.
         model gives us a strong reference to what we need to draw.
-
-        Attributes:
-        isinitialized (bool): pygame is ready to draw.
-        screen (Surface): the screen surface.
-        clock (Clock): keeps the fps constant.
-        smallfont (Font): a small font.
-        largefont (Font): a larger font.
-        levelcanvas (Surface): a rendering of the level tiles.
-        objectcanvas (Surface): a rendering of the level objects.
-        statscanvas (Surface): a rendering of player and level stats.
-        playarea (Rect): location on screen to draw gameplay.
-        statsarea (Rect): area to draw player stats.
-        viewport (Rect):
-            the portion of the game map we are looking at, like the viewport
-            of a ship. The level map may be larger than our screen, and the
-            viewport which part of that map we are viewing.
-            It moves around with the player character via the
-            update_viewport() method
-
-        allsprites (Group): contains all animated, movable objects in play.
-        visible_sprites (Group): only contains sprites visible to the player.
-        sprite_lookup (Dict): a sprite name-value lookup.
-        transition (TransitionBase): current animated screen transition.
-        messages (list): list of recent game messages.
 
         """
 
