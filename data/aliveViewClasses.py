@@ -125,22 +125,14 @@ class MovingSprite(Sprite):
 class TransitionBase(object):
     """
     Base for animated screen transitions.
-
-    Attributes:
-        surface (Surface): where to draw onto.
-        size ((w, h)): the size of the surface.
-    Methods:
-        update(): step the transition, returns True while busy
     """
 
-    def __init__(self, rect=None, background_color=color.green, fps=30):
+    def __init__(self, size=None, background_color=color.green, fps=30):
         """
         Defines a base for animations transition effects.
         Simply: a canvas that draws itself each update() -- permitting fps.
 
-        rect (Rect) tells us how large our canvas should be.
-                The topleft component serves to let us know where on
-                the screen our canvas will be draw to.
+        size (width, height) tells us how large our canvas should be.
 
         background_color (r, g, b) fills our canvas with the given color on
                 creation.
@@ -154,12 +146,12 @@ class TransitionBase(object):
                 user keypress.
         """
 
-        if not rect:
-            raise ValueError('TransitionBase rect cannot be None')
-        self.image = pygame.Surface(rect.size)
+        if not size:
+            raise ValueError('TransitionBase size cannot be None')
+        self.image = pygame.Surface(size)
         self.image.set_colorkey(color.magenta)
         self.image.fill(background_color)
-        self.rect = rect
+        self.rect = pygame.Rect((0, 0), size)
         self.delay = 500 / fps
         self.lasttime = 0
         self.done = False
@@ -192,7 +184,7 @@ class StaticScreen(TransitionBase):
     """
 
     def __init__(self,
-                rect=None,
+                size=None,
                 background_color=color.magenta,
                 fps=30,
                 font=None,
@@ -202,13 +194,13 @@ class StaticScreen(TransitionBase):
                 words_y_offset=0,
                 background=None
                 ):
-        super(StaticScreen, self).__init__(rect, background_color, fps)
+        super(StaticScreen, self).__init__(size, background_color, fps)
         self.waitforkey = True
         # use the supplied background image
         if background:
             # center it within our canvas
-            bgpos = ((rect.width - background.get_width()) / 2,
-                   (rect.height - background.get_height()) / 2)
+            bgpos = ((self.rect.width - background.get_width()) / 2,
+                   (self.rect.height - background.get_height()) / 2)
             self.xpadding = words_x_offset + bgpos[0]
             self.ypadding = words_y_offset + bgpos[1]
             self.image.blit(background, bgpos)
@@ -228,7 +220,7 @@ class SlideinTransition(TransitionBase):
     """
 
     def __init__(self,
-                rect=None,
+                size=None,
                 background_color=color.magenta,
                 fps=30,
                 font=None,
@@ -239,10 +231,8 @@ class SlideinTransition(TransitionBase):
                 direction_reversed=False
                 ):
         """
-        rect:
-            (Rect) tells us how large our canvas should be.
-            The topleft component is informative only:
-            to let us know where on the screen our image will be draw to.
+        size:
+            (width, height) tells us how large our canvas should be.
 
         background_color:
             (r, g, b) fills our canvas with the given color on creation.
@@ -270,13 +260,13 @@ class SlideinTransition(TransitionBase):
 
         """
 
-        super(SlideinTransition, self).__init__(rect, background_color, fps)
+        super(SlideinTransition, self).__init__(size, background_color, fps)
 
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
-        self.fontloc.center = rect.center
-        self.size = (self.rect.width, self.rect.height)
+        self.fontloc.center = self.rect.center
+        self.size = self.rect.size
         self.boxcolor = boxcolor
         self.pensize = pensize
         self.background_color = background_color
@@ -285,13 +275,13 @@ class SlideinTransition(TransitionBase):
         # center the background image
         if direction_reversed:
             # box fills the area and shrinks over time
-            self.box = rect.copy()
+            self.box = self.rect.copy()
         else:
             # box starts small and expands over time
             self.box = pygame.Rect(0, 0, 100, 20)
 
         # center the box according to full size
-        self.box.center = rect.center
+        self.box.center = self.rect.center
         if not font:
             font = pygame.font.Font(None, 16)
 
@@ -357,7 +347,7 @@ class TerminalPrinter(TransitionBase):
     """
 
     def __init__(self,
-                rect=None,
+                size=None,
                 background_color=color.magenta,
                 fps=30,
                 font=None,
@@ -367,10 +357,8 @@ class TerminalPrinter(TransitionBase):
                 words_y_offset=0,
                 background=None):
         """
-        rect:
-            (Rect) tells us how large our canvas should be.
-            The topleft component is informative only:
-            to let us know where on the screen our image will be draw to.
+        size:
+            (width, height) tells us how large our canvas should be.
 
         background_color:
             (r, g, b) fills our canvas with the given color on creation.
@@ -393,7 +381,7 @@ class TerminalPrinter(TransitionBase):
 
         if not words:
             raise ValueError('TerminalPrinter words cannot be None or empty')
-        super(TerminalPrinter, self).__init__(rect, background_color, fps)
+        super(TerminalPrinter, self).__init__(size, background_color, fps)
         self.words = words
         self.text = ""
         self.word_color = word_color
@@ -402,7 +390,6 @@ class TerminalPrinter(TransitionBase):
         self.ypadding = words_y_offset
         self.lineindex = 0
         self.charindex = 0
-        self.rect = rect
         self.xposition, self.yposition = self.rect.topleft
         self.done = False
         self.lastfontheight = 0

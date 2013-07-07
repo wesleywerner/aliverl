@@ -54,10 +54,21 @@ class GraphicalView(object):
     largefont (Font):
         A larger font.
 
-    image (Surface):
-        Where are rendering is draw to before blitting to the screen.
+    map_image (Surface):
+        A prerendered image of the level map static tiles that do not need
+        to animate. It may be larger than our play area, and we only draw
+        the map area under our viewport.
 
-    playarea (Rect):
+    play_image (Surface):
+        An image of the game play area, excluding game borders.
+        All sprites and other game action is drawn here.
+
+    image (Surface):
+        This is the final destination for all rendering, before it gets
+        blit to the screen. This separation allows us to scale the output
+        if need be, or center it for arbitrary screen sizes.
+
+    play_area (Rect):
         location on screen to draw gameplay.
 
     statsarea (Rect):
@@ -97,10 +108,12 @@ class GraphicalView(object):
         self.clock = None
         self.smallfont = None
         self.largefont = None
-        self.levelcanvas = None
-        self.objectcanvas = None
+        self.image = None
+        self.map_image = None
+        self.play_image = None
+        #TODO remove statscanvas ?
         self.statscanvas = None
-        self.playarea = None
+        self.play_area = None
         self.statsarea = None
         self.viewport = None
         self.windowsize = None
@@ -114,6 +127,30 @@ class GraphicalView(object):
         self.last_tip_pos = 0
         self.transition_queue = []
         self.ui = None
+
+    @property
+    def tmx(self):
+        """
+        A virtual property to access the level data on the model.
+        """
+
+        return self.model.level.tmx
+
+    @property
+    def tile_w(self):
+        """
+        A virtual property to access the tile width.
+        """
+
+        return self.tmx.tile_width
+
+    @property
+    def tile_h(self):
+        """
+        A virtual property to access the tile height.
+        """
+
+        return self.tmx.tile_height
 
     def notify(self, event):
         """
@@ -219,7 +256,11 @@ class GraphicalView(object):
             print('\n' + str(traceback.format_exc()))
             sys.exit(1)
 
-        self.screen.blit(self.defaultbackground, (0, 0))
+        # reset the main image by painting a background over it
+        self.image.blit(self.defaultbackground, (0, 0))
+
+        # and clear the play image
+        self.play_image.fill(color.magenta)
 
         if state == aliveModel.STATE_INTRO:
             pass
@@ -231,12 +272,16 @@ class GraphicalView(object):
             self.draw_borders()
             self.draw_player_stats()
             self.draw_sprites()
+            self.draw_fog()
             self.draw_dialogue()
 
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
+
+            # draw all things onto the play_image
             self.draw_borders()
             self.draw_player_stats()
             self.draw_sprites()
+            self.draw_fog()
             self.draw_scroller_text()
 
             if state == aliveModel.STATE_GAMEOVER:
@@ -248,17 +293,24 @@ class GraphicalView(object):
             self.draw_borders()
             self.draw_player_stats()
             self.draw_sprites()
+            self.draw_fog()
             self.draw_dialogue()
 
-        # update the ui and draw it to the screen
+        # merge play_image into our main image at the relevant position
+        self.image.blit(self.play_image, self.play_area) # , self.viewport)
+
+        # update the ui and draw it to the main image
         self.ui.hover(pygame.mouse.get_pos())
         self.ui.update()
-        self.screen.blit(self.ui.image, (0, 0))
+        self.image.blit(self.ui.image, (0, 0))
 
+        # apply any transitions
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
-            self.screen.blit(self.transition.image, (0, 0))
+            self.image.blit(self.transition.image, (0, 0))
 
+        # finally draw our composed image onto the screen
+        self.screen.blit(self.image, self.game_area)
         pygame.display.flip()
 
     def draw_animations_cheatsheet(self):
@@ -272,7 +324,6 @@ class GraphicalView(object):
         surf.fill(color.black)
         x, y = (10, 50)
         column_width = 0
-        tmx = self.model.level.tmx
         level_file = os.path.basename(self.model.level.filename)
         image_filename = '/tmp/anims-%s.png' % level_file
         fnt = self.largefont.render('Alive animations', False, color.green)
@@ -287,13 +338,13 @@ class GraphicalView(object):
             tile = self.tsp[gid]
             surf.blit(tile, (x, y))
             fnt = self.smallfont.render(str(gid) + ': ' + key, False, color.white)
-            surf.blit(fnt, (x + tmx.tile_width, y))
-            this_width = x + tmx.tile_width + fnt.get_width()
+            surf.blit(fnt, (x + self.tile_w, y))
+            this_width = x + self.tile_w + fnt.get_width()
             if this_width > column_width:
                 column_width = this_width
-            y += tmx.tile_height * 1.5
+            y += self.tile_h * 1.5
 
-            if y > size[1] - tmx.tile_height:
+            if y > size[1] - self.tile_h:
                 y = 50
                 x = column_width
                 column_width = 0
@@ -313,19 +364,17 @@ class GraphicalView(object):
         Draw the main menu.
         """
 
-        self.screen.blit(self.menubackground, (0, 0))
+        self.image.blit(self.menubackground, (0, 0))
 
     def draw_sprites(self):
         """
         Draw the play area: level tiles and objects.
         """
 
-        self.screen.blit(self.levelcanvas, self.playarea, self.viewport)
-        self.objectcanvas.fill(color.magenta)
+        self.play_image.fill(color.magenta)
+        self.play_image.blit(self.map_image, (0, 0), self.viewport)
         self.allsprites.update(pygame.time.get_ticks())
-        self.visible_sprites.draw(self.objectcanvas)
-        self.draw_fog()
-        self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
+        self.visible_sprites.draw(self.play_image)
 
     def draw_fog(self):
         """
@@ -335,34 +384,35 @@ class GraphicalView(object):
         unseen_sprite = self.tsp[UNSEEN_GID]
         fog_sprite = self.tsp[FOG_GID]
 
-        tmx = self.model.level.tmx
-        for y in range(0, tmx.height):
-            for x in range(0, tmx.width):
+        for y in range(0, self.tmx.height):
+            for x in range(0, self.tmx.width):
                 # lookup list of which positions has been seen
                 # and overlay those with FOG_GID, the rest with UNSEEN_GID
                 seen = self.model.level.matrix['seen'][x][y]
 
                 # not yet seen
                 if seen == 0:
-                    self.objectcanvas.blit(unseen_sprite,
-                                    (x * tmx.tile_width, y * tmx.tile_height))
+                    self.play_image.blit(unseen_sprite,
+                                    (x * self.tile_w,
+                                     y * self.tile_h))
                 # seen but out of range
                 elif seen == 1:
-                    self.objectcanvas.blit(fog_sprite,
-                                    (x * tmx.tile_width, y * tmx.tile_height))
+                    self.play_image.blit(fog_sprite,
+                                    (x * self.tile_w,
+                                     y * self.tile_h))
 
     def draw_scroller_text(self):
         """
         Draw any scrolling text sprites.
         """
 
-        if self.scrollertexts:
-            self.scrollertexts.update(pygame.time.get_ticks())
-            self.scrollertexts.draw(self.objectcanvas)
-            self.screen.blit(self.objectcanvas, self.playarea, self.viewport)
-            for sprite in self.scrollertexts:
-                if sprite.done:
-                    self.scrollertexts.remove(sprite)
+        ticks = pygame.time.get_ticks()
+        for sprite in self.scrollertexts:
+            if sprite.done:
+                self.scrollertexts.remove(sprite)
+            else:
+                sprite.update(ticks)
+                self.play_image.blit(sprite.image, sprite.rect)
 
     def draw_dialogue(self):
         """
@@ -415,7 +465,7 @@ class GraphicalView(object):
                 if not terminal_slidein_added:
                     terminal_slidein_added = True
                     new_transition = SlideinTransition(
-                        rect=self.windowsize,
+                        size=self.game_area.size,
                         background_color=color.magenta,
                         fps=self.gamefps,
                         font=self.smallfont,
@@ -429,7 +479,7 @@ class GraphicalView(object):
                 words = datas['datas']
                 words = self.wrap_text(words, 25)
                 new_transition = TerminalPrinter(
-                    rect=self.windowsize,
+                    size=self.game_area.size,
                     background_color=color.magenta,
                     fps=self.gamefps,
                     font=self.largefont,
@@ -443,7 +493,7 @@ class GraphicalView(object):
 
         # add a closing transition
         close_transition = SlideinTransition(
-                        rect=self.windowsize,
+                        size=self.game_area.size,
                         background_color=color.magenta,
                         fps=self.gamefps,
                         font=self.smallfont,
@@ -473,7 +523,7 @@ class GraphicalView(object):
         Draw game borders.
         """
 
-        self.screen.blit(self.borders, (0, 0))
+        self.image.blit(self.borders, (0, 0))
 
     def draw_player_stats(self):
         """
@@ -508,7 +558,7 @@ class GraphicalView(object):
                                 _colorband(player.mana / player.maxmana))
         self.statscanvas.blit(
             pmana, (xposition + (phealth.get_width() * 1.5), yposition))
-        self.screen.blit(self.statscanvas, self.statsarea)
+        self.image.blit(self.statscanvas, self.statsarea)
 
     def draw_game_messages(self):
         """
@@ -611,36 +661,41 @@ class GraphicalView(object):
                         background
                         )
 
-    def load_level(self):
+    def draw_map_image(self):
         """
-        Prepare the View's canvases from the current model map data.
-        Note: we only support the first tilset as defined in the tmx.
+        Prerender the level onto an image for easier use.
+        This only draws non-animation map tiles.
+
         """
 
-        tmx = self.model.level.tmx
-        story = self.model.story
-        tilesetfile = os.path.join(story.path, tmx.tilesets[0].source)
-        self.tsp = TilesetParser(
-                                tilesetfile,
-                                (tmx.tile_width, tmx.tile_height),
-                                color.magenta
-                                )
-
-        self.levelcanvas = pygame.Surface((tmx.px_width, tmx.px_height))
-        self.levelcanvas.set_colorkey(color.magenta)
-        self.levelcanvas.fill(color.magenta)
-        self.objectcanvas = pygame.Surface(self.levelcanvas.get_size())
-        self.objectcanvas.set_colorkey(color.magenta)
-        self.statscanvas = pygame.Surface(self.statsarea.size)
-        self.statscanvas.set_colorkey(color.magenta)
-        for y in range(tmx.height):
-            for x in range(tmx.width):
-                for layer in tmx.tilelayers:
+        self.map_image = pygame.Surface((self.tmx.px_width, self.tmx.px_height))
+        self.map_image.set_colorkey(color.magenta)
+        self.map_image.fill(color.magenta)
+        for y in range(self.tmx.height):
+            for x in range(self.tmx.width):
+                for layer in self.tmx.tilelayers:
                     gid = layer.at((x, y))
                     tile = self.tsp[gid]
                     if tile:
-                        self.levelcanvas.blit(tile,
-                                    (x * tmx.tile_width, y * tmx.tile_height))
+                        self.map_image.blit(tile,
+                            (x * self.tile_w,
+                            y * self.tile_h))
+
+
+    def load_level(self):
+        """
+        Load the map data and prepare some resources for drawing the game.
+        Note: we only support the first tilset as defined in the self.tmx.
+        """
+
+        story = self.model.story
+        tilesetfile = os.path.join(story.path, self.tmx.tilesets[0].source)
+        self.tsp = TilesetParser(
+                                tilesetfile,
+                                (self.tile_w, self.tile_h),
+                                color.magenta
+                                )
+        self.draw_map_image()
 
     def set_sprite_defaults(self, obj):
         """
@@ -685,16 +740,15 @@ class GraphicalView(object):
         self.visible_sprites.empty()
         self.sprite_lookup = {}
 
-        tmx = self.model.level.tmx
         for obj in self.model.objects:
-            x = (obj.x * tmx.tile_width)
-            y = (obj.y * tmx.tile_height)
+            x = (obj.x * self.tile_w)
+            y = (obj.y * self.tile_h)
             sprite_id = id(obj)
             s = Sprite(
                     sprite_id,
                     Rect(x, y,
-                        tmx.tile_width,
-                        tmx.tile_height),
+                        self.tile_w,
+                        self.tile_h),
                     self.allsprites
                     )
             self.sprite_lookup[sprite_id] = s
@@ -780,12 +834,11 @@ class GraphicalView(object):
         Move the sprite by the event details.
         """
 
-        tmx = self.model.level.tmx
         oid = id(event.obj)
         for sprite in self.allsprites:
             if sprite.name == oid:
-                sprite.rect.topleft = ((event.obj.x * tmx.tile_width),
-                                        (event.obj.y * tmx.tile_height))
+                sprite.rect.topleft = ((event.obj.x * self.tile_w),
+                                        (event.obj.y * self.tile_h))
                 return
 
     def kill_sprite(self, mapobject):
@@ -836,18 +889,15 @@ class GraphicalView(object):
         # make some values easier to read
         px, py = self.model.player.getpixelxy()
         vp = self.viewport
-        tw = self.model.tile_width
-        th = self.model.tile_height
 
         # no point to shift if the level size is within our viewport limits
-        tmx = self.model.level.tmx
-        if (tmx.width * tw <= vp.width and
-            tmx.height * th <= vp.height):
+        if (self.tmx.width * self.tile_w <= vp.width and
+            self.tmx.height * self.tile_h <= vp.height):
             return
 
         # how close to edges we need to be to shfit the view (in tiles)
-        A = 4 * tw
-        B = 4 * th
+        A = 4 * self.tile_w
+        B = 4 * self.tile_h
 
         x_min, y_min = (vp.left + A, vp.top + B)
         x_max, y_max = (vp.left + vp.width - A, vp.top + vp.height - B)
@@ -872,10 +922,10 @@ class GraphicalView(object):
         if self.viewport.top < 0:
             self.viewport.top = 0
         # and the bottom-right edges
-        if self.viewport.right > tmx.width * tw:
-            self.viewport.right = tmx.width * tw
-        if self.viewport.bottom > tmx.height * th:
-            self.viewport.bottom = tmx.height * th
+        if self.viewport.right > self.tmx.width * self.tile_w:
+            self.viewport.right = self.tmx.width * self.tile_w
+        if self.viewport.bottom > self.tmx.height * self.tile_h:
+            self.viewport.bottom = self.tmx.height * self.tile_h
 
     def adjust_viewport(self, event):
         """
@@ -898,30 +948,63 @@ class GraphicalView(object):
         Set up the pygame graphical display and loads graphical resources.
         """
 
-        # setup pygame
         try:
+
+            # set the window size
+            self.windowsize = pygame.Rect(0, 0, 600, 600)
+
+            # set the game area, centered in the window
+            self.game_area = pygame.Rect(0, 0, 600, 600)
+            self.game_area.topleft = (
+                self.windowsize.width / 2 - self.game_area.width / 2,
+                self.windowsize.height / 2 - self.game_area.height / 2
+            )
+
+            # the viewport is a shifting area within the game map
+            self.viewport = pygame.Rect(0, 0, 512, 512)
+
+            # the on-screen area for drawing game play action
+            self.play_area = pygame.Rect((75, 66), self.viewport.size)
+
+            # where player stats are drawn
+            self.statsarea = pygame.Rect(200, 22, 400, 40)
+
+            # store for animated sprites
+            self.allsprites = pygame.sprite.Group()
+
+            # initialize pygame
             result = pygame.init()
             pygame.font.init()
-            pygame.display.set_caption('Alive')
-            self.windowsize = pygame.Rect(0, 0, 600, 600)
-            self.viewport = pygame.Rect(0, 0, 512, 512)
-            self.playarea = pygame.Rect((75, 66), self.viewport.size)
-            self.screen = pygame.display.set_mode(self.windowsize.size)
-            self.statsarea = pygame.Rect(200, 22, 400, 40)
             self.clock = pygame.time.Clock()
-            self.allsprites = pygame.sprite.Group()
+            pygame.display.set_caption('Alive')
+            self.screen = pygame.display.set_mode(self.windowsize.size)
+
+            # create drawing surfaces which are reused
+            self.play_image = pygame.Surface(self.play_area.size)
+            self.play_image.set_colorkey(color.magenta)
+            self.statscanvas = pygame.Surface(self.statsarea.size)
+            self.statscanvas.set_colorkey(color.magenta)
+            self.image = pygame.Surface(self.game_area.size)
+            self.image.set_colorkey(color.magenta)
+
+            # holding a key will repeat it
             pygame.key.set_repeat(200, 150)
+
             # load resources
             self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
             self.largefont = pygame.font.Font('bitwise.ttf', 30)
-            self.defaultbackground = image.load(
-                'images/background.png').convert()
+            self.defaultbackground = image.load('images/background.png').convert()
             self.menubackground = image.load('images/menu.png').convert()
             self.borders = image.load('images/playscreen.png').convert()
             self.borders.set_colorkey(color.magenta)
             self.dialoguebackground = image.load('images/dialog.png').convert()
+
+            # set up all our ui buttons
             self.setup_ui_manager()
+
+            # flag that we are done and ready for drawing action
             self.isinitialized = True
+
         except Exception, e:
             # these lines pose an interesting problem:
             # if the crash message crashes, we go down hard.
@@ -940,7 +1023,7 @@ class GraphicalView(object):
 
         # add the first help screen
         help_transition = SlideinTransition(
-            rect=self.windowsize,
+            size=self.game_area.size,
             background_color=color.magenta,
             fps=self.gamefps,
             font=self.smallfont,
@@ -954,7 +1037,7 @@ class GraphicalView(object):
 
         # add subsequent screens as static (no animation required)
         help_2 = StaticScreen(
-            rect=self.windowsize,
+            size=self.game_area.size,
             background_color=color.magenta,
             fps=self.gamefps,
             font=self.largefont,
@@ -968,7 +1051,7 @@ class GraphicalView(object):
 
         # add a closing transition
         close_transition = SlideinTransition(
-            rect=self.windowsize,
+            size=self.game_area.size,
             background_color=color.magenta,
             fps=self.gamefps,
             font=self.smallfont,
@@ -988,7 +1071,7 @@ class GraphicalView(object):
 
         """
 
-        self.ui = ui.UxManager(self.windowsize.size,
+        self.ui = ui.UxManager(self.game_area.size,
             image_filename='images/ui.png',
             font=self.smallfont,
             click_callback=self.ui_click_event,
