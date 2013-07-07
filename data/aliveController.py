@@ -12,6 +12,7 @@
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
 import pygame
+from const import *
 import aliveModel
 from eventmanager import *
 
@@ -42,19 +43,19 @@ class KeyboardMouse(object):
                     # all key downs
                     if event.type == pygame.KEYDOWN:
                         state = self.model.state.peek()
-                        if state == aliveModel.STATE_INTRO:
+                        if state == STATE_INTRO:
                             self.intro_keys(event)
-                        elif state == aliveModel.STATE_MENU:
+                        elif state == STATE_MENU:
                             self.menu_keys(event)
-                        elif state == aliveModel.STATE_PLAY:
+                        elif state == STATE_PLAY:
                             self.play_keys(event)
-                        elif state == aliveModel.STATE_GAMEOVER:
+                        elif state == STATE_GAMEOVER:
                             self.game_over_keys(event)
-                        elif state == aliveModel.STATE_DIALOG:
+                        elif state == STATE_DIALOG:
                             self.dialogue_keys(event)
-                        elif state == aliveModel.STATE_CRASH:
+                        elif state == STATE_CRASH:
                             self.crash_keys(event)
-                        elif state == aliveModel.STATE_HELP:
+                        elif state == STATE_HELP:
                             self.help_keys(event)
                         else:
                             # allow escaping from unhandled states
@@ -99,7 +100,7 @@ class KeyboardMouse(object):
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
         elif event.key == pygame.K_F1:
-            self.evManager.Post(StateChangeEvent(aliveModel.STATE_HELP))
+            self.evManager.Post(StateChangeEvent(STATE_HELP))
         elif event.key in movement.keys():
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
         elif mods & pygame.KMOD_CTRL:
@@ -135,7 +136,7 @@ class KeyboardMouse(object):
         """
 
         if event.key in (pygame.K_SPACE, pygame.K_RETURN):
-            self.evManager.Post(StateChangeEvent(aliveModel.STATE_PLAY))
+            self.evManager.Post(StateChangeEvent(STATE_PLAY))
         elif event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
 

@@ -16,7 +16,7 @@ import sys
 import math
 import random
 import traceback
-import const
+from const import *
 import color
 import trace
 import story
@@ -302,7 +302,7 @@ class GameEngine(object):
         # update scent trail
         p = self.player.properties
         p['trail'].insert(0, (self.player.x, self.player.y))
-        self.player.properties['trail'] = p['trail'][:const.PLAYER_SCENT_LEN]
+        self.player.properties['trail'] = p['trail'][:PLAYER_SCENT_LEN]
 
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
@@ -895,17 +895,6 @@ class GameLevel(object):
         self.matrix['block'] = rlhelper.make_matrix(w, h, 0)
         # and a matrix of tiles seen (it update as the player moves around)
         self.matrix['seen'] = rlhelper.make_matrix(w, h, 0)
-
-
-# State machine constants for the StateMachine class below
-STATE_INTRO = 1
-STATE_MENU = 2
-STATE_HELP = 3
-STATE_ABOUT = 4
-STATE_PLAY = 5
-STATE_DIALOG = 6
-STATE_GAMEOVER = 7
-STATE_CRASH = 8
 
 
 class StateMachine(object):

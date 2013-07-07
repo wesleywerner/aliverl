@@ -11,6 +11,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
+# state machine constants
+STATE_INTRO = 1
+STATE_MENU = 2
+STATE_HELP = 3
+STATE_ABOUT = 4
+STATE_PLAY = 5
+STATE_DIALOG = 6
+STATE_GAMEOVER = 7
+STATE_CRASH = 8
+
 # number of player positions to keep as a scent for 'sniffer' ai to follow.
 PLAYER_SCENT_LEN = 5
 

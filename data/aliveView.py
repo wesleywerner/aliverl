@@ -19,7 +19,7 @@ from pygame.locals import *
 import ui
 import trace
 import color
-import const
+from const import *
 import rlhelper
 import aliveModel
 from aliveViewClasses import *
@@ -214,7 +214,7 @@ class GraphicalView(object):
                     trace.write('set ui context to game state %s' % model_state)
                     self.ui.set_context(model_state)
 
-                if event.state == aliveModel.STATE_HELP:
+                if event.state == STATE_HELP:
                     self.show_help_screens()
 
         except Exception, e:
@@ -243,7 +243,7 @@ class GraphicalView(object):
 
         try:
             state = self.model.state.peek()
-            if state == aliveModel.STATE_CRASH:
+            if state == STATE_CRASH:
                 somewords = self.draw_text(const.CRASH_MESSAGE,
                                             self.smallfont,
                                             False,
@@ -265,13 +265,13 @@ class GraphicalView(object):
         # and clear the play image
         self.play_image.fill(color.magenta)
 
-        if state == aliveModel.STATE_INTRO:
+        if state == STATE_INTRO:
             pass
 
-        elif state == aliveModel.STATE_MENU:
+        elif state == STATE_MENU:
             self.draw_menu()
 
-        elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
+        elif state in (STATE_PLAY, STATE_GAMEOVER):
 
             # draw all things onto the play_image
             self.draw_borders()
@@ -280,7 +280,7 @@ class GraphicalView(object):
             self.draw_fog()
             self.draw_scroller_text()
 
-            if state == aliveModel.STATE_GAMEOVER:
+            if state == STATE_GAMEOVER:
                 #TODO Overlay a game over message.
                 pass
 
@@ -536,7 +536,7 @@ class GraphicalView(object):
         # cater for certain STATES that rely on transitions
         # by popping the state queue if no more transitions are avaialble.
         state = self.model.state.peek()
-        if (state in (aliveModel.STATE_DIALOG, aliveModel.STATE_HELP) and
+        if (state in (STATE_DIALOG, STATE_HELP) and
             not self.transition_queue):
                 self.evManager.Post(StateChangeEvent(None))
 
@@ -1079,7 +1079,7 @@ class GraphicalView(object):
             hotkey='z',
             enabled=True,
             border_color=None,
-            context=aliveModel.STATE_PLAY
+            context=STATE_PLAY
             )
         self.ui.add(button)
 
