@@ -20,6 +20,7 @@ import ui
 import trace
 import color
 import const
+import rlhelper
 import aliveModel
 from aliveViewClasses import *
 from eventmanager import *
@@ -81,10 +82,8 @@ class GraphicalView(object):
         It moves around with the player character via the
         update_viewport() call.
 
-    #TODO swap out for one dictionary
-    allsprites (Group): contains all animated, movable objects in play.
-    visible_sprites (Group): only contains sprites visible to the player.
-    sprite_lookup (Dict): a sprite name-value lookup.
+    sprites (Dict):
+        A sprite lookup by object id.
 
     #TODO remove any use the transition_queue directly, or better yet
     #       create a virtual property to access the queue
@@ -117,9 +116,7 @@ class GraphicalView(object):
         self.statsarea = None
         self.viewport = None
         self.windowsize = None
-        self.allsprites = None
-        self.visible_sprites = None
-        self.sprite_lookup = {}
+        self.sprites = {}
         self.scrollertexts = None
         self.transition = None
         self.messages = [''] * 20
@@ -166,7 +163,6 @@ class GraphicalView(object):
                 self.move_sprite(event)
 
             elif isinstance(event, PlayerMovedEvent):
-                self.update_visible_sprites()
                 self.update_viewport()
 
             elif isinstance(event, MessageEvent):
@@ -371,10 +367,32 @@ class GraphicalView(object):
         Draw the play area: level tiles and objects.
         """
 
-        self.play_image.fill(color.magenta)
+        # start by drawing the level map on our play image.
         self.play_image.blit(self.map_image, (0, 0), self.viewport)
-        self.allsprites.update(pygame.time.get_ticks())
-        self.visible_sprites.draw(self.play_image)
+        ticks = pygame.time.get_ticks()
+        # for each sprite in our viewport range
+        for x, y in rlhelper.remap_coords(self.viewport, self.tile_w, self.tile_h):
+            object_list = self.model.get_object_by_xy(x, y)
+            for obj in object_list:
+                # grab the sprite that match this object id
+                sprite = self.sprites.get(id(obj), None)
+                # test if this is a character within view range
+                if obj.type in ('ai', 'friend'):
+                    if obj.in_range:
+                        visible = True
+                    else:
+                        visible = False
+                # or not a character, but has been seen before
+                elif obj.seen:
+                    visible = True
+                else:
+                    visible = False
+                # draw if both are happy
+                if sprite and visible:
+                    # update the sprite animation
+                    sprite.update(ticks)
+                    # and draw it
+                    self.play_image.blit(sprite.image, sprite.rect)
 
     def draw_fog(self):
         """
@@ -710,7 +728,7 @@ class GraphicalView(object):
         anims = self.model.story.animations(obj.gid)
 
         # grab our sprite
-        sprite = self.sprite_lookup[id(obj)]
+        sprite = self.sprites.get(id(obj), None)
 
         # apply animation defs
         if anims and sprite:
@@ -732,13 +750,7 @@ class GraphicalView(object):
         Create all the sprites that represent all level objects.
         """
 
-        if not self.allsprites:
-            self.allsprites = pygame.sprite.Group()
-        if not self.visible_sprites:
-            self.visible_sprites = pygame.sprite.Group()
-        self.allsprites.empty()
-        self.visible_sprites.empty()
-        self.sprite_lookup = {}
+        self.sprites = {}
 
         for obj in self.model.objects:
             x = (obj.x * self.tile_w)
@@ -748,10 +760,9 @@ class GraphicalView(object):
                     sprite_id,
                     Rect(x, y,
                         self.tile_w,
-                        self.tile_h),
-                    self.allsprites
+                        self.tile_h)
                     )
-            self.sprite_lookup[sprite_id] = s
+            self.sprites[sprite_id] = s
             self.set_sprite_defaults(obj)
 
     def draw_outlined_text(self, font, text, fcolor, bcolor):
@@ -834,21 +845,18 @@ class GraphicalView(object):
         Move the sprite by the event details.
         """
 
-        oid = id(event.obj)
-        for sprite in self.allsprites:
-            if sprite.name == oid:
-                sprite.rect.topleft = ((event.obj.x * self.tile_w),
-                                        (event.obj.y * self.tile_h))
-                return
+        sprite = self.sprites.get(id(event.obj), None)
+        if sprite:
+            sprite.rect.topleft = ((event.obj.x * self.tile_w),
+                                    (event.obj.y * self.tile_h))
+            return
 
-    def kill_sprite(self, mapobject):
+    def kill_sprite(self, object):
         """
-        Remove a character from play and from the sprite list.
+        Remove a sprite.
         """
-        match = [e for e in self.allsprites if e.name == id(mapobject)]
-        if match:
-            self.allsprites.remove(match[0])
-            self.visible_sprites.remove(match[0])
+
+        self.sprites.pop(id(mapobject), None)
 
     def transmute_sprite(self, event):
         """
@@ -857,29 +865,6 @@ class GraphicalView(object):
 
         event.obj.gid = event.gid
         self.set_sprite_defaults(event.obj)
-
-    def update_visible_sprites(self):
-        """
-        Update the visible_sprites group to only include those within
-        the player's view, or on certain other conditions.
-        """
-
-        for obj in self.model.objects:
-            # get the sprite name and reference
-            sprite_name = id(obj)
-            sprite = self.sprite_lookup[sprite_name]
-
-            # add and remove sprites from the visible group
-            # if they have been seen
-            if obj.type in ('ai', 'friend'):
-                if obj.in_range:
-                    self.visible_sprites.add(sprite)
-                else:
-                    self.visible_sprites.remove(sprite)
-            elif obj.seen:
-                self.visible_sprites.add(sprite)
-            else:
-                self.visible_sprites.remove(sprite)
 
     def update_viewport(self):
         """
@@ -968,9 +953,6 @@ class GraphicalView(object):
 
             # where player stats are drawn
             self.statsarea = pygame.Rect(200, 22, 400, 40)
-
-            # store for animated sprites
-            self.allsprites = pygame.sprite.Group()
 
             # initialize pygame
             result = pygame.init()
