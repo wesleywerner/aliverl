@@ -127,30 +127,31 @@ class TransitionBase(object):
     Base for animated screen transitions.
     """
 
-    def __init__(self, size=None, background_color=color.green, fps=30):
+    def __init__(self, size=None, fps=30):
         """
         Defines a base for animations transition effects.
         Simply: a canvas that draws itself each update() -- permitting fps.
 
-        size (width, height) tells us how large our canvas should be.
+        size (width, height):
+            How large our image should be.
 
-        background_color (r, g, b) fills our canvas with the given color on
-                creation.
-
-        fps (int) is used to calculate constant redraw speed for any fps.
+        fps (int):
+            Used to calculate constant redraw speed.
 
         Attributes:
+
             done (bool):
                 True when our animation is complete.
-            waitforkey (bool): A flag to let our callers know to wait for
-                user keypress.
+
+            waitforkey (bool):
+                Let our callers know to wait for a user keypress.
+
         """
 
         if not size:
             raise ValueError('TransitionBase size cannot be None')
         self.image = pygame.Surface(size)
         self.image.set_colorkey(color.magenta)
-        self.image.fill(background_color)
         self.rect = pygame.Rect((0, 0), size)
         self.delay = 500 / fps
         self.lasttime = 0
@@ -194,7 +195,7 @@ class StaticScreen(TransitionBase):
                 words_y_offset=0,
                 background=None
                 ):
-        super(StaticScreen, self).__init__(size, background_color, fps)
+        super(StaticScreen, self).__init__(size, fps)
         self.waitforkey = True
         # use the supplied background image
         if background:
@@ -221,11 +222,11 @@ class SlideinTransition(TransitionBase):
 
     def __init__(self,
                 size=None,
-                background_color=color.magenta,
                 fps=30,
                 font=None,
                 title='',
-                background=None,
+                inner_bg_color=color.magenta,
+                inner_bg=None,
                 boxcolor=color.green,
                 pensize=1,
                 direction_reversed=False
@@ -233,9 +234,6 @@ class SlideinTransition(TransitionBase):
         """
         size:
             (width, height) tells us how large our canvas should be.
-
-        background_color:
-            (r, g, b) fills our canvas with the given color on creation.
 
         fps:
             (int) used to calculate constant redraw speed for any fps.
@@ -246,8 +244,11 @@ class SlideinTransition(TransitionBase):
         title:
             centered text drawn on the transition
 
-        background:
-            an image that underlays the transition
+        inner_bg_color:
+            (r, g, b) fills the region within our box area.
+
+        inner_bg:
+            The image displayed inside the shifting box region
 
         boxcolor:
             color of the bounding box
@@ -260,17 +261,19 @@ class SlideinTransition(TransitionBase):
 
         """
 
-        super(SlideinTransition, self).__init__(size, background_color, fps)
+        super(SlideinTransition, self).__init__(size, fps)
+
+        self.size = self.rect.size
+        self.boxcolor = boxcolor
+        self.pensize = pensize
+        self.inner_bg_color = inner_bg_color
+        self.direction_reversed = direction_reversed
+        self.inner_bg = inner_bg
 
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
         self.fontloc.center = self.rect.center
-        self.size = self.rect.size
-        self.boxcolor = boxcolor
-        self.pensize = pensize
-        self.background_color = background_color
-        self.direction_reversed = direction_reversed
 
         # center the background image
         if direction_reversed:
@@ -285,16 +288,6 @@ class SlideinTransition(TransitionBase):
         if not font:
             font = pygame.font.Font(None, 16)
 
-        self.background = None
-        if background:
-            #TODO may not be neccessary if we just store background_image :p
-            # make a background surface
-            bgpos = ((self.size[0] - background.get_width()) / 2,
-                   (self.size[1] - background.get_height()) / 2)
-            self.background = pygame.Surface(self.size)
-            self.background.fill(background_color)
-            # paint over the given image
-            self.background.blit(background, bgpos)
         # toggle delta direction
         self.xdelta = 30
         self.ydelta = 30
@@ -330,14 +323,23 @@ class SlideinTransition(TransitionBase):
                 self.resizingwidth = self.box.w < self.size[0]
                 if not self.direction_reversed:
                     self.resizingheight = not self.resizingwidth
-            if self.background:
-                # FIXME may need to fill with background_color (magenta) here
-                # draw the background image cut from the same area of our box
-                self.image.fill(self.background_color)
-                self.image.blit(self.background, self.box.topleft, self.box)
+
+            # fill our image with the background color
+            self.image.fill(self.inner_bg_color)
+
+            # draw the inner background, as cut out by our box region
+            if self.inner_bg:
+                self.image.blit(self.inner_bg, self.box.topleft, self.box)
+
+            # draw our box rectangle
             pygame.draw.rect(self.image, self.boxcolor, self.box, self.pensize)
+
+            # write the title text
             self.image.blit(self.fontpix, self.fontloc)
+
+            # check if we are done with our animation
             self.done = not self.resizingwidth and not self.resizingheight
+
         return not self.done
 
 
@@ -381,7 +383,7 @@ class TerminalPrinter(TransitionBase):
 
         if not words:
             raise ValueError('TerminalPrinter words cannot be None or empty')
-        super(TerminalPrinter, self).__init__(size, background_color, fps)
+        super(TerminalPrinter, self).__init__(size, fps)
         self.words = words
         self.text = ""
         self.word_color = word_color

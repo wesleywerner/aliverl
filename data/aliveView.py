@@ -484,11 +484,11 @@ class GraphicalView(object):
                     terminal_slidein_added = True
                     new_transition = SlideinTransition(
                         size=self.game_area.size,
-                        background_color=color.magenta,
                         fps=self.gamefps,
                         font=self.smallfont,
                         title='connecting . . .',
-                        background=self.dialoguebackground
+                        inner_bg_color=color.magenta,
+                        inner_bg=self.dialoguebackground
                         )
                     self.transition_queue.insert(0, new_transition)
 
@@ -512,11 +512,11 @@ class GraphicalView(object):
         # add a closing transition
         close_transition = SlideinTransition(
                         size=self.game_area.size,
-                        background_color=color.magenta,
                         fps=self.gamefps,
                         font=self.smallfont,
                         title='',
-                        background=self.dialoguebackground,
+                        inner_bg_color=color.magenta,
+                        inner_bg=None,
                         direction_reversed=True
                         )
         self.transition_queue.insert(0, close_transition)
@@ -1006,11 +1006,11 @@ class GraphicalView(object):
         # add the first help screen
         help_transition = SlideinTransition(
             size=self.game_area.size,
-            background_color=color.magenta,
             fps=self.gamefps,
             font=self.smallfont,
             title='',
-            background=help_screen,
+            inner_bg_color=color.magenta,
+            inner_bg=help_screen,
             boxcolor=color.blue,
             pensize=3
             )
@@ -1034,11 +1034,11 @@ class GraphicalView(object):
         # add a closing transition
         close_transition = SlideinTransition(
             size=self.game_area.size,
-            background_color=color.magenta,
             fps=self.gamefps,
             font=self.smallfont,
             title='',
-            background=help_screen,
+            inner_bg_color=color.magenta,
+            inner_bg=None,
             boxcolor=color.blue,
             pensize=3,
             direction_reversed=True
