@@ -157,5 +157,6 @@
   <object gid="86" x="96" y="448"/>
   <object gid="87" x="64" y="448"/>
   <object gid="88" x="96" y="416"/>
+  <object name="ICE" type="AI" gid="113" x="352" y="64"/>
  </objectgroup>
 </map>

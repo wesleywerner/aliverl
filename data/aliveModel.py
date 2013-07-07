@@ -225,8 +225,9 @@ class GameEngine(object):
                 # apply defaults first
                 [setattr(obj, k, v) for k, v in defaults.items()]
 
-                # grab it's name
-                oname = obj.name.lower()
+                # make values case incensitive
+                obj.name = obj.name.lower()
+                obj.type = obj.type.lower()
 
                 # remember the player object
                 if obj.type == 'player':
@@ -234,8 +235,9 @@ class GameEngine(object):
                     self.player.properties['trail'] = []
 
                 # apply character stats from the story config
-                stats = self.story.char_stats(oname)
+                stats = self.story.char_stats(obj.name)
                 if stats:
+                    trace.write('applying conf stats for %s' % (obj.name,))
                     obj.attack = stats.as_int('attack')
                     obj.health = stats.as_int('health')
                     obj.maxhealth = stats.as_int('maxhealth')

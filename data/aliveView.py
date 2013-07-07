@@ -864,12 +864,12 @@ class GraphicalView(object):
                                     (event.obj.y * self.tile_h))
             return
 
-    def kill_sprite(self, object):
+    def kill_sprite(self, obj):
         """
         Remove a sprite.
         """
 
-        self.sprites.pop(id(mapobject), None)
+        self.sprites.pop(id(obj), None)
 
     def transmute_sprite(self, event):
         """
