@@ -79,3 +79,20 @@ def line_of_sight(matrix, x1, y1, x2, y2):
     amt = hits.count(True)
     # allow 1 case: if the final destination position is blocking
     return amt == 0 or (amt == 1 and matrix[x2][y2])
+
+def remap_coords(rect, unit_width, unit_height):
+    """
+    An iterator that yields remapped values as (x, y) scaled to
+    a specific unit size.
+
+    rect is a (x, y, x2, y2) of coordinates.
+    unit_size is the boundary which each unit is calculated against.
+
+    """
+
+    for y in range(rect[1], rect[3], unit_height):
+        for x in range(rect[0], rect[2], unit_width):
+            yield (
+                int(float(x) / float(unit_width)),
+                int(float(y) / float(unit_height))
+                )
