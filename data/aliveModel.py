@@ -359,13 +359,22 @@ class GameEngine(object):
 
         # update the level block matrix with this tile's old and new positions
         if character is not self.player:
-            matrix = self.level.matrix['block']
-            matrix[old_x][old_y] = 0
-            matrix[new_x][new_y] = self.story.tile_blocks(character.gid)
+            tile_blocks = self.story.tile_blocks(character.gid)
+            self.update_block_matrix(old_x, old_y, 0)
+            self.update_block_matrix(new_x, new_y, tile_blocks)
 
         # notify the view to update it's sprite positions
         self.evManager.Post(CharacterMovedEvent(character, direction))
         return True
+
+    def update_block_matrix(self, x, y, value):
+        """
+        Update the level block matrix at the given position.
+
+        """
+
+        self.level.matrix['block'][x][y] = value
+
 
     def location_inside_map(self, x, y):
         """
@@ -765,6 +774,7 @@ class GameEngine(object):
         """
 
         if character in self.objects:
+            self.update_block_matrix(character.x, character.y, 0)
             self.objects.remove(character)
 
     def change_state(self, state):
