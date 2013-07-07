@@ -541,6 +541,7 @@ class GraphicalView(object):
                         fps=self.gamefps,
                         font=self.smallfont,
                         title='',
+                        inner_bg=self.dialoguebackground,
                         outer_bg=self.image.copy(),
                         direction_reversed=True
                         )
