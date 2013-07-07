@@ -182,6 +182,7 @@ class GraphicalView(object):
             elif isinstance(event, NextLevelEvent):
                 self.load_level()
                 self.create_sprites()
+                self.queue_warp_transitions()
 
             elif isinstance(event, InitializeEvent):
                 self.initialize()
@@ -461,6 +462,21 @@ class GraphicalView(object):
             self.transition = None
             self.evManager.Post(StateChangeEvent(None))
 
+    def queue_warp_transitions(self):
+        """
+        Queue some nice level warp transitions on warp.
+
+        """
+
+        open_transition = SlideinTransition(
+                        size=self.game_area.size,
+                        fps=self.gamefps,
+                        font=self.smallfont,
+                        title='',
+                        direction_reversed=True
+                        )
+        self.transition_queue.insert(0, open_transition)
+
     def queue_dialogue(self, dialogue):
         """
         Queue a dialogue for display.
@@ -487,8 +503,8 @@ class GraphicalView(object):
                         fps=self.gamefps,
                         font=self.smallfont,
                         title='connecting . . .',
-                        inner_bg_color=color.magenta,
-                        inner_bg=self.dialoguebackground
+                        inner_bg=self.dialoguebackground,
+                        outer_bg=self.image.copy(),
                         )
                     self.transition_queue.insert(0, new_transition)
 
@@ -515,8 +531,7 @@ class GraphicalView(object):
                         fps=self.gamefps,
                         font=self.smallfont,
                         title='',
-                        inner_bg_color=color.magenta,
-                        inner_bg=None,
+                        outer_bg=self.image.copy(),
                         direction_reversed=True
                         )
         self.transition_queue.insert(0, close_transition)
@@ -1009,8 +1024,8 @@ class GraphicalView(object):
             fps=self.gamefps,
             font=self.smallfont,
             title='',
-            inner_bg_color=color.magenta,
             inner_bg=help_screen,
+            outer_bg=self.image.copy(),
             boxcolor=color.blue,
             pensize=3
             )
@@ -1037,10 +1052,9 @@ class GraphicalView(object):
             fps=self.gamefps,
             font=self.smallfont,
             title='',
-            inner_bg_color=color.magenta,
-            inner_bg=None,
             boxcolor=color.blue,
             pensize=3,
+            outer_bg=self.image.copy(),
             direction_reversed=True
             )
         self.transition_queue.insert(0, close_transition)

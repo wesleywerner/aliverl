@@ -225,8 +225,10 @@ class SlideinTransition(TransitionBase):
                 fps=30,
                 font=None,
                 title='',
-                inner_bg_color=color.magenta,
+                inner_bg_color=color.black,
                 inner_bg=None,
+                outer_bg_color=color.magenta,
+                outer_bg=None,
                 boxcolor=color.green,
                 pensize=1,
                 direction_reversed=False
@@ -250,6 +252,12 @@ class SlideinTransition(TransitionBase):
         inner_bg:
             The image displayed inside the shifting box region
 
+        outer_bg_color:
+            (r, g, b) fills the region outside our box area.
+
+        outer_bg:
+            The image displayed outside the shifting box region
+
         boxcolor:
             color of the bounding box
 
@@ -267,15 +275,16 @@ class SlideinTransition(TransitionBase):
         self.boxcolor = boxcolor
         self.pensize = pensize
         self.inner_bg_color = inner_bg_color
-        self.direction_reversed = direction_reversed
         self.inner_bg = inner_bg
+        self.outer_bg_color = outer_bg_color
+        self.outer_bg = outer_bg
+        self.direction_reversed = direction_reversed
 
         # prerender the words and center them
         self.fontpix = font.render(title, False, color.green)
         self.fontloc = pygame.Rect((0, 0), self.fontpix.get_size())
         self.fontloc.center = self.rect.center
 
-        # center the background image
         if direction_reversed:
             # box fills the area and shrinks over time
             self.box = self.rect.copy()
@@ -324,10 +333,14 @@ class SlideinTransition(TransitionBase):
                 if not self.direction_reversed:
                     self.resizingheight = not self.resizingwidth
 
-            # fill our image with the background color
-            self.image.fill(self.inner_bg_color)
+            # fill the outer area and draw a background
+            self.image.fill(self.outer_bg_color)
+            if self.outer_bg:
+                #NOTE: transition outer background could be centered
+                self.image.blit(self.outer_bg, (0, 0))
 
-            # draw the inner background, as cut out by our box region
+            # fill the inner area and draw a background
+            self.image.fill(self.inner_bg_color, self.box)
             if self.inner_bg:
                 self.image.blit(self.inner_bg, self.box.topleft, self.box)
 
