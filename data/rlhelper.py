@@ -85,13 +85,14 @@ def remap_coords(rect, unit_width, unit_height):
     An iterator that yields remapped values as (x, y) scaled to
     a specific unit size.
 
-    rect is a (x, y, x2, y2) of coordinates.
+    rect is a (x, y, w, h) of coordinates. The (w, h) components will
+    be used to calculate the (x2, y2) used for the max range.
     unit_size is the boundary which each unit is calculated against.
 
     """
 
-    for y in range(rect[1], rect[3], unit_height):
-        for x in range(rect[0], rect[2], unit_width):
+    for y in range(rect[1], rect[1] + rect[3], unit_height):
+        for x in range(rect[0], rect[0] + rect[2], unit_width):
             yield (
                 int(float(x) / float(unit_width)),
                 int(float(y) / float(unit_height))
