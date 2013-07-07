@@ -762,11 +762,15 @@ class GameEngine(object):
                 self.end_game()
             else:
                 self.evManager.Post(KillCharacterEvent(a))
+                self.evManager.Post(
+                    MessageEvent('The %s crashes' % (a_name), color.red))
         if d.health < 1:
             if d is self.player:
                 self.end_game()
             else:
                 self.evManager.Post(KillCharacterEvent(d))
+                self.evManager.Post(
+                    MessageEvent('The %s crashes' % (d_name), color.red))
 
     def kill_object(self, character):
         """

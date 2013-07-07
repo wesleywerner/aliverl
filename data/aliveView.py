@@ -176,7 +176,6 @@ class GraphicalView(object):
 
             elif isinstance(event, KillCharacterEvent):
                 self.kill_sprite(event.character)
-                self.messages.append('The %s dies' % (event.character.name))
 
             elif isinstance(event, UpdateObjectGID):
                 self.transmute_sprite(event)
