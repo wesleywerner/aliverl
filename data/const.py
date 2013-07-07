@@ -21,6 +21,12 @@ STATE_DIALOG = 6
 STATE_GAMEOVER = 7
 STATE_CRASH = 8
 
+# tile id of seen fog overlay
+FOG_GID = 16
+
+# tile id of unseen tiles
+UNSEEN_GID = 24
+
 # number of player positions to keep as a scent for 'sniffer' ai to follow.
 PLAYER_SCENT_LEN = 5
 

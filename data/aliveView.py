@@ -27,12 +27,6 @@ from eventmanager import *
 from tmxparser import TMXParser
 from tmxparser import TilesetParser
 
-# tile id of seen fog overlay
-FOG_GID = 16
-
-# tile id of unseen tiles
-UNSEEN_GID = 24
-
 
 class GraphicalView(object):
     """
