@@ -169,11 +169,6 @@ class GameEngine(object):
             self.evManager.Post(MessageEvent(entry_message))
         entry_dialogue = self.story.entry_dialogue(nextlevel)
         if entry_dialogue:
-            # we post a tick event here as this entry message will
-            # fire before any new level rendering has done. This will
-            # give any views a chance to render the new level images
-            # that may be used in dialogue transitions.
-            self.evManager.Post(TickEvent())
             self.show_dialogue(entry_dialogue)
 
 

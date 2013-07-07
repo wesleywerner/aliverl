@@ -85,9 +85,6 @@ class GraphicalView(object):
     sprites (Dict):
         A sprite lookup by object id.
 
-    #TODO remove any use the transition_queue directly, or better yet
-    #       create a virtual property to access the queue
-    transition (TransitionBase): current animated screen transition.
     messages (list): list of recent game messages.
 
     """
@@ -118,7 +115,6 @@ class GraphicalView(object):
         self.windowsize = None
         self.sprites = {}
         self.scrollertexts = None
-        self.transition = None
         self.messages = [''] * 20
         self.gamefps = 30
         self.last_tip_pos = 0
@@ -148,6 +144,15 @@ class GraphicalView(object):
         """
 
         return self.tmx.tile_height
+
+    @property
+    def transition(self):
+        """
+        A virtual property to access the last transition in the queue.
+        """
+
+        if self.transition_queue:
+            return self.transition_queue[-1]
 
     def notify(self, event):
         """
@@ -182,6 +187,8 @@ class GraphicalView(object):
             elif isinstance(event, NextLevelEvent):
                 self.load_level()
                 self.create_sprites()
+                # pre-render the map and sprite images for any warp transitions
+                self.render()
                 self.queue_warp_transitions()
 
             elif isinstance(event, InitializeEvent):
@@ -266,11 +273,12 @@ class GraphicalView(object):
             self.draw_menu()
 
         elif state == aliveModel.STATE_DIALOG:
-            self.draw_borders()
-            self.draw_player_stats()
-            self.draw_sprites()
-            self.draw_fog()
-            self.draw_dialogue()
+            pass
+            #self.draw_borders()
+            #self.draw_player_stats()
+            #self.draw_sprites()
+            #self.draw_fog()
+            #self.update_transitions()
 
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
 
@@ -291,7 +299,7 @@ class GraphicalView(object):
             self.draw_player_stats()
             self.draw_sprites()
             self.draw_fog()
-            self.draw_dialogue()
+            self.update_transitions()
 
         # merge play_image into our main image at the relevant position
         self.image.blit(self.play_image, self.play_area) # , self.viewport)
@@ -302,6 +310,7 @@ class GraphicalView(object):
         self.image.blit(self.ui.image, (0, 0))
 
         # apply any transitions
+        self.update_transitions()
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
             self.image.blit(self.transition.image, (0, 0))
@@ -425,6 +434,8 @@ class GraphicalView(object):
         Draw any scrolling text sprites.
         """
 
+        if not self.scrollertexts:
+            return
         ticks = pygame.time.get_ticks()
         for sprite in self.scrollertexts:
             if sprite.done:
@@ -433,7 +444,7 @@ class GraphicalView(object):
                 sprite.update(ticks)
                 self.play_image.blit(sprite.image, sprite.rect)
 
-    def draw_dialogue(self):
+    def update_transitions(self):
         """
         Step any queued transitions:
 
@@ -449,18 +460,17 @@ class GraphicalView(object):
 
         """
 
+        # if the transition is still busy animating or waiting for a key, stop.
         if self.transition:
             if not self.transition.done:
                 return
             if self.transition.waitforkey:
                 return
 
-        # create one from a queue
-        if self.transition_queue:
-            self.transition = self.transition_queue.pop()
-        else:
-            self.transition = None
-            self.evManager.Post(StateChangeEvent(None))
+        # nothing left to wait for, so move along.
+        # we use the next dialogue call as it does what we need
+        # in addition to handling dialogue states
+        self.next_dialogue()
 
     def queue_warp_transitions(self):
         """
@@ -541,7 +551,16 @@ class GraphicalView(object):
         Move to the next dialogue line
         """
 
-        self.transition = None
+        # move to the next transition in the queue
+        if self.transition_queue:
+            self.transition_queue.pop()
+
+        # cater for certain STATES that rely on transitions
+        # by popping the state queue if no more transitions are avaialble.
+        state = self.model.state.peek()
+        if (state in (aliveModel.STATE_DIALOG, aliveModel.STATE_HELP) and
+            not self.transition_queue):
+                self.evManager.Post(StateChangeEvent(None))
 
     def close_dialogue(self):
         """
