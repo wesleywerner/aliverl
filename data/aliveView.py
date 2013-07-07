@@ -272,14 +272,6 @@ class GraphicalView(object):
         elif state == aliveModel.STATE_MENU:
             self.draw_menu()
 
-        elif state == aliveModel.STATE_DIALOG:
-            pass
-            #self.draw_borders()
-            #self.draw_player_stats()
-            #self.draw_sprites()
-            #self.draw_fog()
-            #self.update_transitions()
-
         elif state in (aliveModel.STATE_PLAY, aliveModel.STATE_GAMEOVER):
 
             # draw all things onto the play_image
@@ -293,13 +285,8 @@ class GraphicalView(object):
                 #TODO Overlay a game over message.
                 pass
 
-        elif state == aliveModel.STATE_HELP:
-            # help is show via transition dialogues
-            self.draw_borders()
-            self.draw_player_stats()
-            self.draw_sprites()
-            self.draw_fog()
-            self.update_transitions()
+        # NOTE: no need to handle drawing for HELP or DIALOGUE states
+        #       since those use the TransitionBase, which draws itself below.
 
         # merge play_image into our main image at the relevant position
         self.image.blit(self.play_image, self.play_area) # , self.viewport)
@@ -309,11 +296,11 @@ class GraphicalView(object):
         self.ui.update()
         self.image.blit(self.ui.image, (0, 0))
 
-        # apply any transitions
-        self.update_transitions()
+        # apply any transitions (including dialogues and help screens)
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
             self.image.blit(self.transition.image, (0, 0))
+        self.step_transitions()
 
         # finally draw our composed image onto the screen
         self.screen.blit(self.image, self.game_area)
@@ -444,30 +431,21 @@ class GraphicalView(object):
                 sprite.update(ticks)
                 self.play_image.blit(sprite.image, sprite.rect)
 
-    def update_transitions(self):
+    def step_transitions(self):
         """
-        Step any queued transitions:
-
-         1. if there is no transition:
-               create one from a queue
-         2. if there is a transition:
-               if it is not done:
-                   return
-               if it is waiting for a key:
-                   return
-               else:
-                   create one from a queue
+        Move to teh next queued transition if the current one is done and
+        not waiting for a user keypress.
 
         """
 
-        # if the transition is still busy animating or waiting for a key, stop.
+        # stop if the transition is still animating or waiting for a keypress.
         if self.transition:
             if not self.transition.done:
                 return
             if self.transition.waitforkey:
                 return
 
-        # nothing left to wait for, so move along.
+        # nothing left to wait for, so move along:
         # we use the next dialogue call as it does what we need
         # in addition to handling dialogue states
         self.next_dialogue()
