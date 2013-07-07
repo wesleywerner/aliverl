@@ -1,6 +1,10 @@
 
 # RELEASE Y.T.
 
+* build the abilities classes and link them into the player somehow.
+
+* add a player attribute that defines her view range.
+
 * add an abilities screen that shows available upgrades
 
 * add the UI button class
