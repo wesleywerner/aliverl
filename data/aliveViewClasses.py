@@ -317,6 +317,7 @@ class SlideinTransition(TransitionBase):
         if self.can_update(time):
             if self.resizingheight:
                 self.box = self.box.inflate(0, self.ydelta)
+                self.box = self.rect.clip(self.box)
                 if self.direction_reversed:
                     # because our delta resize is arbitrary
                     # limit to within positive values
