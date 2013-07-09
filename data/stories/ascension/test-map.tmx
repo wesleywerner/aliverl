@@ -14,7 +14,7 @@
   </data>
  </layer>
  <objectgroup name="characters" width="64" height="16">
-  <object name="this is our hero" type="player" gid="97" x="64" y="96"/>
+  <object name="player" type="player" gid="97" x="64" y="96"/>
  </objectgroup>
  <objectgroup name="doors" width="64" height="16"/>
  <objectgroup name="hints" width="64" height="16">
