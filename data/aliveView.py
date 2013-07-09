@@ -1085,18 +1085,6 @@ class GraphicalView(object):
             colorkey=color.magenta
             )
 
-        ## test button
-        #button = ui.UxButton(
-            #rect=(14, 69, 57, 45),
-            #image_rect=(0, 0, 57, 45),
-            #code='zap',
-            #hotkey='z',
-            #enabled=True,
-            #border_color=None,
-            #context=STATE_PLAY
-            #)
-        #self.ui.add(button)
-
     def setup_player_upgrades(self):
         """
         Refresh the ui buttons that display the player's upgrades.
@@ -1110,7 +1098,7 @@ class GraphicalView(object):
         butt_x = 14
         butt_y = 69
         butt_size = (57, 45)
-        butt_padding = 1
+        butt_padding = 6
 
         # define a lookup of each upgrade's
         #   source image position, hotkey
@@ -1164,7 +1152,7 @@ class GraphicalView(object):
                 image_rect=image_rect,
                 code=upgrade['name'],
                 hotkey=lookup[1],
-                enabled=True,
+                enabled=upgrade['enabled'],
                 border_color=None,
                 context=STATE_PLAY
                 )
