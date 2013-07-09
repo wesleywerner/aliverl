@@ -22,6 +22,7 @@ import color
 from const import *
 import rlhelper
 import aliveModel
+import aliveUpgrades
 from aliveViewClasses import *
 from eventmanager import *
 from tmxparser import TMXParser
@@ -1084,17 +1085,17 @@ class GraphicalView(object):
             colorkey=color.magenta
             )
 
-        # test button
-        button = ui.UxButton(
-            rect=(14, 69, 57, 45),
-            image_rect=(0, 0, 57, 45),
-            code='zap',
-            hotkey='z',
-            enabled=True,
-            border_color=None,
-            context=STATE_PLAY
-            )
-        self.ui.add(button)
+        ## test button
+        #button = ui.UxButton(
+            #rect=(14, 69, 57, 45),
+            #image_rect=(0, 0, 57, 45),
+            #code='zap',
+            #hotkey='z',
+            #enabled=True,
+            #border_color=None,
+            #context=STATE_PLAY
+            #)
+        #self.ui.add(button)
 
     def setup_player_upgrades(self):
         """
@@ -1104,6 +1105,73 @@ class GraphicalView(object):
 
         if not self.isinitialized or not self.ui:
             return
+
+        # the starting position where upgrade buttons appear.
+        butt_x = 14
+        butt_y = 69
+        butt_size = (57, 45)
+        butt_padding = 1
+
+        # define a lookup of each upgrade's
+        #   source image position, hotkey
+        upgrade_lookup = {
+            aliveUpgrades.UPGRADE_REGEN:
+                ([0, 0], None),
+            aliveUpgrades.UPGRADE_CODE_HARDENING:
+                ([0, 0], None),
+            aliveUpgrades.UPGRADE_ASSEMBLY_OPTIMIZE:
+                ([0, 0], None),
+            aliveUpgrades.UPGRADE_ECHO_LOOP:
+                ([0, 0], 'e'),
+            aliveUpgrades.UPGRADE_MAP_PEEK:
+                ([0, 0], None),
+            aliveUpgrades.UPGRADE_ZAP:
+                ([0, 0], 'z'),
+            aliveUpgrades.UPGRADE_CODE_FREEZE:
+                ([0, 0], 'f'),
+            aliveUpgrades.UPGRADE_PING_FLOOD:
+                ([0, 0], 'p'),
+            aliveUpgrades.UPGRADE_FORK_BOMB:
+                ([0, 0], 'b'),
+            aliveUpgrades.UPGRADE_EXPLOIT:
+                ([0, 0], 'x'),
+            aliveUpgrades.UPGRADE_DESERIALIZE:
+                ([0, 0], 'd'),
+        }
+
+        # first clear any possible elements
+        code_list = [u['name'] for u in aliveUpgrades.UPGRADES]
+        self.ui.remove_by_code(code_list)
+
+        # build a new ui for all player upgrades.
+        for upgrade in self.model.player.upgrades:
+            # set the screen position
+            rect = [butt_x, butt_y]
+            rect.extend(butt_size)
+            # grab the upgrade lookup data
+            lookup = upgrade_lookup.get(upgrade['name'], None)
+            # sanity check
+            if not lookup:
+                trace.error('the upgrade "%s" has no lookup data defined' %
+                    upgrade.code)
+                # jump to the next upgrade
+                continue
+            image_rect = lookup[0]
+            image_rect.extend(butt_size)
+            # create the ui button
+            button = ui.UxButton(
+                rect=rect,
+                image_rect=image_rect,
+                code=upgrade['name'],
+                hotkey=lookup[1],
+                enabled=True,
+                border_color=None,
+                context=STATE_PLAY
+                )
+            self.ui.add(button)
+            trace.write('added ui button for "%s"' % button.code)
+            # move to the next available button position
+            butt_y += butt_size[1] + butt_padding
 
 
     def ui_click_event(self, context, ux):
