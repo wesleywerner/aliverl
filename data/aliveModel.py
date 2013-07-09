@@ -214,6 +214,7 @@ class GameEngine(object):
                      'manarate': 6,
                      'modes': [],
                      'in_range': False,
+                     'trail': [],
                      }
 
         # for each object group on this level (because maps can be layers)
@@ -232,7 +233,6 @@ class GameEngine(object):
                 # remember the player object
                 if obj.type == 'player':
                     self.player = obj
-                    self.player.properties['trail'] = []
 
                 # apply character stats from the story config
                 stats = self.story.char_stats(obj.name)
@@ -299,10 +299,6 @@ class GameEngine(object):
         self.ai_movement_turn()
         # update what we can see
         self.look_around()
-        # update scent trail
-        p = self.player.properties
-        p['trail'].insert(0, (self.player.x, self.player.y))
-        self.player.properties['trail'] = p['trail'][:PLAYER_SCENT_LEN]
 
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
@@ -356,6 +352,10 @@ class GameEngine(object):
         character.x, character.y = (new_x, new_y)
         character.px, character.py = (new_x * self.level.tmx.tile_width,
                                       new_y * self.level.tmx.tile_height)
+
+        # update scent trail
+        character.trail.insert(0, (character.x, character.y))
+        character.trail = character.trail[:PLAYER_SCENT_LEN]
 
         # update the level block matrix with this tile's old and new positions
         if character is not self.player:
@@ -446,7 +446,7 @@ class GameEngine(object):
                 if mode == 'sniffer':
                     #TODO sniffer dog
                     objxy = obj.getxy()
-                    trail = self.player.properties['trail']
+                    trail = self.player.trail
                     if objxy in trail:
                         idx = trail.index(objxy) - 1
                         if idx >= 0:
