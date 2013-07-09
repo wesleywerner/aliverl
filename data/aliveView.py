@@ -164,6 +164,7 @@ class GraphicalView(object):
 
             elif isinstance(event, PlayerMovedEvent):
                 self.update_viewport()
+                self.update_button_borders()
 
             elif isinstance(event, MessageEvent):
                 self.create_floating_tip(event.message,
@@ -1140,11 +1141,11 @@ class GraphicalView(object):
             rect = [butt_x, butt_y]
             rect.extend(butt_size)
             # grab the upgrade lookup data
-            lookup = upgrade_lookup.get(upgrade['name'], None)
+            lookup = upgrade_lookup.get(upgrade.name, None)
             # sanity check
             if not lookup:
                 trace.error('the upgrade "%s" has no lookup data defined' %
-                    upgrade.code)
+                    upgrade.name)
                 # jump to the next upgrade
                 continue
             image_rect = lookup[0]
@@ -1153,9 +1154,9 @@ class GraphicalView(object):
             button = ui.UxButton(
                 rect=rect,
                 image_rect=image_rect,
-                code=upgrade['name'],
+                code=upgrade.name,
                 hotkey=lookup[1],
-                enabled=upgrade['enabled'],
+                enabled=upgrade.enabled,
                 border_color=None,
                 context=STATE_PLAY
                 )
@@ -1163,6 +1164,20 @@ class GraphicalView(object):
             trace.write('added ui button for "%s"' % button.code)
             # move to the next available button position
             butt_y += butt_size[1] + butt_padding
+
+    def update_button_borders(self):
+        """
+        Update ui button borders to match their state.
+
+        """
+
+        for upgrade in self.model.player.upgrades:
+            print(upgrade)
+            button = self.ui.get_by_code(upgrade.name)
+            if button:
+                if not upgrade.passive:
+                    button.border_color = (upgrade.ready and
+                    color.green or color.yellow)
 
     def ui_click_event(self, context, ux):
         """

@@ -195,7 +195,7 @@ class UxManager(object):
         self._refresh_context_elements()
         #self.update()
 
-    def _get_by_code(self, code):
+    def get_by_code(self, code):
         """
         Get an element by code.
 
@@ -228,7 +228,7 @@ class UxManager(object):
         """
 
         for code in code_list:
-            element = self._get_by_code(code)
+            element = self.get_by_code(code)
             if element:
                 self.remove(element)
 

@@ -840,9 +840,11 @@ class GameEngine(object):
         elif event.request_type == 'give random upgrade':
             all_upgrades = aliveUpgrades.get_available_upgrades(self.level.number)
             upgrade = random.choice(all_upgrades)
-            if upgrade['name'] not in [u['name'] for u in self.player.upgrades]:
+            if upgrade['name'] not in [u.name for u in self.player.upgrades]:
                 trace.write('giving player upgrade %s' % upgrade['name'])
-                self.player.upgrades.append(upgrade)
+                ug = aliveUpgrades.Upgrade.from_dict(upgrade)
+                trace.write('created upgrade object %s' % str(ug))
+                self.player.upgrades.append(ug)
                 self.evManager.Post(RefreshUpgradesEvent())
 
     @property

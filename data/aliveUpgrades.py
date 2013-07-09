@@ -272,6 +272,7 @@ class Upgrade(object):
 
     def __init__(self,
                 name=None,
+                description=None,
                 version=1,
                 enabled=False,
                 availability=[],
@@ -279,6 +280,7 @@ class Upgrade(object):
                 reach=0,
                 max_targets=0,
                 cost=0,
+                duration=0,
                 cooldown=0,
                 ):
         self.name = name
@@ -291,8 +293,11 @@ class Upgrade(object):
         self.cost = cost
         self.cooldown = cooldown
 
+        # internals
+        self._cooldown_count = 0
+
     @classmethod
-    def from_dict(cls, dictionary, model):
+    def from_dict(cls, dictionary):
         """
         Creates an instance from the given upgrade dictionary entry
         and links the given model to an attribute of the same name.
@@ -300,7 +305,17 @@ class Upgrade(object):
         """
 
         spam = cls(**dictionary)
-        spam.model = model
+        #spam.model = model
+        return spam
+
+    @property
+    def ready(self):
+        """
+        Is this upgrade is ready for action, not cooling down and enabled.
+
+        """
+
+        return self.enabled and self._cooldown_count == 0
 
     def version_up(self):
         """
