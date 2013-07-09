@@ -837,6 +837,7 @@ class GameEngine(object):
             self.player = random.choice([o for o in self.objects
                                         if o.type in ('ai', 'player')])
             self.look_around()
+            self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
             all_upgrades = aliveUpgrades.get_available_upgrades(self.level.number)
             upgrade = random.choice(all_upgrades)
