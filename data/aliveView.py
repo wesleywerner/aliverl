@@ -238,7 +238,7 @@ class GraphicalView(object):
         try:
             state = self.model.state.peek()
             if state == STATE_CRASH:
-                somewords = self.draw_text(const.CRASH_MESSAGE,
+                somewords = self.draw_text(CRASH_MESSAGE,
                                             self.smallfont,
                                             False,
                                             color.yellow)
@@ -248,7 +248,7 @@ class GraphicalView(object):
         except Exception, e:
             # these lines pose an interesting problem:
             # if the crash message crashes, we go down hard.
-            print('\n'.join(const.CRASH_MESSAGE))
+            print('\n'.join(CRASH_MESSAGE))
             import traceback
             print('\n' + str(traceback.format_exc()))
             sys.exit(1)
@@ -996,7 +996,7 @@ class GraphicalView(object):
         except Exception, e:
             # these lines pose an interesting problem:
             # if the crash message crashes, we go down hard.
-            print('\n'.join(const.CRASH_MESSAGE))
+            print('\n'.join(CRASH_MESSAGE))
             import traceback
             print('\n' + str(traceback.format_exc()))
             sys.exit(1)
