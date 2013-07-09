@@ -93,12 +93,13 @@ class UxButton(object):
     def hover(self, position):
         """
         Test if the given point hovers over us.
+        Returns True if our hover state has changed.
         """
 
         # last_state allows us to not retrigger an already hovered ux
         last_state = self.ishovering
         self.ishovering = self._istarget(position)
-        return self.ishovering or self.ishovering != last_state
+        return self.ishovering != last_state
 
     def click(self, position):
         """
