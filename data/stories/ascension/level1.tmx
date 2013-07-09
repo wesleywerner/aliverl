@@ -91,7 +91,7 @@
     <property name="open this door" value="@ontrigger @transmute 40"/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="224" y="64">
+  <object name="busy AI" type="ai" gid="105" x="224" y="64">
    <properties>
     <property name="message" value="@message The AI seems too busy to respond."/>
    </properties>
@@ -121,7 +121,7 @@
     <property name="message" value="@message The AI seems too busy to respond."/>
    </properties>
   </object>
-  <object name="busy AI" type="friend" gid="105" x="448" y="384">
+  <object name="busy AI" type="ai" gid="105" x="448" y="384">
    <properties>
     <property name="modes" value="updown"/>
    </properties>
@@ -157,6 +157,5 @@
   <object gid="86" x="96" y="448"/>
   <object gid="87" x="64" y="448"/>
   <object gid="88" x="96" y="416"/>
-  <object name="ICE" type="AI" gid="113" x="352" y="64"/>
  </objectgroup>
 </map>
