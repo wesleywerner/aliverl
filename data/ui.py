@@ -63,11 +63,11 @@ class UxButton(object):
                 border_color=None,
                 context=None
                 ):
-        if type(rect) is tuple:
+        if type(rect) is tuple or type(rect) is list:
             self.rect = pygame.Rect(*rect)
         else:
             self.rect = rect
-        if type(image_rect) is tuple:
+        if type(image_rect) is tuple or type(rect) is list:
             self.image_rect = pygame.Rect(*image_rect)
         else:
             self.image_rect = image_rect
@@ -195,6 +195,16 @@ class UxManager(object):
         self._refresh_context_elements()
         #self.update()
 
+    def _get_by_code(self, code):
+        """
+        Get an element by code.
+
+        """
+
+        matches = [e for e in self.elements if e.code == code]
+        if matches:
+            return matches[0]
+
     def add(self, element):
         """
         Add an element to this UxManager. munch.
@@ -210,6 +220,17 @@ class UxManager(object):
 
         self.elements.remove(element)
         self._refresh_context_elements()
+
+    def remove_by_code(self, code_list):
+        """
+        Remove a list of elements by code.
+
+        """
+
+        for code in code_list:
+            element = self._get_by_code(code)
+            if element:
+                self.remove(element)
 
     def hover(self, position):
         """
