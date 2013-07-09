@@ -206,14 +206,15 @@ class GraphicalView(object):
             elif isinstance(event, StateChangeEvent):
                 if self.ui:
                     model_state = self.model.state.peek()
-                    trace.write('set ui context to game state %s' % model_state)
+                    trace.write('set ui context to game state %s' %
+                        model_state)
                     self.ui.set_context(model_state)
 
                 if event.state == STATE_HELP:
                     self.show_help_screens()
 
             elif isinstance(event, RefreshUpgradesEvent):
-                self.setup_player_upgrades()
+                self.setup_ui_upgrade_buttons()
 
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
@@ -286,7 +287,7 @@ class GraphicalView(object):
         #       since those use the TransitionBase, which draws itself below.
 
         # merge play_image into our main image at the relevant position
-        self.image.blit(self.play_image, self.play_area) # , self.viewport)
+        self.image.blit(self.play_image, self.play_area)
 
         # update the ui and draw it to the main image
         self.ui.hover(pygame.mouse.get_pos())
@@ -327,7 +328,8 @@ class GraphicalView(object):
             gid = value.as_int('gid')
             tile = self.tsp[gid]
             surf.blit(tile, (x, y))
-            fnt = self.smallfont.render(str(gid) + ': ' + key, False, color.white)
+            fnt = self.smallfont.render(
+                str(gid) + ': ' + key, False, color.white)
             surf.blit(fnt, (x + self.tile_w, y))
             this_width = x + self.tile_w + fnt.get_width()
             if this_width > column_width:
@@ -365,7 +367,8 @@ class GraphicalView(object):
         self.play_image.blit(self.map_image, (0, 0), self.viewport)
         ticks = pygame.time.get_ticks()
         # for each sprite in our viewport range
-        for x, y in rlhelper.remap_coords(self.viewport, self.tile_w, self.tile_h):
+        for x, y in rlhelper.remap_coords(
+                self.viewport, self.tile_w, self.tile_h):
             object_list = self.model.get_object_by_xy(x, y)
             for obj in object_list:
                 # grab the sprite that match this object id
@@ -711,7 +714,8 @@ class GraphicalView(object):
 
         """
 
-        self.map_image = pygame.Surface((self.tmx.px_width, self.tmx.px_height))
+        self.map_image = pygame.Surface(
+            (self.tmx.px_width, self.tmx.px_height))
         self.map_image.set_colorkey(color.magenta)
         self.map_image.fill(color.magenta)
         for y in range(self.tmx.height):
@@ -723,7 +727,6 @@ class GraphicalView(object):
                         self.map_image.blit(tile,
                             (x * self.tile_w,
                             y * self.tile_h))
-
 
     def load_level(self):
         """
@@ -851,7 +854,7 @@ class GraphicalView(object):
         """
 
         # allow the same message to popup again and again
-        if True: #or self.messages[-1] != message:
+        if True:
             self.messages.extend(self.wrap_text(message, 30))
             # avoid overlapping recent messages
             self.last_tip_pos += 14
@@ -1003,7 +1006,8 @@ class GraphicalView(object):
             # load resources
             self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
             self.largefont = pygame.font.Font('bitwise.ttf', 30)
-            self.defaultbackground = image.load('images/background.png').convert()
+            self.defaultbackground = image.load(
+                'images/background.png').convert()
             self.menubackground = image.load('images/menu.png').convert()
             self.borders = image.load('images/playscreen.png').convert()
             self.borders.set_colorkey(color.magenta)
@@ -1077,7 +1081,6 @@ class GraphicalView(object):
 
         """
 
-
         self.ui = ui.UxManager(self.game_area.size,
             image_filename='images/ui.png',
             font=self.smallfont,
@@ -1085,7 +1088,7 @@ class GraphicalView(object):
             colorkey=color.magenta
             )
 
-    def setup_player_upgrades(self):
+    def setup_ui_upgrade_buttons(self):
         """
         Refresh the ui buttons that display the player's upgrades.
 
@@ -1160,7 +1163,6 @@ class GraphicalView(object):
             trace.write('added ui button for "%s"' % button.code)
             # move to the next available button position
             butt_y += butt_size[1] + butt_padding
-
 
     def ui_click_event(self, context, ux):
         """
