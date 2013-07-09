@@ -27,7 +27,9 @@ UPGRADE_FORK_BOMB = 'fork bomb'
 UPGRADE_EXPLOIT = 'process exploit'
 UPGRADE_DESERIALIZE = 'deserialize'
 
-# define upgrade upgrade lookup
+# Define a list of all possible upgrades available to the player.
+# 'enabled' is used in-game for various reasons, but can also be set
+# here to include/exclude it from the game.
 UPGRADES = [
     {
     'name': UPGRADE_REGEN,
@@ -289,6 +291,17 @@ class Upgrade(object):
         self.cost = cost
         self.cooldown = cooldown
 
+    @classmethod
+    def from_dict(cls, dictionary, model):
+        """
+        Creates an instance from the given upgrade dictionary entry
+        and links the given model to an attribute of the same name.
+
+        """
+
+        spam = cls(**dictionary)
+        spam.model = model
+
     def version_up(self):
         """
         Updates the version.
@@ -304,4 +317,4 @@ def get_available_upgrades(level):
 
     """
 
-    return [u for u in UPGRADES if level in u['availability']]
+    return [u for u in UPGRADES if level in u['availability'] and u['enabled']]
