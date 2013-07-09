@@ -831,6 +831,10 @@ class GameEngine(object):
                 obj.seen = True
             self.look_around()
             self.evManager.Post(PlayerMovedEvent())
+        elif event.request_type == 'exploit random':
+            self.player = random.choice([o for o in self.objects
+                                        if o.type in ('ai', 'player')])
+            self.look_around()
 
     @property
     def tile_width(self):

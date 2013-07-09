@@ -96,6 +96,7 @@ class KeyboardMouse(object):
                     pygame.K_F3: 'resurrect player',
                     pygame.K_F4: 'warp to next level',
                     pygame.K_F5: 'clear fog',
+                    pygame.K_F6: 'exploit random',
                     }
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
