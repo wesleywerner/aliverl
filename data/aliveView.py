@@ -367,7 +367,7 @@ class GraphicalView(object):
                 # grab the sprite that match this object id
                 sprite = self.sprites.get(id(obj), None)
                 # test if this is a character within view range
-                if obj.type in ('ai', 'friend'):
+                if obj.type in ('ai', 'friend', 'player'):
                     if obj.in_range:
                         visible = True
                     else:
@@ -381,8 +381,13 @@ class GraphicalView(object):
                 if sprite and visible:
                     # update the sprite animation
                     sprite.update(ticks)
+                    # because our play_image is only the size of the screen
+                    # we accommodate sprite positions, which are relative to
+                    # an entire map, by subtracting the viewport location.
+                    new_rect = sprite.rect.move(
+                        -self.viewport.left, -self.viewport.top)
                     # and draw it
-                    self.play_image.blit(sprite.image, sprite.rect)
+                    self.play_image.blit(sprite.image, new_rect)
 
     def draw_fog(self):
         """
@@ -398,16 +403,19 @@ class GraphicalView(object):
                 # and overlay those with FOG_GID, the rest with UNSEEN_GID
                 seen = self.model.level.matrix['seen'][x][y]
 
+                # because our play_image is only the size of the screen
+                # we accommodate sprite positions, which are relative to
+                # an entire map, by subtracting the viewport location.
+                new_rect = (
+                    x * self.tile_w - self.viewport.left,
+                    y * self.tile_h - self.viewport.top)
+
                 # not yet seen
                 if seen == 0:
-                    self.play_image.blit(unseen_sprite,
-                                    (x * self.tile_w,
-                                     y * self.tile_h))
+                    self.play_image.blit(unseen_sprite, new_rect)
                 # seen but out of range
                 elif seen == 1:
-                    self.play_image.blit(fog_sprite,
-                                    (x * self.tile_w,
-                                     y * self.tile_h))
+                    self.play_image.blit(fog_sprite, new_rect)
 
     def draw_scroller_text(self):
         """
