@@ -199,7 +199,6 @@ class GameEngine(object):
 
         """
 
-        self.player = None
         self.objects = []
         defaults = {'dead': False,
                      'seen': False,
@@ -230,10 +229,6 @@ class GameEngine(object):
                 obj.name = obj.name.lower()
                 obj.type = obj.type.lower()
 
-                # remember the player object
-                if obj.type == 'player':
-                    self.player = obj
-
                 # apply character stats from the story config
                 stats = self.story.char_stats(obj.name)
                 if stats:
@@ -248,6 +243,15 @@ class GameEngine(object):
                     obj.maxmana = stats.as_float('maxmana')
                     obj.manarate = stats.as_float('manarate')
                     obj.modes = stats.as_list('modes')
+
+                # carry the player object across levels
+                if obj.type == 'player':
+                    if self.player is None:
+                        self.player = obj
+                    else:
+                        self.player.x, self.player.y = obj.getxy()
+                        self.player.px, self.player.py = obj.getpixelxy()
+                        obj = self.player
 
                 # the map object can override our "mode" behaviours.
                 # these are stored in the object's "properties" attribute.
