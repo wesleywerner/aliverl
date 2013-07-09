@@ -211,6 +211,9 @@ class GraphicalView(object):
                 if event.state == STATE_HELP:
                     self.show_help_screens()
 
+            elif isinstance(event, RefreshUpgradesEvent):
+                self.setup_player_upgrades()
+
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
             # a SystemExit, and we want that one to not catch here.
@@ -982,6 +985,9 @@ class GraphicalView(object):
             pygame.display.set_caption('Alive')
             self.screen = pygame.display.set_mode(self.windowsize.size)
 
+            # flag that we are done and ready for drawing action
+            self.isinitialized = True
+
             # create drawing surfaces which are reused
             self.play_image = pygame.Surface(self.play_area.size)
             self.play_image.set_colorkey(color.magenta)
@@ -1004,9 +1010,6 @@ class GraphicalView(object):
 
             # set up all our ui buttons
             self.setup_ui_manager()
-
-            # flag that we are done and ready for drawing action
-            self.isinitialized = True
 
         except Exception, e:
             # these lines pose an interesting problem:
@@ -1073,6 +1076,7 @@ class GraphicalView(object):
 
         """
 
+
         self.ui = ui.UxManager(self.game_area.size,
             image_filename='images/ui.png',
             font=self.smallfont,
@@ -1091,6 +1095,16 @@ class GraphicalView(object):
             context=STATE_PLAY
             )
         self.ui.add(button)
+
+    def setup_player_upgrades(self):
+        """
+        Refresh the ui buttons that display the player's upgrades.
+
+        """
+
+        if not self.isinitialized or not self.ui:
+            return
+
 
     def ui_click_event(self, context, ux):
         """

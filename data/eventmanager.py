@@ -228,6 +228,16 @@ class UpdateObjectGID(Event):
             (self.name, self.obj.name, self.action, self.gid))
 
 
+class RefreshUpgradesEvent(Event):
+    """
+    Notify everybody that the player's upgrades has changed.
+
+    """
+
+    def __init__(self):
+        self.name = 'Refresh upgrades event'
+
+
 class CrashEvent(Event):
     """
     Something went terribly wrong.

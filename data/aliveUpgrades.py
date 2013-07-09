@@ -176,7 +176,7 @@ UPGRADES = [
         """,
     'version': 1,
     'enabled': True,
-    'availability': [],
+    'availability': [1],
     'passive': False,
     'reach': 0,
     'max_targets': 0,

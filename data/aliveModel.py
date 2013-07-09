@@ -21,6 +21,7 @@ import color
 import trace
 import story
 import rlhelper
+import aliveUpgrades
 from tmxparser import TMXParser
 from eventmanager import *
 
@@ -214,6 +215,7 @@ class GameEngine(object):
                      'modes': [],
                      'in_range': False,
                      'trail': [],
+                     'upgrades': [],
                      }
 
         # for each object group on this level (because maps can be layers)
@@ -835,6 +837,13 @@ class GameEngine(object):
             self.player = random.choice([o for o in self.objects
                                         if o.type in ('ai', 'player')])
             self.look_around()
+        elif event.request_type == 'give random upgrade':
+            all_upgrades = aliveUpgrades.get_available_upgrades(self.level.number)
+            upgrade = random.choice(all_upgrades)
+            if upgrade['name'] not in [u['name'] for u in self.player.upgrades]:
+                trace.write('giving player upgrade %s' % upgrade['name'])
+                self.player.upgrades.append(upgrade)
+                self.evManager.Post(RefreshUpgradesEvent())
 
     @property
     def tile_width(self):

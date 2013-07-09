@@ -97,6 +97,7 @@ class KeyboardMouse(object):
                     pygame.K_F4: 'warp to next level',
                     pygame.K_F5: 'clear fog',
                     pygame.K_F6: 'exploit random',
+                    pygame.K_F7: 'give random upgrade',
                     }
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
