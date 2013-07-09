@@ -1165,6 +1165,9 @@ class GraphicalView(object):
             # move to the next available button position
             butt_y += butt_size[1] + butt_padding
 
+        # refresh their borders
+        self.update_button_borders()
+
     def update_button_borders(self):
         """
         Update ui button borders to match their state.
