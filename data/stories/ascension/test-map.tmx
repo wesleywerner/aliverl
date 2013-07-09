@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="64" height="16" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
+  <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="256" height="960"/>
+ </tileset>
+ <layer name="floor doodads" width="64" height="16">
+  <data encoding="base64" compression="zlib">
+   eJztl1kKwCAQQ3v/23UTut2lM1+VLlpIaij4ICBkQKMdhjaNjk2omFZ8FoW6KH+4vMz3+J2vp3OUJDysSzGaetMg2NtR559Mi2kW7O2o86tJ5c/1JuqzahA/lT/Xm6jPqkH8VP5cb6I+qwbxa//fr9+gnt0MkPzq2c0Aya+e3Qxq/x/4e6r/R0rrz98ukx33UN2T
+  </data>
+ </layer>
+ <layer name="floor" width="64" height="16">
+  <data encoding="base64" compression="zlib">
+   eJzt17ENACAMA8EXbaCD/VclW6Twv+QBrvQGVuhOr8it0K8/N/369eemX7/+3PTrv8z/0Km93gcM/QJv
+  </data>
+ </layer>
+ <objectgroup name="characters" width="64" height="16">
+  <object name="this is our hero" type="player" gid="97" x="64" y="96"/>
+ </objectgroup>
+ <objectgroup name="doors" width="64" height="16"/>
+ <objectgroup name="hints" width="64" height="16">
+  <object name="intro terminal" type="term" gid="56" x="0" y="96">
+   <properties>
+    <property name="show a message" value="@message @repeat welcome to the alive map demo!"/>
+   </properties>
+  </object>
+  <object gid="53" x="0" y="128">
+   <properties>
+    <property name="tip" value="@message @repeat showcasing level building features..."/>
+   </properties>
+  </object>
+  <object name="term" gid="41" x="0" y="160">
+   <properties>
+    <property name="tip" value="@message @repeat have fun exploring :-)"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
