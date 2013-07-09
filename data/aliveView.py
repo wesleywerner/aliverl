@@ -1110,25 +1110,25 @@ class GraphicalView(object):
             aliveUpgrades.UPGRADE_REGEN:
                 ([0, 0], None),
             aliveUpgrades.UPGRADE_CODE_HARDENING:
-                ([0, 0], None),
+                ([0, 45], None),
             aliveUpgrades.UPGRADE_ASSEMBLY_OPTIMIZE:
-                ([0, 0], None),
+                ([0, 90], None),
             aliveUpgrades.UPGRADE_ECHO_LOOP:
-                ([0, 0], 'e'),
+                ([0, 135], 'e'),
             aliveUpgrades.UPGRADE_MAP_PEEK:
-                ([0, 0], None),
+                ([0, 180], None),
             aliveUpgrades.UPGRADE_ZAP:
-                ([0, 0], 'z'),
+                ([0, 225], 'z'),
             aliveUpgrades.UPGRADE_CODE_FREEZE:
-                ([0, 0], 'f'),
+                ([0, 270], 'f'),
             aliveUpgrades.UPGRADE_PING_FLOOD:
-                ([0, 0], 'p'),
+                ([0, 315], 'p'),
             aliveUpgrades.UPGRADE_FORK_BOMB:
-                ([0, 0], 'b'),
+                ([0, 360], 'b'),
             aliveUpgrades.UPGRADE_EXPLOIT:
-                ([0, 0], 'x'),
+                ([0, 405], 'x'),
             aliveUpgrades.UPGRADE_DESERIALIZE:
-                ([0, 0], 'd'),
+                ([0, 450], 'd'),
         }
 
         # first clear any possible elements
