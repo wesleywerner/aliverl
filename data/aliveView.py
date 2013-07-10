@@ -223,14 +223,6 @@ class GraphicalView(object):
             # That means we drop to the terminal if sys.exit() is used.
             self.evManager.Post(CrashEvent())
 
-    def widgetclick(self, context, code):
-        """
-        A handler that gets called by UI widgets.
-        #TODO ui widget implementation
-        """
-
-        pass
-
     def render(self):
         """
         Draw the current game state on screen.
