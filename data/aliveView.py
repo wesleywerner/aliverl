@@ -1076,7 +1076,7 @@ class GraphicalView(object):
 
         self.ui = ui.UxManager(self.game_area.size,
             image_filename='images/ui.png',
-            font=self.smallfont,
+            font=self.largefont,
             click_callback=self.ui_click_event,
             colorkey=color.magenta
             )
