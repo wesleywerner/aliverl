@@ -1,17 +1,20 @@
 
 # RELEASE Y.T.
 
+* build a character screen to show with sections:
+    * player, game and level info, recent messages
+    * current and available upgrades
+    * achievements
+
 * build the abilities classes and link them into the player somehow.
 
 * add a player attribute that defines her view range.
 
 * add an abilities screen that shows available upgrades
 
-* add the UI button class
-
 * add a 'ondeath' object action that triggers during combat
 
-* implement abilities
+* implement upgrade actions
 
 * create the menu with story selection
 
