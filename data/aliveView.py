@@ -1116,7 +1116,7 @@ class GraphicalView(object):
             aliveUpgrades.UPGRADE_PING_FLOOD:
                 ([0, 315], 'p'),
             aliveUpgrades.UPGRADE_FORK_BOMB:
-                ([0, 360], 'b'),
+                ([0, 360], 'r'),
             aliveUpgrades.UPGRADE_EXPLOIT:
                 ([0, 405], 'x'),
             aliveUpgrades.UPGRADE_DESERIALIZE:
