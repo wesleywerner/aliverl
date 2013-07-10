@@ -1167,12 +1167,9 @@ class GraphicalView(object):
         """
 
         for upgrade in self.model.player.upgrades:
-            print(upgrade)
             button = self.ui.get_by_code(upgrade.name)
             if button:
-                if not upgrade.passive:
-                    button.border_color = (upgrade.ready and
-                    color.green or color.yellow)
+                button.enabled = upgrade.ready
 
     def ui_click_event(self, context, ux):
         """
