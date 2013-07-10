@@ -17,7 +17,7 @@
 # The manager handles their hover and fires a callback on click.
 
 import pygame
-
+import color
 
 class UxButton(object):
     """
@@ -178,6 +178,34 @@ class UxManager(object):
         self.image.set_colorkey(colorkey)
         self.source = pygame.image.load(image_filename)
 
+    def _draw_element_hotkey(self, element):
+        """
+        Draws the element's hotkey onto the source image.
+        So we do not have to hardcode keys into images.
+
+        """
+
+        if element.hotkey:
+            state_colors = (
+                color.green,
+                color.cyan,
+                color.light_magenta,
+                color.gray
+                )
+            # draw in a fixed offset from the element's source loc.
+            # we do this for each of the state images:
+            for eachstate in range(0, 4):
+                pix = self.font.render(
+                    element.hotkey.upper(),
+                    False,
+                    state_colors[eachstate],
+                    color.magenta
+                    )
+                pix.set_colorkey(color.magenta)
+                pix_pos = element.image_rect.move(
+                    (eachstate * element.image_rect.width ) + 34, 17)
+                self.source.blit(pix, pix_pos.topleft)
+
     def _refresh_context_elements(self):
         """
         Rebuild the list of context elements.
@@ -213,6 +241,7 @@ class UxManager(object):
 
         self.elements.append(element)
         self._refresh_context_elements()
+        self._draw_element_hotkey(element)
 
     def remove(self, element):
         """
