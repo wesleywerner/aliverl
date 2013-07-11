@@ -223,7 +223,7 @@ UPGRADES = [
     'name': None,
     'description': '',
     'version': 1,
-    'enabled': True,
+    'enabled': False,
     'availability': [],
     'passive': False,
     'reach': 0,
@@ -296,6 +296,9 @@ class Upgrade(object):
 
         # internals
         self._cooldown_count = 0
+        # track the total effect applied across all versions of an upgrade
+        # so that we may reverse it later if an upgrade is purged.
+        self._combined_effect = 0
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -326,6 +329,70 @@ class Upgrade(object):
 
         self.version += 1
 
+    def apply_upgrade(self, character):
+        """
+        An action to perform when this upgrade is installed or upgraded.
+        Mostly applies to passive abilities that affect the player.
+
+        Returns a human readable message of the effect, or None if nothing
+        happend.
+
+        """
+
+        # a neat way to test bonus multipliers (n) is this method that
+        # prints each version's value and a running total of all versions.
+        #def bonus(n):
+            #t = 0
+            #for i in range(1, 6):
+                #v = i * n
+                #t += v
+                #print('version %s increase by %s, for total = %s' % (i, v, t))
+
+        # increase max hp
+        if self.name == CODE_HARDENING:
+            bonus = 0.5
+            self._combined_effect += bonus
+            character.max_health -= bonus
+            return '+%s health' % bonus
+
+        # increase speed
+        elif self.name == ASSEMBLY_OPTIMIZE:
+            bonus = 0.5
+            self._combined_effect += bonus
+            character.speed -= bonus
+            return '+%s speed' % bonus
+
+        # increase view range
+        elif self.name == MAP_PEEK:
+            bonus = 0.5
+            self._combined_effect += bonus
+            character.view_range += bonus
+            return '+%s sight' % bonus
+
+    def purge_upgrade(self, character):
+        """
+        Reverse the effects this upgrade has added to the character.
+
+        Returns a human readable message of the effect, or None if nothing
+        happend.
+
+        """
+
+        # increase max hp
+        if self.name == CODE_HARDENING:
+            character.max_health -= self._combined_effect
+            return '-%s health' % self._combined_effect
+
+        # increase speed
+        elif self.name == ASSEMBLY_OPTIMIZE:
+            character.speed += self._combined_effect
+            return '-%s speed' % self._combined_effect
+
+        # increase view range
+        elif self.name == MAP_PEEK:
+            character.view_range -= self._combined_effect
+            return '-%s sight' % self._combined_effect
+
 
 def get_available_upgrades(level):
     """
@@ -334,3 +401,22 @@ def get_available_upgrades(level):
     """
 
     return [u for u in UPGRADES if level in u['availability'] and u['enabled']]
+
+
+def get_by_name(upgrade_name):
+    """
+    Get an upgrade instance by it's name.
+    """
+
+    match = [u for u in UPGRADES if u['name'] == upgrade_name]
+    if match:
+        return Upgrade.from_dict(match[0])
+
+def get_from_list(comparisson_list, upgrade_name):
+    """
+    Get an upgrade from a list of upgrades, or None if it is not in the list.
+    """
+
+    match = [u for u in comparisson_list if u.name == upgrade_name]
+    if match:
+        return match[0]
