@@ -8,9 +8,7 @@
 
 * add an abilities screen that shows available upgrades
 
-* add a 'ondeath' object action that triggers during combat
-
-* implement upgrade actions
+* add a 'ondeath' object action that triggers during combat - what was this for again?
 
 * create the menu with story selection
 
