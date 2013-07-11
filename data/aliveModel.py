@@ -470,7 +470,7 @@ class GameEngine(object):
         Marks any other objects within the player characters range as seen.
         """
 
-        RANGE = self.player.view_range
+        RANGE = int(round(self.player.view_range))
         px, py = (self.player.x, self.player.y)
         # store the level seen matrix
         seen_mx = self.level.matrix['seen']
@@ -816,6 +816,37 @@ class GameEngine(object):
         else:
             trace.write('dialogue "%s" not found in story definition' % (key))
 
+    def install_upgrade(self, upgrade_name):
+        """
+        Install an upgrade by it's code.
+
+        """
+
+        # if player has this upgrade, version_up() it.
+        status = None
+        upgrade = aliveUpgrades.get_from_list(self.player.upgrades, upgrade_name)
+        if upgrade:
+            upgrade.version_up()
+            trace.write('upgrading "%s"' % upgrade_name)
+            status = 'upgraded %s (v%s)' % (upgrade_name, upgrade.version)
+        else:
+            # else get an instance of it and add it to the player.
+            trace.write('installing "%s"' % upgrade_name)
+            status = 'installed %s' % upgrade_name
+            upgrade = aliveUpgrades.get_by_name(upgrade_name)
+            self.player.upgrades.append(upgrade)
+        # apply upgrade abilities
+        result = upgrade.apply_upgrade(self.player)
+        if status or result:
+            # look around again if any abilities upgraded our perception
+            self.look_around()
+            # notify listeners we have new things
+            self.evManager.Post(MessageEvent(status, fontcolor=color.yellow))
+            if result:
+                self.evManager.Post(MessageEvent(result, fontcolor=color.yellow))
+            self.evManager.Post(RefreshUpgradesEvent())
+
+
     def debug_action(self, event):
         """
         Perform some debugesque action.
@@ -840,14 +871,9 @@ class GameEngine(object):
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
-            all_upgrades = aliveUpgrades.get_available_upgrades(self.level.number)
-            upgrade = random.choice(all_upgrades)
-            if upgrade['name'] not in [u.name for u in self.player.upgrades]:
-                trace.write('giving player upgrade %s' % upgrade['name'])
-                ug = aliveUpgrades.Upgrade.from_dict(upgrade)
-                trace.write('created upgrade object %s' % str(ug))
-                self.player.upgrades.append(ug)
-                self.evManager.Post(RefreshUpgradesEvent())
+            choices = aliveUpgrades.get_available_upgrades(self.level.number)
+            names = [u['name'] for u in choices]
+            self.install_upgrade(random.choice(names))
 
     @property
     def tile_width(self):
