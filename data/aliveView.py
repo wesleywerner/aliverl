@@ -579,11 +579,11 @@ class GraphicalView(object):
         xposition = 0
         yposition = 0
         health = 0
-        if player.maxhealth > 0:
-            health = player.health / player.maxhealth
+        if player.max_health > 0:
+            health = player.health / player.max_health
         mana = 0
-        if player.maxmana > 0:
-            mana = player.mana / player.maxmana
+        if player.max_power > 0:
+            mana = player.power / player.max_power
 
         phealth = self.smallfont.render(
                                 str(player.health) + ' health',
@@ -592,7 +592,7 @@ class GraphicalView(object):
         self.statscanvas.blit(phealth, (xposition, yposition))
         # mana
         pmana = self.smallfont.render(
-                                str(player.mana) + ' mana',
+                                str(player.power) + ' mana',
                                 False,
                                 _colorband(mana))
         self.statscanvas.blit(

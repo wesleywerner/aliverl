@@ -205,13 +205,13 @@ class GameEngine(object):
                      'seen': False,
                      'attack': 0,
                      'health': 0,
-                     'maxhealth': 0,
-                     'healrate': 0,
+                     'max_health': 0,
+                     'heal_rate': 0,
                      'speed': 0,
                      'stealth': 0,
-                     'mana': 0,
-                     'maxmana': 5,
-                     'manarate': 6,
+                     'power': 0,
+                     'max_power': 5,
+                     'power_restore_rate': 6,
                      'modes': [],
                      'view_range': 3,
                      'in_range': False,
@@ -238,13 +238,13 @@ class GameEngine(object):
                     trace.write('applying conf stats for %s' % (obj.name,))
                     obj.attack = stats.as_float('attack')
                     obj.health = stats.as_float('health')
-                    obj.maxhealth = stats.as_float('maxhealth')
-                    obj.healrate = stats.as_float('healrate')
+                    obj.max_health = stats.as_float('max_health')
+                    obj.heal_rate = stats.as_float('heal_rate')
                     obj.speed = stats.as_float('speed')
                     obj.stealth = stats.as_float('stealth')
-                    obj.mana = stats.as_float('mana')
-                    obj.maxmana = stats.as_float('maxmana')
-                    obj.manarate = stats.as_float('manarate')
+                    obj.power = stats.as_float('power')
+                    obj.max_power = stats.as_float('max_power')
+                    obj.power_restore_rate = stats.as_float('power_restore_rate')
                     obj.modes = stats.as_list('modes')
 
                 # carry the player object across levels
@@ -577,14 +577,14 @@ class GameEngine(object):
                             if e.type in ('player', 'ai')
                             and not e.dead]:
             # health
-            if npc.health < npc.maxhealth:
-                if self.turn % npc.healrate == 0:
+            if npc.health < npc.max_health:
+                if self.turn % npc.heal_rate == 0:
                     npc.health += 1
                     trace.write('%s heals to %s hp' % (npc.name, npc.health))
             # mana
-            if npc.mana < npc.maxmana:
-                if self.turn % npc.manarate == 0:
-                    npc.mana += 1
+            if npc.power < npc.max_power:
+                if self.turn % npc.power_restore_rate == 0:
+                    npc.power += 1
 
     def trigger_object(self, obj, direct):
         """
