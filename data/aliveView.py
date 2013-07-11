@@ -378,16 +378,16 @@ class GraphicalView(object):
                 else:
                     visible = False
                 # draw if both are happy
-                if sprite and visible:
-                    # update the sprite animation
+                if sprite:
+                    # update the sprite animation.
                     sprite.update(ticks)
-                    # because our play_image is only the size of the screen
-                    # we accommodate sprite positions, which are relative to
-                    # an entire map, by subtracting the viewport location.
-                    new_rect = sprite.rect.move(
-                        -self.viewport.left, -self.viewport.top)
-                    # and draw it
-                    self.play_image.blit(sprite.image, new_rect)
+                    if visible:
+                        # because our play_image is only the size of the screen
+                        # we accommodate sprite positions, which are relative
+                        # to entire map, by subtracting the viewport location.
+                        new_rect = sprite.rect.move(
+                            -self.viewport.left, -self.viewport.top)
+                        self.play_image.blit(sprite.image, new_rect)
 
     def draw_fog(self):
         """
