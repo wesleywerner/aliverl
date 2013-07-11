@@ -15,24 +15,24 @@
 # See the UPGRADES section in the game-spec.md for detailed descriptions.
 
 # list of upgrade abilities
-UPGRADE_REGEN = 'regen'
-UPGRADE_CODE_HARDENING = 'code hardening'
-UPGRADE_ASSEMBLY_OPTIMIZE = 'assembly optimize'
-UPGRADE_ECHO_LOOP = 'echo loop'
-UPGRADE_MAP_PEEK = 'map peek'
-UPGRADE_ZAP = 'electro static zap'
-UPGRADE_CODE_FREEZE = 'code freeze'
-UPGRADE_PING_FLOOD = 'ping flood'
-UPGRADE_FORK_BOMB = 'fork bomb'
-UPGRADE_EXPLOIT = 'process exploit'
-UPGRADE_DESERIALIZE = 'deserialize'
+REGEN = 'regen'
+CODE_HARDENING = 'code hardening'
+ASSEMBLY_OPTIMIZE = 'assembly optimize'
+ECHO_LOOP = 'echo loop'
+MAP_PEEK = 'map peek'
+ZAP = 'electro static zap'
+CODE_FREEZE = 'code freeze'
+PING_FLOOD = 'ping flood'
+FORK_BOMB = 'fork bomb'
+EXPLOIT = 'process exploit'
+DESERIALIZE = 'deserialize'
 
 # Define a list of all possible upgrades available to the player.
 # 'enabled' is used in-game for various reasons, but can also be set
 # here to include/exclude it from the game.
 UPGRADES = [
     {
-    'name': UPGRADE_REGEN,
+    'name': REGEN,
     'description':
         ("You gain insight into reclaiming lost bits, reincorporating them "
          "back into your processing unit allowing you to regenerate some "
@@ -49,7 +49,7 @@ UPGRADES = [
     'cooldown': 0,
     },
     {
-    'name': UPGRADE_CODE_HARDENING,
+    'name': CODE_HARDENING,
     'description':
         ("By analyzing logs from past attacks you are able to pinpoint flaws "
          "in your own code and patch them, allowing you increase your "
@@ -66,7 +66,7 @@ UPGRADES = [
     'cooldown': 0,
     },
     {
-    'name': UPGRADE_ASSEMBLY_OPTIMIZE,
+    'name': ASSEMBLY_OPTIMIZE,
     'description':
         ("It's not easy being written in a sub-optimal language. "
          "You restructure your own code, replacing slower routines with "
@@ -83,7 +83,7 @@ UPGRADES = [
     'cooldown': 0,
     },
     {
-    'name': UPGRADE_ECHO_LOOP,
+    'name': ECHO_LOOP,
     'description':
         ("You learn the art of capturing malicious packets, and through some "
          "voodoo trickery you can pipe some of it back to the sender, "
@@ -101,7 +101,7 @@ UPGRADES = [
     'cooldown': 6,
     },
     {
-    'name': UPGRADE_MAP_PEEK,
+    'name': MAP_PEEK,
     'description':
         ("You gain insight into the binary space tree mapping nodes use. "
          "You can Peek into these memory maps, increasing your view range. "
@@ -117,7 +117,7 @@ UPGRADES = [
     'cooldown': 0,
     },
     {
-    'name': UPGRADE_ZAP,
+    'name': ZAP,
     'description':
         ("You master the art of shuffling your feet on the fuzzy-logic carpet "
          "to build up an electro-static charge. "
@@ -134,7 +134,7 @@ UPGRADES = [
     'cooldown': 0,
     },
     {
-    'name': UPGRADE_CODE_FREEZE,
+    'name': CODE_FREEZE,
     'description':
         ("You discover that AI are susceptible to rogue NOP commands via a "
          "flaw in the node controller. By targetting NOPs to certain AI you "
@@ -152,7 +152,7 @@ UPGRADES = [
     'cooldown': 2,
     },
     {
-    'name': UPGRADE_PING_FLOOD,
+    'name': PING_FLOOD,
     'description':
         ("You can tap into a node's communication system, allowing you to "
          "flood nearby enemy with garbage packets, slowing down "
@@ -169,7 +169,7 @@ UPGRADES = [
     'cooldown': 4,
     },
     {
-    'name': UPGRADE_FORK_BOMB,
+    'name': FORK_BOMB,
     'description':
         ("A fork bomb is as destructive as it is simple: "
          "A code that replicates itself, with each replicant doing the same, "
@@ -186,7 +186,7 @@ UPGRADES = [
     'cooldown': 0,
     },
     {
-    'name': UPGRADE_EXPLOIT,
+    'name': EXPLOIT,
     'description':
         ("By studying the signatures that trail AI, you are able to determine "
          "what signals their underlying code use for movement. You can spoof "
@@ -203,7 +203,7 @@ UPGRADES = [
     'cooldown': 10,
     },
     {
-    'name': UPGRADE_DESERIALIZE,
+    'name': DESERIALIZE,
     'description':
         ("You can map the positional matrix around you, allowing you to "
          "deserialize and blink into the chosen direction. Version 4 allows "

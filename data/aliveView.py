@@ -1099,27 +1099,27 @@ class GraphicalView(object):
         # define a lookup of each upgrade's
         #   source image position, hotkey
         upgrade_lookup = {
-            aliveUpgrades.UPGRADE_REGEN:
+            aliveUpgrades.REGEN:
                 ([0, 0], None),
-            aliveUpgrades.UPGRADE_CODE_HARDENING:
+            aliveUpgrades.CODE_HARDENING:
                 ([0, 45], None),
-            aliveUpgrades.UPGRADE_ASSEMBLY_OPTIMIZE:
+            aliveUpgrades.ASSEMBLY_OPTIMIZE:
                 ([0, 90], None),
-            aliveUpgrades.UPGRADE_ECHO_LOOP:
+            aliveUpgrades.ECHO_LOOP:
                 ([0, 135], 'e'),
-            aliveUpgrades.UPGRADE_MAP_PEEK:
+            aliveUpgrades.MAP_PEEK:
                 ([0, 180], None),
-            aliveUpgrades.UPGRADE_ZAP:
+            aliveUpgrades.ZAP:
                 ([0, 225], 'z'),
-            aliveUpgrades.UPGRADE_CODE_FREEZE:
+            aliveUpgrades.CODE_FREEZE:
                 ([0, 270], 'f'),
-            aliveUpgrades.UPGRADE_PING_FLOOD:
+            aliveUpgrades.PING_FLOOD:
                 ([0, 315], 'p'),
-            aliveUpgrades.UPGRADE_FORK_BOMB:
+            aliveUpgrades.FORK_BOMB:
                 ([0, 360], 'r'),
-            aliveUpgrades.UPGRADE_EXPLOIT:
+            aliveUpgrades.EXPLOIT:
                 ([0, 405], 'x'),
-            aliveUpgrades.UPGRADE_DESERIALIZE:
+            aliveUpgrades.DESERIALIZE:
                 ([0, 450], 'd'),
         }
 
