@@ -213,6 +213,7 @@ class GameEngine(object):
                      'maxmana': 5,
                      'manarate': 6,
                      'modes': [],
+                     'view_range': 3,
                      'in_range': False,
                      'trail': [],
                      'upgrades': [],
@@ -469,7 +470,7 @@ class GameEngine(object):
         Marks any other objects within the player characters range as seen.
         """
 
-        RANGE = 6
+        RANGE = self.player.view_range
         px, py = (self.player.x, self.player.y)
         # store the level seen matrix
         seen_mx = self.level.matrix['seen']
@@ -835,7 +836,7 @@ class GameEngine(object):
             self.evManager.Post(PlayerMovedEvent())
         elif event.request_type == 'exploit random':
             self.player = random.choice([o for o in self.objects
-                                        if o.type in ('ai', 'player')])
+                                        if o.type in ('ai', 'player', 'friend')])
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':

@@ -6,10 +6,6 @@
     * current and available upgrades
     * achievements
 
-* build the abilities classes and link them into the player somehow.
-
-* add a player attribute that defines her view range.
-
 * add an abilities screen that shows available upgrades
 
 * add a 'ondeath' object action that triggers during combat
