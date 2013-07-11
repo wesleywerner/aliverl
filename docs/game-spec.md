@@ -14,7 +14,10 @@ This allows new players to surive easier, and mad players to explore different p
 
 ````
 name:
-    A descriptive name also used as a unique key by the engine.
+    A name used by the engine.
+
+description:
+    Describes what this upgrade does and how it is used.
 
 version:
     Starts at 1 and counts on each upgrade.
@@ -28,7 +31,7 @@ availability:
 passive:
     Passive upgrades Actions on each player turn. They provide ongoing features that the player can enjoy.
 
-range:
+reach:
     The reach in tile count that this ability has control over. Any characters within this range to the player is at the whims of this upgrade.
 
 max_targets:
@@ -53,23 +56,60 @@ Passive abilities will action on each player movement turn. For the rest the pla
 2. While active the upgrade's abilities are in effect.
 3. When @duration runs out, the @cooldown period prevents the upgrade from being activated until a later turn.
 
-## list of passive upgrades
+## list of upgrades
 
-_Some upgrades increase in effectiveness for each version they are upgraded._
+    REGEN,
+    "You gain insight into reclaiming lost bits, reincorporating them "
+    "back into your processing unit allowing you to regenerate some "
+    "health whenever you enter a node."
 
-#TODO refresh this list from aliveUpgrades.py
+    CODE_HARDENING,
+    "By analyzing logs from past attacks you are able to pinpoint flaws "
+    "in your own code and patch them, allowing you increase your "
+    "maximum health."
 
-regen: Regenerate some health whenever you enter a node.
-code hardening: Increase to your maximum health.
-assembly optimize: increase your movement speed.
-echo loop: Split any damage you may receive and echo part of it back to your attacker.
-map peek: Peek into the node memory map increasing your view range.
+    ASSEMBLY_OPTIMIZE,
+    "It's not easy being written in a sub-optimal language. "
+    "You restructure your own code, replacing slower routines with "
+    "optimized assembly, allowing you to increase your movement speed."
 
-## list of active upgrades
+    ECHO_LOOP,
+    "You learn the art of capturing malicious packets, and through some "
+    "voodoo trickery you can pipe some of it back to the sender, "
+    "allowing you to split any damage you may receive and echo part of "
+    "it back to your attacker."
 
-electro static zap: Zap a nearby enemy with an electro-static charge.
-code freeze: Freeze the code of nearby enemy, immobilizing them for a while.
-ping flood: Flood nearby enemy with garbage packets, slowing down their movement while they try to filter through the noise.
-fork bomb: deals x damage in range, and propagates via damaged AI by range.
-exploit: take control of nearby AI.
-deserialize: blink into a chosen direction for x distance.
+    MAP_PEEK,
+    "You gain insight into the binary space tree mapping nodes use. "
+    "You can Peek into these memory maps, increasing your view range. "
+
+    ZAP,
+    "You master the art of shuffling your feet on the fuzzy-logic carpet "
+    "to build up an electro-static charge. "
+    "Useful to Zap nearby enemy with."
+
+    CODE_FREEZE,
+    "You discover that AI are susceptible to rogue NOP commands via a "
+    "flaw in the node controller. By targetting NOPs to certain AI you "
+    "can force them to eat up their cycles, freezing their movement "
+    "loops for a short while."
+
+    PING_FLOOD,
+    "You can tap into a node's communication system, allowing you to "
+    "flood nearby enemy with garbage packets, slowing down "
+    "their movement while they try to filter through the noise. "
+
+    FORK_BOMB,
+    "A fork bomb is as destructive as it is simple: "
+    "A code that replicates itself, with each replicant doing the same, "
+    "creates a powerful shockwave that damages nearby AI. "
+
+    EXPLOIT,
+    "By studying the signatures that trail AI, you are able to determine "
+    "what signals their underlying code use for movement. You can spoof "
+    "these to gain control of an AI for a short while. "
+
+    DESERIALIZE,
+    "You can map the positional matrix around you, allowing you to "
+    "deserialize and blink into the chosen direction. Version 4 allows "
+    "you to cross wall boundaries. "
