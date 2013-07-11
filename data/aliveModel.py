@@ -873,7 +873,8 @@ class GameEngine(object):
         elif event.request_type == 'give random upgrade':
             choices = aliveUpgrades.get_available_upgrades(self.level.number)
             names = [u['name'] for u in choices]
-            self.install_upgrade(random.choice(names))
+            if names:
+                self.install_upgrade(random.choice(names))
 
     @property
     def tile_width(self):
