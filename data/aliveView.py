@@ -896,11 +896,6 @@ class GraphicalView(object):
         px, py = self.model.player.getpixelxy()
         vp = self.viewport
 
-        # no point to shift if the level size is within our viewport limits
-        if (self.tmx.width * self.tile_w <= vp.width and
-            self.tmx.height * self.tile_h <= vp.height):
-            return
-
         # how close to edges we need to be to shfit the view (in tiles)
         A = 4 * self.tile_w
         B = 4 * self.tile_h
