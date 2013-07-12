@@ -157,13 +157,13 @@ class GameEngine(object):
 
         trace.write('warping to level: %s ' % (nextlevel,))
         self.level = GameLevel(nextlevel, self.story.level_file(nextlevel))
-        self.load_matrix()
         self.load_objects()
+        self.load_matrix()
+        self.look_around()
+        self.trigger_queue = []
         self.evManager.Post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
-        self.look_around()
         self.evManager.Post(PlayerMovedEvent())
-        self.trigger_queue = []
         # show any level entry messages defined in the story
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:
@@ -171,7 +171,6 @@ class GameEngine(object):
         entry_dialogue = self.story.entry_dialogue(nextlevel)
         if entry_dialogue:
             self.show_dialogue(entry_dialogue)
-
 
     def load_matrix(self):
         """
