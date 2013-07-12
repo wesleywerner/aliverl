@@ -1002,7 +1002,7 @@ class GraphicalView(object):
             self.defaultbackground = image.load(
                 'images/background.png').convert()
             self.menubackground = image.load('images/menu.png').convert()
-            self.borders = image.load('images/playscreen.png').convert()
+            self.borders = image.load('images/game_borders.png').convert()
             self.borders.set_colorkey(color.magenta)
             self.dialoguebackground = image.load('images/dialog.png').convert()
 
