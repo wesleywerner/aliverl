@@ -574,7 +574,7 @@ class GameEngine(object):
         """
 
         for npc in [e for e in self.objects
-                            if e.type in ('player', 'ai')
+                            if e.type in ('player', 'ai', 'friend')
                             and not e.dead]:
             # health
             if npc.health < npc.max_health:
@@ -871,6 +871,7 @@ class GameEngine(object):
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
+            #self.install_upgrade(aliveUpgrades.CODE_HARDENING)
             choices = aliveUpgrades.get_available_upgrades(self.level.number)
             names = [u['name'] for u in choices]
             if names:
