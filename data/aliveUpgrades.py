@@ -352,8 +352,8 @@ class Upgrade(object):
         if self.name == CODE_HARDENING:
             bonus = 0.5
             self._combined_effect += bonus
-            character.max_health -= bonus
-            return '+%s health' % bonus
+            character.max_health += bonus
+            return '+%s max health' % bonus
 
         # increase speed
         elif self.name == ASSEMBLY_OPTIMIZE:
