@@ -1,12 +1,12 @@
 
 # RELEASE Y.T.
 
+* site upload issue: find scp does not do directory structure :(
+
 * build a character screen to show with sections:
     * player, game and level info, recent messages
     * current and available upgrades
     * achievements
-
-* add an abilities screen that shows available upgrades
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?
 
