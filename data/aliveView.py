@@ -221,15 +221,13 @@ class GraphicalView(object):
                     isinstance(event, StateSwapEvent)):
                 if self.ui:
                     model_state = self.model.state.peek()
+                    self.setup_ui_upgrade_buttons(model_state)
                     trace.write('set ui context to game state %s' %
                         model_state)
                     self.ui.set_context(model_state)
 
                 if event.state == STATE_HELP:
                     self.show_help_screens()
-
-            elif isinstance(event, RefreshUpgradesEvent):
-                self.setup_ui_upgrade_buttons()
 
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
@@ -1151,7 +1149,7 @@ class GraphicalView(object):
             )
         self.ui.add(tab)
 
-    def setup_ui_upgrade_buttons(self):
+    def setup_ui_upgrade_buttons(self, game_state):
         """
         Refresh the ui buttons that display the player's upgrades.
 
@@ -1191,7 +1189,6 @@ class GraphicalView(object):
         code_list = [u['name'] for u in aliveUpgrades.UPGRADES]
         self.ui.remove_by_code(code_list)
 
-        game_state = self.model.state.peek()
         if game_state == STATE_PLAY:
             # position buttons for the playing state
 
@@ -1312,9 +1309,11 @@ class GraphicalView(object):
         if ux.code == 'upgrades tab':
             self.last_info_state = STATE_INFO_UPGRADES
             self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
-            self.evManager.Post(RefreshUpgradesEvent())
         if ux.code == 'wins tab':
             self.last_info_state = STATE_INFO_WINS
             self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
+
+        #TODO on upgrade install button click
+        #     call setup_ui_upgrade_buttons(STATE_PLAY)
 
         trace.write('pressed button %s' % ux.code)
