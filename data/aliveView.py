@@ -1091,12 +1091,34 @@ class GraphicalView(object):
             colorkey=color.magenta
             )
 
-        # add info screen player tab
+        # set up info screen tabs
+        home_source = (228, 0, 83, 34)
+        home_dest = (12, 12, home_source[2], home_source[3])
+        upgrades_source = (228, 34, 152, 34)
+        upgrades_dest = (97, 12, upgrades_source[2], upgrades_source[3])
+        wins_source = (228, 68, 74, 34)
+        wins_dest = (251, 12, wins_source[2], wins_source[3])
+
+        # add home tab
         tab = ui.UxTabButton(
-            rect=(12, 12, 197, 109),
-            image_rect=(228, 0, 197, 109),
-            code='info tab stats',
-            hotkey='s',
+            rect=home_dest,
+            image_rect=home_source,
+            code='home tab',
+            hotkey='h',
+            enabled=True,
+            border_color=None,
+            context=STATE_INFO,
+            group=None
+            )
+        tab.isclicked = True
+        self.ui.add(tab)
+
+        # add upgrades tab
+        tab = ui.UxTabButton(
+            rect=upgrades_dest,
+            image_rect=upgrades_source,
+            code='upgrades tab',
+            hotkey='u',
             enabled=True,
             border_color=None,
             context=STATE_INFO,
@@ -1104,12 +1126,12 @@ class GraphicalView(object):
             )
         self.ui.add(tab)
 
-        # add info screen upgrades tab
+        # add wins tab
         tab = ui.UxTabButton(
-            rect=(209, 12, 197, 109),
-            image_rect=(228, 109, 197, 109),
-            code='info tab upgrades',
-            hotkey='u',
+            rect=wins_dest,
+            image_rect=wins_source,
+            code='wins tab',
+            hotkey='w',
             enabled=True,
             border_color=None,
             context=STATE_INFO,
