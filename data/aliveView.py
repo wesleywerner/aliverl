@@ -119,7 +119,7 @@ class GraphicalView(object):
         self.windowsize = None
         self.sprites = {}
         self.scrollertexts = None
-        self.messages = [''] * 20
+        self.messages = []
         self.gamefps = 30
         self.last_tip_pos = 0
         self.transition_queue = []
@@ -368,8 +368,46 @@ class GraphicalView(object):
 
         self.image.blit(self.info_screen, (0, 0))
 
-        # print selected upgrade information
-        if game_state == STATE_INFO_UPGRADES:
+        if game_state == STATE_INFO_HOME:
+            # draw a portion of the playscreen
+            snap_rect = (
+                        self.tile_w * (self.model.player.x - 2),
+                        self.tile_h * (self.model.player.y - 2),
+                        self.tile_w * 5,
+                        self.tile_h * 5,
+                        )
+            snap_dest = (28, 122)
+            self.image.blit(self.play_image, snap_dest, snap_rect)
+            pygame.draw.rect(self.image, color.blue,
+                (snap_dest[0], snap_dest[1], snap_rect[2], snap_rect[3]), 2)
+            # a helpful message
+            pix = self.largefont.render(
+                'you are alive!', False, color.blue)
+            self.image.blit(pix, (28, 75))
+            # column of stats titles
+            titles = 'turn\nlevel\nhealth\npower\nattack\nspeed\nview'
+            pix = self.draw_text_block(
+                titles, self.largefont, False, color.cyan)
+            self.image.blit(pix, (370, 70))
+            values = '%s\n%s\n%s\n%s\n%s\n%s\n%s' % (
+                self.model.turn,
+                self.model.level.number,
+                self.model.player.health,
+                self.model.player.power,
+                self.model.player.attack,
+                self.model.player.speed,
+                self.model.player.view_range,
+                )
+            pix = self.draw_text_block(
+                values, self.largefont, False, color.yellow)
+            self.image.blit(pix, (490, 70))
+            # recent messages
+            if self.messages:
+                pix = self.draw_text(
+                    self.messages, self.smallfont, False, color.white)
+                self.image.blit(pix, (28, 290))
+
+        elif game_state == STATE_INFO_UPGRADES:
             if self.chosen_upgrade_details:
                 self.image.blit(self.chosen_upgrade_details, (30, 100))
 
@@ -876,7 +914,8 @@ class GraphicalView(object):
 
         # allow the same message to popup again and again
         if True:
-            self.messages.extend(self.wrap_text(message, 30))
+            self.messages.append(message)
+            self.messages = self.messages[-12:]
             # avoid overlapping recent messages
             self.last_tip_pos += 14
             pos = self.model.player.getpixelxy()
