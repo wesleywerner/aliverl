@@ -57,6 +57,8 @@ class KeyboardMouse(object):
                             self.crash_keys(event)
                         elif state == STATE_HELP:
                             self.help_keys(event)
+                        elif state == STATE_INFO:
+                            self.info_keys(event)
                         else:
                             # allow escaping from unhandled states
                             self.evManager.Post(StateChangeEvent(None))
@@ -149,6 +151,18 @@ class KeyboardMouse(object):
 
         if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
             self.evManager.Post(StateChangeEvent(None))
+
+    def info_keys(self, event):
+        """
+        Handles info screen keys.
+        """
+
+        if event.key == pygame.K_ESCAPE:
+            self.evManager.Post(StateChangeEvent(None))
+        else:
+            # pass keys to view listening for ui interaction
+            inEvent = InputEvent(char=event.unicode, clickpos=None)
+            self.evManager.Post(inEvent)
 
     def game_over_keys(self, event):
         """
