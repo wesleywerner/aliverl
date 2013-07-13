@@ -840,9 +840,10 @@ class GameEngine(object):
         else:
             # else get an instance of it and add it to the player.
             trace.write('installing "%s"' % upgrade_name)
-            status = 'installed %s' % upgrade_name
             upgrade = aliveUpgrades.get_by_name(upgrade_name)
-            self.player.upgrades.append(upgrade)
+            if upgrade:
+                self.player.upgrades.append(upgrade)
+                status = 'installed %s' % upgrade_name
         # apply upgrade abilities
         result = upgrade.apply_upgrade(self.player)
         if status or result:
@@ -852,7 +853,7 @@ class GameEngine(object):
             self.evManager.Post(MessageEvent(status, fontcolor=color.yellow))
             if result:
                 self.evManager.Post(MessageEvent(result, fontcolor=color.yellow))
-            self.evManager.Post(RefreshUpgradesEvent())
+            return True
 
 
     def debug_action(self, event):
