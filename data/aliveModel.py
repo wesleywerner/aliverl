@@ -880,7 +880,7 @@ class GameEngine(object):
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
             #self.install_upgrade(aliveUpgrades.CODE_HARDENING)
-            choices = aliveUpgrades.get_available_upgrades(self.level.number)
+            choices = aliveUpgrades.by_level(self.level.number)
             names = [u['name'] for u in choices]
             if names:
                 self.install_upgrade(random.choice(names))

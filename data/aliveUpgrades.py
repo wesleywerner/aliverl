@@ -394,7 +394,7 @@ class Upgrade(object):
             return '-%s sight' % self._combined_effect
 
 
-def get_available_upgrades(level):
+def by_level(level):
     """
     Returns a list of available upgrades for the given level.
 

@@ -80,7 +80,11 @@ class GraphicalView(object):
     sprites (Dict):
         A sprite lookup by object id.
 
-    messages (list): list of recent game messages.
+    messages (list):
+        list of recent game messages.
+
+    selected_upgrade (string):
+        the name of the currently selected upgrade in the info screen.
 
     """
 
@@ -115,6 +119,7 @@ class GraphicalView(object):
         self.last_tip_pos = 0
         self.transition_queue = []
         self.ui = None
+        self.selected_upgrade = None
 
     @property
     def tmx(self):
@@ -550,7 +555,7 @@ class GraphicalView(object):
             self.transition_queue.pop()
 
         # cater for certain STATES that rely on transitions
-        # by popping the state queue if no more transitions are avaialble.
+        # by popping the state queue if no more transitions are available.
         state = self.model.state.peek()
         if (state in (STATE_DIALOG, STATE_HELP) and
             not self.transition_queue):
@@ -1150,75 +1155,131 @@ class GraphicalView(object):
         if not self.isinitialized or not self.ui:
             return
 
-        # the starting position where upgrade buttons appear.
-        butt_x = 14
-        butt_y = 69
-        butt_size = (57, 45)
-        butt_padding = 6
-
-        # define a lookup of each upgrade's
-        #   source image position, hotkey
+        # define a lookup of each upgrade's:
+        #   [source image position, in-game hotkey, upgrade screen hotkey]
         upgrade_lookup = {
             aliveUpgrades.REGEN:
-                ([0, 0], None),
+                ([0, 0], None, '1'),
             aliveUpgrades.CODE_HARDENING:
-                ([0, 45], None),
+                ([0, 45], None, '2'),
             aliveUpgrades.ASSEMBLY_OPTIMIZE:
-                ([0, 90], None),
+                ([0, 90], None, '3'),
             aliveUpgrades.ECHO_LOOP:
-                ([0, 135], 'e'),
+                ([0, 135], 'e', 'e'),
             aliveUpgrades.MAP_PEEK:
-                ([0, 180], None),
+                ([0, 180], None, '4'),
             aliveUpgrades.ZAP:
-                ([0, 225], 'z'),
+                ([0, 225], 'z', 'z'),
             aliveUpgrades.CODE_FREEZE:
-                ([0, 270], 'f'),
+                ([0, 270], 'f', 'f'),
             aliveUpgrades.PING_FLOOD:
-                ([0, 315], 'p'),
+                ([0, 315], 'p', 'p'),
             aliveUpgrades.FORK_BOMB:
-                ([0, 360], 'r'),
+                ([0, 360], 'r', 'r'),
             aliveUpgrades.EXPLOIT:
-                ([0, 405], 'x'),
+                ([0, 405], 'x', 'x'),
             aliveUpgrades.DESERIALIZE:
-                ([0, 450], 'd'),
+                ([0, 450], 'd', 'd'),
         }
 
         # first clear any possible elements
         code_list = [u['name'] for u in aliveUpgrades.UPGRADES]
         self.ui.remove_by_code(code_list)
 
-        # build a new ui for all player upgrades.
-        for upgrade in self.model.player.upgrades:
-            # set the screen position
-            rect = [butt_x, butt_y]
-            rect.extend(butt_size)
-            # grab the upgrade lookup data
-            lookup = upgrade_lookup.get(upgrade.name, None)
-            # sanity check
-            if not lookup:
-                trace.error('the upgrade "%s" has no lookup data defined' %
-                    upgrade.name)
-                # jump to the next upgrade
-                continue
-            image_rect = lookup[0]
-            image_rect.extend(butt_size)
-            # create the ui button
-            button = ui.UxButton(
-                rect=rect,
-                image_rect=image_rect,
-                code=upgrade.name,
-                hotkey=lookup[1],
-                enabled=upgrade.enabled,
-                border_color=None,
-                context=STATE_PLAY
-                )
-            self.ui.add(button)
-            trace.write('added ui button for "%s"' % button.code)
-            # move to the next available button position
-            butt_y += butt_size[1] + butt_padding
+        game_state = self.model.state.peek()
+        if game_state == STATE_PLAY:
+            # position buttons for the playing state
 
-        # refresh their borders
-        self.update_button_borders()
+            butt_x = 14
+            butt_y = 69
+            butt_size = (57, 45)
+            butt_padding = 6
+
+            for upgrade in self.model.player.upgrades:
+                # set the screen position
+                rect = [butt_x, butt_y]
+                rect.extend(butt_size)
+                # grab the upgrade lookup data
+                lookup = upgrade_lookup.get(upgrade.name, None)
+                # sanity check
+                if not lookup:
+                    trace.error('no upgrade_lookup defined for "%s"' %
+                        upgrade.name)
+                    # jump to the next item
+                    continue
+                image_rect = lookup[0]
+                image_rect.extend(butt_size)
+                # create the ui button
+                button = ui.UxButton(
+                    rect=rect,
+                    image_rect=image_rect,
+                    code=upgrade.name,
+                    hotkey=lookup[1],
+                    enabled=upgrade.enabled,
+                    border_color=None,
+                    context=STATE_PLAY
+                    )
+                self.ui.add(button)
+                # move to the next available button position
+                butt_y += butt_size[1] + butt_padding
+            self.update_button_borders()
+
+        elif game_state == STATE_INFO_UPGRADES:
+            # position buttons for the upgrade screen
+
+            butt_x = 30
+            butt_y = 80
+            butt_size = (57, 45)
+            butt_padding = 24
+
+            # the player has the choice to install or upgrade
+            can_upgrade = True
+
+            #TODO build a ui label that we can use here to tell
+            #   our player if they can choose an upgrade.
+
+            # grab the upgrades the player has
+            player_list = [u.name for u in self.model.player.upgrades]
+            # grab the available upgrades for this level
+            available_list = [u['name']
+                for u in aliveUpgrades.by_level(self.model.level.number)]
+            # draw the combined lists
+            for name in sorted(set(player_list + available_list)):
+                rect = [butt_x, butt_y]
+                rect.extend(butt_size)
+                # grab the upgrade lookup data
+                lookup = upgrade_lookup.get(name, None)
+                # sanity check
+                if not lookup:
+                    trace.error('no upgrade_lookup defined for "%s"' %
+                        name)
+                    # jump to the next item
+                    continue
+                image_rect = lookup[0]
+                image_rect.extend(butt_size)
+                # installable or upgradable have bright borders.
+                border_color = ((name in available_list) and
+                                color.green or color.darkest_green)
+                button = ui.UxButton(
+                    rect=rect,
+                    image_rect=image_rect,
+                    code=name,
+                    hotkey=lookup[2],
+                    enabled=True,
+                    border_color=border_color,
+                    context=STATE_INFO_UPGRADES
+                    )
+                self.ui.add(button)
+                # move to the next available button position
+                butt_x += butt_size[0] + butt_padding
+                if (butt_x > self.play_area.width - butt_padding):
+                    butt_y += butt_size[1] + butt_padding
+                    butt_x = 30
+                #butt_y += butt_size[1] + butt_padding
+                #if (butt_y > self.play_area.height - butt_padding):
+                    #butt_x += butt_size[0] + butt_padding
+                    #butt_y = 80
+
 
     def update_button_borders(self):
         """
@@ -1238,11 +1299,17 @@ class GraphicalView(object):
 
         """
 
+        # because we can have upgrade buttons for in-game
+        # as well as in the upgrade screen, we test against
+        # the game state to make sure we run the correct action.
+        game_state = self.model.state.peek()
+
         # handle info screen menus
         if ux.code == 'home tab':
             self.evManager.Post(StateSwapEvent(STATE_INFO_HOME))
         if ux.code == 'upgrades tab':
             self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
+            self.evManager.Post(RefreshUpgradesEvent())
         if ux.code == 'wins tab':
             self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
 
