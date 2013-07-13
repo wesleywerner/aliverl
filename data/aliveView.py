@@ -220,7 +220,7 @@ class GraphicalView(object):
                     isinstance(event, StateSwapEvent)):
                 if self.ui:
                     model_state = self.model.state.peek()
-                    self.setup_ui_upgrade_buttons(model_state)
+                    self.reposition_upgrade_buttons(model_state)
                     trace.write('set ui context to game state %s' %
                         model_state)
                     self.ui.set_context(model_state)
@@ -1190,9 +1190,10 @@ class GraphicalView(object):
             wrap_width=60
             )
 
-    def setup_ui_upgrade_buttons(self, game_state):
+    def reposition_upgrade_buttons(self, game_state):
         """
-        Refresh the ui buttons that display the player's upgrades.
+        Reposition the ui buttons that display the player's upgrades.
+        This is also done for the upgrades screen, depending on game_state.
 
         """
 
