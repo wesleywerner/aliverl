@@ -1204,28 +1204,28 @@ class GraphicalView(object):
         #   [source image position, in-game hotkey, upgrade screen hotkey]
         upgrade_lookup = {
             aliveUpgrades.REGEN:
-                ([0, 0], None, '1'),
+                (UG_REGEN_SRC, None, '1'),
             aliveUpgrades.CODE_HARDENING:
-                ([0, 45], None, '2'),
+                (UG_HARDENING_SRC, None, '2'),
             aliveUpgrades.ASSEMBLY_OPTIMIZE:
-                ([0, 90], None, '3'),
+                (UG_OPTIMIZE_SRC, None, '3'),
             aliveUpgrades.ECHO_LOOP:
-                ([0, 135], 'e', 'e'),
+                (UG_ECHO_SRC, 'e', 'e'),
             aliveUpgrades.MAP_PEEK:
-                ([0, 180], None, '4'),
+                (UG_PEEK_SRC, None, '4'),
             aliveUpgrades.ZAP:
-                ([0, 225], 'z', 'z'),
+                (UG_ZAP_SRC, 'z', 'z'),
             aliveUpgrades.CODE_FREEZE:
-                ([0, 270], 'f', 'f'),
+                (UG_FREEZE_SRC, 'f', 'f'),
             aliveUpgrades.PING_FLOOD:
-                ([0, 315], 'p', 'p'),
+                (UG_PING_SRC, 'p', 'p'),
             aliveUpgrades.FORK_BOMB:
-                ([0, 360], 'r', 'r'),
+                (UG_FORK_SRC, 'r', 'r'),
             aliveUpgrades.EXPLOIT:
-                ([0, 405], 'x', 'x'),
+                (UG_EXPLOIT_SRC, 'x', 'x'),
             aliveUpgrades.DESERIALIZE:
-                ([0, 450], 'd', 'd'),
-        }
+                (UG_DEREZ_SRC, 'd', 'd'),
+            }
 
         # first clear any possible elements
         code_list = [u['name'] for u in aliveUpgrades.UPGRADES]
@@ -1251,7 +1251,6 @@ class GraphicalView(object):
                     # jump to the next item
                     continue
                 image_rect = lookup[0]
-                image_rect.extend(butt_size)
                 # create the ui button
                 button = ui.UxButton(
                     rect=rect,
@@ -1302,7 +1301,6 @@ class GraphicalView(object):
                     # jump to the next item
                     continue
                 image_rect = lookup[0]
-                image_rect.extend(butt_size)
                 # installable or upgradable have bright borders.
                 border_color = ((name in available_list) and
                                 color.green or color.darkest_green)
