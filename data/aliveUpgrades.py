@@ -285,6 +285,7 @@ class Upgrade(object):
                 cooldown=0,
                 ):
         self.name = name
+        self.description = description
         self.version = version
         self.enabled = enabled
         self.availability = availability
