@@ -50,7 +50,10 @@ class UxButton(object):
     context:
         The context under which this ux lives within the containing UxManager.
         This ux will only be visible and interactible if it's context
-        matches that of the UxManager
+        matches that of the UxManager.
+
+        It may be a single value, or a list of values. Your value will be
+        converted to a list if it is not one already.
 
     """
 
@@ -75,7 +78,10 @@ class UxButton(object):
         self.hotkey = hotkey
         self.enabled = enabled
         self.border_color = border_color
-        self.context = context
+        if type(context) is list:
+            self.context = context
+        else:
+            self.context = [context]
         self.ishovering = False
         self.isclicked = False
 
@@ -266,7 +272,7 @@ class UxManager(object):
         """
 
         self.context_elements = [e for e in self.elements
-                                    if e.context == self.context]
+                                    if self.context in e.context]
 
     def set_context(self, context):
         """
