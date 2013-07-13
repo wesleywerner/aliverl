@@ -265,9 +265,6 @@ class GraphicalView(object):
         # reset the main image by painting a background over it
         self.image.blit(self.defaultbackground, (0, 0))
 
-        # and clear the play image
-        self.play_image.fill(color.magenta)
-
         if state == STATE_INTRO:
             pass
 
@@ -279,7 +276,7 @@ class GraphicalView(object):
 
         elif state in (STATE_PLAY, STATE_GAMEOVER):
 
-            # draw all things onto the play_image
+            self.play_image.fill(color.magenta)
             self.draw_borders()
             self.draw_player_stats()
             self.draw_sprites()
@@ -290,11 +287,11 @@ class GraphicalView(object):
                 #TODO Overlay a game over message.
                 pass
 
+            # merge play_image into our main image at the relevant position
+            self.image.blit(self.play_image, self.play_area)
+
         # NOTE: no need to handle drawing for HELP or DIALOGUE states
         #       since those use the TransitionBase, which draws itself below.
-
-        # merge play_image into our main image at the relevant position
-        self.image.blit(self.play_image, self.play_area)
 
         # update the ui and draw it to the main image
         self.ui.update()
