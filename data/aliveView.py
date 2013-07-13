@@ -408,8 +408,19 @@ class GraphicalView(object):
                 self.image.blit(pix, (28, 290))
 
         elif game_state == STATE_INFO_UPGRADES:
+            # display the amount of upgrades the player can install
+            amt = self.model.upgrades_available
+            if amt == 0:
+                status = 'You cannot install any upgrades at this time.'
+            elif amt == 1:
+                status = 'You can install 1 upgrade.'
+            else:
+                status = 'You can install %s upgrades.' % amt
+            pix = self.draw_text([status], self.smallfont, False, color.white)
+            self.image.blit(pix, (140, 65))
+            # show chosen upgrade details
             if self.chosen_upgrade_details:
-                self.image.blit(self.chosen_upgrade_details, (140, 60))
+                self.image.blit(self.chosen_upgrade_details, (140, 85))
 
     def draw_sprites(self):
         """
@@ -1311,9 +1322,6 @@ class GraphicalView(object):
             butt_size = (57, 45)
             butt_padding = 24
 
-            # the player has the choice to install or upgrade
-            can_upgrade = True
-
             #TODO build a ui label that we can use here to tell
             #   our player if they can choose an upgrade.
 
@@ -1407,9 +1415,10 @@ class GraphicalView(object):
             else:
                 # grab the upgrade data and create a details screen for it
                 data = alu.get_by_name(ux.code)
-                # enable the install button if the upgrade is available
-                butt = self.ui.get_by_code('install upgrade')
-                butt.enabled = True if data and ux.data else False
+                # enable button if upgrade available on level
+                if self.model.upgrades_available > 0:
+                    butt = self.ui.get_by_code('install upgrade')
+                    butt.enabled = True if data and ux.data else False
                 if data:
                     notice = ' -- UPGRADE UNAVAILABLE '
                     self.chosen_upgrade = ux.code
