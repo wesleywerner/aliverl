@@ -146,6 +146,60 @@ class UxButton(object):
             pygame.draw.rect(target, self.border_color, self.rect, 1)
 
 
+class UxTabButton(UxButton):
+    """
+    A button that acts like a tab control.
+    It does not draw a disabled state.
+    Unclick events do not affect us either.
+    It has an extra attribute, group, which will unselect any other
+    tab buttons in the same group on click (handled by UxManager).
+
+    """
+
+    def __init__(self,
+                rect=None,
+                image_rect=None,
+                code='',
+                hotkey=None,
+                enabled=True,
+                border_color=None,
+                context=None,
+                group=None
+                ):
+        super(UxTabButton, self).__init__(
+            rect, image_rect, code, hotkey, enabled, border_color, context)
+        self.group = group
+
+    def click(self, position):
+        """
+        Overrides base to only click, but not unclick.
+        Test if the given point is clicking us.
+        """
+
+        if not self.isclicked:
+            is_clicked = self._istarget(position)
+            if is_clicked:
+                self.isclicked = True
+                return True
+
+    def calculated_rect(self):
+        """
+        Overrides base to ignore disabled state.
+        Calculates our source rectangle from our state.
+        """
+
+        # normal - clicked
+        x_offset = 0
+        if self.isclicked:
+            x_offset = 1
+        return pygame.Rect(self.image_rect.left +
+            (x_offset * self.image_rect.width),
+            self.image_rect.top,
+            self.image_rect.width,
+            self.image_rect.height
+            )
+
+
 class UxManager(object):
     """
     Stores a collection of elements and handles drawing them.
@@ -241,7 +295,8 @@ class UxManager(object):
 
         self.elements.append(element)
         self._refresh_context_elements()
-        self._draw_element_hotkey(element)
+        if not isinstance(element, UxTabButton):
+            self._draw_element_hotkey(element)
 
     def remove(self, element):
         """
@@ -279,6 +334,8 @@ class UxManager(object):
 
         for ux in self.context_elements:
             if ux.enabled and ux.click(position):
+                if isinstance(ux, UxTabButton):
+                    self.unselect_other_tabs(ux)
                 ux.draw(self.source, self.image)
                 if self.click_callback is not None:
                     self.click_callback(self.context, ux)
@@ -290,9 +347,23 @@ class UxManager(object):
         """
 
         for ux in self.context_elements:
-            if ux.isclicked:
-                ux.isclicked = False
-                ux.draw(self.source, self.image)
+            if not isinstance(ux, UxTabButton):
+                if ux.isclicked:
+                    ux.isclicked = False
+                    ux.draw(self.source, self.image)
+
+    def unselect_other_tabs(self, exclude_tab):
+        """
+        Unselect all tab in our context that live in the same group
+        as exclude_tab.
+
+        """
+
+        for tab in self.context_elements:
+            if tab is not exclude_tab and isinstance(tab, UxTabButton):
+                if tab.group == exclude_tab.group and tab.isclicked:
+                    tab.isclicked = False
+                    tab.draw(self.source, self.image)
 
     def update(self):
         """
