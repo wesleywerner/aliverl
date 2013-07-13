@@ -151,7 +151,7 @@ class UxButton(object):
         this_rect = self.calculated_rect()
         target.blit(source, self.rect, this_rect)
         if self.enabled and self.hotkey_image:
-            target.blit(self.hotkey_image, self.rect.move(34, 17))
+            target.blit(self.hotkey_image, self.rect.move(38, 17))
         if self.border_color:
             pygame.draw.rect(target, self.border_color, self.rect, 1)
 
