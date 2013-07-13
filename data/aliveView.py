@@ -86,6 +86,10 @@ class GraphicalView(object):
     selected_upgrade (string):
         the name of the currently selected upgrade in the info screen.
 
+    last_info_state (const):
+        the last state of the info screen. used to synchronize the last
+        selected tab on that screen.
+
     """
 
     def __init__(self, evManager, model):
@@ -120,6 +124,7 @@ class GraphicalView(object):
         self.transition_queue = []
         self.ui = None
         self.selected_upgrade = None
+        self.last_info_state = STATE_INFO_HOME
 
     @property
     def tmx(self):
@@ -210,7 +215,7 @@ class GraphicalView(object):
                         self.ui.unclick()
                     #TODO move this handler to a UxButton
                     if event.char == '@':
-                        self.evManager.Post(StateChangeEvent(STATE_INFO_HOME))
+                        self.evManager.Post(StateChangeEvent(self.last_info_state))
 
             elif (isinstance(event, StateChangeEvent) or
                     isinstance(event, StateSwapEvent)):
@@ -1275,10 +1280,6 @@ class GraphicalView(object):
                 if (butt_x > self.play_area.width - butt_padding):
                     butt_y += butt_size[1] + butt_padding
                     butt_x = 30
-                #butt_y += butt_size[1] + butt_padding
-                #if (butt_y > self.play_area.height - butt_padding):
-                    #butt_x += butt_size[0] + butt_padding
-                    #butt_y = 80
 
 
     def update_button_borders(self):
@@ -1306,11 +1307,14 @@ class GraphicalView(object):
 
         # handle info screen menus
         if ux.code == 'home tab':
+            self.last_info_state = STATE_INFO_HOME
             self.evManager.Post(StateSwapEvent(STATE_INFO_HOME))
         if ux.code == 'upgrades tab':
+            self.last_info_state = STATE_INFO_UPGRADES
             self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
             self.evManager.Post(RefreshUpgradesEvent())
         if ux.code == 'wins tab':
+            self.last_info_state = STATE_INFO_WINS
             self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
 
         trace.write('pressed button %s' % ux.code)
