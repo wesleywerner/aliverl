@@ -215,9 +215,6 @@ class GraphicalView(object):
                         self.ui.click(event.char)
                     else:
                         self.ui.unclick()
-                    #TODO move this handler to a UxButton
-                    if event.char == '@':
-                        self.evManager.Post(StateChangeEvent(self.last_info_state))
 
             elif (isinstance(event, StateChangeEvent) or
                     isinstance(event, StateSwapEvent)):
@@ -1113,19 +1110,26 @@ class GraphicalView(object):
             colorkey=color.magenta
             )
 
-        # set up info screen tabs
+        # add the "goto home screen" button
+        button = ui.UxButton(
+            rect=BT_HOME_DST,
+            image_rect=BT_HOME_SRC,
+            code='goto home',
+            hotkey='@',
+            enabled=True,
+            border_color=None,
+            context=STATE_PLAY
+            )
+        self.ui.add(button, hide_hotkey=True
+        )
+
+        # set up info screen tabs (list required)
         tab_states = [STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS]
-        home_source = (228, 0, 83, 34)
-        home_dest = (12, 12, home_source[2], home_source[3])
-        upgrades_source = (228, 34, 152, 34)
-        upgrades_dest = (97, 12, upgrades_source[2], upgrades_source[3])
-        wins_source = (228, 68, 74, 34)
-        wins_dest = (251, 12, wins_source[2], wins_source[3])
 
         # add home tab
         tab = ui.UxTabButton(
-            rect=home_dest,
-            image_rect=home_source,
+            rect=TB_HOME_DST,
+            image_rect=TB_HOME_SRC,
             code='home tab',
             hotkey='h',
             enabled=True,
@@ -1138,8 +1142,8 @@ class GraphicalView(object):
 
         # add upgrades tab
         tab = ui.UxTabButton(
-            rect=upgrades_dest,
-            image_rect=upgrades_source,
+            rect=TB_UPGRADE_DST,
+            image_rect=TB_UPGRADE_SRC,
             code='upgrades tab',
             hotkey='u',
             enabled=True,
@@ -1151,8 +1155,8 @@ class GraphicalView(object):
 
         # add wins tab
         tab = ui.UxTabButton(
-            rect=wins_dest,
-            image_rect=wins_source,
+            rect=TB_WINS_DST,
+            image_rect=TB_WINS_SRC,
             code='wins tab',
             hotkey='w',
             enabled=True,
@@ -1164,8 +1168,8 @@ class GraphicalView(object):
 
         # upgrade Install button
         button = ui.UxButton(
-            rect=(30, 60, 843, 34),
-            image_rect=(228, 102, 83, 34),
+            rect=BT_INSTALL_DST,
+            image_rect=BT_INSTALL_SRC,
             code='install upgrade',
             hotkey='i',
             enabled=False,
@@ -1175,8 +1179,7 @@ class GraphicalView(object):
         self.ui.add(button, hide_hotkey=True)
 
         # prepare the default upgrade screen message
-        the_message = ("Select an upgrade to view more about it. "
-             "If you have one already installed it will version up.")
+        the_message = "Select an upgrade to view more about it. "
         self.chosen_upgrade_details = self.draw_text_block(
             the_message,
             self.smallfont,
@@ -1228,7 +1231,6 @@ class GraphicalView(object):
         self.ui.remove_by_code(code_list)
 
         if game_state == STATE_PLAY:
-            # position buttons for the playing state
 
             butt_x = 14
             butt_y = 69
@@ -1342,6 +1344,10 @@ class GraphicalView(object):
 
         tab_states = [STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS]
 
+        if context == STATE_PLAY:
+            if ux.code == 'goto home':
+                self.evManager.Post(StateChangeEvent(self.last_info_state))
+
         # handle info screen menus
         if context in tab_states:
             if ux.code == 'home tab':
@@ -1382,3 +1388,29 @@ class GraphicalView(object):
                         )
 
         trace.write('pressed button %s' % ux.code)
+
+# locations of ui.png images
+# goto home button
+BT_HOME_SRC = (228, 170, 83, 34)
+BT_HOME_DST = (500, 26, 0, 0)
+# home tabs
+BT_INSTALL_SRC = (228, 102, 83, 34)
+BT_INSTALL_DST = (30, 60, 0, 0)
+TB_HOME_SRC = (228, 0, 83, 34)
+TB_HOME_DST = (12, 12, 0, 0)
+TB_UPGRADE_SRC = (228, 34, 152, 34)
+TB_UPGRADE_DST = (97, 12, 0, 0)
+TB_WINS_SRC = (228, 68, 74, 34)
+TB_WINS_DST = (251, 12, 0, 0)
+# upgrades
+UG_REGEN_SRC = (0, 0, 57, 45)
+UG_HARDENING_SRC = (0, 45, 57, 45)
+UG_OPTIMIZE_SRC = (0, 90, 57, 45)
+UG_ECHO_SRC = (0, 135, 57, 45)
+UG_PEEK_SRC = (0, 180, 57, 45)
+UG_ZAP_SRC = (0, 225, 57, 45)
+UG_FREEZE_SRC = (0, 270, 57, 45)
+UG_PING_SRC = (0, 315, 57, 45)
+UG_FORK_SRC = (0, 360, 57, 45)
+UG_EXPLOIT_SRC = (0, 405, 57, 45)
+UG_DEREZ_SRC = (0, 450,  57, 45)
