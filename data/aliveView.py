@@ -203,6 +203,9 @@ class GraphicalView(object):
                         self.ui.click(event.char)
                     else:
                         self.ui.unclick()
+                    #TODO move this handler to a UxButton
+                    if event.char == '@':
+                        self.evManager.Post(StateChangeEvent(STATE_INFO))
 
             elif isinstance(event, StateChangeEvent):
                 if self.ui:
@@ -262,6 +265,9 @@ class GraphicalView(object):
 
         elif state == STATE_MENU:
             self.draw_menu()
+
+        elif state == STATE_INFO:
+            self.draw_info_screen()
 
         elif state in (STATE_PLAY, STATE_GAMEOVER):
 
@@ -350,6 +356,13 @@ class GraphicalView(object):
         """
 
         self.image.blit(self.menubackground, (0, 0))
+
+    def draw_info_screen(self):
+        """
+        Draw the player info screen.
+        """
+
+        self.image.blit(self.info_screen, (0, 0))
 
     def draw_sprites(self):
         """
@@ -996,6 +1009,8 @@ class GraphicalView(object):
             self.largefont = pygame.font.Font('bitwise.ttf', 30)
             self.defaultbackground = image.load(
                 'images/background.png').convert()
+            self.info_screen = image.load(
+                'images/info_screen.png').convert()
             self.menubackground = image.load('images/menu.png').convert()
             self.borders = image.load('images/game_borders.png').convert()
             self.borders.set_colorkey(color.magenta)
@@ -1075,6 +1090,32 @@ class GraphicalView(object):
             click_callback=self.ui_click_event,
             colorkey=color.magenta
             )
+
+        # add info screen player tab
+        tab = ui.UxTabButton(
+            rect=(12, 12, 197, 109),
+            image_rect=(228, 0, 197, 109),
+            code='info tab stats',
+            hotkey='s',
+            enabled=True,
+            border_color=None,
+            context=STATE_INFO,
+            group=None
+            )
+        self.ui.add(tab)
+
+        # add info screen upgrades tab
+        tab = ui.UxTabButton(
+            rect=(209, 12, 197, 109),
+            image_rect=(228, 109, 197, 109),
+            code='info tab upgrades',
+            hotkey='u',
+            enabled=True,
+            border_color=None,
+            context=STATE_INFO,
+            group=None
+            )
+        self.ui.add(tab)
 
     def setup_ui_upgrade_buttons(self):
         """
