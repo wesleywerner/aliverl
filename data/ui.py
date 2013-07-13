@@ -84,6 +84,7 @@ class UxButton(object):
             self.context = [context]
         self.ishovering = False
         self.isclicked = False
+        self.hotkey_image = None
 
     def _istarget(self, position):
         """
@@ -148,6 +149,8 @@ class UxButton(object):
 
         this_rect = self.calculated_rect()
         target.blit(source, self.rect, this_rect)
+        if self.enabled and self.hotkey_image:
+            target.blit(self.hotkey_image, self.rect.move(34, 17))
         if self.border_color:
             pygame.draw.rect(target, self.border_color, self.rect, 1)
 
@@ -240,31 +243,19 @@ class UxManager(object):
 
     def _draw_element_hotkey(self, element):
         """
-        Draws the element's hotkey onto the source image.
+        Draws the element's hotkey onto an image stored on the element.
         So we do not have to hardcode keys into images.
 
         """
 
-        if element.hotkey:
-            state_colors = (
+        if element.hotkey and not element.hotkey_image:
+            element.hotkey_image = self.font.render(
+                element.hotkey.upper(),
+                False,
                 color.green,
-                color.cyan,
-                color.light_magenta,
-                color.gray
+                color.magenta
                 )
-            # draw in a fixed offset from the element's source loc.
-            # we do this for each of the state images:
-            for eachstate in range(0, 4):
-                pix = self.font.render(
-                    element.hotkey.upper(),
-                    False,
-                    state_colors[eachstate],
-                    color.magenta
-                    )
-                pix.set_colorkey(color.magenta)
-                pix_pos = element.image_rect.move(
-                    (eachstate * element.image_rect.width ) + 34, 17)
-                self.source.blit(pix, pix_pos.topleft)
+            element.hotkey_image.set_colorkey(color.magenta)
 
     def _refresh_context_elements(self):
         """
