@@ -143,6 +143,20 @@ class StateChangeEvent(Event):
             return '%s popped' % (self.name, )
 
 
+class StateSwapEvent(Event):
+    """
+    Swap the current state out for another.
+    """
+
+    def __init__(self, state):
+        self.name = 'State swap event'
+        self.state = state
+
+    def __str__(self):
+        if self.state:
+            return '%s swapped to %s' % (self.name, self.state)
+
+
 class ShiftViewportEvent(Event):
     """
     Move the Viewport around.
