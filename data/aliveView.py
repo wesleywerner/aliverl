@@ -13,6 +13,7 @@
 
 import os
 import sys
+import textwrap
 import pygame
 from pygame import image
 from pygame.locals import *
@@ -83,7 +84,7 @@ class GraphicalView(object):
     messages (list):
         list of recent game messages.
 
-    selected_upgrade (string):
+    chosen_upgrade (string):
         the name of the currently selected upgrade in the info screen.
 
     last_info_state (const):
@@ -123,7 +124,8 @@ class GraphicalView(object):
         self.last_tip_pos = 0
         self.transition_queue = []
         self.ui = None
-        self.selected_upgrade = None
+        self.chosen_upgrade = None
+        self.chosen_upgrade_details = None
         self.last_info_state = STATE_INFO_HOME
 
     @property
@@ -276,7 +278,7 @@ class GraphicalView(object):
             self.draw_menu()
 
         elif state in (STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS):
-            self.draw_info_screen()
+            self.draw_info_screen(state)
 
         elif state in (STATE_PLAY, STATE_GAMEOVER):
 
@@ -366,12 +368,17 @@ class GraphicalView(object):
 
         self.image.blit(self.menubackground, (0, 0))
 
-    def draw_info_screen(self):
+    def draw_info_screen(self, game_state):
         """
         Draw the player info screen.
         """
 
         self.image.blit(self.info_screen, (0, 0))
+
+        # print selected upgrade information
+        if game_state == STATE_INFO_UPGRADES:
+            if self.chosen_upgrade_details:
+                self.image.blit(self.chosen_upgrade_details, (30, 100))
 
     def draw_sprites(self):
         """
@@ -710,11 +717,17 @@ class GraphicalView(object):
 
     def draw_text_block(
             self, text, font, antialias, fontcolor,
-            colorize=None, background=None):
+            colorize=None, background=None, wrap_width=None):
         """ renders block text with newlines. """
-        brokenText = text.replace("\r\n", "\n").replace("\r", "\n")
+
+        if wrap_width:
+            brokenText = text.replace("\r\n", " ").replace("\r", " ").replace("\n", " ")
+            brokenText = textwrap.wrap(brokenText, wrap_width)
+        else:
+            brokenText = text.replace("\r\n", "\n").replace("\r", "\n")
+            brokenText = brokenText.split("\n")
         return self.draw_text(
-                        brokenText.split("\n"),
+                        brokenText,
                         font,
                         antialias,
                         fontcolor,
@@ -1149,6 +1162,19 @@ class GraphicalView(object):
             )
         self.ui.add(tab)
 
+        # prepare the default upgrade screen message
+        the_message = ("Select an upgrade to view more about it. "
+             "If you have one already installed it will version up.")
+        self.chosen_upgrade_details = self.draw_text_block(
+            the_message,
+            self.smallfont,
+            False,
+            color.cyan,
+            colorize=None,
+            background=None,
+            wrap_width=60
+            )
+
     def setup_ui_upgrade_buttons(self, game_state):
         """
         Refresh the ui buttons that display the player's upgrades.
@@ -1230,7 +1256,7 @@ class GraphicalView(object):
             # position buttons for the upgrade screen
 
             butt_x = 30
-            butt_y = 80
+            butt_y = 240
             butt_size = (57, 45)
             butt_padding = 24
 
@@ -1245,8 +1271,11 @@ class GraphicalView(object):
             # grab the available upgrades for this level
             available_list = [u['name']
                 for u in aliveUpgrades.by_level(self.model.level.number)]
+            # merge the lists
+            upgrade_list = sorted(set(player_list + available_list))
+
             # draw the combined lists
-            for name in sorted(set(player_list + available_list)):
+            for name in upgrade_list:
                 rect = [butt_x, butt_y]
                 rect.extend(butt_size)
                 # grab the upgrade lookup data
@@ -1297,23 +1326,34 @@ class GraphicalView(object):
 
         """
 
-        # because we can have upgrade buttons for in-game
-        # as well as in the upgrade screen, we test against
-        # the game state to make sure we run the correct action.
-        game_state = self.model.state.peek()
+        tab_states = [STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS]
 
         # handle info screen menus
-        if ux.code == 'home tab':
-            self.last_info_state = STATE_INFO_HOME
-            self.evManager.Post(StateSwapEvent(STATE_INFO_HOME))
-        if ux.code == 'upgrades tab':
-            self.last_info_state = STATE_INFO_UPGRADES
-            self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
-        if ux.code == 'wins tab':
-            self.last_info_state = STATE_INFO_WINS
-            self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
-
-        #TODO on upgrade install button click
-        #     call setup_ui_upgrade_buttons(STATE_PLAY)
+        if context in tab_states:
+            if ux.code == 'home tab':
+                self.last_info_state = STATE_INFO_HOME
+                self.evManager.Post(StateSwapEvent(STATE_INFO_HOME))
+            elif ux.code == 'upgrades tab':
+                self.last_info_state = STATE_INFO_UPGRADES
+                self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
+            elif ux.code == 'wins tab':
+                self.last_info_state = STATE_INFO_WINS
+                self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
+            elif ux.code == 'install upgrade':
+                self.model.install_upgrade(ux.code)
+            else:
+                # grab the upgrade data and create a details screen for it
+                data = aliveUpgrades.get_by_name(ux.code)
+                if data:
+                    self.chosen_upgrade = ux.code
+                    self.chosen_upgrade_details = self.draw_text_block(
+                        '%s: %s' % (ux.code.upper(), data.description),
+                        self.smallfont,
+                        False,
+                        color.cyan,
+                        colorize=None,
+                        background=None,
+                        wrap_width=60
+                        )
 
         trace.write('pressed button %s' % ux.code)
