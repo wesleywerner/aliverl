@@ -285,14 +285,14 @@ class UxManager(object):
         if matches:
             return matches[0]
 
-    def add(self, element):
+    def add(self, element, hide_hotkey=False):
         """
         Add an element to this UxManager. munch.
         """
 
         self.elements.append(element)
         self._refresh_context_elements()
-        if not isinstance(element, UxTabButton):
+        if not hide_hotkey and not isinstance(element, UxTabButton):
             self._draw_element_hotkey(element)
 
     def remove(self, element):
