@@ -1396,10 +1396,13 @@ class GraphicalView(object):
                 self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
             elif ux.code == 'install upgrade':
                 if self.chosen_upgrade:
-                    self.model.install_upgrade(self.chosen_upgrade)
-                    self.chosen_upgrade = None
-                    self.chosen_upgrade_details = None
-                    self.ui.get_by_code('install upgrade').enabled = False
+                    status = self.model.install_upgrade(self.chosen_upgrade)
+                    if status:
+                        self.chosen_upgrade = None
+                        self.chosen_upgrade_details = None
+                        self.ui.get_by_code('install upgrade').enabled = False
+                        self.chosen_upgrade_details = self.draw_text_block(
+                            status, self.smallfont, False, color.yellow)
             else:
                 # grab the upgrade data and create a details screen for it
                 data = alu.get_by_name(ux.code)

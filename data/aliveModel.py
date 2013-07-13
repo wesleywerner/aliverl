@@ -853,7 +853,7 @@ class GameEngine(object):
             self.evManager.Post(MessageEvent(status, fontcolor=color.yellow))
             if result:
                 self.evManager.Post(MessageEvent(result, fontcolor=color.yellow))
-            return True
+        return '%s\n%s' % (status, result is None and ' ' or result)
 
 
     def debug_action(self, event):
