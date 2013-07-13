@@ -1312,6 +1312,8 @@ class GraphicalView(object):
                     border_color=border_color,
                     context=STATE_INFO_UPGRADES
                     )
+                # set the button's data to indicate if the ugprade is available
+                button.data = (name in available_list)
                 self.ui.add(button)
                 # move to the next available button position
                 butt_x += butt_size[0] + butt_padding
@@ -1360,11 +1362,17 @@ class GraphicalView(object):
             else:
                 # grab the upgrade data and create a details screen for it
                 data = aliveUpgrades.get_by_name(ux.code)
-                self.ui.get_by_code('install upgrade').enabled = data is not None
+                # enable the install button if the upgrade is available
+                butt = self.ui.get_by_code('install upgrade')
+                butt.enabled = True if data and ux.data else False
                 if data:
+                    notice = '(** This upgrade cannot be updated anymore **)'
                     self.chosen_upgrade = ux.code
                     self.chosen_upgrade_details = self.draw_text_block(
-                        '%s: %s' % (ux.code.upper(), data.description),
+                            '%s: %s %s' % (
+                            ux.code.upper(),
+                            data.description,
+                            ux.data and ' ' or notice),
                         self.smallfont,
                         False,
                         color.cyan,
