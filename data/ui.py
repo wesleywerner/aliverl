@@ -85,6 +85,7 @@ class UxButton(object):
         self.ishovering = False
         self.isclicked = False
         self.hotkey_image = None
+        self.data = None
 
     def _istarget(self, position):
         """
