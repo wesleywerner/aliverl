@@ -47,6 +47,8 @@ class GameEngine(object):
             stores the story.conf data.
         player (MapObject):
             the player controlled map object.
+        upgrades_available (int):
+            number of upgrades the player can install.
         objects ([MapObject]):
             list of level objects.
         dialogue ([str]):
@@ -62,6 +64,7 @@ class GameEngine(object):
         self.level = None
         self.story = None
         self.player = None
+        self.upgrades_available = 0
         self.objects = None
         self.dialogue = []
         self.turn = None
@@ -679,6 +682,8 @@ class GameEngine(object):
                     return
                 if '@message' in commands:
                     self.evManager.Post(MessageEvent(user_data))
+                if '@upgrade' in commands:
+                    self.allow_upgrade()
                 if '@dialogue' in commands:
                     self.show_dialogue(user_data)
                 if '@give' in commands:
@@ -847,6 +852,7 @@ class GameEngine(object):
         # apply upgrade abilities
         result = upgrade.apply_upgrade(self.player)
         if status or result:
+            self.upgrades_available -= 1
             # look around again if any abilities upgraded our perception
             self.look_around()
             # notify listeners we have new things
@@ -855,6 +861,15 @@ class GameEngine(object):
                 self.evManager.Post(MessageEvent(result, fontcolor=color.yellow))
         return '%s\n%s' % (status, result is None and ' ' or result)
 
+    def allow_upgrade(self):
+        """
+        Gives the player one more allowed upgrade.
+
+        """
+
+        self.upgrades_available += 1
+        self.evManager.Post(MessageEvent('You have upgrades available!',
+                                        fontcolor=color.white))
 
     def debug_action(self, event):
         """
