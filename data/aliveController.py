@@ -43,22 +43,35 @@ class KeyboardMouse(object):
                     # all key downs
                     if event.type == pygame.KEYDOWN:
                         state = self.model.state.peek()
+
                         if state == STATE_INTRO:
                             self.intro_keys(event)
+
                         elif state == STATE_MENU:
                             self.menu_keys(event)
+
                         elif state == STATE_PLAY:
                             self.play_keys(event)
+
                         elif state == STATE_GAMEOVER:
                             self.game_over_keys(event)
+
                         elif state == STATE_DIALOG:
                             self.dialogue_keys(event)
+
                         elif state == STATE_CRASH:
                             self.crash_keys(event)
+
                         elif state == STATE_HELP:
                             self.help_keys(event)
-                        elif state == STATE_INFO:
+
+                        elif state in (
+                                        STATE_INFO_HOME,
+                                        STATE_INFO_UPGRADES,
+                                        STATE_INFO_WINS
+                                        ):
                             self.info_keys(event)
+
                         else:
                             # allow escaping from unhandled states
                             self.evManager.Post(StateChangeEvent(None))

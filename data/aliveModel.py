@@ -74,16 +74,25 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.running = False
+
         elif isinstance(event, StateChangeEvent):
             self.change_state(event.state)
+
+        elif isinstance(event, StateSwapEvent):
+            self.state.swap(event.state)
+
         elif isinstance(event, PlayerMoveRequestEvent):
             self.move_player(event.direction)
+
         elif isinstance(event, CombatEvent):
             self.combat_turn(event)
+
         elif isinstance(event, KillCharacterEvent):
             self.kill_object(event.character)
+
         elif isinstance(event, DebugEvent):
             self.debug_action(event)
+
         elif isinstance(event, CrashEvent):
             self.change_state(STATE_CRASH)
             error_message = str(traceback.format_exc())
@@ -996,6 +1005,19 @@ class StateMachine(object):
         else:
             self.pop()
         return len(self.statestack) > 0
+
+    def swap(self, state):
+        """
+        Swaps the current state out for the one given.
+        Note this bypasses unwinding of the natural stack order.
+
+        Useful for menus where you want to switch states yet easily
+        unwind only one state.
+        """
+
+        if state and self.statestack:
+            self.pop()
+            self.push(state)
 
     def contains(self, state):
         """

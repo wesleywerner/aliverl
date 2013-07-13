@@ -205,9 +205,10 @@ class GraphicalView(object):
                         self.ui.unclick()
                     #TODO move this handler to a UxButton
                     if event.char == '@':
-                        self.evManager.Post(StateChangeEvent(STATE_INFO))
+                        self.evManager.Post(StateChangeEvent(STATE_INFO_HOME))
 
-            elif isinstance(event, StateChangeEvent):
+            elif (isinstance(event, StateChangeEvent) or
+                    isinstance(event, StateSwapEvent)):
                 if self.ui:
                     model_state = self.model.state.peek()
                     trace.write('set ui context to game state %s' %
@@ -266,7 +267,7 @@ class GraphicalView(object):
         elif state == STATE_MENU:
             self.draw_menu()
 
-        elif state == STATE_INFO:
+        elif state in (STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS):
             self.draw_info_screen()
 
         elif state in (STATE_PLAY, STATE_GAMEOVER):
@@ -1092,6 +1093,7 @@ class GraphicalView(object):
             )
 
         # set up info screen tabs
+        tab_states = [STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS]
         home_source = (228, 0, 83, 34)
         home_dest = (12, 12, home_source[2], home_source[3])
         upgrades_source = (228, 34, 152, 34)
@@ -1107,7 +1109,7 @@ class GraphicalView(object):
             hotkey='h',
             enabled=True,
             border_color=None,
-            context=STATE_INFO,
+            context=tab_states,
             group=None
             )
         tab.isclicked = True
@@ -1121,7 +1123,7 @@ class GraphicalView(object):
             hotkey='u',
             enabled=True,
             border_color=None,
-            context=STATE_INFO,
+            context=tab_states,
             group=None
             )
         self.ui.add(tab)
@@ -1134,7 +1136,7 @@ class GraphicalView(object):
             hotkey='w',
             enabled=True,
             border_color=None,
-            context=STATE_INFO,
+            context=tab_states,
             group=None
             )
         self.ui.add(tab)
@@ -1235,5 +1237,13 @@ class GraphicalView(object):
         check ux.code for the item involved.
 
         """
+
+        # handle info screen menus
+        if ux.code == 'home tab':
+            self.evManager.Post(StateSwapEvent(STATE_INFO_HOME))
+        if ux.code == 'upgrades tab':
+            self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
+        if ux.code == 'wins tab':
+            self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
 
         trace.write('pressed button %s' % ux.code)
