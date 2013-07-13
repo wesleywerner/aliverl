@@ -297,7 +297,6 @@ class GraphicalView(object):
         self.image.blit(self.play_image, self.play_area)
 
         # update the ui and draw it to the main image
-        self.ui.hover(pygame.mouse.get_pos())
         self.ui.update()
         self.image.blit(self.ui.image, (0, 0))
 
@@ -1007,6 +1006,7 @@ class GraphicalView(object):
             pygame.font.init()
             self.clock = pygame.time.Clock()
             pygame.display.set_caption('Alive')
+            pygame.mouse.set_visible(False)
             self.screen = pygame.display.set_mode(self.windowsize.size)
 
             # flag that we are done and ready for drawing action
