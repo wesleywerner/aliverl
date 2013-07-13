@@ -1411,10 +1411,10 @@ class GraphicalView(object):
                 butt = self.ui.get_by_code('install upgrade')
                 butt.enabled = True if data and ux.data else False
                 if data:
-                    notice = '(** This upgrade cannot be updated anymore **)'
+                    notice = ' -- UPGRADE UNAVAILABLE '
                     self.chosen_upgrade = ux.code
                     self.chosen_upgrade_details = self.draw_text_block(
-                            '%s: %s %s' % (
+                            '%s: %s\n%s' % (
                             ux.code.upper(),
                             data.description,
                             ux.data and ' ' or notice),
