@@ -409,7 +409,7 @@ class GraphicalView(object):
 
         elif game_state == STATE_INFO_UPGRADES:
             if self.chosen_upgrade_details:
-                self.image.blit(self.chosen_upgrade_details, (30, 100))
+                self.image.blit(self.chosen_upgrade_details, (140, 60))
 
     def draw_sprites(self):
         """
@@ -1419,7 +1419,7 @@ class GraphicalView(object):
                         color.cyan,
                         colorize=None,
                         background=None,
-                        wrap_width=60
+                        wrap_width=50
                         )
 
         trace.write('pressed button %s' % ux.code)
@@ -1430,7 +1430,7 @@ BT_HOME_SRC = (228, 170, 83, 34)
 BT_HOME_DST = (500, 26, 0, 0)
 # home tabs
 BT_INSTALL_SRC = (228, 102, 83, 34)
-BT_INSTALL_DST = (30, 60, 0, 0)
+BT_INSTALL_DST = (40, 70, 0, 0)
 TB_HOME_SRC = (228, 0, 83, 34)
 TB_HOME_DST = (12, 12, 0, 0)
 TB_UPGRADE_SRC = (228, 34, 152, 34)
