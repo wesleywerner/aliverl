@@ -23,7 +23,7 @@ import color
 from const import *
 import rlhelper
 import aliveModel
-import aliveUpgrades
+import aliveUpgrades as alu
 from aliveViewClasses import *
 from eventmanager import *
 from tmxparser import TMXParser
@@ -1203,32 +1203,32 @@ class GraphicalView(object):
         # define a lookup of each upgrade's:
         #   [source image position, in-game hotkey, upgrade screen hotkey]
         upgrade_lookup = {
-            aliveUpgrades.REGEN:
+            alu.REGEN:
                 (UG_REGEN_SRC, None, '1'),
-            aliveUpgrades.CODE_HARDENING:
+            alu.CODE_HARDENING:
                 (UG_HARDENING_SRC, None, '2'),
-            aliveUpgrades.ASSEMBLY_OPTIMIZE:
+            alu.ASSEMBLY_OPTIMIZE:
                 (UG_OPTIMIZE_SRC, None, '3'),
-            aliveUpgrades.ECHO_LOOP:
+            alu.ECHO_LOOP:
                 (UG_ECHO_SRC, 'e', 'e'),
-            aliveUpgrades.MAP_PEEK:
+            alu.MAP_PEEK:
                 (UG_PEEK_SRC, None, '4'),
-            aliveUpgrades.ZAP:
+            alu.ZAP:
                 (UG_ZAP_SRC, 'z', 'z'),
-            aliveUpgrades.CODE_FREEZE:
+            alu.CODE_FREEZE:
                 (UG_FREEZE_SRC, 'f', 'f'),
-            aliveUpgrades.PING_FLOOD:
+            alu.PING_FLOOD:
                 (UG_PING_SRC, 'p', 'p'),
-            aliveUpgrades.FORK_BOMB:
+            alu.FORK_BOMB:
                 (UG_FORK_SRC, 'r', 'r'),
-            aliveUpgrades.EXPLOIT:
+            alu.EXPLOIT:
                 (UG_EXPLOIT_SRC, 'x', 'x'),
-            aliveUpgrades.DESERIALIZE:
+            alu.DESERIALIZE:
                 (UG_DEREZ_SRC, 'd', 'd'),
             }
 
         # first clear any possible elements
-        code_list = [u['name'] for u in aliveUpgrades.UPGRADES]
+        code_list = [u['name'] for u in alu.UPGRADES]
         self.ui.remove_by_code(code_list)
 
         if game_state == STATE_PLAY:
@@ -1284,7 +1284,7 @@ class GraphicalView(object):
             player_list = [u.name for u in self.model.player.upgrades]
             # grab the available upgrades for this level
             available_list = [u['name']
-                for u in aliveUpgrades.by_level(self.model.level.number)]
+                for u in alu.by_level(self.model.level.number)]
             # merge the lists
             upgrade_list = sorted(set(player_list + available_list))
 
@@ -1366,7 +1366,7 @@ class GraphicalView(object):
                     self.ui.get_by_code('install upgrade').enabled = False
             else:
                 # grab the upgrade data and create a details screen for it
-                data = aliveUpgrades.get_by_name(ux.code)
+                data = alu.get_by_name(ux.code)
                 # enable the install button if the upgrade is available
                 butt = self.ui.get_by_code('install upgrade')
                 butt.enabled = True if data and ux.data else False
