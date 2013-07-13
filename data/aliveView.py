@@ -1162,6 +1162,18 @@ class GraphicalView(object):
             )
         self.ui.add(tab)
 
+        # upgrade Install button
+        button = ui.UxButton(
+            rect=(30, 60, 843, 34),
+            image_rect=(228, 102, 83, 34),
+            code='install upgrade',
+            hotkey='i',
+            enabled=False,
+            border_color=None,
+            context=STATE_INFO_UPGRADES
+            )
+        self.ui.add(button, hide_hotkey=True)
+
         # prepare the default upgrade screen message
         the_message = ("Select an upgrade to view more about it. "
              "If you have one already installed it will version up.")
@@ -1340,10 +1352,15 @@ class GraphicalView(object):
                 self.last_info_state = STATE_INFO_WINS
                 self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
             elif ux.code == 'install upgrade':
-                self.model.install_upgrade(ux.code)
+                if self.chosen_upgrade:
+                    self.model.install_upgrade(self.chosen_upgrade)
+                    self.chosen_upgrade = None
+                    self.chosen_upgrade_details = None
+                    self.ui.get_by_code('install upgrade').enabled = False
             else:
                 # grab the upgrade data and create a details screen for it
                 data = aliveUpgrades.get_by_name(ux.code)
+                self.ui.get_by_code('install upgrade').enabled = data is not None
                 if data:
                     self.chosen_upgrade = ux.code
                     self.chosen_upgrade_details = self.draw_text_block(
