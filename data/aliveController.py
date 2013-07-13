@@ -62,7 +62,7 @@ class KeyboardMouse(object):
                             self.evManager.Post(StateChangeEvent(None))
                     elif event.type == pygame.KEYUP:
                             self.evManager.Post(
-                                InputEvent(unicodechar=None, clickpos=None))
+                                InputEvent(char=None, clickpos=None))
         except:
             self.evManager.Post(CrashEvent())
 
@@ -109,7 +109,7 @@ class KeyboardMouse(object):
             if event.key in debug_keys.keys():
                 self.evManager.Post(DebugEvent(debug_keys[event.key]))
         else:
-            inEvent = InputEvent(unicodechar=event.unicode, clickpos=None)
+            inEvent = InputEvent(char=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
 
     def dialogue_keys(self, event):
