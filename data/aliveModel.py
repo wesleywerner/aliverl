@@ -281,6 +281,7 @@ class GameEngine(object):
                         # we know that 'modes' is a list
                         if k == 'modes':
                             setattr(obj, k, v.split(','))
+                            trace.write('obj.name modes override: %s' % obj.modes)
 
                 # add this one to the collective
                 self.objects.append(obj)
@@ -870,6 +871,31 @@ class GameEngine(object):
         self.upgrades_available += 1
         self.evManager.Post(MessageEvent('You have upgrades available!',
                                         fontcolor=color.white))
+
+    def target_tile(self, last_selected=None, type_list=['ai', 'friend']):
+        """
+        Returns the next tile around the x, y position within reach, filtered
+        by the type_list. last_selected will fetch the next match.
+
+        """
+
+        origin_x, origin_y = (self.player.x, self.player.y)
+        reach = self.player.view_range
+        level = self.level.tmx
+        w, h = level.width, level.height
+        first_match = None
+        choose_next = False
+
+        for x, y in rlhelper.cover_area(origin_x, origin_y, reach, w, h):
+            objs = self.get_object_by_xy(x, y)
+            for obj in [o for o in objs if o.in_range and o.type in type_list]:
+                if not first_match:
+                    first_match = obj
+                if choose_next:
+                    return obj
+                if obj is last_selected:
+                    choose_next = True
+        return first_match
 
     def debug_action(self, event):
         """

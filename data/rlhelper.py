@@ -11,6 +11,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
+import math
 
 def make_matrix(width, height, initial_value):
     """
@@ -97,3 +98,23 @@ def remap_coords(rect, unit_width, unit_height):
                 int(float(x) / float(unit_width)),
                 int(float(y) / float(unit_height))
                 )
+
+def distance(x, y, u, v):
+    """
+    Returns the distance between two cartesian points.
+    """
+
+    return math.sqrt((x - u) ** 2 + (y - v) ** 2)
+
+def cover_area(origin_x, origin_y, reach, max_width, max_height):
+    """
+    Yields a range of (x, y) coordinates from an origin within reach
+    constrained to max boundaries.
+
+    """
+
+    for y in range(origin_y - reach, origin_y + reach):
+        for x in range(origin_x - reach, origin_x + reach):
+            if x > 0 and y > 0 and x < max_width and y < max_height:
+                if distance(origin_x, origin_y, x, y) <= reach:
+                    yield (x, y)

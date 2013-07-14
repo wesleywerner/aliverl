@@ -120,6 +120,8 @@ class KeyboardMouse(object):
             self.evManager.Post(StateChangeEvent(STATE_HELP))
         elif event.key in movement.keys():
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
+        elif event.key == pygame.K_TAB:
+            self.evManager.Post(TargetTileEvent())
         elif mods & pygame.KMOD_CTRL:
             if event.key in debug_keys.keys():
                 self.evManager.Post(DebugEvent(debug_keys[event.key]))

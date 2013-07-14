@@ -252,6 +252,16 @@ class RefreshUpgradesEvent(Event):
         self.name = 'Refresh upgrades event'
 
 
+class TargetTileEvent(Event):
+    """
+    Trigger tile targeting.
+
+    """
+
+    def __init__(self):
+        self.name = 'Tile target event'
+
+
 class CrashEvent(Event):
     """
     Something went terribly wrong.
