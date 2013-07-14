@@ -14,6 +14,8 @@
 #
 # See the UPGRADES section in the game-spec.md for detailed descriptions.
 
+import rlhelper
+
 # list of upgrade abilities
 REGEN = 'regen'
 CODE_HARDENING = 'code hardening'
@@ -365,6 +367,13 @@ class Upgrade(object):
                 #v = i * n
                 #t += v
                 #print('version %s increase by %s, for total = %s' % (i, v, t))
+
+        # heal more
+        if self.name == REGEN:
+            bonus = 0.3 * self.version
+            self._combined_effect += bonus
+            character.health = rlhelper.clamp(
+                character.health + bonus, 0, character.max_health)
 
         # increase max hp
         if self.name == CODE_HARDENING:

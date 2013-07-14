@@ -184,6 +184,11 @@ class GameEngine(object):
         entry_dialogue = self.story.entry_dialogue(nextlevel)
         if entry_dialogue:
             self.show_dialogue(entry_dialogue)
+        # apply any special upgrades
+        regen = alu.from_list(self.player.upgrades, alu.REGEN)
+        print(regen)
+        if regen:
+            regen.apply_upgrade(self.player)
 
     def load_matrix(self):
         """
@@ -601,13 +606,17 @@ class GameEngine(object):
                             and not e.dead]:
             # health
             if npc.health < npc.max_health:
-                if self.turn % npc.heal_rate == 0:
-                    npc.health += 1
-                    trace.write('%s heals to %s hp' % (npc.name, npc.health))
+                if (npc.heal_rate > 0) and (self.turn % npc.heal_rate == 0):
+                    npc.health = rlhelper.clamp(
+                        npc.health + 1, 0, npc.max_health)
+                    trace.write('%s heals to %s hp' %
+                        (npc.name, npc.health))
             # mana
             if npc.power < npc.max_power:
-                if self.turn % npc.power_restore_rate == 0:
-                    npc.power += 1
+                if ((npc.power_restore_rate > 0) and
+                        (self.turn % npc.power_restore_rate == 0)):
+                    npc.power  = rlhelper.clamp(
+                        npc.power + 1, 0, npc.max_power)
 
     def trigger_object(self, obj, direct):
         """
