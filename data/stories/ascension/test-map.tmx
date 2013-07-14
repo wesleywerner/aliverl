@@ -15,11 +15,34 @@
  </layer>
  <layer name="floor" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYBqhmBeIuRlGLuBmwPS/IAMkbITpxB9IgM3/IwkQG/8qDKPxPxzBqP9H/T/q/5ELRv0/6v9R/49cMOp/BgYRhoHvhw4UFgViABgZBKU=
+   eJzjYWBgYBqhmBeIuRlGLuBmwPS/IAMkbITpxB9IgM3/IwkQG/8qDKPxPxzBqP8ZGDgZEPWBChSj1xHDFRAT/8M5fYz6f9T/o/4nrGa4glH/j/pfhAF/H5GFgPxQxqJADADQPQVR
   </data>
  </layer>
+ <objectgroup name="animated doodads" width="64" height="16">
+  <object gid="85" x="224" y="352"/>
+  <object gid="85" x="64" y="352"/>
+  <object gid="85" x="128" y="480"/>
+ </objectgroup>
  <objectgroup name="characters" width="64" height="16">
   <object name="player" type="player" gid="97" x="64" y="96"/>
+  <object name="keke" type="friend" gid="105" x="224" y="384">
+   <properties>
+    <property name="modes" value="updown"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="moo" type="friend" gid="105" x="192" y="480">
+   <properties>
+    <property name="modes" value="leftright"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="spam" type="friend" gid="105" x="192" y="416">
+   <properties>
+    <property name="modes" value="random"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="doors" width="64" height="16">
   <object name="demo door 1" gid="36" x="288" y="160">
