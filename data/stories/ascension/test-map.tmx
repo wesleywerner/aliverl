@@ -15,7 +15,7 @@
  </layer>
  <layer name="floor" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYBqhmBeIuRlGLuBmwPS/IAMkbITpxB9IgM3/IwkQG/8qDKPxPxzBqP8ZGDgZEPWBChSj1xHDFRAT/8M5fYz6f9T/o/4nrGa4glH/j/pfhAF/H5GFgPxQxqJADADQPQVR
+   eJzjYWBgYBqhmBeIuRkIg1AoHm6AmwHT/4IMkLARRuIzoPHR5SnhDyTA5v+RBEb9P+r/ke5/TgZEfaACxeh1xHAFxMT/cE4fo/4f9f+o/wmrGa5g1P+j/hdhwN9HZCEgP5SxKBADAMy1BM0=
   </data>
  </layer>
  <objectgroup name="animated doodads" width="64" height="16">
@@ -45,7 +45,7 @@
   </object>
  </objectgroup>
  <objectgroup name="doors" width="64" height="16">
-  <object name="demo door 1" gid="36" x="288" y="160">
+  <object name="demo door 1" gid="36" x="288" y="96">
    <properties>
     <property name="spam" value="@ontrigger @repeat @transmute 33, 36"/>
    </properties>
@@ -67,6 +67,16 @@
     <property name="tip" value="@message @repeat have fun exploring :-)"/>
    </properties>
   </object>
+  <object gid="8" x="256" y="128">
+   <properties>
+    <property name="spam" value="@message door demo"/>
+   </properties>
+  </object>
+  <object gid="8" x="96" y="256">
+   <properties>
+    <property name="spam" value="@message the bestiary"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="terminals" width="64" height="16">
   <object gid="53" x="160" y="96">
@@ -74,7 +84,7 @@
     <property name="spam" value="@upgrade @repeat"/>
    </properties>
   </object>
-  <object gid="53" x="288" y="96">
+  <object gid="53" x="256" y="96">
    <properties>
     <property name="spam" value="@trigger @repeat demo door 1"/>
    </properties>
@@ -82,11 +92,6 @@
   <object gid="8" x="160" y="128">
    <properties>
     <property name="spam" value="@message upgrade station"/>
-   </properties>
-  </object>
-  <object gid="8" x="288" y="128">
-   <properties>
-    <property name="spam" value="@message door demo"/>
    </properties>
   </object>
  </objectgroup>
