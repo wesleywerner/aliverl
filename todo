@@ -3,6 +3,8 @@
 
 ## implement ability actions
 
+* create a helper Post() in each model part for evManager.Post()
+
 * site upload issue: find scp does not do directory structure :(
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?
