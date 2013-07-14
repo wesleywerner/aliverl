@@ -430,6 +430,7 @@ def from_name(upgrade_name):
     if match:
         return Upgrade.from_dict(match[0])
 
+
 def from_list(comparisson_list, upgrade_name):
     """
     Get an upgrade from a list of upgrades, or None if it is not in the list.

@@ -256,7 +256,8 @@ class GameEngine(object):
                     obj.stealth = stats.as_float('stealth')
                     obj.power = stats.as_float('power')
                     obj.max_power = stats.as_float('max_power')
-                    obj.power_restore_rate = stats.as_float('power_restore_rate')
+                    obj.power_restore_rate = (
+                        stats.as_float('power_restore_rate'))
                     obj.modes = stats.as_list('modes')
 
                 # carry the player object across levels
@@ -394,7 +395,6 @@ class GameEngine(object):
         """
 
         self.level.matrix['block'][x][y] = value
-
 
     def location_inside_map(self, x, y):
         """
@@ -631,7 +631,8 @@ class GameEngine(object):
                 # we also extract the value of @delay=n if present.
                 values = prop.split(' ')
                 commands = [v for v in values if v.startswith('@')]
-                user_data = ' '.join([v for v in values if not v.startswith('@')])
+                user_data = ' '.join([v for v in values
+                    if not v.startswith('@')])
                 on_trigger = '@ontrigger' in commands
                 delay = [cmd for cmd in commands if cmd.startswith('@delay=')]
                 if (direct and not on_trigger) or (not direct and on_trigger):
@@ -667,7 +668,6 @@ class GameEngine(object):
 
         """
 
-        #trace.write('PROCESSING ' + ','.join([d['name'] for d in self.trigger_queue]))
         requeue = []
         while self.trigger_queue:
             trig = self.trigger_queue.pop()
@@ -704,12 +704,14 @@ class GameEngine(object):
                     obj.properties[self.random_identifier(obj.name)] = (
                         user_data.replace('%', '@'))
                 if '@transmute' in commands:
-                    gid_list = [int(i) for i in user_data.replace(' ','').split(',')]
+                    gid_list = [int(i)
+                        for i in user_data.replace(' ', '').split(',')]
                     self.transmute_object(obj, gid_list)
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
-                    trace.write('kill interaction "%s" on "%s"' % (name, obj.name))
-                    if obj.properties.has_key(name):
+                    trace.write('kill interaction "%s" on "%s"' %
+                        (name, obj.name))
+                    if name in obj.properties.keys():
                         del obj.properties[name]
                     else:
                         trace.write(

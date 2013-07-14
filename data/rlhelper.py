@@ -13,6 +13,7 @@
 
 import math
 
+
 def make_matrix(width, height, initial_value):
     """
     Returns a list of initial values that can be accessed like a 2D array:
@@ -81,6 +82,7 @@ def line_of_sight(matrix, x1, y1, x2, y2):
     # allow 1 case: if the final destination position is blocking
     return amt == 0 or (amt == 1 and matrix[x2][y2])
 
+
 def remap_coords(rect, unit_width, unit_height):
     """
     An iterator that yields remapped values as (x, y) scaled to
@@ -99,12 +101,14 @@ def remap_coords(rect, unit_width, unit_height):
                 int(float(y) / float(unit_height))
                 )
 
+
 def distance(x, y, u, v):
     """
     Returns the distance between two cartesian points.
     """
 
     return math.sqrt((x - u) ** 2 + (y - v) ** 2)
+
 
 def cover_area(origin_x, origin_y, reach, max_width, max_height):
     """
@@ -119,3 +123,4 @@ def cover_area(origin_x, origin_y, reach, max_width, max_height):
             if x > 0 and y > 0 and x < max_width and y < max_height:
                 if distance(origin_x, origin_y, x, y) <= reach:
                     yield (x, y)
+

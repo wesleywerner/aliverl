@@ -784,7 +784,8 @@ class GraphicalView(object):
         """ renders block text with newlines. """
 
         if wrap_width:
-            brokenText = text.replace("\r\n", " ").replace("\r", " ").replace("\n", " ")
+            brokenText = text.replace("\r\n", " ")
+            brokenText = brokenText.replace("\r", " ").replace("\n", " ")
             brokenText = textwrap.wrap(brokenText, wrap_width)
         else:
             brokenText = text.replace("\r\n", "\n").replace("\r", "\n")
@@ -1388,7 +1389,6 @@ class GraphicalView(object):
                 if (butt_x > self.play_area.width - butt_padding):
                     butt_y += butt_size[1] + butt_padding
                     butt_x = 30
-
 
     def update_button_borders(self):
         """

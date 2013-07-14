@@ -19,6 +19,7 @@
 import pygame
 import color
 
+
 class UxButton(object):
     """
     A button that handles drawing itself and hover and click events.
