@@ -111,10 +111,10 @@ class GameEngine(object):
         The loop ends when this object hears a QuitEvent in notify().
         """
 
-        self.evManager.Post(StateChangeEvent(STATE_MENU))
-        #self.evManager.Post(StateChangeEvent(STATE_INTRO))
+        self.post(StateChangeEvent(STATE_MENU))
+        #self.post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
-        self.evManager.Post(InitializeEvent())
+        self.post(InitializeEvent())
         while self.running:
             newTick = TickEvent()
             self.evManager.Post(newTick)
@@ -174,9 +174,9 @@ class GameEngine(object):
         self.load_matrix()
         self.look_around()
         self.trigger_queue = []
-        self.evManager.Post(NextLevelEvent(None))
+        self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
-        self.evManager.Post(PlayerMovedEvent())
+        self.post(PlayerMovedEvent())
         # show any level entry messages defined in the story
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:
@@ -336,10 +336,10 @@ class GameEngine(object):
             u.step()
 
         # notify the view to update it's visible sprites
-        self.evManager.Post(PlayerMovedEvent())
+        self.post(PlayerMovedEvent())
 
         # notify the view to update it's sprites visibilies
-        self.evManager.Post(CharacterMovedEvent(self.player, direction))
+        self.post(CharacterMovedEvent(self.player, direction))
 
     def move_object(self, character, direction):
         """
@@ -373,7 +373,7 @@ class GameEngine(object):
                     character.type != 'friend'):
                 # but only if one or the other is the player
                 if (collider is self.player) or (character is self.player):
-                    self.evManager.Post(CombatEvent(character, collider))
+                    self.post(CombatEvent(character, collider))
                 return False
             # collider is blocked
             if self.story.tile_blocks(collider.gid):
@@ -399,7 +399,7 @@ class GameEngine(object):
             self.update_block_matrix(new_x, new_y, tile_blocks)
 
         # notify the view to update it's sprite positions
-        self.evManager.Post(CharacterMovedEvent(character, direction))
+        self.post(CharacterMovedEvent(character, direction))
         return True
 
     def update_block_matrix(self, x, y, value):
@@ -775,7 +775,7 @@ class GameEngine(object):
             # update the level block matrix with our new aquired status
             matrix = self.level.matrix['block']
             matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
-            self.evManager.Post(UpdateObjectGID(obj, obj.gid))
+            self.post(UpdateObjectGID(obj, obj.gid))
         except ValueError:
             trace.error('Error converting "%s" to a int while transmuting'
                         ' "%s"' % (str(gid_list), obj.name))
@@ -824,14 +824,14 @@ class GameEngine(object):
                 self.end_game()
             else:
                 a.dead = True
-                self.evManager.Post(KillCharacterEvent(a))
+                self.post(KillCharacterEvent(a))
                 self.post_msg('The %s crashes' % (a_name), color.ai_crash)
         if d.health <= 0:
             if d is self.player:
                 self.end_game()
             else:
                 d.dead = True
-                self.evManager.Post(KillCharacterEvent(d))
+                self.post(KillCharacterEvent(d))
                 self.post_msg('The %s crashes' % (d_name), color.ai_crash)
         self.look_at_target()
 
@@ -851,7 +851,7 @@ class GameEngine(object):
 
         # push or pop the given state
         if not self.state.process(state):
-            self.evManager.Post(QuitEvent())
+            self.post(QuitEvent())
         if state == STATE_PLAY and not self.gamerunning:
             # start a new game
             self.begin_game()
@@ -866,9 +866,9 @@ class GameEngine(object):
 
         if dialogue:
             # tell everyone about the words about to display
-            self.evManager.Post(DialogueEvent(dialogue))
+            self.post(DialogueEvent(dialogue))
             # change our state to dialogue mode
-            self.evManager.Post(StateChangeEvent(STATE_DIALOG))
+            self.post(StateChangeEvent(STATE_DIALOG))
         else:
             trace.write('dialogue "%s" not found in story definition' % (key))
 
@@ -993,6 +993,14 @@ class GameEngine(object):
 
         self.evManager.Post(MessageEvent(message, color))
 
+    def post(self, event):
+        """
+        A helper to post game events.
+
+        """
+
+        self.evManager.Post(event)
+
     def debug_action(self, event):
         """
         Perform some debugesque action.
@@ -1010,12 +1018,12 @@ class GameEngine(object):
             for obj in self.objects:
                 obj.seen = True
             self.look_around()
-            self.evManager.Post(PlayerMovedEvent())
+            self.post(PlayerMovedEvent())
         elif event.request_type == 'exploit random':
             self.player = random.choice([o for o in self.objects
                                     if o.type in ('ai', 'player', 'friend')])
             self.look_around()
-            self.evManager.Post(RefreshUpgradesEvent())
+            self.post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
             self.install_upgrade(alu.ECHO_LOOP)
             self.install_upgrade(alu.ZAP)
@@ -1023,7 +1031,7 @@ class GameEngine(object):
             #names = [u['name'] for u in choices]
             #if names:
                 #self.install_upgrade(random.choice(names))
-            self.evManager.Post(RefreshUpgradesEvent())
+            self.post(RefreshUpgradesEvent())
 
     @property
     def tile_width(self):
