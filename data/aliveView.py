@@ -161,6 +161,14 @@ class GraphicalView(object):
         if self.transition_queue:
             return self.transition_queue[-1]
 
+    def post(self, event):
+        """
+        A helper to post game events.
+
+        """
+
+        self.evManager.Post(event)
+
     def notify(self, event):
         """
         Called by an event in the message queue.
@@ -632,7 +640,7 @@ class GraphicalView(object):
         state = self.model.state.peek()
         if (state in (STATE_DIALOG, STATE_HELP) and
             not self.transition_queue):
-                self.evManager.Post(StateChangeEvent(None))
+                self.post(StateChangeEvent(None))
 
     def close_dialogue(self):
         """
@@ -1420,7 +1428,7 @@ class GraphicalView(object):
 
         if context == STATE_PLAY:
             if ux.code == 'goto home':
-                self.evManager.Post(StateChangeEvent(self.last_info_state))
+                self.post(StateChangeEvent(self.last_info_state))
             else:
                 self.model.use_upgrade(ux.code)
                 self.update_button_borders()
@@ -1429,13 +1437,13 @@ class GraphicalView(object):
         if context in tab_states:
             if ux.code == 'home tab':
                 self.last_info_state = STATE_INFO_HOME
-                self.evManager.Post(StateSwapEvent(STATE_INFO_HOME))
+                self.post(StateSwapEvent(STATE_INFO_HOME))
             elif ux.code == 'upgrades tab':
                 self.last_info_state = STATE_INFO_UPGRADES
-                self.evManager.Post(StateSwapEvent(STATE_INFO_UPGRADES))
+                self.post(StateSwapEvent(STATE_INFO_UPGRADES))
             elif ux.code == 'wins tab':
                 self.last_info_state = STATE_INFO_WINS
-                self.evManager.Post(StateSwapEvent(STATE_INFO_WINS))
+                self.post(StateSwapEvent(STATE_INFO_WINS))
             elif ux.code == 'install upgrade':
                 if self.chosen_upgrade:
                     status = self.model.install_upgrade(self.chosen_upgrade)
