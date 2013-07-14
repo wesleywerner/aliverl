@@ -791,16 +791,17 @@ class GameEngine(object):
         d_verb = (a is self.player) and ('%ss' % d_verb) or (d_verb)
         # damage control
         a_atk = a.attack
-        d_atk = d.attack
-        # apply special abilities
+        d_atk = 0 # defender does not retaliate by default
+        # apply upgrade abilities
         echo = alu.from_list(defender.upgrades, alu.ECHO_LOOP)
         if echo:
-            trace.write('%s has echo upgrade' % defender.name)
+            trace.write('%s has the "echo" upgrade' % defender.name)
             # mitigate damage received and throw it back at the attacker.
             # each version will echo one eigth (12.5%) of the damage back.
             delta = a_atk * (float(echo.version) / 8)
             a_atk -= delta
             d_atk += delta
+            d_verb = 'echo'
         # damage
         if a_atk:
             d.health -= a_atk
@@ -812,6 +813,9 @@ class GameEngine(object):
             self.evManager.Post(MessageEvent(
                 '%s %s %s for %s' % (d_name, d_verb, a_name, d_atk),
                 color.combat_message))
+        # traces
+        trace.write('%s on %s health' % (attacker.name, attacker.health))
+        trace.write('%s on %s health' % (defender.name, defender.health))
         # death
         if a.health < 1:
             if a is self.player:
