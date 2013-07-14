@@ -798,8 +798,8 @@ class GameEngine(object):
         d_atk = 0 # defender does not retaliate by default
         # apply upgrade abilities
         echo = alu.from_list(defender.upgrades, alu.ECHO_LOOP)
-        if echo:
-            trace.write('%s has the "echo" upgrade' % defender.name)
+        if echo and echo.is_active:
+            trace.write('%s has "echo" activated' % defender.name)
             # mitigate damage received and throw it back at the attacker.
             # each version will echo one eigth (12.5%) of the damage back.
             delta = a_atk * (float(echo.version) / 8)
