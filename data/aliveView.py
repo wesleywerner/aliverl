@@ -1399,7 +1399,14 @@ class GraphicalView(object):
         for upgrade in self.model.player.upgrades:
             button = self.ui.get_by_code(upgrade.name)
             if button:
+                # outline the button depending if it is active or cooling
+                new_color = None
+                if upgrade.is_active:
+                    new_color = color.green
+                elif upgrade.is_cooling:
+                    new_color = color.yellow
                 button.enabled = upgrade.ready
+                button.border_color = new_color
 
     def ui_click_event(self, context, ux):
         """
@@ -1416,6 +1423,7 @@ class GraphicalView(object):
                 self.evManager.Post(StateChangeEvent(self.last_info_state))
             else:
                 self.model.use_upgrade(ux.code)
+                self.update_button_borders()
 
         # handle info screen menus
         if context in tab_states:

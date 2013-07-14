@@ -14,6 +14,7 @@
 #
 # See the UPGRADES section in the game-spec.md for detailed descriptions.
 
+import trace
 import rlhelper
 
 # list of upgrade abilities
@@ -319,6 +320,8 @@ class Upgrade(object):
         # track the total effect applied across all versions of an upgrade
         # so that we may reverse it later if an upgrade is purged.
         self._combined_effect = 0
+        # count down the turns while this upgrade is busy affecting the game
+        self._busy_countdown = 0
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -339,7 +342,39 @@ class Upgrade(object):
 
         """
 
-        return self.enabled and self._cooldown_count == 0
+        return (self.enabled and
+                not self.passive and
+                self._cooldown_count == 0 and
+                self._busy_countdown == 0
+                )
+
+    @property
+    def is_active(self):
+        """
+        This upgrade has been triggered by the player and is still in effect.
+
+        """
+
+        return (self._busy_countdown > 0)
+
+    @property
+    def is_cooling(self):
+        """
+        This upgrade has done working and is cooling down.
+
+        """
+
+        return (self._busy_countdown == 0) and (self._cooldown_count > 0)
+
+    @property
+    def versioned_busy_countdown(self):
+        """
+        Gets the busy countdown value for this version of this upgrade.
+
+        """
+
+        #TODO calculate a value based on our version, and the upgrade type.
+        return 4
 
     def version_up(self):
         """
@@ -420,6 +455,37 @@ class Upgrade(object):
             character.view_range -= self._combined_effect
             return '-%s sight' % self._combined_effect
 
+    def activate(self):
+        """
+        Activates this upgrade's ability, usually for a short period, after
+        which a cooldown may ensue.
+
+        Mostly applies to non-passive upgrades, i.e. ones the player manually
+        actions.
+
+        """
+
+        if self.ready:
+            self._busy_countdown = self.versioned_busy_countdown
+            self._cooldown_count = self.cooldown
+            trace.write('activated "%s" for %s turns' %
+                (self.name, self._busy_countdown))
+
+    def step(self):
+        """
+        Step a turn for this upgrade. We tick over any counters and adjust
+        our state to suit.
+
+        """
+
+        if self._busy_countdown > 0:
+            self._busy_countdown -= 1
+            trace.write('%s is active for %s turns' %
+                (self.name, self._busy_countdown))
+        elif self._cooldown_count > 0:
+            self._cooldown_count -= 1
+            trace.write('%s cooldown for %s turns' %
+                (self.name, self._cooldown_count))
 
 def from_level(level):
     """

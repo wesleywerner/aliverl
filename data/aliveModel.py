@@ -329,7 +329,11 @@ class GameEngine(object):
         self.ai_movement_turn()
         # update what we can see
         self.look_around()
+        # re-look at our target object
         self.look_at_target()
+        # step any upgrades we may have
+        for u in self.player.upgrades:
+            u.step()
 
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
@@ -817,7 +821,7 @@ class GameEngine(object):
         trace.write('%s on %s health' % (attacker.name, attacker.health))
         trace.write('%s on %s health' % (defender.name, defender.health))
         # death
-        if a.health < 1:
+        if a.health <= 0:
             if a is self.player:
                 self.end_game()
             else:
@@ -825,7 +829,7 @@ class GameEngine(object):
                 self.evManager.Post(KillCharacterEvent(a))
                 self.evManager.Post(
                     MessageEvent('The %s crashes' % (a_name), color.ai_crash))
-        if d.health < 1:
+        if d.health <= 0:
             if d is self.player:
                 self.end_game()
             else:
@@ -965,7 +969,7 @@ class GameEngine(object):
             return
 
         if upgrade_name == alu.ECHO_LOOP:
-            pass
+            upgrade.activate()
 
         if upgrade_name == alu.ZAP:
             self.combat_turn(self.player, self.target_object, a_verb='zap')
