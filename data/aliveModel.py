@@ -805,7 +805,7 @@ class GameEngine(object):
             delta = a_atk * (float(echo.version) / 8)
             a_atk -= delta
             d_atk += delta
-            d_verb = 'echo'
+            d_verb = 'echo back'
         # damage
         if a_atk:
             d.health -= a_atk
@@ -970,6 +970,8 @@ class GameEngine(object):
 
         if upgrade_name == alu.ECHO_LOOP:
             upgrade.activate()
+            self.evManager.Post(MessageEvent(
+                ('%s activated' % upgrade_name), color.upgrade_tip))
 
         if upgrade_name == alu.ZAP:
             self.combat_turn(self.player, self.target_object, a_verb='zap')
