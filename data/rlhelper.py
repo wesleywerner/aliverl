@@ -124,3 +124,10 @@ def cover_area(origin_x, origin_y, reach, max_width, max_height):
                 if distance(origin_x, origin_y, x, y) <= reach:
                     yield (x, y)
 
+def clamp(n, minn, maxn):
+    """
+    Constrain a value within a range.
+
+    """
+
+    return max(min(maxn, n), minn)
