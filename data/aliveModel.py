@@ -180,7 +180,7 @@ class GameEngine(object):
         # show any level entry messages defined in the story
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:
-            self.evManager.Post(MessageEvent(entry_message))
+            self.post_msg(entry_message)
         entry_dialogue = self.story.entry_dialogue(nextlevel)
         if entry_dialogue:
             self.show_dialogue(entry_dialogue)
@@ -624,7 +624,7 @@ class GameEngine(object):
             if npc.power < npc.max_power:
                 if ((npc.power_restore_rate > 0) and
                         (self.turn % npc.power_restore_rate == 0)):
-                    npc.power  = rlhelper.clamp(
+                    npc.power = rlhelper.clamp(
                         npc.power + 1, 0, npc.max_power)
 
     def trigger_object(self, obj, direct):
@@ -711,7 +711,7 @@ class GameEngine(object):
                     self.warp_level()
                     return
                 if '@message' in commands:
-                    self.evManager.Post(MessageEvent(user_data))
+                    self.post_msg(user_data)
                 if '@upgrade' in commands:
                     self.allow_upgrade()
                 if '@dialogue' in commands:
@@ -795,7 +795,7 @@ class GameEngine(object):
         d_verb = (a is self.player) and ('%ss' % d_verb) or (d_verb)
         # damage control
         a_atk = a.attack
-        d_atk = 0 # defender does not retaliate by default
+        d_atk = 0  # defender does not retaliate by default
         # apply upgrade abilities
         echo = alu.from_list(defender.upgrades, alu.ECHO_LOOP)
         if echo and echo.is_active:
@@ -809,14 +809,12 @@ class GameEngine(object):
         # damage
         if a_atk:
             d.health -= a_atk
-            self.evManager.Post(MessageEvent(
-                '%s %s %s for %s' % (a_name, a_verb, d_name, a_atk),
-                color.combat_message))
+            self.post_msg('%s %s %s for %s' %
+                (a_name, a_verb, d_name, a_atk), color.combat_message)
         if d_atk:
             a.health -= d_atk
-            self.evManager.Post(MessageEvent(
-                '%s %s %s for %s' % (d_name, d_verb, a_name, d_atk),
-                color.combat_message))
+            self.post_msg('%s %s %s for %s' %
+                (d_name, d_verb, a_name, d_atk), color.combat_message)
         # traces
         trace.write('%s on %s health' % (attacker.name, attacker.health))
         trace.write('%s on %s health' % (defender.name, defender.health))
@@ -827,16 +825,14 @@ class GameEngine(object):
             else:
                 a.dead = True
                 self.evManager.Post(KillCharacterEvent(a))
-                self.evManager.Post(
-                    MessageEvent('The %s crashes' % (a_name), color.ai_crash))
+                self.post_msg('The %s crashes' % (a_name), color.ai_crash)
         if d.health <= 0:
             if d is self.player:
                 self.end_game()
             else:
                 d.dead = True
                 self.evManager.Post(KillCharacterEvent(d))
-                self.evManager.Post(
-                    MessageEvent('The %s crashes' % (d_name), color.ai_crash))
+                self.post_msg('The %s crashes' % (d_name), color.ai_crash)
         self.look_at_target()
 
     def kill_object(self, character):
@@ -903,9 +899,9 @@ class GameEngine(object):
             # look around again if any abilities upgraded our perception
             self.look_around()
             # notify listeners we have new things
-            self.evManager.Post(MessageEvent(status, color=color.tip))
+            self.post_msg(status, color=color.tip)
             if result:
-                self.evManager.Post(MessageEvent(result, color=color.tip))
+                self.post_msg(result, color=color.tip)
         return '%s\n%s' % (status, result is None and ' ' or result)
 
     def allow_upgrade(self):
@@ -915,8 +911,7 @@ class GameEngine(object):
         """
 
         self.upgrades_available += 1
-        self.evManager.Post(MessageEvent('You have upgrades available!',
-                                        color=color.tip))
+        self.post_msg('You have upgrades available!', color=color.tip)
 
     def target_next(self, type_list=['ai', 'friend']):
         """
@@ -964,14 +959,12 @@ class GameEngine(object):
             trace.write('"%s" is not enabled' % upgrade_name)
             return
         if upgrade.use_targeting and self.target_object is None:
-            self.evManager.Post(MessageEvent(
-                'Select a target first', color.tip))
+            self.post_msg('Select a target first', color.tip)
             return
 
         if upgrade_name == alu.ECHO_LOOP:
             upgrade.activate()
-            self.evManager.Post(MessageEvent(
-                ('%s activated' % upgrade_name), color.upgrade_tip))
+            self.post_msg('%s activated' % upgrade_name, color.upgrade_tip)
 
         if upgrade_name == alu.ZAP:
             self.combat_turn(self.player, self.target_object, a_verb='zap')
@@ -991,6 +984,14 @@ class GameEngine(object):
         if upgrade_name == alu.DESERIALIZE:
             # use the last direction moved?
             pass
+
+    def post_msg(self, message, color=color.message):
+        """
+        A helper to post game messages.
+
+        """
+
+        self.evManager.Post(MessageEvent(message, color))
 
     def debug_action(self, event):
         """
