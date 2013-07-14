@@ -1058,6 +1058,7 @@ class GraphicalView(object):
 
             # flag that we are done and ready for drawing action
             self.isinitialized = True
+            #self.play_music(1)
 
             # create drawing surfaces which are reused
             self.play_image = pygame.Surface(self.play_area.size)
@@ -1386,6 +1387,7 @@ class GraphicalView(object):
 
         """
 
+        trace.write('pressed button %s' % ux.code)
         tab_states = [STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS]
 
         if context == STATE_PLAY:
@@ -1432,8 +1434,6 @@ class GraphicalView(object):
                         background=None,
                         wrap_width=50
                         )
-
-        trace.write('pressed button %s' % ux.code)
 
 # locations of ui.png images
 # goto home button
