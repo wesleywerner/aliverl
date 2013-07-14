@@ -319,6 +319,11 @@ class GameEngine(object):
         # update what we can see
         self.look_around()
 
+        # check if any targets are still in view
+        if self.target_object:
+            if not self.target_object.in_range:
+                self.target_object = None
+
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
 
