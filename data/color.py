@@ -101,7 +101,7 @@ yellow = (255, 255, 0)
 
 desaturated_green = (64, 128, 64)
 #lightest_green = (191, 255, 191)
-#lighter_green = (166, 255, 166)
+lighter_green = (166, 255, 166)
 #light_green = (115, 255, 115)
 green = (0, 255, 0)
 #dark_green = (0, 191, 0)
@@ -223,6 +223,7 @@ ai_text = desaturated_cyan
 terminal_text = gray
 message = lighter_blue
 tip = gray
+upgrade_tip = lighter_green
 target_selection = cyan
 combat_message = desaturated_yellow
 ai_crash = desaturated_red
