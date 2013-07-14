@@ -229,11 +229,11 @@ class GameEngine(object):
                      'power': 0,
                      'max_power': 5,
                      'power_restore_rate': 6,
-                     'modes': [],
+                     'modes': None,
                      'view_range': 3,
                      'in_range': False,
-                     'trail': [],
-                     'upgrades': [],
+                     'trail': None,
+                     'upgrades': None,
                      }
 
         # for each object group on this level (because maps can be layers)
@@ -248,6 +248,11 @@ class GameEngine(object):
                 # make values case incensitive
                 obj.name = obj.name.lower()
                 obj.type = obj.type.lower()
+                #NOTE:  found that using setattr with lists uses shallow copy
+                #       and thus lists share the same memory == panic
+                obj.upgrades = []
+                obj.trail = []
+                obj.modes = []
 
                 # apply character stats from the story config
                 stats = self.story.char_stats(obj.name)
@@ -787,6 +792,15 @@ class GameEngine(object):
         # damage control
         a_atk = a.attack
         d_atk = d.attack
+        # apply special abilities
+        echo = alu.from_list(defender.upgrades, alu.ECHO_LOOP)
+        if echo:
+            trace.write('%s has echo upgrade' % defender.name)
+            # mitigate damage received and throw it back at the attacker.
+            # each version will echo one eigth (12.5%) of the damage back.
+            delta = a_atk * (float(echo.version) / 8)
+            a_atk -= delta
+            d_atk += delta
         # damage
         if a_atk:
             d.health -= a_atk
@@ -992,11 +1006,12 @@ class GameEngine(object):
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
+            self.install_upgrade(alu.ECHO_LOOP)
             self.install_upgrade(alu.ZAP)
-            choices = alu.from_level(self.level.number)
-            names = [u['name'] for u in choices]
-            if names:
-                self.install_upgrade(random.choice(names))
+            #choices = alu.from_level(self.level.number)
+            #names = [u['name'] for u in choices]
+            #if names:
+                #self.install_upgrade(random.choice(names))
             self.evManager.Post(RefreshUpgradesEvent())
 
     @property
