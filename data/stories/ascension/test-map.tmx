@@ -20,29 +20,25 @@
  </layer>
  <objectgroup name="animated doodads" width="64" height="16">
   <object gid="85" x="224" y="352"/>
-  <object gid="85" x="64" y="352"/>
-  <object gid="85" x="128" y="480"/>
+  <object gid="85" x="32" y="384"/>
+  <object gid="85" x="96" y="416"/>
  </objectgroup>
  <objectgroup name="characters" width="64" height="16">
   <object name="player" type="player" gid="97" x="64" y="96"/>
-  <object name="keke" type="friend" gid="105" x="224" y="384">
+  <object name="keke" type="friend" gid="105" x="32" y="320">
    <properties>
     <property name="modes" value="updown"/>
     <property name="speed" value="1"/>
    </properties>
   </object>
-  <object name="moo" type="friend" gid="105" x="192" y="480">
+  <object name="moo" type="friend" gid="105" x="32" y="416">
    <properties>
     <property name="modes" value="leftright"/>
     <property name="speed" value="1"/>
    </properties>
   </object>
-  <object name="spam" type="friend" gid="105" x="192" y="416">
-   <properties>
-    <property name="modes" value="random"/>
-    <property name="speed" value="1"/>
-   </properties>
-  </object>
+  <object name="ice" type="ai" gid="113" x="224" y="384"/>
+  <object name="virus" type="ai" gid="121" x="96" y="448"/>
  </objectgroup>
  <objectgroup name="doors" width="64" height="16">
   <object name="demo door 1" gid="36" x="288" y="96">
