@@ -127,7 +127,6 @@ class GraphicalView(object):
         self.chosen_upgrade = None
         self.chosen_upgrade_details = None
         self.last_info_state = STATE_INFO_HOME
-        self.target_object = None
 
     @property
     def tmx(self):
@@ -190,8 +189,7 @@ class GraphicalView(object):
                 self.transmute_sprite(event)
 
             elif isinstance(event, TargetTileEvent):
-                self.target_object = self.model.target_tile(self.target_object)
-                trace.write('targeted object %s' % (str(self.target_object)))
+                self.model.target_next()
 
             elif isinstance(event, DialogueEvent):
                 self.queue_dialogue(event.dialogue)
@@ -285,7 +283,7 @@ class GraphicalView(object):
             self.draw_borders()
             self.draw_player_stats()
             self.draw_sprites()
-            self.draw_selected()
+            self.draw_target()
             self.draw_fog()
             self.draw_scroller_text()
 
@@ -428,14 +426,15 @@ class GraphicalView(object):
             if self.chosen_upgrade_details:
                 self.image.blit(self.chosen_upgrade_details, (140, 85))
 
-    def draw_selected(self):
+    def draw_target(self):
         """
         Draw a selection around the targeted object.
 
         """
 
-        if self.target_object:
-            sprite = self.sprites.get(id(self.target_object), None)
+        target = self.model.target_object
+        if target:
+            sprite = self.sprites.get(id(target), None)
             if sprite:
                 pygame.draw.rect(self.play_image, color.white, sprite.rect, 1)
 

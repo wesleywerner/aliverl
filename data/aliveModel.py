@@ -69,6 +69,7 @@ class GameEngine(object):
         self.dialogue = []
         self.turn = None
         self.trigger_queue = None
+        self.target_object = None
 
     def notify(self, event):
         """
@@ -281,7 +282,6 @@ class GameEngine(object):
                         # we know that 'modes' is a list
                         if k == 'modes':
                             setattr(obj, k, v.split(','))
-                            trace.write('obj.name modes override: %s' % obj.modes)
 
                 # add this one to the collective
                 self.objects.append(obj)
@@ -872,19 +872,20 @@ class GameEngine(object):
         self.evManager.Post(MessageEvent('You have upgrades available!',
                                         fontcolor=color.white))
 
-    def target_tile(self, last_selected=None, type_list=['ai', 'friend']):
+    def target_next(self, type_list=['ai', 'friend']):
         """
-        Returns the next tile around the x, y position within reach, filtered
-        by the type_list. last_selected will fetch the next match.
+        Targets the next available object in range.
 
         """
 
+        last_selected = self.target_object
         origin_x, origin_y = (self.player.x, self.player.y)
         reach = self.player.view_range
         level = self.level.tmx
         w, h = level.width, level.height
         first_match = None
         choose_next = False
+        breaked = False
 
         for x, y in rlhelper.cover_area(origin_x, origin_y, reach, w, h):
             objs = self.get_object_by_xy(x, y)
@@ -892,10 +893,16 @@ class GameEngine(object):
                 if not first_match:
                     first_match = obj
                 if choose_next:
-                    return obj
+                    first_match = obj
+                    breaked = True
+                    break
                 if obj is last_selected:
                     choose_next = True
-        return first_match
+            if breaked:
+                break
+        self.target_object = first_match
+        if first_match:
+            trace.write('targeted %s' % first_match.name)
 
     def debug_action(self, event):
         """
