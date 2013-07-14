@@ -760,7 +760,7 @@ class GameEngine(object):
             trace.error('Error converting "%s" to a int while transmuting'
                         ' "%s"' % (str(gid_list), obj.name))
 
-    def combat_turn(self, attacker, defender):
+    def combat_turn(self, attacker, defender, a_verb='hit', d_verb='hit'):
         """
         Begin a combat round.
         """
@@ -771,22 +771,22 @@ class GameEngine(object):
         # we say 'you' where the player is involved
         a_name = (a is self.player) and ('you') or (a.name)
         d_name = (d is self.player) and ('you') or (d.name)
-        a_verb = (a is self.player) and ('hit') or ('hits')
-        d_verb = (a is self.player) and ('hits') or ('hit')
+        a_verb = (a is self.player) and (a_verb) or ('%ss' % a_verb)
+        d_verb = (a is self.player) and ('%ss' % d_verb) or (d_verb)
         # damage control
         a_atk = a.attack
         d_atk = d.attack
         # damage
         if a_atk:
             d.health -= a_atk
-            self.evManager.Post(
-                    MessageEvent('%s %s for %s' % (a_name, a_verb, a_atk),
-                                color.combat_message))
+            self.evManager.Post(MessageEvent(
+                '%s %s %s for %s' % (a_name, a_verb, d_name, a_atk),
+                color.combat_message))
         if d_atk:
             a.health -= d_atk
-            self.evManager.Post(
-                    MessageEvent('%s %s for %s' % (d_name, d_verb, d_atk),
-                                color.combat_message))
+            self.evManager.Post(MessageEvent(
+                '%s %s %s for %s' % (d_name, d_verb, a_name, d_atk),
+                color.combat_message))
         # death
         if a.health < 1:
             if a is self.player:
@@ -939,7 +939,7 @@ class GameEngine(object):
             pass
 
         if upgrade_name == alu.ZAP:
-            self.combat_turn(self.player, self.target_object)
+            self.combat_turn(self.player, self.target_object, a_verb='zap')
 
         if upgrade_name == alu.CODE_FREEZE:
             pass
@@ -977,7 +977,7 @@ class GameEngine(object):
             self.evManager.Post(PlayerMovedEvent())
         elif event.request_type == 'exploit random':
             self.player = random.choice([o for o in self.objects
-                                        if o.type in ('ai', 'player', 'friend')])
+                                    if o.type in ('ai', 'player', 'friend')])
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
