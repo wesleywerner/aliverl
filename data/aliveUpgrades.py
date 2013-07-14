@@ -44,6 +44,7 @@ UPGRADES = [
     'passive': True,
     'reach': 0,
     'max_targets': 0,
+    'use_targeting': False,
     'cost': 0,
     'duration': 0,
     'cooldown': 0,
@@ -61,6 +62,7 @@ UPGRADES = [
     'passive': True,
     'reach': 0,
     'max_targets': 0,
+    'use_targeting': False,
     'cost': 0,
     'duration': 0,
     'cooldown': 0,
@@ -78,6 +80,7 @@ UPGRADES = [
     'passive': True,
     'reach': 0,
     'max_targets': 0,
+    'use_targeting': False,
     'cost': 0,
     'duration': 0,
     'cooldown': 0,
@@ -96,6 +99,7 @@ UPGRADES = [
     'passive': False,
     'reach': 1,
     'max_targets': 1,
+    'use_targeting': False,
     'cost': 1,
     'duration': 4,
     'cooldown': 6,
@@ -112,6 +116,7 @@ UPGRADES = [
     'passive': True,
     'reach': 0,
     'max_targets': 0,
+    'use_targeting': False,
     'cost': 0,
     'duration': 0,
     'cooldown': 0,
@@ -129,6 +134,7 @@ UPGRADES = [
     'passive': False,
     'reach': 2,
     'max_targets': 1,
+    'use_targeting': True,
     'cost': 2,
     'duration': 0,
     'cooldown': 0,
@@ -147,6 +153,7 @@ UPGRADES = [
     'passive': False,
     'reach': 2,
     'max_targets': 1,
+    'use_targeting': True,
     'cost': 2,
     'duration': 2,
     'cooldown': 2,
@@ -164,6 +171,7 @@ UPGRADES = [
     'passive': False,
     'reach': 3,
     'max_targets': 1,
+    'use_targeting': True,
     'cost': 1,
     'duration': 4,
     'cooldown': 4,
@@ -181,6 +189,7 @@ UPGRADES = [
     'passive': False,
     'reach': 0,
     'max_targets': 0,
+    'use_targeting': True,
     'cost': 0,
     'duration': 0,
     'cooldown': 0,
@@ -198,6 +207,7 @@ UPGRADES = [
     'passive': False,
     'reach': 4,
     'max_targets': 1,
+    'use_targeting': True,
     'cost': 5,
     'duration': 6,
     'cooldown': 10,
@@ -215,6 +225,7 @@ UPGRADES = [
     'passive': False,
     'reach': 3,
     'max_targets': 0,
+    'use_targeting': False,
     'cost': 2,
     'duration': 0,
     'cooldown': 0,
@@ -228,6 +239,7 @@ UPGRADES = [
     'passive': False,
     'reach': 0,
     'max_targets': 0,
+    'use_targeting': False,
     'cost': 0,
     'duration': 0,
     'cooldown': 0,
@@ -262,6 +274,9 @@ class Upgrade(object):
     max_targets:
         The number of targets that can be acted upon within range.
 
+    use_targeting:
+        True if this ability requires a target.
+
     cost:
         The cost of using this upgrade's ability. Passive upgrades ignore this.
 
@@ -280,6 +295,7 @@ class Upgrade(object):
                 passive=False,
                 reach=0,
                 max_targets=0,
+                use_targeting=False,
                 cost=0,
                 duration=0,
                 cooldown=0,
@@ -292,6 +308,7 @@ class Upgrade(object):
         self.passive = passive
         self.reach = reach
         self.max_targets = max_targets
+        self.use_targeting = use_targeting
         self.cost = cost
         self.cooldown = cooldown
 

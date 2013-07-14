@@ -1,12 +1,10 @@
 
 # RELEASE Y.T.
 
-* site upload issue: find scp does not do directory structure :(
+## implement ability actions
 
-* build a character screen to show with sections:
-    * player, game and level info, recent messages
-    * current and available upgrades
-    * achievements
+
+* site upload issue: find scp does not do directory structure :(
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?
 
@@ -17,3 +15,12 @@
     The configObj might be useful for this.
 
 * find music to play randomly from a playlist. remove from playlist once played.
+
+# Changes
+
+* build a character screen to show with sections:
+    * player, game and level info, recent messages
+    * current and available upgrades
+    * achievements
+
+* the player can choose a tile to target.

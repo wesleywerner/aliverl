@@ -37,6 +37,9 @@ reach:
 max_targets:
     The number of targets that can be acted upon within range. This value may increase for each version, at the upgrade's discretion.
 
+use_targeting:
+    True if this ability requires a target.
+
 cost:
     The cost of using this ability. This is synonymous to mana in fantasy game, and the player cannot Action this upgrade if they do not have enough power to pay this cost. Passive abilities ignore this.
 
