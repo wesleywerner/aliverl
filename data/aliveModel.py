@@ -21,7 +21,7 @@ import color
 import trace
 import story
 import rlhelper
-import aliveUpgrades
+import aliveUpgrades as alu
 from tmxparser import TMXParser
 from eventmanager import *
 
@@ -843,7 +843,7 @@ class GameEngine(object):
 
         # if player has this upgrade, version_up() it.
         status = None
-        upgrade = aliveUpgrades.get_from_list(self.player.upgrades, upgrade_name)
+        upgrade = alu.get_from_list(self.player.upgrades, upgrade_name)
         if upgrade:
             upgrade.version_up()
             trace.write('upgrading "%s"' % upgrade_name)
@@ -851,7 +851,7 @@ class GameEngine(object):
         else:
             # else get an instance of it and add it to the player.
             trace.write('installing "%s"' % upgrade_name)
-            upgrade = aliveUpgrades.get_by_name(upgrade_name)
+            upgrade = alu.get_by_name(upgrade_name)
             if upgrade:
                 self.player.upgrades.append(upgrade)
                 status = 'installed %s' % upgrade_name
@@ -933,8 +933,8 @@ class GameEngine(object):
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
-            #self.install_upgrade(aliveUpgrades.CODE_HARDENING)
-            choices = aliveUpgrades.by_level(self.level.number)
+            #self.install_upgrade(alu.CODE_HARDENING)
+            choices = alu.by_level(self.level.number)
             names = [u['name'] for u in choices]
             if names:
                 self.install_upgrade(random.choice(names))
