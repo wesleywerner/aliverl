@@ -781,12 +781,12 @@ class GameEngine(object):
             d.health -= a_atk
             self.evManager.Post(
                     MessageEvent('%s %s for %s' % (a_name, a_verb, a_atk),
-                                color.yellow))
+                                color.combat_message))
         if d_atk:
             a.health -= d_atk
             self.evManager.Post(
                     MessageEvent('%s %s for %s' % (d_name, d_verb, d_atk),
-                                color.yellow))
+                                color.combat_message))
         # death
         if a.health < 1:
             if a is self.player:
@@ -795,7 +795,7 @@ class GameEngine(object):
                 a.dead = True
                 self.evManager.Post(KillCharacterEvent(a))
                 self.evManager.Post(
-                    MessageEvent('The %s crashes' % (a_name), color.red))
+                    MessageEvent('The %s crashes' % (a_name), color.ai_crash))
         if d.health < 1:
             if d is self.player:
                 self.end_game()
@@ -803,7 +803,7 @@ class GameEngine(object):
                 d.dead = True
                 self.evManager.Post(KillCharacterEvent(d))
                 self.evManager.Post(
-                    MessageEvent('The %s crashes' % (d_name), color.red))
+                    MessageEvent('The %s crashes' % (d_name), color.ai_crash))
         self.look_at_target()
 
     def kill_object(self, character):
@@ -870,9 +870,9 @@ class GameEngine(object):
             # look around again if any abilities upgraded our perception
             self.look_around()
             # notify listeners we have new things
-            self.evManager.Post(MessageEvent(status, color=color.yellow))
+            self.evManager.Post(MessageEvent(status, color=color.tip))
             if result:
-                self.evManager.Post(MessageEvent(result, color=color.yellow))
+                self.evManager.Post(MessageEvent(result, color=color.tip))
         return '%s\n%s' % (status, result is None and ' ' or result)
 
     def allow_upgrade(self):
@@ -883,7 +883,7 @@ class GameEngine(object):
 
         self.upgrades_available += 1
         self.evManager.Post(MessageEvent('You have upgrades available!',
-                                        color=color.white))
+                                        color=color.tip))
 
     def target_next(self, type_list=['ai', 'friend']):
         """
@@ -932,7 +932,7 @@ class GameEngine(object):
             return
         if upgrade.use_targeting and self.target_object is None:
             self.evManager.Post(MessageEvent(
-                'Select a target first', color.info))
+                'Select a target first', color.tip))
             return
 
         if upgrade_name == alu.ECHO_LOOP:

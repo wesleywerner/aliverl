@@ -18,9 +18,9 @@
 #gold = (229, 191, 0)
 #silver = (203, 203, 203)
 
-#lightest_grey = (223, 223, 223)
-#lighter_grey = (191, 191, 191)
-#light_grey = (159, 159, 159)
+#lightest_gray = (223, 223, 223)
+#lighter_gray = (191, 191, 191)
+#light_gray = (159, 159, 159)
 gray = (128, 128, 128)
 #dark_gray = (95, 95, 95)
 #darker_gray = (43, 43, 43)
@@ -36,31 +36,11 @@ gray = (128, 128, 128)
 
 ## basic colors
 
-blue = (0, 0, 255)
-#dark_blue = (0, 0, 191)
-#darker_blue = (0, 0, 128)
-#darkest_blue = (0, 0, 64)
-
-green = (0, 255, 0)
-#dark_green = (0, 191, 0)
-#darker_green = (0, 128, 0)
-darkest_green = (0, 64, 0)
-
-#orange = (255, 127, 0)
-#dark_orange = (191, 95, 0)
-#darker_orange = (128, 64, 0)
-#darkest_orange = (64, 32, 0)
-
-red = (255, 0, 0)
-#dark_red = (191, 0, 0)
-#darker_red = (128, 0, 0)
-#darkest_red = (64, 0, 0)
-
-#desaturated_red = (128, 64, 64)
+desaturated_red = (128, 64, 64)
 #lightest_red = (255, 191, 191)
-#lighter_red = (255, 166, 166)
+lighter_red = (255, 166, 166)
 #light_red = (255, 115, 115)
-#red = (255, 0, 0)
+red = (255, 0, 0)
 #dark_red = (191, 0, 0)
 #darker_red = (128, 0, 0)
 #darkest_red = (64, 0, 0)
@@ -92,9 +72,9 @@ red = (255, 0, 0)
 #darker_amber = (128, 96, 0)
 #darkest_amber = (64, 48, 0)
 
-#desaturated_yellow = (128, 128, 64)
+desaturated_yellow = (128, 128, 64)
 #lightest_yellow = (255, 255, 191)
-#lighter_yellow = (255, 255, 166)
+lighter_yellow = (255, 255, 166)
 #light_yellow = (255, 255, 115)
 yellow = (255, 255, 0)
 #dark_yellow = (191, 191, 0)
@@ -119,14 +99,14 @@ yellow = (255, 255, 0)
 #darker_chartreuse = (64, 128, 0)
 #darkest_chartreuse = (32, 64, 0)
 
-#desaturated_green = (64, 128, 64)
+desaturated_green = (64, 128, 64)
 #lightest_green = (191, 255, 191)
 #lighter_green = (166, 255, 166)
 #light_green = (115, 255, 115)
-#green = (0, 255, 0)
+green = (0, 255, 0)
 #dark_green = (0, 191, 0)
 #darker_green = (0, 128, 0)
-#darkest_green = (0, 64, 0)
+darkest_green = (0, 64, 0)
 
 #desaturated_sea = (64, 128, 96)
 #lightest_sea = (191, 255, 223)
@@ -146,7 +126,7 @@ yellow = (255, 255, 0)
 #darker_turquoise = (0, 128, 96)
 #darkest_turquoise = (0, 64, 48)
 
-#desaturated_cyan = (64, 128, 128)
+desaturated_cyan = (64, 128, 128)
 #lightest_cyan = (191, 255, 255)
 #lighter_cyan = (166, 255, 255)
 #light_cyan = (115, 255, 255)
@@ -175,9 +155,9 @@ cyan = (0, 255, 255)
 
 #desaturated_blue = (64, 64, 128)
 #lightest_blue = (191, 191, 255)
-#lighter_blue = (166, 166, 255)
+lighter_blue = (166, 166, 255)
 #light_blue = (115, 115, 255)
-#blue = (0, 0, 255)
+blue = (0, 0, 255)
 #dark_blue = (0, 0, 191)
 #darker_blue = (0, 0, 128)
 #darkest_blue = (0, 0, 64)
@@ -238,7 +218,11 @@ magenta = (255, 0, 255)
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-player = (0, 128, 128)
-text = (0, 128, 0)
-info = gray
-target_selection = white
+player_text = desaturated_green
+ai_text = desaturated_cyan
+terminal_text = gray
+message = lighter_blue
+tip = gray
+target_selection = cyan
+combat_message = desaturated_yellow
+ai_crash = desaturated_red

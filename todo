@@ -3,12 +3,6 @@
 
 ## implement ability actions
 
-+ rename MessageEvent fontcolor to color
-+ rename aliveUpgrades get_by to by_ or from_
-+ rename color.player and color.text
-+ add color.message
-+ add color.combat and color.ai_crash
-
 * site upload issue: find scp does not do directory structure :(
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?

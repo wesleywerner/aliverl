@@ -180,7 +180,7 @@ class GraphicalView(object):
 
             elif isinstance(event, MessageEvent):
                 self.create_floating_tip(event.message,
-                    event.color and event.color or color.text)
+                    event.color and event.color or color.message)
 
             elif isinstance(event, KillCharacterEvent):
                 self.kill_sprite(event.character)
@@ -390,12 +390,12 @@ class GraphicalView(object):
                 (snap_dest[0], snap_dest[1], snap_rect[2], snap_rect[3]), 2)
             # a helpful message
             pix = self.largefont.render(
-                'you are alive!', False, color.blue)
+                'you are alive!', False, color.message)
             self.image.blit(pix, (28, 75))
             # column of stats titles
             titles = 'turn\nlevel\nhealth\npower\nattack\nspeed\nview'
             pix = self.draw_text_block(
-                titles, self.largefont, False, color.cyan)
+                titles, self.largefont, False, color.desaturated_cyan)
             self.image.blit(pix, (370, 70))
             values = '%s\n%s\n%s\n%s\n%s\n%s\n%s' % (
                 self.model.turn,
@@ -407,12 +407,12 @@ class GraphicalView(object):
                 self.model.player.view_range,
                 )
             pix = self.draw_text_block(
-                values, self.largefont, False, color.yellow)
+                values, self.largefont, False, color.desaturated_yellow)
             self.image.blit(pix, (490, 70))
             # recent messages
             if self.messages:
                 pix = self.draw_text(
-                    self.messages, self.smallfont, False, color.white)
+                    self.messages, self.smallfont, False, color.message)
                 self.image.blit(pix, (28, 290))
 
         elif game_state == STATE_INFO_UPGRADES:
