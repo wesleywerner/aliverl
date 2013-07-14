@@ -193,10 +193,10 @@ class MessageEvent(Event):
     Sends a game message for the user to read.
     """
 
-    def __init__(self, message, fontcolor=None):
+    def __init__(self, message, color=None):
         self.name = 'Message event'
         self.message = message
-        self.fontcolor = fontcolor
+        self.color = color
 
     def __str__(self):
         return '"%s"' % self.message

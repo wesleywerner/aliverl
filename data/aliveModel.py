@@ -851,7 +851,7 @@ class GameEngine(object):
 
         # if player has this upgrade, version_up() it.
         status = None
-        upgrade = alu.get_from_list(self.player.upgrades, upgrade_name)
+        upgrade = alu.from_list(self.player.upgrades, upgrade_name)
         if upgrade:
             upgrade.version_up()
             trace.write('upgrading "%s"' % upgrade_name)
@@ -859,7 +859,7 @@ class GameEngine(object):
         else:
             # else get an instance of it and add it to the player.
             trace.write('installing "%s"' % upgrade_name)
-            upgrade = alu.get_by_name(upgrade_name)
+            upgrade = alu.from_name(upgrade_name)
             if upgrade:
                 self.player.upgrades.append(upgrade)
                 status = 'installed %s' % upgrade_name
@@ -870,9 +870,9 @@ class GameEngine(object):
             # look around again if any abilities upgraded our perception
             self.look_around()
             # notify listeners we have new things
-            self.evManager.Post(MessageEvent(status, fontcolor=color.yellow))
+            self.evManager.Post(MessageEvent(status, color=color.yellow))
             if result:
-                self.evManager.Post(MessageEvent(result, fontcolor=color.yellow))
+                self.evManager.Post(MessageEvent(result, color=color.yellow))
         return '%s\n%s' % (status, result is None and ' ' or result)
 
     def allow_upgrade(self):
@@ -883,7 +883,7 @@ class GameEngine(object):
 
         self.upgrades_available += 1
         self.evManager.Post(MessageEvent('You have upgrades available!',
-                                        fontcolor=color.white))
+                                        color=color.white))
 
     def target_next(self, type_list=['ai', 'friend']):
         """
@@ -923,7 +923,7 @@ class GameEngine(object):
 
         """
 
-        upgrade = alu.get_from_list(self.player.upgrades, upgrade_name)
+        upgrade = alu.from_list(self.player.upgrades, upgrade_name)
         if not upgrade:
             trace.write('"%s" is not an upgrade the player has' % upgrade_name)
             return
@@ -982,7 +982,7 @@ class GameEngine(object):
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
             self.install_upgrade(alu.ZAP)
-            choices = alu.by_level(self.level.number)
+            choices = alu.from_level(self.level.number)
             names = [u['name'] for u in choices]
             if names:
                 self.install_upgrade(random.choice(names))

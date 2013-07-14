@@ -412,7 +412,7 @@ class Upgrade(object):
             return '-%s sight' % self._combined_effect
 
 
-def by_level(level):
+def from_level(level):
     """
     Returns a list of available upgrades for the given level.
 
@@ -421,7 +421,7 @@ def by_level(level):
     return [u for u in UPGRADES if level in u['availability'] and u['enabled']]
 
 
-def get_by_name(upgrade_name):
+def from_name(upgrade_name):
     """
     Get an upgrade instance by it's name.
     """
@@ -430,7 +430,7 @@ def get_by_name(upgrade_name):
     if match:
         return Upgrade.from_dict(match[0])
 
-def get_from_list(comparisson_list, upgrade_name):
+def from_list(comparisson_list, upgrade_name):
     """
     Get an upgrade from a list of upgrades, or None if it is not in the list.
     """

@@ -180,7 +180,7 @@ class GraphicalView(object):
 
             elif isinstance(event, MessageEvent):
                 self.create_floating_tip(event.message,
-                    event.fontcolor and event.fontcolor or color.text)
+                    event.color and event.color or color.text)
 
             elif isinstance(event, KillCharacterEvent):
                 self.kill_sprite(event.character)
@@ -1351,7 +1351,7 @@ class GraphicalView(object):
             player_list = [u.name for u in self.model.player.upgrades]
             # grab the available upgrades for this level
             available_list = [u['name']
-                for u in alu.by_level(self.model.level.number)]
+                for u in alu.from_level(self.model.level.number)]
             # merge the lists
             upgrade_list = sorted(set(player_list + available_list))
 
@@ -1439,7 +1439,7 @@ class GraphicalView(object):
                             status, self.smallfont, False, color.yellow)
             else:
                 # grab the upgrade data and create a details screen for it
-                data = alu.get_by_name(ux.code)
+                data = alu.from_name(ux.code)
                 # enable button if upgrade available on level
                 if self.model.upgrades_available > 0:
                     butt = self.ui.get_by_code('install upgrade')
