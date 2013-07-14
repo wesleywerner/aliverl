@@ -11,11 +11,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
-text = (0, 128, 0)
-player = (0, 128, 128)
-black = (0, 0, 0)
-white = (255, 255, 255)
-
 # complex colors
 
 #brass = (191, 151, 96)
@@ -240,3 +235,10 @@ magenta = (255, 0, 255)
 #dark_crimson = (191, 0, 47)
 #darker_crimson = (128, 0, 31)
 #darkest_crimson = (64, 0, 16)
+
+black = (0, 0, 0)
+white = (255, 255, 255)
+player = (0, 128, 128)
+text = (0, 128, 0)
+info = gray
+target_selection = white

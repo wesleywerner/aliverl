@@ -231,6 +231,10 @@ class GraphicalView(object):
                 if event.state == STATE_HELP:
                     self.show_help_screens()
 
+            elif isinstance(event, RefreshUpgradesEvent):
+                model_state = self.model.state.peek()
+                self.reposition_upgrade_buttons(model_state)
+
         except Exception, e:
             # we explicitly catch Exception, since sys.exit() will throw
             # a SystemExit, and we want that one to not catch here.
@@ -436,7 +440,8 @@ class GraphicalView(object):
         if target:
             sprite = self.sprites.get(id(target), None)
             if sprite:
-                pygame.draw.rect(self.play_image, color.white, sprite.rect, 1)
+                pygame.draw.rect(self.play_image,
+                                color.target_selection, sprite.rect, 1)
 
     def draw_sprites(self):
         """
@@ -1409,6 +1414,8 @@ class GraphicalView(object):
         if context == STATE_PLAY:
             if ux.code == 'goto home':
                 self.evManager.Post(StateChangeEvent(self.last_info_state))
+            else:
+                self.model.use_upgrade(ux.code)
 
         # handle info screen menus
         if context in tab_states:

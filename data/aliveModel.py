@@ -89,7 +89,7 @@ class GameEngine(object):
             self.move_player(event.direction)
 
         elif isinstance(event, CombatEvent):
-            self.combat_turn(event)
+            self.combat_turn(event.attacker, event.defender)
 
         elif isinstance(event, KillCharacterEvent):
             self.kill_object(event.character)
@@ -318,11 +318,7 @@ class GameEngine(object):
         self.ai_movement_turn()
         # update what we can see
         self.look_around()
-
-        # check if any targets are still in view
-        if self.target_object:
-            if not self.target_object.in_range:
-                self.target_object = None
+        self.look_at_target()
 
         # notify the view to update it's visible sprites
         self.evManager.Post(PlayerMovedEvent())
@@ -481,6 +477,16 @@ class GameEngine(object):
             y = (y < -1) and -1 or y
             y = (y > 1) and 1 or y
             self.move_object(obj, (x, y))
+
+    def look_at_target(self):
+        """
+        Look if the current target is still in view and alive.
+
+        """
+
+        if self.target_object:
+            if not self.target_object.in_range or self.target_object.dead:
+                self.target_object = None
 
     def look_around(self):
         """
@@ -754,15 +760,14 @@ class GameEngine(object):
             trace.error('Error converting "%s" to a int while transmuting'
                         ' "%s"' % (str(gid_list), obj.name))
 
-    def combat_turn(self, event):
+    def combat_turn(self, attacker, defender):
         """
         Begin a combat round.
         """
 
         if not self.gamerunning:
             return False
-        a = event.attacker
-        d = event.defender
+        a, d = (attacker, defender)
         # we say 'you' where the player is involved
         a_name = (a is self.player) and ('you') or (a.name)
         d_name = (d is self.player) and ('you') or (d.name)
@@ -787,6 +792,7 @@ class GameEngine(object):
             if a is self.player:
                 self.end_game()
             else:
+                a.dead = True
                 self.evManager.Post(KillCharacterEvent(a))
                 self.evManager.Post(
                     MessageEvent('The %s crashes' % (a_name), color.red))
@@ -794,9 +800,11 @@ class GameEngine(object):
             if d is self.player:
                 self.end_game()
             else:
+                d.dead = True
                 self.evManager.Post(KillCharacterEvent(d))
                 self.evManager.Post(
                     MessageEvent('The %s crashes' % (d_name), color.red))
+        self.look_at_target()
 
     def kill_object(self, character):
         """
@@ -909,6 +917,46 @@ class GameEngine(object):
         if first_match:
             trace.write('targeted %s' % first_match.name)
 
+    def use_upgrade(self, upgrade_name):
+        """
+        Use the given upgrade if the player has it.
+
+        """
+
+        upgrade = alu.get_from_list(self.player.upgrades, upgrade_name)
+        if not upgrade:
+            trace.write('"%s" is not an upgrade the player has' % upgrade_name)
+            return
+        if not upgrade.enabled:
+            trace.write('"%s" is not enabled' % upgrade_name)
+            return
+        if upgrade.use_targeting and self.target_object is None:
+            self.evManager.Post(MessageEvent(
+                'Select a target first', color.info))
+            return
+
+        if upgrade_name == alu.ECHO_LOOP:
+            pass
+
+        if upgrade_name == alu.ZAP:
+            self.combat_turn(self.player, self.target_object)
+
+        if upgrade_name == alu.CODE_FREEZE:
+            pass
+
+        if upgrade_name == alu.PING_FLOOD:
+            pass
+
+        if upgrade_name == alu.FORK_BOMB:
+            pass
+
+        if upgrade_name == alu.EXPLOIT:
+            pass
+
+        if upgrade_name == alu.DESERIALIZE:
+            # use the last direction moved?
+            pass
+
     def debug_action(self, event):
         """
         Perform some debugesque action.
@@ -933,11 +981,12 @@ class GameEngine(object):
             self.look_around()
             self.evManager.Post(RefreshUpgradesEvent())
         elif event.request_type == 'give random upgrade':
-            #self.install_upgrade(alu.CODE_HARDENING)
+            self.install_upgrade(alu.ZAP)
             choices = alu.by_level(self.level.number)
             names = [u['name'] for u in choices]
             if names:
                 self.install_upgrade(random.choice(names))
+            self.evManager.Post(RefreshUpgradesEvent())
 
     @property
     def tile_width(self):
