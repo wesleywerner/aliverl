@@ -473,10 +473,11 @@ class GameEngine(object):
                         # start the sequence
                         obj.properties['movingleft'] = True
                 if mode == 'magnet':
-                    playerxy = self.player.getxy()
-                    objxy = obj.getxy()
-                    if self.get_distance(playerxy, objxy) <= 4:
-                        x, y = self.get_direction(objxy, playerxy)
+                    dist = rlhelper.distance(
+                        self.player.x, self.player.y, obj.x, obj.y)
+                    if dist <= 4:
+                        x, y = self.get_direction(
+                            obj.getxy(), self.player.getxy())
                 if mode == 'sniffer':
                     #TODO sniffer dog
                     objxy = obj.getxy()
@@ -536,7 +537,7 @@ class GameEngine(object):
                     continue
 
                 # the distance will round our view to a nice ellipse
-                dist = self.get_distance((px, py), (x, y))
+                dist = rlhelper.distance(px, py, x, y)
                 if dist <= RANGE:
 
                     # test if we also have line of sight to this position
@@ -553,14 +554,7 @@ class GameEngine(object):
                             obj.in_range = True
                             obj.seen = True
 
-    def get_distance(self, pointa, pointb):
-        """
-        Returns the distance between two cartesian points.
-        """
-
-        return math.sqrt((pointa[0] - pointb[0]) ** 2 +
-                        (pointa[1] - pointb[1]) ** 2)
-
+    #TODO move to rlhelper, and use x, y, u, v points
     def get_direction(self, pointa, pointb):
         """
         Returns the (x, y) offsets required to move pointa towards pointb.
@@ -973,7 +967,7 @@ class GameEngine(object):
             self.combat_turn(self.player, self.target_object, a_verb='zap')
 
         if upgrade_name == alu.CODE_FREEZE:
-
+            pass
 
         if upgrade_name == alu.PING_FLOOD:
             pass
