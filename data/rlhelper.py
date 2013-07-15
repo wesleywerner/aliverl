@@ -109,6 +109,22 @@ def distance(x, y, u, v):
 
     return math.sqrt((x - u) ** 2 + (y - v) ** 2)
 
+def direction(x, y, u, v):
+    """
+    Returns the (x, y) offsets required to move point a (x, y)
+    towards point b (u, v).
+
+    """
+
+    deltax = u - x
+    deltay = v - y
+    # theta is the angle (in radians) of the direction in which to move
+    theta = math.atan2(deltay, deltax)
+    # r is the distance to move
+    r = 1.0
+    deltax = r * math.cos(theta)
+    deltay = r * math.sin(theta)
+    return (int(round(deltax)), int(round(deltay)))
 
 def cover_area(origin_x, origin_y, reach, max_width, max_height):
     """

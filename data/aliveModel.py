@@ -476,16 +476,15 @@ class GameEngine(object):
                     dist = rlhelper.distance(
                         self.player.x, self.player.y, obj.x, obj.y)
                     if dist <= 4:
-                        x, y = self.get_direction(
-                            obj.getxy(), self.player.getxy())
+                        x, y = rlhelper.direction(
+                            obj.x, obj.y, self.player.x, self.player.y)
                 if mode == 'sniffer':
-                    #TODO sniffer dog
-                    objxy = obj.getxy()
                     trail = self.player.trail
-                    if objxy in trail:
+                    if obj.getxy() in trail:
                         idx = trail.index(objxy) - 1
                         if idx >= 0:
-                            x, y = self.get_direction(objxy, trail[idx])
+                            x, y = rlhelper.direction(
+                                obj.x, obj.y, *trail[idx])
             # normalize positions then move
             x = (x < -1) and -1 or x
             x = (x > 1) and 1 or x
@@ -553,26 +552,6 @@ class GameEngine(object):
                             # mark object is in_range
                             obj.in_range = True
                             obj.seen = True
-
-    #TODO move to rlhelper, and use x, y, u, v points
-    def get_direction(self, pointa, pointb):
-        """
-        Returns the (x, y) offsets required to move pointa towards pointb.
-        """
-
-        deltax = pointb[0] - pointa[0]
-        deltay = pointb[1] - pointa[1]
-
-        # theta is the angle (in radians) of the direction in which to move
-        theta = math.atan2(deltay, deltax)
-
-        # r is the distance to move
-        r = 1.0
-
-        deltax = r * math.cos(theta)
-        deltay = r * math.sin(theta)
-
-        return (int(round(deltax)), int(round(deltay)))
 
     def get_object_by_id(self, objectid):
         """
