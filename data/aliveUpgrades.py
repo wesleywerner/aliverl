@@ -104,8 +104,8 @@ UPGRADES = [
     'max_targets': 1,
     'use_targeting': False,
     'cost': 1,
-    'duration': 4,
-    'cooldown': 6,
+    'duration': 6,
+    'cooldown': 3,
     },
     {
     'name': MAP_PEEK,
@@ -313,6 +313,7 @@ class Upgrade(object):
         self.max_targets = max_targets
         self.use_targeting = use_targeting
         self.cost = cost
+        self.duration = duration
         self.cooldown = cooldown
 
         # internals
@@ -374,7 +375,7 @@ class Upgrade(object):
         """
 
         #TODO calculate a value based on our version, and the upgrade type.
-        return 4
+        return self.duration
 
     def version_up(self):
         """
@@ -455,7 +456,7 @@ class Upgrade(object):
             character.view_range -= self._combined_effect
             return '-%s sight' % self._combined_effect
 
-    def activate(self):
+    def activate(self, owner, target):
         """
         Activates this upgrade's ability, usually for a short period, after
         which a cooldown may ensue.

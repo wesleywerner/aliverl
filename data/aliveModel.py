@@ -963,7 +963,7 @@ class GameEngine(object):
             return
 
         if upgrade_name == alu.ECHO_LOOP:
-            upgrade.activate()
+            upgrade.activate(owner=None, target=None)
             self.post_msg('%s activated' % upgrade_name, color.upgrade_tip)
 
         if upgrade_name == alu.ZAP:
