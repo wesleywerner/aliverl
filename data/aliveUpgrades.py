@@ -432,6 +432,8 @@ class Upgrade(object):
             character.view_range += bonus
             return '+%s sight' % bonus
 
+        #TODO upgrading zap increases attack
+
     def purge_upgrade(self, character):
         """
         Reverse the effects this upgrade has added to the character.
@@ -471,6 +473,10 @@ class Upgrade(object):
             self._cooldown_count = self.cooldown
             trace.write('activated "%s" for %s turns' %
                 (self.name, self._busy_countdown))
+
+        # TODO need a list of nearby ai along with their distance,
+        #       so we can check if each is in reach, and then select
+        #       max_targets of them to act upon.
 
     def step(self):
         """

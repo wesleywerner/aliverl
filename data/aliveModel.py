@@ -962,6 +962,9 @@ class GameEngine(object):
             self.post_msg('Select a target first', color.tip)
             return
 
+        # TODO grab a list of nearby ai and pass it to activate() calls.
+        #       include the distance of each to the player.
+
         if upgrade_name == alu.ECHO_LOOP:
             upgrade.activate(owner=None, target=None)
             self.post_msg('%s activated' % upgrade_name, color.upgrade_tip)
@@ -970,7 +973,7 @@ class GameEngine(object):
             self.combat_turn(self.player, self.target_object, a_verb='zap')
 
         if upgrade_name == alu.CODE_FREEZE:
-            pass
+
 
         if upgrade_name == alu.PING_FLOOD:
             pass
