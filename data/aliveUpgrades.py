@@ -165,8 +165,8 @@ UPGRADES = [
     'name': PING_FLOOD,
     'description':
         ("You can tap into a node's communication system, allowing you to "
-         "flood nearby enemy with garbage packets, slowing down "
-         "their movement while they try to filter through the noise. "
+         "flood nearby enemy with garbage packets, confusing them. "
+         "Result: affected AI stop following you and move erratically."
         ),
     'version': 1,
     'enabled': True,
@@ -176,7 +176,7 @@ UPGRADES = [
     'max_targets': 1,
     'use_targeting': True,
     'cost': 1,
-    'duration': 4,
+    'duration': 2,
     'cooldown': 4,
     },
     {

@@ -235,6 +235,7 @@ class GameEngine(object):
                      'trail': None,
                      'upgrades': None,
                      'freeze_duration': 0,
+                     'confused_duration': 0,
                      }
 
         # for each object group on this level (because maps can be layers)
@@ -362,6 +363,12 @@ class GameEngine(object):
                 (character.name, character.freeze_duration))
             return False
 
+        # reduce any confusion. note its effect is handled in ai_movement_turn.
+        if character.confused_duration > 0:
+            character.confused_duration -= 1
+            trace.write('%s is confused for %s turns' %
+                (character.name, character.confused_duration))
+
         old_x, old_y = (character.x, character.y)
         new_x, new_y = (character.x + direction[0],
                       character.y + direction[1])
@@ -447,10 +454,6 @@ class GameEngine(object):
                             (int(self.turn % e.speed) == 0)]:
             x, y = (0, 0)
             for mode in obj.modes:
-                if mode == 'random':
-                    if random.randint(0, 1):
-                        x = random.randint(-1, 1)
-                        y = random.randint(-1, 1)
                 if mode == 'updown':
                     if 'movingup' in obj.properties:
                         if self.tile_is_solid(obj.x, obj.y - 1):
@@ -493,6 +496,10 @@ class GameEngine(object):
                         if idx >= 0:
                             x, y = rlhelper.direction(
                                 obj.x, obj.y, *trail[idx])
+                if mode == 'random' or obj.confused_duration > 0:
+                    if random.randint(0, 1):
+                        x = random.randint(-1, 1)
+                        y = random.randint(-1, 1)
             # normalize positions then move
             x = (x < -1) and -1 or x
             x = (x > 1) and 1 or x
@@ -983,7 +990,11 @@ class GameEngine(object):
                     (ai.name), color.combat_message)
 
         if upgrade_name == alu.PING_FLOOD:
-            pass
+            upgrade.activate(owner=None, target=None)
+            for ai in targets:
+                ai.confused_duration = upgrade.duration
+                self.post_msg('the %s is confused!' %
+                    (ai.name), color.combat_message)
 
         if upgrade_name == alu.FORK_BOMB:
             pass
@@ -1038,6 +1049,7 @@ class GameEngine(object):
             self.install_upgrade(alu.ECHO_LOOP)
             self.install_upgrade(alu.ZAP)
             self.install_upgrade(alu.CODE_FREEZE)
+            self.install_upgrade(alu.PING_FLOOD)
             #choices = alu.from_level(self.level.number)
             #names = [u['name'] for u in choices]
             #if names:
