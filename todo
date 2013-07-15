@@ -15,6 +15,11 @@
 
 * find music to play randomly from a playlist. remove from playlist once played.
 
+* interactingwith AI removes their map-level attribute overrides:
+    * kill interaction "modes" on "keke"
+    * kill interaction "speed" on "keke"
+  This does not affect gameplay as these values were already consumed at level load. Just saying.
+
 # Changes
 
 * build a character screen to show with sections:
