@@ -968,29 +968,39 @@ class GameEngine(object):
 
         # grab the AI in reach of the upgrade, or the selected target
         if upgrade.max_targets > 1:
-            targets = self.get_objects_in_reach(
-                self.player.x, self.player.y, upgrade.reach)
+            targets = random.sample(
+                self.get_objects_in_reach(
+                    self.player.x, self.player.y, upgrade.reach),
+                upgrade.max_targets)
         else:
             targets = [self.target_object]
         trace.write('targets in reach: %s' %
                 ', '.join([t.name for t in targets]))
 
+        # TODO test for enough power to pay the upgrade ability cost
+
+        # action this upgrade - it is now active
+        upgrade.activate()
+
+        # perform upgrade-specific voodoo
         if upgrade_name == alu.ECHO_LOOP:
-            upgrade.activate(owner=None, target=None)
+            # this upgrade is handled in combat_turn()
             self.post_msg('%s activated' % upgrade_name, color.upgrade_tip)
 
         if upgrade_name == alu.ZAP:
-            self.combat_turn(self.player, self.target_object, a_verb='zap')
+            # zap the targets from a distance
+            for ai in targets:
+                self.combat_turn(self.player, ai, a_verb='zap')
 
         if upgrade_name == alu.CODE_FREEZE:
-            upgrade.activate(owner=None, target=None)
+            # freeze targets
             for ai in targets:
                 ai.freeze_duration = upgrade.duration
                 self.post_msg('the %s froze!' %
                     (ai.name), color.combat_message)
 
         if upgrade_name == alu.PING_FLOOD:
-            upgrade.activate(owner=None, target=None)
+            # ping flood (confuse) targets
             for ai in targets:
                 ai.confused_duration = upgrade.duration
                 self.post_msg('the %s is confused!' %

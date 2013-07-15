@@ -468,7 +468,7 @@ class Upgrade(object):
             character.view_range -= self._combined_effect
             return '-%s sight' % self._combined_effect
 
-    def activate(self, owner, target):
+    def activate(self):
         """
         Activates this upgrade's ability, usually for a short period, after
         which a cooldown may ensue.
@@ -483,10 +483,6 @@ class Upgrade(object):
             self._cooldown_count = self.cooldown
             trace.write('activated "%s" for %s turns' %
                 (self.name, self._busy_countdown))
-
-        # TODO need a list of nearby ai along with their distance,
-        #       so we can check if each is in reach, and then select
-        #       max_targets of them to act upon.
 
     def step(self):
         """
