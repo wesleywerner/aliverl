@@ -159,7 +159,7 @@ UPGRADES = [
     'use_targeting': True,
     'cost': 2,
     'duration': 2,
-    'cooldown': 2,
+    'cooldown': 4,
     },
     {
     'name': PING_FLOOD,
@@ -282,6 +282,9 @@ class Upgrade(object):
 
     cost:
         The cost of using this upgrade's ability. Passive upgrades ignore this.
+
+    duration:
+        The turns the upgrade ability has effect for.
 
     cooldown:
         The number of turns before this upgrade's ability can be used again.
@@ -432,6 +435,13 @@ class Upgrade(object):
             character.view_range += bonus
             return '+%s sight' % bonus
 
+        # increase freeze reach
+        elif self.name == CODE_FREEZE:
+            bonus = 0.5 * (self.version - 1)
+            self._combined_effect = bonus
+            self.reach = bonus
+            return '%s freeze reach' % bonus
+
         #TODO upgrading zap increases attack
 
     def purge_upgrade(self, character):
@@ -493,6 +503,7 @@ class Upgrade(object):
             self._cooldown_count -= 1
             trace.write('%s cooldown for %s turns' %
                 (self.name, self._cooldown_count))
+
 
 def from_level(level):
     """

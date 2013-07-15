@@ -234,6 +234,7 @@ class GameEngine(object):
                      'in_range': False,
                      'trail': None,
                      'upgrades': None,
+                     'freeze_duration': 0,
                      }
 
         # for each object group on this level (because maps can be layers)
@@ -353,6 +354,12 @@ class GameEngine(object):
         """
 
         if not self.gamerunning:
+            return False
+
+        if character.freeze_duration > 0:
+            character.freeze_duration -= 1
+            trace.write('%s is frozen for %s turns' %
+                (character.name, character.freeze_duration))
             return False
 
         old_x, old_y = (character.x, character.y)
@@ -480,7 +487,8 @@ class GameEngine(object):
                             obj.x, obj.y, self.player.x, self.player.y)
                 if mode == 'sniffer':
                     trail = self.player.trail
-                    if obj.getxy() in trail:
+                    objxy = obj.getxy()
+                    if objxy in trail:
                         idx = trail.index(objxy) - 1
                         if idx >= 0:
                             x, y = rlhelper.direction(
@@ -522,12 +530,15 @@ class GameEngine(object):
                 # set to 1 (seen) if it is 2 (in view)
                 seen_mx[x][y] = seen_mx[x][y] == 2 and 1 or seen_mx[x][y]
                 # same for objects who were in range
+                # FIXME optimize by just iterating over the whole list once?
+                #       consider this call does that now for each x, y :p
                 objects = self.get_object_by_xy(x, y)
                 for obj in objects:
                     obj.in_range = False
 
         # we only need to scan for seen tiles and objects in our RANGE vicinity
         # look around the map at what is in view range
+        # FIXME call rlhelper.cover_area(). it may need to return dist though.
         for y in range(py - RANGE, py + RANGE):
             for x in range(px - RANGE, px + RANGE):
 
@@ -577,6 +588,19 @@ class GameEngine(object):
         """
 
         return [e for e in self.objects if e.name == name]
+
+    def get_objects_in_reach(self, x, y, reach, type_filter=['ai']):
+        """
+        Gets a list of objects in reach of position x, y.
+
+        """
+
+        the_list = []
+        w, h = self.level.tmx.width, self.level.tmx.height
+        [the_list.extend(self.get_object_by_xy(u, v))
+            for u, v in rlhelper.cover_area(x, y, reach, w, h)
+            ]
+        return [o for o in the_list if o.type in type_filter]
 
     def heal_turn(self):
         """
@@ -935,8 +959,14 @@ class GameEngine(object):
             self.post_msg('Select a target first', color.tip)
             return
 
-        # TODO grab a list of nearby ai and pass it to activate() calls.
-        #       include the distance of each to the player.
+        # grab the AI in reach of the upgrade, or the selected target
+        if upgrade.max_targets > 1:
+            targets = self.get_objects_in_reach(
+                self.player.x, self.player.y, upgrade.reach)
+        else:
+            targets = [self.target_object]
+        trace.write('targets in reach: %s' %
+                ', '.join([t.name for t in targets]))
 
         if upgrade_name == alu.ECHO_LOOP:
             upgrade.activate(owner=None, target=None)
@@ -946,7 +976,11 @@ class GameEngine(object):
             self.combat_turn(self.player, self.target_object, a_verb='zap')
 
         if upgrade_name == alu.CODE_FREEZE:
-            pass
+            upgrade.activate(owner=None, target=None)
+            for ai in targets:
+                ai.freeze_duration = upgrade.duration
+                self.post_msg('the %s froze!' %
+                    (ai.name), color.combat_message)
 
         if upgrade_name == alu.PING_FLOOD:
             pass
@@ -1003,6 +1037,7 @@ class GameEngine(object):
         elif event.request_type == 'give random upgrade':
             self.install_upgrade(alu.ECHO_LOOP)
             self.install_upgrade(alu.ZAP)
+            self.install_upgrade(alu.CODE_FREEZE)
             #choices = alu.from_level(self.level.number)
             #names = [u['name'] for u in choices]
             #if names:
