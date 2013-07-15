@@ -956,7 +956,7 @@ class GraphicalView(object):
         # allow the same message to popup again and again
         if True:
             self.messages.append(message)
-            self.messages = self.messages[-12:]
+            self.messages = self.messages[-16:]
             # avoid overlapping recent messages
             self.last_tip_pos += 14
             pos = self.model.player.getpixelxy()
