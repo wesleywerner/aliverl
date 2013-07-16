@@ -3,7 +3,7 @@
 
 ## implement ability actions
 
-* site upload issue: find scp does not do directory structure :(
+* better drawing of the upgrade info screen - show selected ugprade details.
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?
 
@@ -21,6 +21,8 @@
   This does not affect gameplay as these values were already consumed at level load. Just saying.
 
 * smooth sprite and viewport movement
+
+* site upload issue: find scp does not do directory structure :(
 
 # Changes
 
