@@ -298,3 +298,10 @@ A more complex example: A computer shows story dialogue and unlocks a door, afte
 It is worth noting that the order of interactions is arbitrary, from the player perspective all actions happen at the same turn.
 
 Also noteworthy is that interactions triggered indirectly via @ontrigger ignore calling @trigger commands themselves. This is to prevent infinite recursion. For more on this, see Re
+
+
+# FAQ
+
+#### Q: Why does my upgrade ability not act upon any AI?
+
+    Your upgrade config needs the use_targeting value set True. If you have max_targets set to more than 1 then you also need to set the reach value.
