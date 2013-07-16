@@ -53,6 +53,9 @@ class GameEngine(object):
             list of level objects.
         dialogue ([str]):
             List of dialogue strings in queue to display.
+
+        effects
+            a dictionary of upgrade affects active
         """
 
         self.evManager = evManager
@@ -70,6 +73,7 @@ class GameEngine(object):
         self.turn = None
         self.trigger_queue = None
         self.target_object = None
+        self.effects = None
 
     def notify(self, event):
         """
@@ -174,6 +178,7 @@ class GameEngine(object):
         self.load_matrix()
         self.look_around()
         self.trigger_queue = []
+        self.effects = {}
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
@@ -306,11 +311,9 @@ class GameEngine(object):
 
     def move_player(self, direction):
         """
-        Move the player in direction.
-        If the move succeeds, we also take care of updating turn details:
-            * look_around() for objects in sight
-            * heal_turn() for everyone
-            * ai_movement_turn()
+        Move the player in a direction. This also makes everybody else (AI)
+        have a turn.
+
         """
 
         trace.write('# TURN %s' % self.turn)
@@ -336,6 +339,20 @@ class GameEngine(object):
         # step any upgrades we may have
         for u in self.player.upgrades:
             u.step()
+
+        # process the exploit ability
+        ghost = self.effects.get('ghost countdown', 0)
+        if ghost > 0:
+            ghost -= 1
+            self.effects['ghost countdown'] = ghost
+            if ghost == 0:
+                self.player = self.effects['ghost']
+                self.post_msg('you bounce back to your own form!',
+                    color.combat_message)
+                self.look_around()
+            else:
+                self.post_msg('%s exploit turns left' %
+                    (ghost), color.combat_message)
 
         # notify the view to update it's visible sprites
         self.post(PlayerMovedEvent())
@@ -407,10 +424,9 @@ class GameEngine(object):
         character.trail = character.trail[:PLAYER_SCENT_LEN]
 
         # update the level block matrix with this tile's old and new positions
-        if character is not self.player:
-            tile_blocks = self.story.tile_blocks(character.gid)
-            self.update_block_matrix(old_x, old_y, 0)
-            self.update_block_matrix(new_x, new_y, tile_blocks)
+        tile_blocks = self.story.tile_blocks(character.gid)
+        self.update_block_matrix(old_x, old_y, 0)
+        self.update_block_matrix(new_x, new_y, tile_blocks)
 
         # notify the view to update it's sprite positions
         self.post(CharacterMovedEvent(character, direction))
@@ -451,7 +467,8 @@ class GameEngine(object):
                             if e.type in ('ai', 'friend') and
                             not e.dead and
                             (e.speed > 0) and
-                            (int(self.turn % e.speed) == 0)]:
+                            (int(self.turn % e.speed) == 0) and
+                            e is not self.player]:
             x, y = (0, 0)
             for mode in obj.modes:
                 if mode == 'updown':
@@ -1010,7 +1027,13 @@ class GameEngine(object):
             pass
 
         if upgrade_name == alu.EXPLOIT:
-            pass
+            # take control of another for a short while
+            self.effects['ghost'] = self.player
+            self.effects['ghost countdown'] = upgrade.duration
+            self.player = self.target_object
+            self.post_msg('you exploit the %s!' %
+                (self.target_object.name), color.combat_message)
+            self.look_around()
 
         if upgrade_name == alu.DESERIALIZE:
             # use the last direction moved?
@@ -1060,6 +1083,7 @@ class GameEngine(object):
             self.install_upgrade(alu.ZAP)
             self.install_upgrade(alu.CODE_FREEZE)
             self.install_upgrade(alu.PING_FLOOD)
+            self.install_upgrade(alu.EXPLOIT)
             #choices = alu.from_level(self.level.number)
             #names = [u['name'] for u in choices]
             #if names:
