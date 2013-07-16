@@ -991,11 +991,20 @@ class GameEngine(object):
                     self.player.x, self.player.y, upgrade.reach),
                 upgrade.max_targets)
         else:
-            targets = [self.target_object]
-        trace.write('targets in reach: %s' %
+            targets = [self.target_object] if self.target_object else None
+
+        if targets:
+            print(upgrade.max_targets)
+            print(targets)
+            trace.write('targets in reach: %s' %
                 ', '.join([t.name for t in targets]))
 
         # TODO test for enough power to pay the upgrade ability cost
+        if upgrade.cost > self.player.power:
+            self.post_msg('not enough power', color.message)
+            return
+        else:
+            self.player.power -= upgrade.cost
 
         # action this upgrade - it is now active
         upgrade.activate()
