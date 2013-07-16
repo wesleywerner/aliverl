@@ -191,7 +191,6 @@ class GameEngine(object):
             self.show_dialogue(entry_dialogue)
         # apply any special upgrades
         regen = alu.from_list(self.player.upgrades, alu.REGEN)
-        print(regen)
         if regen:
             regen.apply_upgrade(self.player)
 
@@ -972,6 +971,8 @@ class GameEngine(object):
 
         """
 
+        # test if the player has this upgrade, if it is enabled and if
+        # it requires a target.
         upgrade = alu.from_list(self.player.upgrades, upgrade_name)
         if not upgrade:
             trace.write('"%s" is not an upgrade the player has' % upgrade_name)
