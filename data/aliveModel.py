@@ -341,18 +341,18 @@ class GameEngine(object):
             u.step()
 
         # process the exploit ability
-        ghost = self.effects.get('ghost countdown', 0)
-        if ghost > 0:
-            ghost -= 1
-            self.effects['ghost countdown'] = ghost
-            if ghost == 0:
+        ghost_count = self.effects.get('ghost countdown', 0)
+        if ghost_count > 0:
+            ghost_count -= 1
+            self.effects['ghost countdown'] = ghost_count
+            if ghost_count == 0:
+                # swap the player back to her own form
                 self.player = self.effects['ghost']
-                self.post_msg('you bounce back to your own form!',
-                    color.combat_message)
+                self.post_msg('you return...', color.combat_message)
                 self.look_around()
-            else:
-                self.post_msg('%s exploit turns left' %
-                    (ghost), color.combat_message)
+            elif ghost_count == 2:
+                self.post_msg('exploit will end in %s turns...' %
+                    (ghost_count), color.combat_message)
 
         # notify the view to update it's visible sprites
         self.post(PlayerMovedEvent())
