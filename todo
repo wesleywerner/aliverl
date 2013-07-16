@@ -20,6 +20,8 @@
     * kill interaction "speed" on "keke"
   This does not affect gameplay as these values were already consumed at level load. Just saying.
 
+* smooth sprite and viewport movement
+
 # Changes
 
 * build a character screen to show with sections:
