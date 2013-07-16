@@ -337,7 +337,9 @@ class GameEngine(object):
         self.look_at_target()
         # step any upgrades we may have
         for u in self.player.upgrades:
-            u.step()
+            result = u.step()
+            if result:
+                self.post_msg(result, color.upgrade_tip)
 
         # process the exploit ability
         ghost_count = self.effects.get('ghost countdown', 0)

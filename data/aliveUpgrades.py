@@ -495,6 +495,8 @@ class Upgrade(object):
             self._busy_countdown -= 1
             trace.write('%s is active for %s turns' %
                 (self.name, self._busy_countdown))
+            if self._busy_countdown == 0:
+                return '%s deactivates' % (self.name,)
         elif self._cooldown_count > 0:
             self._cooldown_count -= 1
             trace.write('%s cooldown for %s turns' %
