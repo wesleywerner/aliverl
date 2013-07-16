@@ -193,9 +193,9 @@ UPGRADES = [
     'reach': 2,
     'max_targets': 2,
     'use_targeting': True,
-    'cost': 0,
+    'cost': 3,
     'duration': 0,
-    'cooldown': 0,
+    'cooldown': 6,
     },
     {
     'name': EXPLOIT,
@@ -392,7 +392,7 @@ class Upgrade(object):
             return float(self.version) / 10 * 2.5
 
         elif self.name == FORK_BOMB:
-            return float(self.version) / 10 * 2.5
+            return float(self.version) / 10 * 0.5
 
         # no damage otherwise
         return 0

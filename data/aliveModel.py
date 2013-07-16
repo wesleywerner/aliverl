@@ -620,6 +620,8 @@ class GameEngine(object):
 
         """
 
+        # fix: account for reaching to diagonals:
+        reach += 0.5
         the_list = []
         w, h = self.level.tmx.width, self.level.tmx.height
         [the_list.extend(self.get_object_by_xy(u, v))
@@ -1044,9 +1046,10 @@ class GameEngine(object):
 
         if upgrade_name == alu.FORK_BOMB:
             # bomb the area around the target
-            for ai in targets:
-                self.combat_turn(self.player, ai,
-                    a_verb='bomb', a_multiplier=upgrade.damage_multiplier)
+            for count in range(0, upgrade.version):
+                for ai in [t for t in targets if not t.dead]:
+                    self.combat_turn(self.player, ai,
+                        a_verb='bomb', a_multiplier=upgrade.damage_multiplier)
 
         if upgrade_name == alu.EXPLOIT:
             # take control of another for a short while
@@ -1107,6 +1110,7 @@ class GameEngine(object):
             self.install_upgrade(alu.PING_FLOOD)
             self.install_upgrade(alu.EXPLOIT)
             self.install_upgrade(alu.FORK_BOMB)
+            self.player.power = 10
             #choices = alu.from_level(self.level.number)
             #names = [u['name'] for u in choices]
             #if names:
