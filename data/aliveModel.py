@@ -988,10 +988,11 @@ class GameEngine(object):
 
         # grab the AI in reach of the upgrade, or the selected target
         if upgrade.max_targets > 1:
-            targets = random.sample(
-                self.get_objects_in_reach(
+            targets = self.get_objects_in_reach(
                     self.player.x, self.player.y, upgrade.reach),
-                upgrade.max_targets)
+            # grab a sample of max_targets.
+            if upgrade.max_targets < len(targets):
+                targets = random.sample(targets, upgrade.max_targets)
         else:
             targets = [self.target_object] if self.target_object else None
 
@@ -999,7 +1000,7 @@ class GameEngine(object):
             trace.write('targets in reach: %s' %
                 ', '.join([t.name for t in targets]))
 
-        # TODO test for enough power to pay the upgrade ability cost
+        # test for enough power to pay the upgrade ability cost
         if upgrade.cost > self.player.power:
             self.post_msg('not enough power', color.message)
             return
