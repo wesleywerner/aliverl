@@ -577,7 +577,7 @@ class GameEngine(object):
 
                     # test if we also have line of sight to this position
                     if (dist <= 1.5 or
-                        rlhelper.line_of_sight(blocked_mx, px, py, x, y)):
+                        not rlhelper.line_of_sight(blocked_mx, px, py, x, y)):
 
                         # mark this matrix tile as in view
                         seen_mx[x][y] = 2
