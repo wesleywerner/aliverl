@@ -802,9 +802,17 @@ class GameEngine(object):
             trace.error('Error converting "%s" to a int while transmuting'
                         ' "%s"' % (str(gid_list), obj.name))
 
-    def combat_turn(self, attacker, defender, a_verb='hit', d_verb='hit'):
+    def combat_turn(self,
+                    attacker,
+                    defender,
+                    a_verb='hit',
+                    d_verb='hit',
+                    a_multiplier=0
+                    ):
         """
         Begin a combat round.
+        'a' and 'd' refer to attacker and defendor.
+
         """
 
         if not self.gamerunning:
@@ -816,7 +824,7 @@ class GameEngine(object):
         a_verb = (a is self.player) and (a_verb) or ('%ss' % a_verb)
         d_verb = (a is self.player) and ('%ss' % d_verb) or (d_verb)
         # damage control
-        a_atk = a.attack
+        a_atk = a.attack + (a_multiplier * a.attack)
         d_atk = 0  # defender does not retaliate by default
         # apply upgrade abilities
         echo = alu.from_list(defender.upgrades, alu.ECHO_LOOP)
@@ -1035,7 +1043,10 @@ class GameEngine(object):
                     (ai.name), color.combat_message)
 
         if upgrade_name == alu.FORK_BOMB:
-            pass
+            # bomb the area around the target
+            for ai in targets:
+                self.combat_turn(self.player, ai,
+                    a_verb='bomb', a_multiplier=upgrade.damage_multiplier)
 
         if upgrade_name == alu.EXPLOIT:
             # take control of another for a short while

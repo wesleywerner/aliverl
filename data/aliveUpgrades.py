@@ -190,8 +190,8 @@ UPGRADES = [
     'enabled': True,
     'availability': [1],
     'passive': False,
-    'reach': 0,
-    'max_targets': 0,
+    'reach': 2,
+    'max_targets': 2,
     'use_targeting': True,
     'cost': 0,
     'duration': 0,
@@ -379,6 +379,23 @@ class Upgrade(object):
 
         #TODO calculate a value based on our version, and the upgrade type.
         return self.duration
+
+    @property
+    def damage_multiplier(self):
+        """
+        The damage this version of this upgrade delivers.
+        Not all upgrades deal damage.
+
+        """
+
+        if self.name == ZAP:
+            return float(self.version) / 10 * 2.5
+
+        elif self.name == FORK_BOMB:
+            return float(self.version) / 10 * 2.5
+
+        # no damage otherwise
+        return 0
 
     def version_up(self):
         """
