@@ -989,7 +989,7 @@ class GameEngine(object):
         # grab the AI in reach of the upgrade, or the selected target
         if upgrade.max_targets > 1:
             targets = self.get_objects_in_reach(
-                    self.player.x, self.player.y, upgrade.reach),
+                self.player.x, self.player.y, upgrade.reach)
             # grab a sample of max_targets.
             if upgrade.max_targets < len(targets):
                 targets = random.sample(targets, upgrade.max_targets)
@@ -1095,6 +1095,7 @@ class GameEngine(object):
             self.install_upgrade(alu.CODE_FREEZE)
             self.install_upgrade(alu.PING_FLOOD)
             self.install_upgrade(alu.EXPLOIT)
+            self.install_upgrade(alu.FORK_BOMB)
             #choices = alu.from_level(self.level.number)
             #names = [u['name'] for u in choices]
             #if names:
