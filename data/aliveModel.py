@@ -996,8 +996,6 @@ class GameEngine(object):
             targets = [self.target_object] if self.target_object else None
 
         if targets:
-            print(upgrade.max_targets)
-            print(targets)
             trace.write('targets in reach: %s' %
                 ', '.join([t.name for t in targets]))
 
