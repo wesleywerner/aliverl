@@ -90,6 +90,7 @@ class GameEngine(object):
             self.state.swap(event.state)
 
         elif isinstance(event, PlayerMoveRequestEvent):
+            self.last_direction = event.direction
             self.move_player(event.direction)
 
         elif isinstance(event, CombatEvent):
@@ -240,6 +241,7 @@ class GameEngine(object):
                      'upgrades': None,
                      'freeze_duration': 0,
                      'confused_duration': 0,
+                     'last_direction': None,
                      }
 
         # for each object group on this level (because maps can be layers)
@@ -315,7 +317,7 @@ class GameEngine(object):
 
         """
 
-        trace.write('# TURN %s' % self.turn)
+        trace.write('TURN %s' % self.turn)
         if not self.move_object(self.player, direction):
             pass
             #return False
@@ -375,6 +377,7 @@ class GameEngine(object):
         if not self.gamerunning:
             return False
 
+        # unfreeze a little.
         if character.freeze_duration > 0:
             character.freeze_duration -= 1
             trace.write('%s is frozen for %s turns' %
@@ -386,6 +389,13 @@ class GameEngine(object):
             character.confused_duration -= 1
             trace.write('%s is confused for %s turns' %
                 (character.name, character.confused_duration))
+
+        # early success if not moving anywhere
+        if direction == (0, 0):
+            return True
+
+        # store this direction
+        character.last_direction = direction
 
         old_x, old_y = (character.x, character.y)
         new_x, new_y = (character.x + direction[0],
@@ -1061,8 +1071,32 @@ class GameEngine(object):
             self.look_around()
 
         if upgrade_name == alu.DESERIALIZE:
-            # use the last direction moved?
-            pass
+            # blink into the last direction moved
+            if self.player.last_direction:
+                # get an unblocked, LOS position in direction.
+                # start with a small area search near the distination.
+                # if nothing is found expand our search by 1 tile.
+                mx = self.level.matrix['block']
+                to_x, to_y = (self.player.x, self.player.y)
+                for i in range(0, upgrade.reach):
+                    to_x += self.player.last_direction[0]
+                    to_y += self.player.last_direction[1]
+                segs = rlhelper.get_line_segments(
+                    to_x, to_y, self.player.x, self.player.y)
+                for x, y in segs:
+                    if not mx[x][y]:
+                        mx[self.player.x][self.player.y] = 0
+                        self.player.x = x
+                        self.player.y = y
+                        break
+
+                # this method won't cross walls and also triggers anything
+                # along the way.
+                #for amt in range(0, upgrade.reach):
+                    #self.move_object(self.player, self.player.last_direction)
+
+        # take this as a turn
+        self.move_player((0, 0))
 
     def post_msg(self, message, color=color.message):
         """
@@ -1110,6 +1144,7 @@ class GameEngine(object):
             self.install_upgrade(alu.PING_FLOOD)
             self.install_upgrade(alu.EXPLOIT)
             self.install_upgrade(alu.FORK_BOMB)
+            self.install_upgrade(alu.DESERIALIZE)
             self.player.power = 10
             #choices = alu.from_level(self.level.number)
             #names = [u['name'] for u in choices]

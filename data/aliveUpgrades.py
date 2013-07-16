@@ -219,8 +219,7 @@ UPGRADES = [
     'name': DESERIALIZE,
     'description':
         ("You can map the positional matrix around you, allowing you to "
-         "deserialize and blink into the chosen direction. Version 4 allows "
-         "you to cross wall boundaries. "
+         "deserialize and blink into the direct you last travelled. "
         ),
     'version': 1,
     'enabled': True,
