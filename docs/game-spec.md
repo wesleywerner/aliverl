@@ -114,5 +114,4 @@ Passive abilities will action on each player movement turn. For the rest the pla
 
     DESERIALIZE,
     "You can map the positional matrix around you, allowing you to "
-    "deserialize and blink into the chosen direction. Version 4 allows "
-    "you to cross wall boundaries. "
+    "deserialize and blink into the chosen direction. "
