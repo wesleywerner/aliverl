@@ -1,0 +1,10 @@
+0.1 Release Y.T.
+
+* An info screen activated by the "@" key that shows a tabbed interface:
+    Home: a snap of you in action, turn and level info, player stats and recent messages.
+    Upgrades: a place for you to install and update yourself.
+    Wins: Achievements received.
+* Tab to target enemy AI. Used by some upgrades that target a specific or group of AI.
+* Passive upgrades that have a lasting effect each turn.
+* Active upgrades that have a one-time or a timed effect.
+* Upgrades that target specific enemies.

@@ -1,36 +1,20 @@
 
 # RELEASE Y.T.
 
-## implement ability actions
-
 * better drawing of the upgrade info screen - show selected ugprade details.
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?
 
-* create the menu with story selection
+* create the menu with story selection, or resume a previously saved game.
 
-* save game state
-    This should be backwards compatible from older versions.
-    The configObj might be useful for this.
+* auto save the current game.
 
-* find music to play randomly from a playlist. remove from playlist once played.
-
-* interactingwith AI removes their map-level attribute overrides:
-    * kill interaction "modes" on "keke"
-    * kill interaction "speed" on "keke"
-  This does not affect gameplay as these values were already consumed at level load. Just saying.
+* configure list of songs to loop during play. see if we can pause when switching to the main menu while a game is in progress.
 
 * smooth sprite and viewport movement
 
 * site upload issue: find scp does not do directory structure :(
 
-# Changes
+## achievements
 
-* build a character screen to show with sections:
-    * player, game and level info, recent messages
-    * current and available upgrades
-    * achievements
-
-* the player can choose a tile to target.
-
-* action upgrades that require a target, and those that have a timed effect.
+* "cyber ghost": level 4 deserialization allows passing through walls.
