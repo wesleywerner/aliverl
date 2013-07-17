@@ -1,5 +1,7 @@
 # RELEASE Y.T.
 
+* bug: exploit ability resolves and n turns after it shows the message
+
 * better drawing of the upgrade info screen - show selected ugprade details.
 
 * add a 'ondeath' object action that triggers during combat - what was this for again?
