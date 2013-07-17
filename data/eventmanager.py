@@ -89,13 +89,11 @@ class PlayerMovedEvent(Event):
 
 class CharacterMovedEvent(Event):
     """
-    Request to move the player object.
-    Direction (x, y): tile offset to move.
+    A character has moved.
     """
 
-    def __init__(self, obj, direction):
+    def __init__(self, obj):
         self.name = 'Character moved event'
-        self.direction = direction
         self.obj = obj
 
     def __str__(self):

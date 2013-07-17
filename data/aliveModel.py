@@ -318,9 +318,8 @@ class GameEngine(object):
         """
 
         trace.write('TURN %s' % self.turn)
-        if not self.move_object(self.player, direction):
-            pass
-            #return False
+        self.move_character(self.player, direction)
+
         # at this point the player made a successful move.
         # her x-y is up to date with the new position.
 
@@ -361,16 +360,29 @@ class GameEngine(object):
         self.post(PlayerMovedEvent())
 
         # notify the view to update it's sprites visibilies
-        self.post(CharacterMovedEvent(self.player, direction))
+        self.post(CharacterMovedEvent(self.player))
 
-    def move_object(self, character, direction):
+    def move_character(self, character, direction):
         """
         Moves the given character by offset direction (x, y).
-        Notifies all listeners of this if the move
-        is successfull via the CharacterMovedEvent.
 
-        Returns False if the move failed (blocked by tile or combat),
-        and True if the move succeeded.
+        """
+
+        # store this direction, carefully not overriding with empty values.
+        if direction != (0, 0):
+            character.last_direction = direction
+
+        self.move_character_to(
+            character,
+            character.x + direction[0],
+            character.y + direction[1]
+            )
+
+    def move_character_to(self, character, x, y):
+        """
+        Moves a character to (x, y).
+        Notifies all listeners of this if the move is successfull
+        via the CharacterMovedEvent.
 
         """
 
@@ -390,19 +402,15 @@ class GameEngine(object):
             trace.write('%s is confused for %s turns' %
                 (character.name, character.confused_duration))
 
-        # early success if not moving anywhere
-        if direction == (0, 0):
-            return True
-
-        # store this direction
-        character.last_direction = direction
-
-        old_x, old_y = (character.x, character.y)
-        new_x, new_y = (character.x + direction[0],
-                      character.y + direction[1])
-        if not self.location_inside_map(new_x, new_y):
+        # boundary check
+        if not self.location_inside_map(x, y):
             return False
-        colliders = self.get_object_by_xy(new_x, new_y)
+
+        # no point in colliding with oneself
+        if character.getxy() == (x, y):
+            colliders = []
+        else:
+            colliders = self.get_object_by_xy(x, y)
 
         # only player can activate object triggers
         if character is self.player:
@@ -422,25 +430,27 @@ class GameEngine(object):
                 return False
 
         # tile collisions
-        if self.tile_is_solid(new_x, new_y):
+        if self.tile_is_solid(x, y):
             return False
 
+        # clear the block matrix of this position
+        self.update_block_matrix(character.x, character.y, 0)
+
         # accept movement
-        character.x, character.y = (new_x, new_y)
-        character.px, character.py = (new_x * self.level.tmx.tile_width,
-                                      new_y * self.level.tmx.tile_height)
+        character.x, character.y = (x, y)
+        character.px, character.py = (x * self.level.tmx.tile_width,
+                                      y * self.level.tmx.tile_height)
+
+        # set the block matrix with the new position
+        tile_blocks = self.story.tile_blocks(character.gid)
+        self.update_block_matrix(x, y, tile_blocks)
 
         # update scent trail
         character.trail.insert(0, (character.x, character.y))
         character.trail = character.trail[:PLAYER_SCENT_LEN]
 
-        # update the level block matrix with this tile's old and new positions
-        tile_blocks = self.story.tile_blocks(character.gid)
-        self.update_block_matrix(old_x, old_y, 0)
-        self.update_block_matrix(new_x, new_y, tile_blocks)
-
         # notify the view to update it's sprite positions
-        self.post(CharacterMovedEvent(character, direction))
+        self.post(CharacterMovedEvent(character))
         return True
 
     def update_block_matrix(self, x, y, value):
@@ -480,6 +490,7 @@ class GameEngine(object):
                             (e.speed > 0) and
                             (int(self.turn % e.speed) == 0) and
                             e is not self.player]:
+            # NOTE: x,y is misleading - its the direction, not absolute points.
             x, y = (0, 0)
             for mode in obj.modes:
                 if mode == 'updown':
@@ -533,7 +544,7 @@ class GameEngine(object):
             x = (x > 1) and 1 or x
             y = (y < -1) and -1 or y
             y = (y > 1) and 1 or y
-            self.move_object(obj, (x, y))
+            self.move_character(obj, (x, y))
 
     def look_at_target(self):
         """
@@ -1106,14 +1117,7 @@ class GameEngine(object):
                             # ghosties grab the first open spot
                             break
                 if jmp_x:
-                    self.update_block_matrix(self.player.x, self.player.y, 0)
-                    self.player.x = jmp_x
-                    self.player.y = jmp_y
-
-                # this method won't cross walls and also triggers anything
-                # along the way.
-                #for amt in range(0, upgrade.reach):
-                    #self.move_object(self.player, self.player.last_direction)
+                    self.move_character_to(self.player, jmp_x, jmp_y)
 
         # take this as a turn
         self.move_player((0, 0))
