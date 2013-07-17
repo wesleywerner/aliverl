@@ -818,8 +818,8 @@ class GameEngine(object):
             # transmorgify!
             obj.gid = transmute_id
             # update the level block matrix with our new aquired status
-            matrix = self.level.matrix['block']
-            matrix[obj.x][obj.y] = self.story.tile_blocks(obj.gid)
+            self.update_block_matrix(
+                obj.x, obj.y, self.story.tile_blocks(obj.gid))
             self.post(UpdateObjectGID(obj, obj.gid))
         except ValueError:
             trace.error('Error converting "%s" to a int while transmuting'
