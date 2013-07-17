@@ -96,9 +96,6 @@ class GameEngine(object):
         elif isinstance(event, CombatEvent):
             self.combat_turn(event.attacker, event.defender)
 
-        elif isinstance(event, KillCharacterEvent):
-            self.kill_object(event.character)
-
         elif isinstance(event, DebugEvent):
             self.debug_action(event)
 
@@ -876,26 +873,25 @@ class GameEngine(object):
             if a is self.player:
                 self.end_game()
             else:
-                a.dead = True
-                self.post(KillCharacterEvent(a))
-                self.post_msg('The %s crashes' % (a_name), color.ai_crash)
+                self.kill_character(a)
         if d.health <= 0:
             if d is self.player:
                 self.end_game()
             else:
-                d.dead = True
-                self.post(KillCharacterEvent(d))
-                self.post_msg('The %s crashes' % (d_name), color.ai_crash)
+                self.kill_character(d)
         self.look_at_target()
 
-    def kill_object(self, character):
+    def kill_character(self, character):
         """
         Remove a character from play.
         """
 
         if character in self.objects:
+            character.dead = True
             self.update_block_matrix(character.x, character.y, 0)
             self.objects.remove(character)
+            self.post(KillCharacterEvent(character))
+            self.post_msg('The %s crashes' % (character.name), color.ai_crash)
 
     def change_state(self, state):
         """
