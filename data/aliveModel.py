@@ -391,6 +391,9 @@ class GameEngine(object):
             character.freeze_duration -= 1
             trace.write('%s is frozen for %s turns' %
                 (character.name, character.freeze_duration))
+            # a small chance that a code freeze is deadly
+            if random.randint(1, 100) < 10:
+                self.kill_character(character)
             return False
 
         # reduce any confusion. note its effect is handled in ai_movement_turn.
