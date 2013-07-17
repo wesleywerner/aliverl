@@ -37,9 +37,9 @@ UPGRADES = [
     {
     'name': REGEN,
     'description':
-        ("You gain insight into reclaiming lost bits, reincorporating them "
-         "back into your processing unit allowing you to regenerate some "
-         "health whenever you enter a node."
+        ("You gain insight into data recovery, you can reincorporate lost "
+         "bits back into yourself, allowing you to regenerate some "
+         "health whenever you enter a new node."
          ),
     'version': 1,
     'enabled': True,
@@ -55,8 +55,8 @@ UPGRADES = [
     {
     'name': CODE_HARDENING,
     'description':
-        ("By analyzing logs from past attacks you are able to pinpoint flaws "
-         "in your own code and patch them, allowing you increase your "
+        ("By analyzing logs from past attacks you are able to pin-point flaws "
+         "in your own code and patch them, allowing you increased "
          "maximum health."
         ),
     'version': 1,
@@ -75,7 +75,7 @@ UPGRADES = [
     'description':
         ("It's not easy being written in a sub-optimal language. "
          "You restructure your own code, replacing slower routines with "
-         "optimized assembly, allowing you to increase your movement speed."
+         "optimized assembly increasing your movement speed."
         ),
     'version': 1,
     'enabled': True,
@@ -94,7 +94,7 @@ UPGRADES = [
         ("You learn the art of capturing malicious packets, and through some "
          "voodoo trickery you can pipe some of it back to the sender, "
          "allowing you to split any damage you may receive and echo part of "
-         "it back to your attacker."
+         "it back to the attacker."
         ),
     'version': 1,
     'enabled': True,
@@ -110,8 +110,9 @@ UPGRADES = [
     {
     'name': MAP_PEEK,
     'description':
-        ("You gain insight into the binary space tree mapping nodes use. "
-         "You can Peek into these memory maps, increasing your view range. "
+        ("You study the binary space partitions that nodes use for mapping "
+         "level structures. you discover paths that allow you to "
+         "Peek deeper into these memory maps, increasing your view range."
         ),
     'version': 1,
     'enabled': True,
@@ -145,10 +146,11 @@ UPGRADES = [
     {
     'name': CODE_FREEZE,
     'description':
-        ("You discover that AI are susceptible to rogue NOP commands via a "
-         "flaw in the node controller. By targetting NOPs to certain AI you "
-         "can force them to eat up their cycles, freezing their movement "
-         "loops for a short while."
+        ("You notice that AI are susceptible to rogue NOP commands via a "
+         "flaw in the node controller. You learn how to spoof these commands "
+         "forcing AI to eat up their own cycles like butter biscuits, "
+         "freezing their movement loops for a short while. "
+         "The more unstable of the lot may even crash from the freeze."
         ),
     'version': 1,
     'enabled': True,
@@ -158,15 +160,15 @@ UPGRADES = [
     'max_targets': 1,
     'use_targeting': True,
     'cost': 2,
-    'duration': 2,
+    'duration': 4,
     'cooldown': 4,
     },
     {
     'name': PING_FLOOD,
     'description':
-        ("You can tap into a node's communication system, allowing you to "
-         "flood nearby enemy with garbage packets, confusing them. "
-         "Result: affected AI stop following you and move erratically."
+        ("You can tap into a node's communication system and "
+         "flood nearby enemy with garbage packets, it confuses them, "
+         "they stop following you and they move erratically. "
         ),
     'version': 1,
     'enabled': True,
@@ -183,8 +185,8 @@ UPGRADES = [
     'name': FORK_BOMB,
     'description':
         ("A fork bomb is as destructive as it is simple: "
-         "A code that replicates itself, with each replicant doing the same, "
-         "creates a powerful shockwave that damages nearby AI. "
+         "A code that replicates itself, with each replicant doing the same "
+         "creating a powerful shockwave that damages nearby AI."
         ),
     'version': 1,
     'enabled': True,
@@ -201,8 +203,9 @@ UPGRADES = [
     'name': EXPLOIT,
     'description':
         ("By studying the signatures that trail AI, you are able to determine "
-         "what signals their underlying code use for movement. You can spoof "
-         "these to gain control of an AI for a short while. "
+         "what signals their underlying code use for movement. You can fake "
+         "these via the node controller and gain control "
+         "of a target AI for a short while."
         ),
     'version': 1,
     'enabled': True,
@@ -219,7 +222,7 @@ UPGRADES = [
     'name': DESERIALIZE,
     'description':
         ("You can map the positional matrix around you, allowing you to "
-         "deserialize and blink into the direct you last travelled. "
+         "deserialize and blink into the last direction you moved."
         ),
     'version': 1,
     'enabled': True,
