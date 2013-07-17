@@ -1071,24 +1071,44 @@ class GameEngine(object):
             self.look_around()
 
         if upgrade_name == alu.DESERIALIZE:
-            # blink into the last direction moved
+            # blink into the last direction moved.
+            # we do this by getting the line segments in direction and
+            # testing each for blockability.
             if self.player.last_direction:
-                # get an unblocked, LOS position in direction.
-                # start with a small area search near the distination.
-                # if nothing is found expand our search by 1 tile.
-                mx = self.level.matrix['block']
-                to_x, to_y = (self.player.x, self.player.y)
-                for i in range(0, upgrade.reach):
-                    to_x += self.player.last_direction[0]
-                    to_y += self.player.last_direction[1]
-                segs = rlhelper.get_line_segments(
-                    to_x, to_y, self.player.x, self.player.y)
+                dir_x = self.player.last_direction[0]
+                dir_y = self.player.last_direction[1]
+                from_x = self.player.x + dir_x
+                from_y = self.player.y + dir_y
+                to_x = from_x + (dir_x * upgrade.reach)
+                to_y = from_y + (dir_y * upgrade.reach)
+                jmp_x = None
+                jmp_y = None
+                # version n+ crosses solids. we do this by counting segments
+                # from the destination and grab the first open tile.
+                # For lower versions we count segments as normal until we
+                # reach max or we hit a solid.
+                ghost = upgrade.version > 3
+                if ghost:
+                    segs = rlhelper.get_line_segments(
+                        to_x, to_y, from_x, from_y)
+                else:
+                    segs = rlhelper.get_line_segments(
+                        from_x, from_y, to_x, to_y)
                 for x, y in segs:
-                    if not mx[x][y]:
-                        mx[self.player.x][self.player.y] = 0
-                        self.player.x = x
-                        self.player.y = y
-                        break
+                    if self.tile_is_solid(x, y):
+                        # non ghosts stop at the first solid
+                        if not ghost:
+                            break
+                    else:
+                        jmp_x = x
+                        jmp_y = y
+                        if ghost:
+                            # ghosties grab the first open spot
+                            break
+                if jmp_x:
+                    self.update_block_matrix(self.player.x, self.player.y, 0)
+                    self.player.x = jmp_x
+                    self.player.y = jmp_y
 
                 # this method won't cross walls and also triggers anything
                 # along the way.
