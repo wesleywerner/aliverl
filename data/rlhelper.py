@@ -79,8 +79,8 @@ def line_of_sight(matrix, x1, y1, x2, y2):
     segs = get_line_segments(x1, y1, x2, y2)
     hits = [matrix[x][y] for x, y in segs]
     amt = hits.count(True)
-    # allow 1 case: if the final destination position is blocking
-    return amt == 0 or (amt == 1 and matrix[x2][y2])
+    # allow 1 case: exclude the start and end points
+    return amt == 0 or (amt == 2 and matrix[x2][y2] and matrix[x1][y1])
 
 
 def remap_coords(rect, unit_width, unit_height):
