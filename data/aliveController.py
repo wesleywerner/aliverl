@@ -108,16 +108,13 @@ class KeyboardMouse(object):
                     }
         debug_keys = {
                     pygame.K_F2: 'animation cheatsheet',
-                    pygame.K_F3: 'resurrect player',
+                    pygame.K_F3: 'restart level',
                     pygame.K_F4: 'warp to next level',
-                    pygame.K_F5: 'clear fog',
-                    pygame.K_F6: 'exploit random',
-                    pygame.K_F7: 'give random upgrade',
+                    pygame.K_F5: 'reveal map',
+                    pygame.K_F6: 'heal all',
                     }
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
-        elif event.key == pygame.K_F1:
-            self.evManager.Post(StateChangeEvent(STATE_HELP))
         elif event.key in movement.keys():
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
         elif event.key == pygame.K_TAB:
@@ -125,6 +122,15 @@ class KeyboardMouse(object):
         elif mods & pygame.KMOD_CTRL:
             if event.key in debug_keys.keys():
                 self.evManager.Post(DebugEvent(debug_keys[event.key]))
+            elif event.key == pygame.K_F1:
+                trace.write('Debug commands')
+                trace.write('^F2=render the animation cheatsheet png')
+                trace.write('^F3=restart the current level')
+                trace.write('^F4=warp to the next level')
+                trace.write('^F5=reveal the map')
+                trace.write('^F6=heal health, power, and give 10 free upgrades')
+        elif event.key == pygame.K_F1:
+            self.evManager.Post(StateChangeEvent(STATE_HELP))
         else:
             inEvent = InputEvent(char=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)

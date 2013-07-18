@@ -195,13 +195,15 @@ class GameEngine(object):
         trace.write('loaded story OK')
         return True
 
-    def warp_level(self):
+    def warp_level(self, restart=False):
         """
         Proceed to the next level.
         """
 
         if self.level:
-            nextlevel = self.level.number + 1
+            nextlevel = self.level.number
+            if not restart:
+                nextlevel += 1
         else:
             nextlevel = 1
 
@@ -1196,9 +1198,10 @@ class GameEngine(object):
 
         if event.request_type == 'warp to next level':
             self.warp_level()
-        elif event.request_type == 'resurrect player':
-            pass
-        elif event.request_type == 'clear fog':
+        elif event.request_type == 'restart level':
+            self.player = self.store['player copy']
+            self.warp_level(restart=True)
+        elif event.request_type == 'reveal map':
             self.level.matrix['seen'] = rlhelper.make_matrix(
                 self.level_width, self.level_height, 1)
             for obj in self.objects:
@@ -1210,20 +1213,11 @@ class GameEngine(object):
                                     if o.type in ('ai', 'player', 'friend')])
             self.look_around()
             self.post(RefreshUpgradesEvent())
-        elif event.request_type == 'give random upgrade':
-            self.install_upgrade(alu.ECHO_LOOP)
-            self.install_upgrade(alu.ZAP)
-            self.install_upgrade(alu.CODE_FREEZE)
-            self.install_upgrade(alu.PING_FLOOD)
-            self.install_upgrade(alu.EXPLOIT)
-            self.install_upgrade(alu.FORK_BOMB)
-            self.install_upgrade(alu.DESERIALIZE)
-            self.player.power = 10
-            #choices = alu.from_level(self.level.number)
-            #names = [u['name'] for u in choices]
-            #if names:
-                #self.install_upgrade(random.choice(names))
-            self.post(RefreshUpgradesEvent())
+        elif event.request_type == 'heal all':
+            self.upgrades_available = 10
+            self.player.health = self.player.max_health
+            self.player.power = self.player.max_power
+
 
     @property
     def tile_width(self):
