@@ -294,7 +294,7 @@ class GraphicalView(object):
             self.draw_info_screen(state)
 
         elif state == STATE_LEVEL_FAIL:
-            pass
+            self.draw_level_fail_screen()
 
         elif state == STATE_PLAY:
             # draw all the game play images on to play_image and
@@ -379,6 +379,34 @@ class GraphicalView(object):
 
         self.image.blit(self.menubackground, (0, 0))
 
+    def draw_action_shot(self, x, y):
+        """
+        Draw a small static action shot of the game play action.
+
+        """
+
+        # define a portion of the play area
+        snap_rect = pygame.Rect(
+                    self.tile_w * (self.model.player.x - 2),
+                    self.tile_h * (self.model.player.y - 2),
+                    self.tile_w * 5,
+                    self.tile_h * 5,
+                    )
+        # adjust it to our viewport
+        snap_rect = snap_rect.move(-self.viewport.left, -self.viewport.top)
+        self.image.blit(self.play_image, (x, y), snap_rect)
+        # surround with a nice rectangle
+        pygame.draw.rect(self.image, color.blue,
+            (x, y, snap_rect[2], snap_rect[3]), 2)
+
+    def draw_level_fail_screen(self):
+        """
+        Draw the level failed screen.
+
+        """
+
+        self.draw_action_shot(10, 10)
+
     def draw_info_screen(self, game_state):
         """
         Draw the player info screen.
@@ -387,18 +415,7 @@ class GraphicalView(object):
         self.image.blit(self.info_screen, (0, 0))
 
         if game_state == STATE_INFO_HOME:
-            # draw a portion of the playscreen
-            snap_rect = pygame.Rect(
-                        self.tile_w * (self.model.player.x - 2),
-                        self.tile_h * (self.model.player.y - 2),
-                        self.tile_w * 5,
-                        self.tile_h * 5,
-                        )
-            snap_rect = snap_rect.move(-self.viewport.left, -self.viewport.top)
-            snap_dest = (28, 122)
-            self.image.blit(self.play_image, snap_dest, snap_rect)
-            pygame.draw.rect(self.image, color.blue,
-                (snap_dest[0], snap_dest[1], snap_rect[2], snap_rect[3]), 2)
+            self.draw_action_shot(28, 122)
             # a helpful message
             pix = self.largefont.render(
                 'you are alive!', False, color.message)
