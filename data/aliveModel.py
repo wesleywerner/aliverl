@@ -1081,7 +1081,8 @@ class GameEngine(object):
         if upgrade_name == alu.ZAP:
             # zap the targets from a distance
             for ai in targets:
-                self.combat_turn(self.player, ai, a_verb='zap')
+                self.combat_turn(self.player, ai, a_verb='zap',
+                                a_multiplier=upgrade.damage_multiplier)
 
         if upgrade_name == alu.CODE_FREEZE:
             # freeze targets
