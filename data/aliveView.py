@@ -242,6 +242,7 @@ class GraphicalView(object):
                 elif event.state == STATE_LEVEL_FAIL:
                     # housekeeping: reset some things for level restart
                     self.scrollertexts.empty()
+                    self.queue_slide_transition('', None, color.ai_crash)
 
             elif isinstance(event, RefreshUpgradesEvent):
                 model_state = self.model.state.peek()
@@ -406,6 +407,11 @@ class GraphicalView(object):
         """
 
         self.draw_action_shot(10, 10)
+
+        # an unhelpful message
+        pix = self.largefont.render(
+            'you have crashed :-(', False, color.ai_crash)
+        self.image.blit(pix, (28, 75))
 
     def draw_info_screen(self, game_state):
         """
@@ -586,6 +592,25 @@ class GraphicalView(object):
                         )
         self.transition_queue.insert(0, open_transition)
 
+    def queue_slide_transition(self, title, inner_bg=None, boxcolor=color.green):
+        """
+        Queue a generic slide-in transition.
+        It uses the current game image as the background, giving a overlay
+        of the current view.
+
+        """
+
+        new_transition = SlideinTransition(
+            size=self.game_area.size,
+            fps=self.gamefps,
+            font=self.smallfont,
+            title=title,
+            inner_bg=inner_bg,
+            outer_bg=self.image.copy(),
+            boxcolor=boxcolor,
+            )
+        self.transition_queue.insert(0, new_transition)
+
     def queue_dialogue(self, dialogue):
         """
         Queue a dialogue for display.
@@ -605,6 +630,7 @@ class GraphicalView(object):
             if datas['type'] in ('story', 'terminal'):
 
                 # Start with a Slide-in Transition
+                # TODO use queue_slide_transition() - pass title
                 if not terminal_slidein_added:
                     terminal_slidein_added = True
                     new_transition = SlideinTransition(
