@@ -373,16 +373,6 @@ class Upgrade(object):
         return (self._busy_countdown == 0) and (self._cooldown_count > 0)
 
     @property
-    def versioned_busy_countdown(self):
-        """
-        Gets the busy countdown value for this version of this upgrade.
-
-        """
-
-        #TODO calculate a value based on our version, and the upgrade type.
-        return self.duration
-
-    @property
     def damage_multiplier(self):
         """
         The damage this version of this upgrade delivers.
@@ -391,7 +381,7 @@ class Upgrade(object):
         """
 
         if self.name == ZAP:
-            return float(self.version) / 10 * 2.5
+            return float(self.version - 1) / 10 * 2.5
 
         elif self.name == FORK_BOMB:
             return float(self.version) / 10 * 0.5
@@ -498,7 +488,7 @@ class Upgrade(object):
         """
 
         if self.ready:
-            self._busy_countdown = self.versioned_busy_countdown
+            self._busy_countdown = self.duration
             self._cooldown_count = self.cooldown
             trace.write('activated "%s" for %s turns' %
                 (self.name, self._busy_countdown))

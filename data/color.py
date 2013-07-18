@@ -132,7 +132,7 @@ desaturated_cyan = (64, 128, 128)
 #light_cyan = (115, 255, 255)
 cyan = (0, 255, 255)
 #dark_cyan = (0, 191, 191)
-#darker_cyan = (0, 128, 128)
+darker_cyan = (0, 128, 128)
 #darkest_cyan = (0, 64, 64)
 
 #desaturated_sky = (64, 112, 128)

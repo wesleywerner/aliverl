@@ -1158,6 +1158,15 @@ class GameEngine(object):
         # take this as a turn
         self.move_player((0, 0))
 
+    def player_upgrade(self, upgrade_name):
+        """
+        Gets the upgrade by name that the player has.
+        Returns None if the player does not have this upgrade.
+
+        """
+
+        return alu.from_list(self.player.upgrades, upgrade_name)
+
     def post_msg(self, message, color=color.message):
         """
         A helper to post game messages.

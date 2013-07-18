@@ -1350,7 +1350,7 @@ class GraphicalView(object):
             # position buttons for the upgrade screen
 
             butt_x = 30
-            butt_y = 240
+            butt_y = 340
             butt_size = (57, 45)
             butt_padding = 24
 
@@ -1461,19 +1461,52 @@ class GraphicalView(object):
                 if self.model.upgrades_available > 0:
                     butt = self.ui.get_by_code('install upgrade')
                     butt.enabled = True if data and ux.data else False
+                # draw the upgrade info surface: name, description and version.
                 if data:
+                    # store the code of the chosen upgrade
                     self.chosen_upgrade = ux.code
-                    self.chosen_upgrade_details = self.draw_text_block(
-                            '%s: %s' % (
-                            ux.code.upper(),
-                            data.description),
-                        self.smallfont,
-                        False,
-                        color.cyan,
-                        colorize=None,
-                        background=None,
-                        wrap_width=50
+                    # draw a name and version image
+                    v_string = ' is not installed'
+                    plr_upgrade = self.model.player_upgrade(ux.code)
+                    if plr_upgrade:
+                        v_string = ' version: %s' % (plr_upgrade.version)
+                        data = plr_upgrade
+                    data_lines = [
+                        '',
+                        '%s%s' % (data.name.upper(), v_string),
+                        'reach: %s' % (data.reach),
+                        'targets: %s' % (data.max_targets),
+                        'cost: %s' % (data.cost),
+                        'damage multiplier: %s' % (data.damage_multiplier),
+                        'duration: %s' % (data.duration),
+                        'cooldown: %s' % (data.cooldown),
+                        '',
+                        ]
+                    name_img = self.draw_text(
+                        lines=data_lines,
+                        font=self.smallfont,
+                        antialias=False,
+                        fontcolor=color.cyan,
+                        background=color.magenta,
                         )
+                    name_h = name_img.get_height()
+                    desc_img = self.draw_text_block(
+                        text=data.description,
+                        font=self.smallfont,
+                        antialias=False,
+                        fontcolor=color.darker_cyan,
+                        colorize=None,
+                        background=color.magenta,
+                        wrap_width=50,
+                        )
+                    # compose the final image from all the smaller info bitmaps
+                    w = desc_img.get_width()
+                    h = desc_img.get_height() + name_img.get_height()
+                    self.chosen_upgrade_details = pygame.Surface((w, h))
+                    self.chosen_upgrade_details.set_colorkey(color.magenta)
+                    self.chosen_upgrade_details.fill(color.magenta)
+                    self.chosen_upgrade_details.blit(name_img, (0, 0))
+                    self.chosen_upgrade_details.blit(desc_img, (0, name_h))
 
 # locations of ui.png images
 # goto home button

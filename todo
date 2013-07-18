@@ -1,7 +1,5 @@
 # RELEASE Y.T.
 
-* better drawing of the upgrade info screen - show selected ugprade details.
-
 * add a 'ondeath' object action that triggers during combat - what was this for again?
 
 * create the menu with story selection, or resume a previously saved game.
