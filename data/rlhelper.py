@@ -77,10 +77,14 @@ def line_of_sight(matrix, x1, y1, x2, y2):
     """
 
     segs = get_line_segments(x1, y1, x2, y2)
+    # exclude the start and end points from this test.
+    # this is importants as the characters we are looking from is likely
+    # a blocking GID. Also if looking at a wall that is blocking, it should
+    # affect the LOS between you and it, you should see that wall.
+    segs = segs[1:-1]
     hits = [matrix[x][y] for x, y in segs]
-    amt = hits.count(True)
-    # allow 1 case: exclude the start and end points
-    return amt == 0 or (amt == 2 and matrix[x2][y2] and matrix[x1][y1])
+    amt = hits.count(1)
+    return amt == 0
 
 
 def remap_coords(rect, unit_width, unit_height):
@@ -109,6 +113,7 @@ def distance(x, y, u, v):
 
     return math.sqrt((x - u) ** 2 + (y - v) ** 2)
 
+
 def direction(x, y, u, v):
     """
     Returns the (x, y) offsets required to move point a (x, y)
@@ -126,6 +131,7 @@ def direction(x, y, u, v):
     deltay = r * math.sin(theta)
     return (int(round(deltax)), int(round(deltay)))
 
+
 def cover_area(origin_x, origin_y, reach, max_width, max_height):
     """
     Yields a range of (x, y) coordinates from an origin within reach
@@ -139,6 +145,7 @@ def cover_area(origin_x, origin_y, reach, max_width, max_height):
             if x > 0 and y > 0 and x < max_width and y < max_height:
                 if distance(origin_x, origin_y, x, y) <= reach:
                     yield (x, y)
+
 
 def clamp(n, minn, maxn):
     """
