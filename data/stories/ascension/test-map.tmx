@@ -15,16 +15,20 @@
  </layer>
  <layer name="floor" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJzjYWBgYBqhmBeIuRkIg1AoHm6AmwHT/4IMkLARRuIzoPHR5SnhDyTA5v+RBEb9P+r/ke5/TgZEfaACxeh1xHAFxMT/cE4fo/4f9f+o/wmrGa5g1P+j/hdhwN9HZCEgP5SxKBADAMy1BM0=
+   eJzjYWBgYBqhmBeIuRkIg1AoHm6AmwHT/4IMkLARRuIzoPHR5SnhDyTA5v+RBEb9P+r/ke5/TgZEfaACxeh1xHAFxMT/cE4fo/4f9f+o/wmrwQV4qOiWgQCj8T/qfxEG/H1EFgLyQxmLAjEA+eUE2Q==
   </data>
  </layer>
  <objectgroup name="animated doodads" width="64" height="16">
   <object gid="85" x="224" y="352"/>
   <object gid="85" x="32" y="384"/>
   <object gid="85" x="96" y="416"/>
+  <object gid="73" x="384" y="384"/>
+  <object gid="73" x="512" y="384"/>
+  <object gid="65" x="448" y="448"/>
+  <object gid="65" x="448" y="320"/>
  </objectgroup>
  <objectgroup name="characters" width="64" height="16">
-  <object name="player" type="player" gid="97" x="64" y="96"/>
+  <object name="player" type="player" gid="97" x="384" y="320"/>
   <object name="keke" type="friend" gid="105" x="32" y="320">
    <properties>
     <property name="modes" value="updown"/>
@@ -44,6 +48,26 @@
   <object name="demo door 1" gid="36" x="288" y="96">
    <properties>
     <property name="spam" value="@ontrigger @repeat @transmute 33, 36"/>
+   </properties>
+  </object>
+  <object name="los_doors" gid="33" x="448" y="352">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute  33,36"/>
+   </properties>
+  </object>
+  <object name="los_doors" gid="33" x="448" y="416">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute  33,36"/>
+   </properties>
+  </object>
+  <object name="los_doors" gid="37" x="416" y="384">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute  37, 40"/>
+   </properties>
+  </object>
+  <object name="los_doors" gid="37" x="480" y="384">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute  37, 40"/>
    </properties>
   </object>
  </objectgroup>
@@ -73,6 +97,11 @@
     <property name="spam" value="@message the bestiary"/>
    </properties>
   </object>
+  <object gid="8" x="448" y="384">
+   <properties>
+    <property name="tip" value="@message @repeat line of sight test"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="terminals" width="64" height="16">
   <object gid="53" x="160" y="96">
@@ -88,6 +117,11 @@
   <object gid="8" x="160" y="128">
    <properties>
     <property name="spam" value="@message upgrade station"/>
+   </properties>
+  </object>
+  <object gid="45" x="480" y="416">
+   <properties>
+    <property name="test los" value="@trigger @repeat los_doors"/>
    </properties>
   </object>
  </objectgroup>
