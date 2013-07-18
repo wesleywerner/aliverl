@@ -14,6 +14,7 @@
 import os
 import sys
 import math
+import copy
 import random
 import traceback
 from const import *
@@ -205,12 +206,12 @@ class GameEngine(object):
             nextlevel = 1
 
         trace.write('warping to level: %s ' % (nextlevel,))
+        self.store = {}
+        self.trigger_queue = []
         self.level = GameLevel(nextlevel, self.story.level_file(nextlevel))
         self.load_objects()
         self.load_matrix()
         self.look_around()
-        self.trigger_queue = []
-        self.store = {}
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
@@ -317,6 +318,8 @@ class GameEngine(object):
                         self.player.x, self.player.y = obj.getxy()
                         self.player.px, self.player.py = obj.getpixelxy()
                         obj = self.player
+                    # keep a copy of player for redoing a level after death
+                    self.store['player copy'] = copy.deepcopy(self.player)
 
                 # the map object can override our "mode" behaviours.
                 # these are stored in the object's "properties" attribute.

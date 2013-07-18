@@ -1,6 +1,6 @@
 # RELEASE Y.T.
 
-* add a 'ondeath' object action that triggers during combat - what was this for again?
+* handle player death by showing a sad screen, after which the level is restarted. keep a player copy handy for this to revert any upgrades, bonuses and such.
 
 * create the menu with story selection, or resume a previously saved game.
 
