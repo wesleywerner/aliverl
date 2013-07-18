@@ -28,52 +28,86 @@ from eventmanager import *
 
 class GameEngine(object):
     """
-    Tracks the game state.
+    The game engine handles all character interactions and data.
+    This includes movement, combat, object interactions, levels
+    and snargle spam.
+
+    The evManager handles posting events to other listeners, how
+    we notify the other parts of the game when things happen.
+
+    Attributes:
+
+    engine_pumping (bool)
+        True while the engine is pumping out TickEvents to all
+        listeners. Gets changed if we see a notify() QuitEvent.
+
+    state (StateMachine)
+        Stores the current game state, like which menu we are in,
+        if we are busy playing, or viewing word dialogues,
+        or the info screens.
+
+    settings (Settings)
+        An instance of Settings class.
+
+    game_in_progress (bool)
+        True if there is a game in progress. This mainly escapes
+        game-only calls to ensure the user can't do much if there
+        is no game in progress.
+
+    level (GameLevel)
+        Stores level related data.
+
+    story (ConfigObj)
+        An instance of story.py, which contains the current story data.
+
+    player (MapObject)
+        The current player object used for moving or or actions.
+        This may get swapped out (like via the Exploit upgrade)
+        allowing us to control other characters.
+
+    upgrades_available (int)
+        The number of upgrades the player can still install.
+
+    objects ([MapObject])
+        The list of level objects the player can interact with.
+        This includes the player itself, other AI, terminals and doors.
+
+    turn (int)
+        A counter of the current turn number.
+
+    trigger_queue []
+        Interacting with objects will place map-defined triggers in
+        this queue. Some get processed out again on that same turn,
+        while others have a @delay which keep them in this queue
+        until a later time.
+
+    store (dict)
+        Temporary storage for transient player states.
+
     """
 
     def __init__(self, evManager):
         """
-        evManager controls Post()ing and notify()ing events.
+        Create a new instance of the game engine, giving the event manager
+        object to use for posting and receive events.
 
-        Attributes:
-
-        running (bool):
-            True while the engine is online. Changed via QuitEvent().
-        state (StateMachine):
-            controls the game mode stack.
-        level (GameLevel):
-            stores level related data.
-        story (ConfigObj):
-            stores the story.conf data.
-        player (MapObject):
-            the player controlled map object.
-        upgrades_available (int):
-            number of upgrades the player can install.
-        objects ([MapObject]):
-            list of level objects.
-        dialogue ([str]):
-            List of dialogue strings in queue to display.
-
-        effects
-            a dictionary of upgrade affects active
         """
 
         self.evManager = evManager
         evManager.RegisterListener(self)
-        self.running = True
+        self.engine_pumping = True
         self.state = StateMachine()
         self.settings = Settings()
-        self.gamerunning = False
+        self.game_in_progress = False
         self.level = None
         self.story = None
         self.player = None
         self.upgrades_available = 0
         self.objects = None
-        self.dialogue = []
         self.turn = None
         self.trigger_queue = None
         self.target_object = None
-        self.effects = None
+        self.store = None
 
     def notify(self, event):
         """
@@ -81,7 +115,7 @@ class GameEngine(object):
         """
 
         if isinstance(event, QuitEvent):
-            self.running = False
+            self.engine_pumping = False
 
         elif isinstance(event, StateChangeEvent):
             self.change_state(event.state)
@@ -117,7 +151,7 @@ class GameEngine(object):
         #self.post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
         self.post(InitializeEvent())
-        while self.running:
+        while self.engine_pumping:
             newTick = TickEvent()
             self.evManager.Post(newTick)
 
@@ -133,7 +167,7 @@ class GameEngine(object):
             self.turn = 0
             self.level = None
             self.warp_level()
-            self.gamerunning = True
+            self.game_in_progress = True
 
     def end_game(self):
         """
@@ -145,7 +179,7 @@ class GameEngine(object):
             if not popped or popped == STATE_PLAY:
                 break
         self.change_state(STATE_GAMEOVER)
-        self.gamerunning = False
+        self.game_in_progress = False
 
     def load_story(self, storyname):
         """
@@ -176,7 +210,7 @@ class GameEngine(object):
         self.load_matrix()
         self.look_around()
         self.trigger_queue = []
-        self.effects = {}
+        self.store = {}
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
@@ -342,14 +376,14 @@ class GameEngine(object):
         # process the exploit ability.
         # if there is a stored player with an exploit upgrade that
         # is not active anymore, swap us back.
-        stored_player = self.effects.get('stored player', None)
+        stored_player = self.store.get('stored player', None)
         if stored_player:
             exploiting = alu.from_list(self.player.upgrades, alu.EXPLOIT)
             if exploiting and not exploiting.is_active:
                 # swap the player back to her own form
                 self.player.upgrades.remove(exploiting)
                 self.player = stored_player
-                del self.effects['stored player']
+                del self.store['stored player']
                 self.post_msg('you return...', color.combat_message)
                 self.look_around()
                 self.look_at_target()
@@ -385,7 +419,7 @@ class GameEngine(object):
 
         """
 
-        if not self.gamerunning:
+        if not self.game_in_progress:
             return False
 
         # unfreeze a little.
@@ -676,17 +710,14 @@ class GameEngine(object):
 
     def trigger_object(self, obj, direct):
         """
-        Push any triggers on an object into the trigger_queue.
+        Push any triggers from an object into the trigger_queue.
+
         """
 
-        #trace.write(('trigger %s%s' %
-                    #(trig['name'], (direct) and (' directly') or (''))))
         trace.write(('trigger "%s"%s' %
                     (obj.name, (direct) and (' directly') or (' indirctly'))))
         for key in obj.properties.keys():
             prop = obj.properties[key]
-            #FIX AI use properties to store their movement mode.
-            # move this to the object level?
             if type(prop) is str:
                 # split the property at word boundaries.
                 # all commands start with "@".
@@ -840,7 +871,7 @@ class GameEngine(object):
 
         """
 
-        if not self.gamerunning:
+        if not self.game_in_progress:
             return False
         a, d = (attacker, defender)
         # we say 'you' where the player is involved
@@ -906,7 +937,7 @@ class GameEngine(object):
         # push or pop the given state
         if not self.state.process(state):
             self.post(QuitEvent())
-        if state == STATE_PLAY and not self.gamerunning:
+        if state == STATE_PLAY and not self.game_in_progress:
             # start a new game
             self.begin_game()
 
@@ -1078,7 +1109,7 @@ class GameEngine(object):
             # we do this by storing the current player owning the target.
             # when the ability resolves in the player move event we
             # switch back.
-            self.effects['stored player'] = self.player
+            self.store['stored player'] = self.player
             self.player = self.target_object
             self.player.upgrades.append(upgrade)
             self.post_msg('you exploit the %s!' %
