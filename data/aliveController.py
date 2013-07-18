@@ -53,8 +53,8 @@ class KeyboardMouse(object):
                         elif state == STATE_PLAY:
                             self.play_keys(event)
 
-                        elif state == STATE_GAMEOVER:
-                            self.game_over_keys(event)
+                        elif state == STATE_LEVEL_FAIL:
+                            self.level_failed_keys(event)
 
                         elif state == STATE_DIALOG:
                             self.dialogue_keys(event)
@@ -185,12 +185,13 @@ class KeyboardMouse(object):
             inEvent = InputEvent(char=event.unicode, clickpos=None)
             self.evManager.Post(inEvent)
 
-    def game_over_keys(self, event):
+    def level_failed_keys(self, event):
         """
-        Handles game over keys.
+        Handles level failed keys.
         """
 
         if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
+            self.model.restart_level()
             self.evManager.Post(StateChangeEvent(None))
 
     def crash_keys(self, event):

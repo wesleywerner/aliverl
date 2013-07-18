@@ -289,8 +289,12 @@ class GraphicalView(object):
         elif state in (STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS):
             self.draw_info_screen(state)
 
-        elif state in (STATE_PLAY, STATE_GAMEOVER):
+        elif state == STATE_LEVEL_FAIL:
+            pass
 
+        elif state == STATE_PLAY:
+            # draw all the game play images on to play_image and
+            # merge that into our main image at the relevant position
             self.play_image.fill(color.magenta)
             self.draw_borders()
             self.draw_player_stats()
@@ -298,12 +302,6 @@ class GraphicalView(object):
             self.draw_target()
             self.draw_fog()
             self.draw_scroller_text()
-
-            if state == STATE_GAMEOVER:
-                #TODO Overlay a game over message.
-                pass
-
-            # merge play_image into our main image at the relevant position
             self.image.blit(self.play_image, self.play_area)
 
         # NOTE: no need to handle drawing for HELP or DIALOGUE states

@@ -172,14 +172,15 @@ class GameEngine(object):
 
     def end_game(self):
         """
-        Makes the game over.
+        Ends the current game by popping all states up to include STATE_PLAY
+        and setting game in progress flags.
+
         """
 
         while True:
             popped = self.state.pop()
             if not popped or popped == STATE_PLAY:
                 break
-        self.change_state(STATE_GAMEOVER)
         self.game_in_progress = False
 
     def load_story(self, storyname):
@@ -194,6 +195,16 @@ class GameEngine(object):
         self.story = story.StoryData(full_path)
         trace.write('loaded story OK')
         return True
+
+    def restart_level(self):
+        """
+        Restarts the current level. The player state will revert to when they
+        first entered the level.
+
+        """
+
+        self.player = self.store['player copy']
+        self.warp_level(restart=True)
 
     def warp_level(self, restart=False):
         """
@@ -912,12 +923,12 @@ class GameEngine(object):
         # death
         if a.health <= 0:
             if a is self.player:
-                self.end_game()
+                self.post(StateChangeEvent(STATE_LEVEL_FAIL))
             else:
                 self.kill_character(a)
         if d.health <= 0:
             if d is self.player:
-                self.end_game()
+                self.post(StateChangeEvent(STATE_LEVEL_FAIL))
             else:
                 self.kill_character(d)
         self.look_at_target()
