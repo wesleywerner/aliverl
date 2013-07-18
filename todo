@@ -2,6 +2,8 @@
 
 * handle player death by showing a sad screen, after which the level is restarted. keep a player copy handy for this to revert any upgrades, bonuses and such.
 
+* move the model upgrades_available value to the character level.
+
 * create the menu with story selection, or resume a previously saved game.
 
 * auto save the current game.
