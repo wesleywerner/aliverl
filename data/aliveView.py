@@ -188,6 +188,7 @@ class GraphicalView(object):
                 self.update_button_borders()
 
             elif isinstance(event, MessageEvent):
+                self.messages.append(event.message)
                 self.create_floating_tip(event.message,
                     event.color and event.color or color.message)
 
@@ -411,7 +412,8 @@ class GraphicalView(object):
         # an unhelpful message
         pix = self.largefont.render(
             'you have crashed :-(', False, color.ai_crash)
-        self.image.blit(pix, (28, 75))
+        self.image.blit(pix, (200, 15))
+        self.draw_messages(16, 204, amount=17)
 
     def draw_info_screen(self, game_state):
         """
@@ -443,11 +445,7 @@ class GraphicalView(object):
             pix = self.draw_text_block(
                 values, self.largefont, False, color.desaturated_yellow)
             self.image.blit(pix, (490, 70))
-            # recent messages
-            if self.messages:
-                pix = self.draw_text(
-                    self.messages, self.smallfont, False, color.message)
-                self.image.blit(pix, (28, 290))
+            self.draw_messages(28, 290, amount=17)
 
         elif game_state == STATE_INFO_UPGRADES:
             # display the amount of upgrades the player can install
@@ -730,20 +728,19 @@ class GraphicalView(object):
             pmana, (xposition + (phealth.get_width() * 1.5), yposition))
         self.image.blit(self.statscanvas, self.statsarea)
 
-    def draw_game_messages(self):
+    def draw_messages(self, x, y,
+        message_color=color.message, amount=None):
         """
         Draw recent game messages.
+
         """
 
-        messagebmp = self.draw_text(
-                    self.messages[-8:],
-                    self.smallfont,
-                    False,
-                    (0, 20, 0),
-                    (0, 20, 0))
-        self.screen.blit(messagebmp, (0, 0))
-        # cull
-        self.messages = self.messages[-20:]
+        if self.messages:
+            if amount:
+                amount *= -1
+            pix = self.draw_text(
+                self.messages[amount:], self.smallfont, False, message_color)
+            self.image.blit(pix, (x, y))
 
     def wrap_text(self, message, maxlength):
         """
@@ -986,9 +983,6 @@ class GraphicalView(object):
 
         # allow the same message to popup again and again
         if True:
-            # TODO do we need to store message in the view when they live on the model already?
-            self.messages.append(message)
-            self.messages = self.messages[-16:]
             # avoid overlapping recent messages
             self.last_tip_pos += 14
             pos = self.model.player.getpixelxy()
