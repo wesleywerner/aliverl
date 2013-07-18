@@ -386,12 +386,13 @@ class GraphicalView(object):
 
         if game_state == STATE_INFO_HOME:
             # draw a portion of the playscreen
-            snap_rect = (
+            snap_rect = pygame.Rect(
                         self.tile_w * (self.model.player.x - 2),
                         self.tile_h * (self.model.player.y - 2),
                         self.tile_w * 5,
                         self.tile_h * 5,
                         )
+            snap_rect = snap_rect.move(-self.viewport.left, -self.viewport.top)
             snap_dest = (28, 122)
             self.image.blit(self.play_image, snap_dest, snap_rect)
             pygame.draw.rect(self.image, color.blue,
