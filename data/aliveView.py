@@ -633,16 +633,8 @@ class GraphicalView(object):
                 # TODO use queue_slide_transition() - pass title
                 if not terminal_slidein_added:
                     terminal_slidein_added = True
-                    new_transition = SlideinTransition(
-                        size=self.game_area.size,
-                        fps=self.gamefps,
-                        font=self.smallfont,
-                        title='connecting . . .',
-                        inner_bg=self.dialoguebackground,
-                        outer_bg=self.image.copy(),
-                        )
-                    self.transition_queue.insert(0, new_transition)
-
+                    self.queue_slide_transition(
+                        'connecting . . .', self.dialoguebackground)
                 # Follow up with a Terminal Printer Transition
                 text_color = getattr(color, datas['color'])
                 words = datas['datas']
