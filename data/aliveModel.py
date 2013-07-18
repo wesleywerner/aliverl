@@ -339,19 +339,21 @@ class GameEngine(object):
             if result:
                 self.post_msg(result, color.upgrade_tip)
 
-        # process the exploit ability
-        ghost_count = self.effects.get('ghost countdown', 0)
-        if ghost_count > 0:
-            ghost_count -= 1
-            self.effects['ghost countdown'] = ghost_count
-            if ghost_count == 0:
+        # process the exploit ability.
+        # if there is a stored player with an exploit upgrade that
+        # is not active anymore, swap us back.
+        stored_player = self.effects.get('stored player', None)
+        if stored_player:
+            exploiting = alu.from_list(self.player.upgrades, alu.EXPLOIT)
+            if exploiting and not exploiting.is_active:
                 # swap the player back to her own form
-                self.player = self.effects['ghost']
+                self.player.upgrades.remove(exploiting)
+                self.player = stored_player
+                del self.effects['stored player']
                 self.post_msg('you return...', color.combat_message)
                 self.look_around()
-            elif ghost_count == 2:
-                self.post_msg('exploit will end in %s turns...' %
-                    (ghost_count), color.combat_message)
+                self.look_at_target()
+                self.post(RefreshUpgradesEvent())
 
         # notify the view to update it's visible sprites
         self.post(PlayerMovedEvent())
@@ -1072,13 +1074,17 @@ class GameEngine(object):
                         a_verb='bomb', a_multiplier=upgrade.damage_multiplier)
 
         if upgrade_name == alu.EXPLOIT:
-            # take control of another for a short while
-            self.effects['ghost'] = self.player
-            self.effects['ghost countdown'] = upgrade.duration
+            # take control of another for a short while.
+            # we do this by storing the current player owning the target.
+            # when the ability resolves in the player move event we
+            # switch back.
+            self.effects['stored player'] = self.player
             self.player = self.target_object
+            self.player.upgrades.append(upgrade)
             self.post_msg('you exploit the %s!' %
                 (self.target_object.name), color.combat_message)
             self.look_around()
+            self.post(RefreshUpgradesEvent())
 
         if upgrade_name == alu.DESERIALIZE:
             # blink into the last direction moved.
