@@ -118,6 +118,7 @@ class GraphicalView(object):
         self.viewport = None
         self.windowsize = None
         self.sprites = {}
+        # TODO replace scrollertext with a list (like we do with sprites dict)
         self.scrollertexts = None
         self.messages = []
         self.gamefps = 30
@@ -238,6 +239,9 @@ class GraphicalView(object):
 
                 if event.state == STATE_HELP:
                     self.show_help_screens()
+                elif event.state == STATE_LEVEL_FAIL:
+                    # housekeeping: reset some things for level restart
+                    self.scrollertexts.empty()
 
             elif isinstance(event, RefreshUpgradesEvent):
                 model_state = self.model.state.peek()
@@ -954,6 +958,7 @@ class GraphicalView(object):
 
         # allow the same message to popup again and again
         if True:
+            # TODO do we need to store message in the view when they live on the model already?
             self.messages.append(message)
             self.messages = self.messages[-16:]
             # avoid overlapping recent messages
