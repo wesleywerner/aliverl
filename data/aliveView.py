@@ -592,7 +592,8 @@ class GraphicalView(object):
                         )
         self.transition_queue.insert(0, open_transition)
 
-    def queue_slide_transition(self, title, inner_bg=None, boxcolor=color.green):
+    def queue_slide_transition(self, title,
+        inner_bg=None, boxcolor=color.green, direction_reversed=False):
         """
         Queue a generic slide-in transition.
         It uses the current game image as the background, giving a overlay
@@ -608,6 +609,7 @@ class GraphicalView(object):
             inner_bg=inner_bg,
             outer_bg=self.image.copy(),
             boxcolor=boxcolor,
+            direction_reversed=direction_reversed
             )
         self.transition_queue.insert(0, new_transition)
 
@@ -651,18 +653,9 @@ class GraphicalView(object):
                     background=self.dialoguebackground
                     )
                 self.transition_queue.insert(0, new_transition)
-
         # add a closing transition
-        close_transition = SlideinTransition(
-                        size=self.game_area.size,
-                        fps=self.gamefps,
-                        font=self.smallfont,
-                        title='',
-                        inner_bg=self.dialoguebackground,
-                        outer_bg=self.image.copy(),
-                        direction_reversed=True
-                        )
-        self.transition_queue.insert(0, close_transition)
+        self.queue_slide_transition(
+            '', self.dialoguebackground, direction_reversed=True)
 
     def next_dialogue(self):
         """
