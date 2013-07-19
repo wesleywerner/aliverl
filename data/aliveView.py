@@ -406,13 +406,23 @@ class GraphicalView(object):
 
         """
 
-        self.draw_action_shot(10, 10)
-
-        # an unhelpful message
-        pix = self.largefont.render(
-            'you have crashed :-(', False, color.ai_crash)
-        self.image.blit(pix, (200, 15))
-        self.draw_messages(16, 204, amount=17)
+        self.image.blit(self.failed_background, (0, 0))
+        self.draw_action_shot(14, 14)
+        fail_words = (
+            'Your health dropped too low and your core became unstable :-( '
+            'Sadly you lost all data you collected for this level. '
+            'Press spacebar to try that level again. '
+            'Good luck!'
+            )
+        pix = self.draw_text_block(
+            text=fail_words,
+            font=self.smallfont,
+            antialias=False,
+            fontcolor=color.white,
+            wrap_width=45,
+            )
+        self.image.blit(pix, (200, 90))
+        self.draw_messages(18, 184, amount=23)
 
     def draw_info_screen(self, game_state):
         """
@@ -1134,10 +1144,15 @@ class GraphicalView(object):
                 'images/background.png').convert()
             self.info_screen = image.load(
                 'images/info_screen.png').convert()
-            self.menubackground = image.load('images/menu.png').convert()
-            self.borders = image.load('images/game_borders.png').convert()
+            self.menubackground = image.load(
+                'images/menu.png').convert()
+            self.borders = image.load(
+                'images/game_borders.png').convert()
             self.borders.set_colorkey(color.magenta)
-            self.dialoguebackground = image.load('images/dialog.png').convert()
+            self.dialoguebackground = image.load(
+                'images/dialog.png').convert()
+            self.failed_background = image.load(
+                'images/level_failed.png').convert()
 
             # set up all our ui buttons
             self.setup_ui_manager()
