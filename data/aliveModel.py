@@ -47,6 +47,10 @@ class GameEngine(object):
         if we are busy playing, or viewing word dialogues,
         or the info screens.
 
+    event_queue (dict)
+        A queue of delayed events to post at a later time.
+        The value is the seconds to delay before posting.
+
     settings (Settings)
         An instance of Settings class.
 
@@ -98,6 +102,7 @@ class GameEngine(object):
         evManager.RegisterListener(self)
         self.engine_pumping = True
         self.state = StateMachine()
+        self.event_queue = {}
         self.settings = Settings()
         self.game_in_progress = False
         self.level = None
@@ -155,6 +160,16 @@ class GameEngine(object):
         while self.engine_pumping:
             newTick = TickEvent()
             self.evManager.Post(newTick)
+
+            # process any delayed events
+            for event, delay in self.event_queue.items():
+                delay -= 1
+                if delay < 1:
+                    del self.event_queue[event]
+                    self.post(event)
+                else:
+                    self.event_queue[event] = delay
+
 
     def begin_game(self):
         """
@@ -221,6 +236,7 @@ class GameEngine(object):
         trace.write('warping to level: %s ' % (nextlevel,))
         self.store = {}
         self.trigger_queue = []
+        self.event_queue = {}
         self.level = GameLevel(nextlevel, self.story.level_file(nextlevel))
         self.load_objects()
         self.load_matrix()
@@ -365,6 +381,8 @@ class GameEngine(object):
         """
 
         trace.write('TURN %s' % self.turn)
+        if self.player.dead:
+            return
         self.move_character(self.player, direction)
 
         # at this point the player made a successful move.
@@ -407,9 +425,6 @@ class GameEngine(object):
 
         # notify the view to update it's visible sprites
         self.post(PlayerMovedEvent())
-
-        # notify the view to update it's sprites visibilies
-        self.post(CharacterMovedEvent(self.player))
 
     def move_character(self, character, direction):
         """
@@ -923,12 +938,12 @@ class GameEngine(object):
         # death
         if a.health <= 0:
             if a is self.player:
-                self.post(StateChangeEvent(STATE_LEVEL_FAIL))
+                self.crash_player()
             else:
                 self.kill_character(a)
         if d.health <= 0:
             if d is self.player:
-                self.post(StateChangeEvent(STATE_LEVEL_FAIL))
+                self.crash_player()
             else:
                 self.kill_character(d)
         self.look_at_target()
@@ -944,6 +959,15 @@ class GameEngine(object):
             self.objects.remove(character)
             self.post(KillCharacterEvent(character))
             self.post_msg('The %s crashes' % (character.name), color.ai_crash)
+
+    def crash_player(self):
+        """
+        Mark the player as dead and queue some events to fire level failed.
+
+        """
+
+        self.player.dead = True
+        self.queue_event(StateChangeEvent(STATE_LEVEL_FAIL), 2)
 
     def change_state(self, state):
         """
@@ -1191,6 +1215,14 @@ class GameEngine(object):
         """
 
         self.evManager.Post(MessageEvent(message, color))
+
+    def queue_event(self, event, seconds_delay):
+        """
+        Queue an event for posting at the end of the player's turn.
+
+        """
+
+        self.event_queue[event] = seconds_delay * FPS
 
     def post(self, event):
         """
