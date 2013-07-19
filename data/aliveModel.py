@@ -967,6 +967,7 @@ class GameEngine(object):
         """
 
         self.player.dead = True
+        self.post_msg('** You Segfault **', color.ai_crash)
         self.queue_event(StateChangeEvent(STATE_LEVEL_FAIL), 2)
 
     def change_state(self, state):
