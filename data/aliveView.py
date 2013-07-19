@@ -418,7 +418,7 @@ class GraphicalView(object):
             text=fail_words,
             font=self.smallfont,
             antialias=False,
-            fontcolor=color.white,
+            fontcolor=color.gray,
             wrap_width=45,
             )
         self.image.blit(pix, (200, 90))
