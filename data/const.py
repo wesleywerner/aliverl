@@ -11,6 +11,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
+# Frames per second
+FPS = 30
+
 # state machine constants
 STATE_INTRO = 1
 STATE_MENU = 2

@@ -121,7 +121,6 @@ class GraphicalView(object):
         # TODO replace scrollertext with a list (like we do with sprites dict)
         self.scrollertexts = None
         self.messages = []
-        self.gamefps = 30
         self.last_tip_pos = 0
         self.transition_queue = []
         self.ui = None
@@ -178,7 +177,7 @@ class GraphicalView(object):
         try:
             if isinstance(event, TickEvent):
                 self.render()
-                self.clock.tick(self.gamefps)
+                self.clock.tick(FPS)
 
             elif isinstance(event, CharacterMovedEvent):
                 self.move_sprite(event)
@@ -583,7 +582,7 @@ class GraphicalView(object):
 
         open_transition = SlideinTransition(
                         size=self.game_area.size,
-                        fps=self.gamefps,
+                        fps=FPS,
                         font=self.smallfont,
                         title='',
                         direction_reversed=True
@@ -601,7 +600,7 @@ class GraphicalView(object):
 
         new_transition = SlideinTransition(
             size=self.game_area.size,
-            fps=self.gamefps,
+            fps=FPS,
             font=self.smallfont,
             title=title,
             inner_bg=inner_bg,
@@ -642,7 +641,7 @@ class GraphicalView(object):
                 new_transition = TerminalPrinter(
                     size=self.game_area.size,
                     background_color=color.magenta,
-                    fps=self.gamefps,
+                    fps=FPS,
                     font=self.largefont,
                     words=words,
                     word_color=text_color,
@@ -1162,7 +1161,7 @@ class GraphicalView(object):
         # add the first help screen
         help_transition = SlideinTransition(
             size=self.game_area.size,
-            fps=self.gamefps,
+            fps=FPS,
             font=self.smallfont,
             title='',
             inner_bg=help_screen,
@@ -1177,7 +1176,7 @@ class GraphicalView(object):
         help_2 = StaticScreen(
             size=self.game_area.size,
             background_color=color.magenta,
-            fps=self.gamefps,
+            fps=FPS,
             font=self.largefont,
             words=None,
             word_color=color.green,
@@ -1190,7 +1189,7 @@ class GraphicalView(object):
         # add a closing transition
         close_transition = SlideinTransition(
             size=self.game_area.size,
-            fps=self.gamefps,
+            fps=FPS,
             font=self.smallfont,
             title='',
             boxcolor=color.blue,
