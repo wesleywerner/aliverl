@@ -190,9 +190,13 @@ Maps are built with the Tiled map editor. You can get it from the official websi
 
 # Tileset
 
-Each map has a tileset, an image divided into 32x32 sized blocks of tile images. Each level can have it's own tileset image, or share the same image. This is a PNG file, it should not have a transparency layer, instead all magenta #ff00ff pixels are rendered transparent. The image size _must_ be in multiples of 32. This helps the rendering engine index the tiles properly.
+The tileset is an image divided into 32x32 sized squares of tiled images. This is a PNG file, it should not have a transparency layer, instead all magenta #ff00ff pixels are rendered transparent. This means that you must avoid using per-pixel alpha effects. The image size must be in multiples of 32 as this helps the rendering engine determine how many columns and rows comprise the tileset.
 
-To help build your story with the proper image and animation id's, use the built-in debug command ^F2 to render two temporary png images: /tmp/alive_animations.png and /tmp/alive_tileset_indexed.png. These show you the GID's of configured story animations, and tileset ID's respectively.
+Once you start building levels with a given tileset image, you should not add any more columns to the tileset image. This will offset the indexes and break your levels. You are free to add as many rows as you need, that is okay.
+
+To help build your story with the proper image and animation id's, use the built-in debug command ^F2 to render two temporary png images: Use the first file, `alive_tileset_indexed.png`, to build your conf animations sections.
+
+Once your animation config is set up, re-run ^F2 so that the second image, `alive_animations.png`, is refreshed to reflect your newly configured animations. This particular cheat sheet will help you as a reference when building levels with the map editor.
 
 # Creating a level
 
@@ -212,9 +216,13 @@ You may apply these properties to level objects for more effect.
 * player
     * sets the player object on a level. this is the one required object on any level.
 * ai
+    * these objects you enter combat with. they also get movement turns as defined in the story file, or on the map level.
 * friend
+    * also get movement turns, but you don't enter into combat with these.
 * door
+    * nothing special here. use it anyway as future functionality will benefit from this.
 * terminal
+    * nothing special here. use it anyway as future functionality will benefit from this.
 
 **extended properties**
 _these are added via the Name-Value property list._
