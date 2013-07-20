@@ -1,9 +1,5 @@
 # RELEASE Y.T.
 
-* draw a player crash animation.
-
-* change map object aprite linkage to use the object type to match the story character. we need to keep the name free for trigger interactions. so: type is important, name is optional.
-
 * create the menu with story selection, or resume a previously saved game.
 
 * auto save the current game.
