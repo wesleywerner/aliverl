@@ -969,6 +969,10 @@ class GameEngine(object):
         self.player.dead = True
         self.post_msg('** You Segfault **', color.ai_crash)
         self.queue_event(StateChangeEvent(STATE_LEVEL_FAIL), 2)
+        # find the player crash animation data
+        crash_anim = self.story.animations_by_name('player crash')
+        if crash_anim:
+            self.transmute_object(self.player, [crash_anim.as_int('gid')])
 
     def change_state(self, state):
         """

@@ -912,7 +912,7 @@ class GraphicalView(object):
         [setattr(obj, k, v) for k, v in defaults.items()]
 
         # grab animation defs
-        anims = self.model.story.animations(obj.gid)
+        anims = self.model.story.animations_by_gid(obj.gid)
 
         # grab our sprite
         sprite = self.sprites.get(id(obj), None)

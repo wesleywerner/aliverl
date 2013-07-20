@@ -69,8 +69,8 @@
  <objectgroup name="bestiary {3, 7]" width="64" height="16">
   <object type="friend" gid="427" x="32" y="288"/>
   <object type="friend" gid="427" x="224" y="288"/>
-  <object name="ice" type="ai" gid="461" x="128" y="416"/>
-  <object name="virus" type="ai" gid="495" x="128" y="480"/>
+  <object name="green ice" type="ai" gid="461" x="128" y="416"/>
+  <object name="green virus" type="ai" gid="495" x="128" y="480"/>
   <object gid="214" x="128" y="448"/>
   <object gid="206" x="96" y="448"/>
   <object gid="206" x="160" y="448"/>

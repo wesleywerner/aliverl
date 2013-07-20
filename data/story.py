@@ -45,7 +45,7 @@ class StoryData(object):
                                 in data[screen]['datas'].split('\n')])
                 data[screen]['datas'] = stripped
 
-    def animations(self, gid):
+    def animations_by_gid(self, gid):
         """
         Return animation settings for a GID.
         """
@@ -53,6 +53,16 @@ class StoryData(object):
         anims = self.conf['animations']
         for key, value in anims.items():
             if value.as_int('gid') == gid:
+                return value
+
+    def animations_by_name(self, name):
+        """
+        Return animation settings for a given animatino name.
+        """
+
+        anims = self.conf['animations']
+        for key, value in anims.items():
+            if key == name:
                 return value
 
     def raw_animation_data(self):
