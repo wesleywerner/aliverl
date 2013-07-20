@@ -916,9 +916,12 @@ class GraphicalView(object):
 
         # grab our sprite
         sprite = self.sprites.get(id(obj), None)
+        if not sprite:
+            trace.write('problem: %s has no matching sprite object.' % obj.name)
+            return
 
         # apply animation defs
-        if anims and sprite:
+        if anims:
             obj.frames = map(int, anims['frames'])
             obj.fps = anims.as_float('fps')
             obj.loop = anims.as_int('loop')
