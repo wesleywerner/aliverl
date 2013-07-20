@@ -872,7 +872,8 @@ class GraphicalView(object):
         """
 
         story = self.model.story
-        tilesetfile = os.path.join(story.path, self.tmx.tilesets[0].source)
+        #tilesetfile = os.path.join(story.path, self.tmx.tilesets[0].source)
+        tilesetfile = 'images/alive-tileset.png'
         self.tsp = TilesetParser(
                                 tilesetfile,
                                 (self.tile_w, self.tile_h),
