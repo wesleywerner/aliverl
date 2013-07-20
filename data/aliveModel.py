@@ -136,6 +136,12 @@ class GameEngine(object):
         elif isinstance(event, CombatEvent):
             self.combat_turn(event.attacker, event.defender)
 
+        elif isinstance(event, KillCharacterEvent):
+            if event.character in self.objects:
+                self.objects.remove(event.character)
+                self.update_block_matrix(
+                    event.character.x, event.character.y, 0)
+
         elif isinstance(event, DebugEvent):
             self.debug_action(event)
 
@@ -904,6 +910,8 @@ class GameEngine(object):
 
         if not self.game_in_progress:
             return False
+        if defender.dead:
+            return
         a, d = (attacker, defender)
         # we say 'you' where the player is involved
         a_name = (a is self.player) and ('you') or (a.name)
@@ -955,10 +963,14 @@ class GameEngine(object):
 
         if character in self.objects:
             character.dead = True
-            self.update_block_matrix(character.x, character.y, 0)
-            self.objects.remove(character)
-            self.post(KillCharacterEvent(character))
             self.post_msg('The %s crashes' % (character.name), color.ai_crash)
+            # find and activate the characer crash animation
+            crash_anim = self.story.animations_by_name(
+                '%s crash' % (character.name))
+            if crash_anim:
+                self.transmute_object(character, [crash_anim.as_int('gid')])
+            # delay the kill event which will remove the sprite
+            self.queue_event(KillCharacterEvent(character), 2)
 
     def crash_player(self):
         """
