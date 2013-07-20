@@ -124,7 +124,7 @@ class KeyboardMouse(object):
                 self.evManager.Post(DebugEvent(debug_keys[event.key]))
             elif event.key == pygame.K_F1:
                 trace.write('Debug commands')
-                trace.write('^F2=render the animation cheatsheet png')
+                trace.write('^F2=render tile + animation cheatsheets')
                 trace.write('^F3=restart the current level')
                 trace.write('^F4=warp to the next level')
                 trace.write('^F5=reveal the map')
