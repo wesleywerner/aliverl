@@ -192,6 +192,8 @@ Maps are built with the Tiled map editor. You can get it from the official websi
 
 Each map has a tileset, an image divided into 32x32 sized blocks of tile images. Each level can have it's own tileset image, or share the same image. This is a PNG file, it should not have a transparency layer, instead all magenta #ff00ff pixels are rendered transparent. The image size _must_ be in multiples of 32. This helps the rendering engine index the tiles properly.
 
+To help build your story with the proper image and animation id's, use the built-in debug command ^F2 to render two temporary png images: /tmp/alive_animations.png and /tmp/alive_tileset_indexed.png. These show you the GID's of configured story animations, and tileset ID's respectively.
+
 # Creating a level
 
 1. Run Tiled and create a new map: Orientation is Orthagonal. Make size 16x16 for now, and set tile size to 32x32.

@@ -1,128 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="64" height="16" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
-  <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="256" height="960"/>
+  <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
   <tile id="7">
    <properties>
     <property name="spam" value="@message upgrade station"/>
    </properties>
   </tile>
  </tileset>
- <layer name="floor doodads" width="64" height="16">
+ <layer name="walls" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJztl1kKwCAQQ3v/23UTut2lM1+VLlpIaij4ICBkQKMdhjaNjk2omFZ8FoW6KH+4vMz3+J2vp3OUJDysSzGaetMg2NtR559Mi2kW7O2o86tJ5c/1JuqzahA/lT/Xm6jPqkH8VP5cb6I+qwbxa//fr9+gnt0MkPzq2c0Aya+e3Qxq/x/4e6r/R0rrz98ukx33UN2T
+   eJwTZWBgMMWBlXGwhwsWA2JVBtxAFQd7uABVBvz+UkNiq9PYLQMBCPl/uINR/4/6f6T734QBUR/AAHodMVwBMfE/nNPHqP9H/T/qf8JqhisY9f+o/0F9HHx9RDMC8kMZg/p0AJHOINY=
   </data>
  </layer>
- <layer name="floor" width="64" height="16">
-  <data encoding="base64" compression="zlib">
-   eJzjYWBgYBqhmBeIuRkIg1AoHm6AmwHT/4IMkLARRuIzoPHR5SnhDyTA5v+RBEb9P+r/ke5/TgZEfaACxeh1xHAFxMT/cE4fo/4f9f+o/wmrwQV4qOiWgQCj8T/qfxEG/H1EFgLyQxmLAjEA+eUE2Q==
-  </data>
- </layer>
- <objectgroup name="animated doodads" width="64" height="16">
-  <object gid="85" x="224" y="352"/>
-  <object gid="85" x="32" y="384"/>
-  <object gid="85" x="96" y="416"/>
-  <object gid="73" x="384" y="384"/>
-  <object gid="73" x="512" y="384"/>
-  <object gid="65" x="448" y="448"/>
-  <object gid="65" x="448" y="320"/>
+ <objectgroup name="player [1, 1]" width="64" height="16">
+  <object name="player" type="player" gid="393" x="32" y="64"/>
  </objectgroup>
- <objectgroup name="characters" width="64" height="16">
-  <object name="player" type="player" gid="97" x="384" y="320"/>
-  <object name="keke" type="friend" gid="105" x="32" y="320">
+ <objectgroup name="welcome messages [0,0]" width="64" height="16">
+  <object gid="155" x="0" y="32">
    <properties>
-    <property name="modes" value="updown"/>
-    <property name="speed" value="1"/>
+    <property name="spam" value="@message @repeat welcome to the alive map demo!"/>
    </properties>
   </object>
-  <object name="moo" type="friend" gid="105" x="32" y="416">
+  <object gid="192" x="0" y="64">
    <properties>
-    <property name="modes" value="leftright"/>
-    <property name="speed" value="1"/>
+    <property name="spam" value="@message @repeat showcasing level building features..."/>
    </properties>
   </object>
-  <object name="ice" type="ai" gid="113" x="224" y="384"/>
-  <object name="virus" type="ai" gid="121" x="96" y="448"/>
- </objectgroup>
- <objectgroup name="doors" width="64" height="16">
-  <object name="demo door 1" gid="36" x="288" y="96">
+  <object gid="192" x="0" y="96">
    <properties>
-    <property name="spam" value="@ontrigger @repeat @transmute 33, 36"/>
-   </properties>
-  </object>
-  <object name="los_doors" gid="33" x="448" y="352">
-   <properties>
-    <property name="spam" value="@ontrigger @repeat @transmute  33,36"/>
-   </properties>
-  </object>
-  <object name="los_doors" gid="33" x="448" y="416">
-   <properties>
-    <property name="spam" value="@ontrigger @repeat @transmute  33,36"/>
-   </properties>
-  </object>
-  <object name="los_doors" gid="37" x="416" y="384">
-   <properties>
-    <property name="spam" value="@ontrigger @repeat @transmute  37, 40"/>
-   </properties>
-  </object>
-  <object name="los_doors" gid="37" x="480" y="384">
-   <properties>
-    <property name="spam" value="@ontrigger @repeat @transmute  37, 40"/>
+    <property name="spam" value="@message @repeat have fun exploring :-)"/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="hints" width="64" height="16">
-  <object name="intro terminal" type="term" gid="56" x="0" y="96">
-   <properties>
-    <property name="show a message" value="@message @repeat welcome to the alive map demo!"/>
-   </properties>
-  </object>
-  <object gid="53" x="0" y="128">
-   <properties>
-    <property name="tip" value="@message @repeat showcasing level building features..."/>
-   </properties>
-  </object>
-  <object name="term" gid="41" x="0" y="160">
-   <properties>
-    <property name="tip" value="@message @repeat have fun exploring :-)"/>
-   </properties>
-  </object>
-  <object gid="8" x="256" y="128">
-   <properties>
-    <property name="spam" value="@message door demo"/>
-   </properties>
-  </object>
-  <object gid="8" x="96" y="256">
-   <properties>
-    <property name="spam" value="@message the bestiary"/>
-   </properties>
-  </object>
-  <object gid="8" x="448" y="384">
-   <properties>
-    <property name="tip" value="@message @repeat line of sight test"/>
-   </properties>
-  </object>
+ <objectgroup name="upgrade station [4,1]" width="64" height="16">
+  <object gid="177" x="128" y="64"/>
  </objectgroup>
- <objectgroup name="terminals" width="64" height="16">
-  <object gid="53" x="160" y="96">
+ <objectgroup name="door demo [8, 1]" width="64" height="16">
+  <object gid="274" x="256" y="64">
    <properties>
-    <property name="spam" value="@upgrade @repeat"/>
+    <property name="spam" value="@message congrats on openening that door :p"/>
    </properties>
   </object>
-  <object gid="53" x="256" y="96">
+  <object gid="274" x="288" y="64"/>
+  <object name="demo door 2" type="door" gid="120" x="256" y="96">
    <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 120,123"/>
+   </properties>
+  </object>
+  <object name="demo door 2" type="door" gid="120" x="288" y="96">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 120,123"/>
+   </properties>
+  </object>
+  <object name="door demo switch bar" type="switch" gid="161" x="320" y="96">
+   <properties>
+    <property name="more spam" value="@trigger @repeat demo door 2"/>
     <property name="spam" value="@trigger @repeat demo door 1"/>
    </properties>
   </object>
-  <object gid="8" x="160" y="128">
+  <object name="door demo switch foo" type="switch" gid="159" x="224" y="96">
    <properties>
-    <property name="spam" value="@message upgrade station"/>
+    <property name="more spam" value="@trigger @repeat demo door 2"/>
+    <property name="spam" value="@trigger @repeat demo door 1"/>
    </properties>
   </object>
-  <object gid="45" x="480" y="416">
-   <properties>
-    <property name="test los" value="@trigger @repeat los_doors"/>
-   </properties>
-  </object>
+ </objectgroup>
+ <objectgroup name="bestiary {3, 7]" width="64" height="16">
+  <object type="friend" gid="427" x="32" y="288"/>
+  <object type="friend" gid="427" x="224" y="288"/>
+  <object name="ice" type="ai" gid="461" x="128" y="416"/>
+  <object name="virus" type="ai" gid="495" x="128" y="480"/>
+  <object gid="214" x="128" y="448"/>
+  <object gid="206" x="96" y="448"/>
+  <object gid="206" x="160" y="448"/>
  </objectgroup>
 </map>

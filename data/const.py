@@ -28,10 +28,10 @@ STATE_INFO_WINS = 10
 STATE_CRASH = 42
 
 # tile id of seen fog overlay
-FOG_GID = 16
+FOG_GID = 34
 
 # tile id of unseen tiles
-UNSEEN_GID = 24
+UNSEEN_GID = 51
 
 # number of player positions to keep as a scent.
 PLAYER_SCENT_LEN = 5
