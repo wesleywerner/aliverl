@@ -136,6 +136,7 @@ class GraphicalView(object):
 
         return self.model.level.tmx
 
+    #TODO rename to tile_width
     @property
     def tile_w(self):
         """
@@ -144,6 +145,7 @@ class GraphicalView(object):
 
         return self.tmx.tile_width
 
+    #TODO rename to tile_height
     @property
     def tile_h(self):
         """
@@ -220,6 +222,7 @@ class GraphicalView(object):
             elif isinstance(event, DebugEvent):
                 if event.request_type == 'animation cheatsheet':
                     self.draw_animations_cheatsheet()
+                    self.draw_number_cheatsheet()
 
             elif isinstance(event, InputEvent):
                 if self.ui:
@@ -337,13 +340,13 @@ class GraphicalView(object):
         surf.fill(color.black)
         x, y = (10, 50)
         column_width = 0
-        level_file = os.path.basename(self.model.level.filename)
-        image_filename = '/tmp/anims-%s.png' % level_file
+        #level_file = os.path.basename(self.model.level.filename)
+        image_filename = '/tmp/alive_animations.png'
         fnt = self.largefont.render('Alive animations', False, color.green)
         title_width = fnt.get_width()
         surf.blit(fnt, (10, 10))
-        fnt = self.smallfont.render(level_file, False, color.white)
-        surf.blit(fnt, (40 + title_width, 20))
+        #fnt = self.smallfont.render(level_file, False, color.white)
+        #surf.blit(fnt, (40 + title_width, 20))
 
         data = self.model.story.raw_animation_data()
         for key, value in data.items():
@@ -367,11 +370,29 @@ class GraphicalView(object):
         self.create_floating_tip(
             'saved animation cheatsheet as ' + image_filename, color.white)
 
-        ## apply animation defs
-        #if anims and sprite:
-            #obj.frames = map(int, anims['frames'])
-            #obj.fps = anims.as_float('fps')
-            #obj.loop = anims.as_int('loop')
+    def draw_number_cheatsheet(self):
+        """
+        Draw a copy of the tileset with index numbers and save it to a file.
+
+        """
+
+        pix = image.load('images/alive-tileset.png')
+        w, h = pix.get_size()
+        w, h = (w / self.tile_w, h / self.tile_h)
+        for y in range(0, h):
+            for x in range(0, w):
+                gid = x + (y * w) + 1
+                xpos = x * self.tile_w
+                ypos = y * self.tile_h
+                pygame.draw.rect(pix, color.white,
+                    (xpos, ypos, self.tile_w, self.tile_h), 1)
+                num_pix = self.smallfont.render(
+                    str(gid), False, color.white)
+                pix.blit(num_pix, (xpos, ypos))
+        image_filename = '/tmp/alive_tileset_indexed.png'
+        pygame.image.save(pix, image_filename)
+        self.create_floating_tip(
+            'saved animation cheatsheet as ' + image_filename, color.white)
 
     def draw_menu(self):
         """
