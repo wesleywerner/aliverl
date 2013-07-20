@@ -1268,11 +1268,6 @@ class GameEngine(object):
                 obj.seen = True
             self.look_around()
             self.post(PlayerMovedEvent())
-        elif event.request_type == 'exploit random':
-            self.player = random.choice([o for o in self.objects
-                                    if o.type in ('ai', 'player', 'friend')])
-            self.look_around()
-            self.post(RefreshUpgradesEvent())
         elif event.request_type == 'heal all':
             self.upgrades_available = 10
             self.player.health = self.player.max_health
