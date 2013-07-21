@@ -942,7 +942,7 @@ class GraphicalView(object):
 
         self.sprites = {}
 
-        for obj in self.model.objects:
+        for obj in [o for o in self.model.objects if o.gid > -1]:
             x = (obj.x * self.tile_w)
             y = (obj.y * self.tile_h)
             sprite_id = id(obj)
