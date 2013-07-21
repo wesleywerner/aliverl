@@ -668,7 +668,7 @@ class GraphicalView(object):
                 # Follow up with a Terminal Printer Transition
                 text_color = getattr(color, datas['color'])
                 words = datas['datas']
-                words = self.wrap_text(words, 25)
+                words = self.wrap_text(words, 30)
                 new_transition = TerminalPrinter(
                     size=self.game_area.size,
                     background_color=color.magenta,
@@ -774,26 +774,15 @@ class GraphicalView(object):
 
     def wrap_text(self, message, maxlength):
         """
-        Takes a long string and returns a list of lines.
-        maxlength is the characters per line.
+        Wraps a long string into multiple lines.
+        Preserves paragraphs as indicated by multiple newlines.
+
         """
 
-        # first split any newlines
-        inlines = message.split('\n')
         outlines = []
-        # chop up any lines longer than maxlength
-        for line in inlines:
-            while True:
-                maxpos = line.find(' ', maxlength)
-                if maxpos > 0:
-                    # split this line into smaller chunks
-                    outlines.append(line[:maxpos].strip())
-                    line = line[maxpos:].strip()
-                else:
-                    if len(line) == 0:
-                        line = ' '
-                    outlines.append(line)
-                    break
+        for line in message.lstrip('\n').split('\n\n'):
+            outlines.extend(textwrap.wrap(line, maxlength))
+            outlines.append(' ')
         return outlines
 
     def draw_text(
