@@ -39,13 +39,17 @@
     <property name="open" value="@ontrigger @transmute 123"/>
    </properties>
   </object>
-  <object gid="173" x="160" y="32"/>
-  <object gid="173" x="96" y="32"/>
-  <object gid="171" x="128" y="32">
+  <object gid="173" x="160" y="32">
    <properties>
-    <property name="spam" value="@message nothing happens"/>
+    <property name="spam" value="@dialogue act 1 watch screen"/>
    </properties>
   </object>
+  <object gid="173" x="96" y="32">
+   <properties>
+    <property name="spam" value="@message hey this is fun! *click*"/>
+   </properties>
+  </object>
+  <object gid="171" x="128" y="32"/>
   <object gid="171" x="64" y="32">
    <properties>
     <property name="spam" value="@message you push some buttons"/>
