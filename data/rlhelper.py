@@ -83,7 +83,7 @@ def line_of_sight(matrix, x1, y1, x2, y2):
     # affect the LOS between you and it, you should see that wall.
     segs = segs[1:-1]
     hits = [matrix[x][y] for x, y in segs]
-    print(x1, y1, x2, y2, segs, hits)
+    #print(x1, y1, x2, y2, segs, hits)
     amt = hits.count(1)
     return amt == 0
 

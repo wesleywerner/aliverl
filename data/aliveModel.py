@@ -658,15 +658,14 @@ class GameEngine(object):
                 for obj in objects:
                     obj.in_range = False
 
-        # DEBUG printout the blocked matrix
-        for v in range(0, h):
-            for u in range(0, w):
-                print(blocked_mx[u][v]),
-            print()
+        ## DEBUG printout the blocked matrix
+        #for v in range(0, h):
+            #for u in range(0, w):
+                #print(blocked_mx[u][v]),
+            #print()
 
         for x, y in rlhelper.cover_area(px, py, self.player.view_range, w, h):
 
-            # test if we also have line of sight to this position
             # FIXME the get line segments gives an inconsistent effect:
             #       positions to our left use points asymetrical to the right
             #       resulting in the block matrix checking cells with twisted
