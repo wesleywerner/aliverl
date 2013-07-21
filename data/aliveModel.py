@@ -664,8 +664,10 @@ class GameEngine(object):
                 #print(blocked_mx[u][v]),
             #print()
 
-        for x, y in rlhelper.cover_area(px, py, self.player.view_range, w, h):
+        for x, y in rlhelper.cover_area(px, py,
+                                        self.player.view_range, w - 1, h - 1):
 
+            # test if we also have line of sight to this position
             # FIXME the get line segments gives an inconsistent effect:
             #       positions to our left use points asymetrical to the right
             #       resulting in the block matrix checking cells with twisted
