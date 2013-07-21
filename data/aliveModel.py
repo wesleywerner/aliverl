@@ -250,6 +250,8 @@ class GameEngine(object):
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
+        # refresh any listeners before we post entry messages
+        self.post(TickEvent())
         # show any level entry messages defined in the story
         entry_message = self.story.entry_message(nextlevel)
         if entry_message:

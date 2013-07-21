@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="8" height="8" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
+  <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
+ </tileset>
+ <layer name="Floor" width="8" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAMPIE4DA17Icl7YNGDLBaFRb87ATuR9Xui2YfN/HA086MJmA8DAOStB6Y=
+  </data>
+ </layer>
+ <layer name="Walls" width="8" height="8">
+  <data encoding="base64" compression="zlib">
+   eJwTZWBgMMWBxYBYlQE3UKWCvAkOu0HAnArmqyGZh06rAzEA0C4FPA==
+  </data>
+ </layer>
+ <objectgroup draworder="topdown" name="Objects" width="8" height="8">
+  <object name="player" type="player" gid="393" x="64" y="96"/>
+  <object type="term" gid="278" x="32" y="224">
+   <properties>
+    <property name="poke" value="@dialogue act 1 exit server"/>
+    <property name="poke 2" value="@exit @delay=1"/>
+   </properties>
+  </object>
+  <object name="blinkenserver" gid="274" x="32" y="192">
+   <properties>
+    <property name="poke" value="@message you stare at the blinkenlights"/>
+   </properties>
+  </object>
+  <object gid="206" x="64" y="256"/>
+  <object gid="206" x="128" y="256"/>
+  <object gid="206" x="192" y="256"/>
+  <object name="door switch" type="switch" gid="175" x="160" y="160">
+   <properties>
+    <property name="toggle" value="@trigger door"/>
+   </properties>
+  </object>
+  <object name="door" gid="120" x="192" y="160">
+   <properties>
+    <property name="open" value="@ontrigger @transmute 123"/>
+   </properties>
+  </object>
+  <object gid="173" x="160" y="32"/>
+  <object gid="173" x="96" y="32"/>
+  <object gid="171" x="128" y="32">
+   <properties>
+    <property name="spam" value="@message nothing happens"/>
+   </properties>
+  </object>
+  <object gid="171" x="64" y="32">
+   <properties>
+    <property name="spam" value="@message you push some buttons"/>
+   </properties>
+  </object>
+  <object x="96" y="160" width="32" height="64">
+   <properties>
+    <property name="msg" value="@message oh look, a terminal..."/>
+   </properties>
+  </object>
+  <object x="96" y="32" width="32" height="96">
+   <properties>
+    <property name="msg" value="@message you feel different"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
