@@ -205,10 +205,14 @@ class Mapobject(ObjectHelper):
             self.type = tag.attrib['type']
         else:
             self.type = ''
-        self.gid = int(tag.attrib['gid'])
+        self.gid = int(tag.attrib.get('gid', -1))
+        self.width = int(tag.attrib.get(
+            'width', tilesize[0])) / tilesize[0]
+        self.height = int(tag.attrib.get(
+            'height', tilesize[1])) / tilesize[1]
         self.px = int(tag.attrib['x'])
         self.py = int(tag.attrib['y'])
-        if TMX_FORMAT_OBJECT_Y_FIX:
+        if TMX_FORMAT_OBJECT_Y_FIX and self.gid > -1:
             self.py -= tilesize[1]
         self.x = self.px / tilesize[0]
         self.y = self.py / tilesize[1]
