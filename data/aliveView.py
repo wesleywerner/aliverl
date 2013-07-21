@@ -839,19 +839,17 @@ class GraphicalView(object):
         """ renders block text with newlines. """
 
         if wrap_width:
-            brokenText = text.replace("\r\n", " ")
-            brokenText = brokenText.replace("\r", " ").replace("\n", " ")
-            brokenText = textwrap.wrap(brokenText, wrap_width)
+            lines = self.wrap_text(text, wrap_width)
         else:
-            brokenText = text.replace("\r\n", "\n").replace("\r", "\n")
-            brokenText = brokenText.split("\n")
+            lines = text.replace("\r\n", "\n").replace("\r", "\n")
+            lines = lines.split("\n")
         return self.draw_text(
-                        brokenText,
-                        font,
-                        antialias,
-                        fontcolor,
-                        colorize,
-                        background
+                        lines=lines,
+                        font=font,
+                        antialias=antialias,
+                        fontcolor=fontcolor,
+                        colorize=colorize,
+                        background=background
                         )
 
     def draw_map_image(self):
