@@ -10,7 +10,7 @@
  </tileset>
  <layer name="walls" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJztl2EKgCAMhR8dIcoLpHWB6v5HK5EgwjnBMh1+MNh8f/ZwghsBbERMRC4l1BkGNIbIpWAQ9jXf8uXjXv6A8y8dyn8P9z6GvO1kx+e/Y2pJ+PxztSR8/jVTS6K9f9nzzdH8AyvcrAPhP/BTv85Vxn7fJub+Kd0weg2k+NeMXgMp/mP1krG92x0ntCPuiXrJYXe6AzFcI8s=
+   eJztl2EKgCAMRr8zRHmBsi5Q3f9oJRKEODU0cbUHg9n3Zw+J2gBgI2oket+ZY6mzNGg00fvOHNEIe8y3fnGyqfw41Yn5f52n/h3se9O/M0515P7FX/z/i/iL/wr7TQPC/8Bufj1XFectTcr9U7mO5BzI8Z8iOQdy/FPzljGzmx0ntCPumXnLZXa6A8YSIxE=
   </data>
  </layer>
  <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
@@ -113,27 +113,27 @@
   </object>
  </objectgroup>
  <objectgroup draworder="topdown" name="line of sight test [6, 6]" width="64" height="16">
-  <object name="los_doors" type="door" gid="120" x="192" y="192">
+  <object name="los_doors" type="door" gid="120" x="384" y="64">
    <properties>
     <property name="spam" value="@ontrigger @repeat @transmute 120, 123"/>
    </properties>
   </object>
-  <object name="los_doors" type="door" gid="124" x="160" y="224">
+  <object name="los_doors" type="door" gid="124" x="352" y="96">
    <properties>
     <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
    </properties>
   </object>
-  <object name="los_doors" type="door" gid="124" x="224" y="224">
+  <object name="los_doors" type="door" gid="124" x="416" y="96">
    <properties>
     <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
    </properties>
   </object>
-  <object x="160" y="160" width="96" height="96">
+  <object x="352" y="64" width="96" height="64">
    <properties>
     <property name="spam" value="@message line of sight test"/>
    </properties>
   </object>
-  <object name="los test term" type="term" gid="177" x="192" y="256">
+  <object name="los test term" type="term" gid="177" x="384" y="128">
    <properties>
     <property name="spam" value="@trigger @repeat los_doors"/>
    </properties>
