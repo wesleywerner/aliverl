@@ -649,41 +649,36 @@ class GraphicalView(object):
 
         # we only need one slide-in transition for many screens.
         terminal_slidein_added = False
-
         # a dialogue may contain multiple screens. Keep this in mind.
         for dialogue_screen in dialogue.keys():
-
             datas = dialogue[dialogue_screen]
-
-            # we may add other transitions depending on the screen "type".
-            # for now we only have terminals.
-            if datas['type'] in ('story', 'terminal'):
-
-                # Start with a Slide-in Transition
-                # TODO use queue_slide_transition() - pass title
-                if not terminal_slidein_added:
-                    terminal_slidein_added = True
-                    self.queue_slide_transition(
-                        'connecting . . .', self.dialoguebackground)
-                # Follow up with a Terminal Printer Transition
-                text_color = getattr(color, datas['color'])
-                words = datas['datas']
-                words = self.wrap_text(words, 30)
-                new_transition = TerminalPrinter(
-                    size=self.game_area.size,
-                    background_color=color.magenta,
-                    fps=FPS,
-                    font=self.largefont,
-                    words=words,
-                    word_color=text_color,
-                    words_x_offset=80,
-                    words_y_offset=80,
-                    background=self.dialoguebackground
-                    )
-                self.transition_queue.insert(0, new_transition)
+            # the dialogue type determines the background we use
+            background = self.terminal_bg
+            if datas['type'] == 'story':
+                background = self.dialogue_bg
+            # start with a Slide-in Transition
+            if not terminal_slidein_added:
+                terminal_slidein_added = True
+                self.queue_slide_transition(
+                    'connecting . . .', background)
+            # follow up with a terminal printer
+            text_color = getattr(color, datas['color'])
+            words = self.wrap_text(datas['datas'], 30)
+            new_transition = TerminalPrinter(
+                size=self.game_area.size,
+                background_color=color.magenta,
+                fps=FPS,
+                font=self.largefont,
+                words=words,
+                word_color=text_color,
+                words_x_offset=80,
+                words_y_offset=80,
+                background=background
+                )
+            self.transition_queue.insert(0, new_transition)
         # add a closing transition
         self.queue_slide_transition(
-            '', self.dialoguebackground, direction_reversed=True)
+            '', self.dialogue_bg, direction_reversed=True)
 
     def next_dialogue(self):
         """
@@ -1169,8 +1164,10 @@ class GraphicalView(object):
             self.borders = image.load(
                 'images/game_borders.png').convert()
             self.borders.set_colorkey(color.magenta)
-            self.dialoguebackground = image.load(
+            self.dialogue_bg = image.load(
                 'images/dialog.png').convert()
+            self.terminal_bg = image.load(
+                'images/terminal.png').convert()
             self.failed_background = image.load(
                 'images/level_failed.png').convert()
 
