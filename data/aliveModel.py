@@ -240,10 +240,15 @@ class GameEngine(object):
             nextlevel = 1
 
         trace.write('warping to level: %s ' % (nextlevel,))
+        level_filename = self.story.level_file(nextlevel)
+        if not level_filename or not os.path.exists(level_filename):
+            trace.write('Warning! There is no map for level %s. '
+                        'I guess I am stuck here.' % (nextlevel))
+            return False
         self.store = {}
         self.trigger_queue = []
         self.event_queue = {}
-        self.level = GameLevel(nextlevel, self.story.level_file(nextlevel))
+        self.level = GameLevel(nextlevel, level_filename)
         self.load_objects()
         self.load_matrix()
         self.look_around()
