@@ -10,13 +10,13 @@
  </tileset>
  <layer name="walls" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJwTZWBgMMWBlXGwhwsWA2JVBtxAFQd7uABVBvz+UkNiq9PYLQMBCPl/uINR/4/6f6T734QBUR/AAHodMVwBMfE/nNPHqP9H/T/qf8JqhisY9f+o/0F9HHx9RDMC8kMZg/p0AJHOINY=
+   eJztl2EKgCAMhR8dIcoLpHWB6v5HK5EgwjnBMh1+MNh8f/ZwghsBbERMRC4l1BkGNIbIpWAQ9jXf8uXjXv6A8y8dyn8P9z6GvO1kx+e/Y2pJ+PxztSR8/jVTS6K9f9nzzdH8AyvcrAPhP/BTv85Vxn7fJub+Kd0weg2k+NeMXgMp/mP1krG92x0ntCPuiXrJYXe6AzFcI8s=
   </data>
  </layer>
- <objectgroup name="player [1, 1]" width="64" height="16">
+ <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
   <object name="player" type="player" gid="393" x="32" y="64"/>
  </objectgroup>
- <objectgroup name="welcome messages [0,0]" width="64" height="16">
+ <objectgroup draworder="topdown" name="welcome messages [0,0]" width="64" height="16">
   <object gid="155" x="0" y="32">
    <properties>
     <property name="spam" value="@message @repeat welcome to the alive map demo!"/>
@@ -33,10 +33,19 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="upgrade station [4,1]" width="64" height="16">
-  <object gid="177" x="128" y="64"/>
+ <objectgroup draworder="topdown" name="upgrade station [4,1]" width="64" height="16">
+  <object gid="177" x="128" y="64">
+   <properties>
+    <property name="spam" value="@upgrade @repeat"/>
+   </properties>
+  </object>
+  <object x="96" y="32" width="96" height="64">
+   <properties>
+    <property name="spam" value="@message @repeat upgrade station"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup name="door demo [8, 1]" width="64" height="16">
+ <objectgroup draworder="topdown" name="door demo [8, 1]" width="64" height="16">
   <object gid="274" x="256" y="64">
    <properties>
     <property name="spam" value="@message congrats on openening that door :p"/>
@@ -66,13 +75,68 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="bestiary {3, 7]" width="64" height="16">
-  <object type="friend" gid="427" x="32" y="288"/>
-  <object type="friend" gid="427" x="224" y="288"/>
-  <object name="green ice" type="ai" gid="461" x="128" y="416"/>
-  <object name="green virus" type="ai" gid="495" x="128" y="480"/>
-  <object gid="214" x="128" y="448"/>
-  <object gid="206" x="96" y="448"/>
-  <object gid="206" x="160" y="448"/>
+ <objectgroup draworder="topdown" name="friendly bestiary {2, 10]" width="64" height="16">
+  <object name="blue ice" type="friend" gid="427" x="32" y="416">
+   <properties>
+    <property name="modes" value="updown"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="128" y="480">
+   <properties>
+    <property name="modes" value="leftright"/>
+   </properties>
+  </object>
+  <object x="32" y="320" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message @repeat the friendly bestiary"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="224" y="448">
+   <properties>
+    <property name="modes" value="random"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="hostile bestiary [11, 11]" width="64" height="16">
+  <object name="green ice" type="ai" gid="461" x="416" y="448">
+   <properties>
+    <property name="modes" value="updown,magnet"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="green virus" type="ai" gid="495" x="480" y="480"/>
+  <object x="288" y="320" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message @repeat hostile bestiary"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="line of sight test [6, 6]" width="64" height="16">
+  <object name="los_doors" type="door" gid="120" x="192" y="192">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 120, 123"/>
+   </properties>
+  </object>
+  <object name="los_doors" type="door" gid="124" x="160" y="224">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
+   </properties>
+  </object>
+  <object name="los_doors" type="door" gid="124" x="224" y="224">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
+   </properties>
+  </object>
+  <object x="160" y="160" width="96" height="96">
+   <properties>
+    <property name="spam" value="@message line of sight test"/>
+   </properties>
+  </object>
+  <object name="los test term" type="term" gid="177" x="192" y="256">
+   <properties>
+    <property name="spam" value="@trigger @repeat los_doors"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

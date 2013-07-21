@@ -1,5 +1,11 @@
 # RELEASE Y.T.
 
+* bug: map level overrides of object modes should ignore superfluous spaces after commas
+
+* bug: los test shows bottom-right sides obscured (correct), while top-left sides can see through corners.
+
+* bug: rectangle objects are thought as solid and prevent transmutation if an object is inside that rectangle.
+
 * create the menu with story selection, or resume a previously saved game.
 
 * auto save the current game.
