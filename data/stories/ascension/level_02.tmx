@@ -10,7 +10,7 @@
  </layer>
  <layer name="Walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJytktEKgCAMRYe/UPZgj2GB9WgF/f+HpaC0hpsSBZfBxml3cxoAdkaTUIsagix8/2yFr/27xnt4fGp4fPeIn4Gfr0vxZPrEnAm6ChoRQ/sMKO8Y72vqi+fIWhp46pPLc7xB/SmvGngH7/lLfv7g455K+98aeXwXVHnPPsU9RbyXlvunN4bfT+KVUMu8dL+HUMs+buUHF2Y=
+   eJydUgEKwCAIlL6w1QeG9YHa/v+zbWAksitZcAidl6cWiagBHBPuRXrA9P/wQr96e6WvNHxGGr53pc+E+9skXqAOm3fRbGyd5PCfpa7uo6M4+9c+0T3ioqpvc4JDrzmbwx85f/Vof8WpR/vTc64Sm0Q9F8/8rUfv/sKE6/rZ/z0nXPdxAwVvFvM=
   </data>
  </layer>
  <objectgroup draworder="topdown" name="objects" width="16" height="16">
@@ -20,7 +20,7 @@
     <property name="poke" value="@message the blinkenserver beeps and blips"/>
    </properties>
   </object>
-  <object name="player" type="player" gid="393" x="96" y="480"/>
+  <object name="player" type="player" gid="393" x="192" y="256"/>
   <object x="128" y="416" width="32" height="64">
    <properties>
     <property name="spam" value="@message all these nodes look the same"/>
@@ -147,11 +147,60 @@
   <object gid="171" x="352" y="128"/>
   <object gid="155" x="320" y="128"/>
   <object gid="283" x="32" y="128"/>
-  <object x="192" y="224" width="32" height="32">
+  <object x="64" y="224" width="96" height="96">
    <properties>
     <property name="spam" value="@message this node core looks ill"/>
    </properties>
   </object>
-  <object gid="244" x="96" y="288"/>
+  <object name="cpu" gid="244" x="96" y="288">
+   <properties>
+    <property name="trig1" value="@ontrigger @transmute 240"/>
+    <property name="trig2" value="@ontrigger @message *cpu resets*"/>
+   </properties>
+  </object>
+  <object name="core term" type="term" gid="177" x="96" y="384">
+   <properties>
+    <property name="trig1" value="@dialogue act 2 core reboot"/>
+    <property name="trig2" value="@trigger @delay=3 cpu"/>
+    <property name="trig3" value="@trigger @delay=4 cap 1"/>
+    <property name="trig4" value="@trigger @delay=5 cap 2"/>
+    <property name="trig5" value="@trigger @delay=6 cap 3"/>
+    <property name="trig6" value="@trigger @delay=7 cap 4"/>
+    <property name="trig7" value="@trigger @delay=8 cap 5"/>
+    <property name="trig8" value="@message @delay=9 Oops. I didn't do it."/>
+    <property name="trig9" value="@message @delay=10 *prepare to deserialize to next node*"/>
+    <property name="trig9b" value="@exit @delay=11"/>
+   </properties>
+  </object>
+  <object name="cap 5" gid="231" x="32" y="352">
+   <properties>
+    <property name="msg" value="@ontrigger @message *pop*"/>
+    <property name="pop" value="@ontrigger @transmute 235"/>
+   </properties>
+  </object>
+  <object name="cap 4" gid="231" x="32" y="320">
+   <properties>
+    <property name="msg" value="@ontrigger @message *pop*"/>
+    <property name="pop" value="@ontrigger @transmute 235"/>
+   </properties>
+  </object>
+  <object name="cap 3" gid="231" x="32" y="288">
+   <properties>
+    <property name="msg" value="@ontrigger @message *pop*"/>
+    <property name="pop" value="@ontrigger @transmute 235"/>
+   </properties>
+  </object>
+  <object name="cap 2" gid="231" x="32" y="256">
+   <properties>
+    <property name="msg" value="@ontrigger @message *pop*"/>
+    <property name="pop" value="@ontrigger @transmute 235"/>
+   </properties>
+  </object>
+  <object name="cap 1" gid="231" x="32" y="224">
+   <properties>
+    <property name="msg" value="@ontrigger @message *pop*"/>
+    <property name="pop" value="@ontrigger @transmute 235"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
