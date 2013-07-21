@@ -917,7 +917,7 @@ class GraphicalView(object):
         # grab our sprite
         sprite = self.sprites.get(id(obj), None)
         if not sprite:
-            trace.write('problem: %s has no matching sprite object.' % obj.name)
+            trace.write('%s has no matching sprite object.' % obj.name)
             return
 
         # apply animation defs
@@ -1095,6 +1095,14 @@ class GraphicalView(object):
             self.viewport.right = self.tmx.width * self.tile_w
         if self.viewport.bottom > self.tmx.height * self.tile_h:
             self.viewport.bottom = self.tmx.height * self.tile_h
+
+        # center viewport left if the map fits in snuggly
+        vp = self.viewport
+        if self.tmx.width * self.tile_w <= vp.width:
+            self.viewport.left = (self.tmx.width * self.tile_w - vp.width) / 2
+        # center viewport top if the map fits in snuggly
+        if self.tmx.height * self.tile_h <= vp.height:
+            self.viewport.top = (self.tmx.height * self.tile_h - vp.height) / 2
 
     def adjust_viewport(self, event):
         """
