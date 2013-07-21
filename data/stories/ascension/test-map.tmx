@@ -10,7 +10,7 @@
  </tileset>
  <layer name="walls" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJztl2EKgCAMRr8zRHmBsi5Q3f9oJRKEODU0cbUHg9n3Zw+J2gBgI2oket+ZY6mzNGg00fvOHNEIe8y3fnGyqfw41Yn5f52n/h3se9O/M0515P7FX/z/i/iL/wr7TQPC/8Bufj1XFectTcr9U7mO5BzI8Z8iOQdy/FPzljGzmx0ntCPumXnLZXa6A8YSIxE=
+   eJztlwEKgCAMRf8ZgrxAWheo7n+0kohC2jQm4soHg82PsI+K2gNYiBiIPKXWEGYPBxpH5Cm1Bhz4vsdbPj3M5WoNxPzH5nK1Bt7673CdnXA/2FxNFUSy/l+g+W/+m///0vwDM477DODfwKF+jpuC/eYmZf0p3UV0DUj824iuAYn/VL1mfO/+j8P9EVehXnP4N/wGe/IkAA==
   </data>
  </layer>
  <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
@@ -45,7 +45,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="door demo [8, 1]" width="64" height="16">
+ <objectgroup draworder="topdown" name="door demo [8, 2]" width="64" height="16">
   <object gid="274" x="256" y="64">
    <properties>
     <property name="spam" value="@message congrats on openening that door :p"/>
@@ -75,7 +75,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="friendly bestiary {2, 10]" width="64" height="16">
+ <objectgroup draworder="topdown" name="friendly bestiary {2, 11]" width="64" height="16">
   <object name="blue ice" type="friend" gid="427" x="32" y="416">
    <properties>
     <property name="modes" value="updown"/>
@@ -98,7 +98,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="hostile bestiary [11, 11]" width="64" height="16">
+ <objectgroup draworder="topdown" name="hostile bestiary [10, 11]" width="64" height="16">
   <object name="green ice" type="ai" gid="461" x="416" y="448">
    <properties>
     <property name="modes" value="updown,magnet"/>
@@ -112,7 +112,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="line of sight test [6, 6]" width="64" height="16">
+ <objectgroup draworder="topdown" name="line of sight test [12, 2]" width="64" height="16">
   <object name="los_doors" type="door" gid="120" x="384" y="64">
    <properties>
     <property name="spam" value="@ontrigger @repeat @transmute 120, 123"/>
@@ -136,6 +136,25 @@
   <object name="los test term" type="term" gid="177" x="384" y="128">
    <properties>
     <property name="spam" value="@trigger @repeat los_doors"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="unlock terminals" width="64" height="16">
+  <object name="unlock test terminal" gid="173" x="512" y="32">
+   <properties>
+    <property name="foo" value="@ontrigger @give %message This terminal is now active"/>
+    <property name="spam" value="@ontrigger @transmute 177"/>
+   </properties>
+  </object>
+  <object name="unlock test switch" gid="158" x="576" y="32">
+   <properties>
+    <property name="bar" value="@message unlocked"/>
+    <property name="spam" value="@trigger unlock test terminal"/>
+   </properties>
+  </object>
+  <object x="480" y="64" width="96" height="64">
+   <properties>
+    <property name="spam" value="@message hit the corner switch to unlock the terminal"/>
    </properties>
   </object>
  </objectgroup>
