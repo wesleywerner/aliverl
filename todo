@@ -1,16 +1,16 @@
 # RELEASE Y.T.
 
-* bug: los test shows bottom-right sides obscured (correct), while top-left sides can see through corners.
+* auto save the current game.
 
 * create the menu with story selection, or resume a previously saved game.
 
-* auto save the current game.
+* smooth sprite and viewport movement
 
 * configure list of songs to loop during play. see if we can pause when switching to the main menu while a game is in progress.
 
-* smooth sprite and viewport movement
-
 * site upload issue: find scp does not do directory structure :(
+
+* bug: los test shows bottom-right sides obscured, while top-left sides can see through corners. A result of the get_line_segements returning non asymmetrical angles
 
 ## achievements
 
