@@ -886,7 +886,9 @@ class GameEngine(object):
             # standing on the finger target (cant close doors)
             fingerfriends = self.get_object_by_xy(*obj.getxy())
             for ff in fingerfriends:
-                if (ff is not obj and self.story.tile_blocks(transmute_id)):
+                if (ff is not obj and
+                    ff.type in ('ai', 'friend', 'player') and
+                    self.story.tile_blocks(transmute_id)):
                     trace.write('hey, you cant transmorgify a tile ' +
                                 'to a solid if someone is standing on it :p')
                     return False
