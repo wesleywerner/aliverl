@@ -365,7 +365,7 @@ class GameEngine(object):
                     # only override known values
                     if k in defaults.keys():
                         try:
-                            setattr(obj, k, int(v))
+                            setattr(obj, k, float(v))
                         except ValueError:
                             # that did not work, keep it a string
                             setattr(obj, k, v)
