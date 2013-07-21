@@ -20,7 +20,7 @@
     <property name="poke" value="@message the blinkenserver beeps and blips"/>
    </properties>
   </object>
-  <object name="player" type="player" gid="393" x="192" y="256"/>
+  <object name="player" type="player" gid="393" x="96" y="480"/>
   <object x="128" y="416" width="32" height="64">
    <properties>
     <property name="spam" value="@message all these nodes look the same"/>
