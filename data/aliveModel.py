@@ -369,7 +369,7 @@ class GameEngine(object):
                             setattr(obj, k, v)
                         # we know that 'modes' is a list
                         if k == 'modes':
-                            setattr(obj, k, v.split(','))
+                            setattr(obj, k, v.replace(' ', '').split(','))
 
                 # add this one to the collective
                 self.objects.append(obj)
