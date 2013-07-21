@@ -693,7 +693,12 @@ class GameEngine(object):
         Get a list of characters at x, y.
         """
 
-        return [e for e in self.objects if e.getxy() == (x, y)]
+        return [o for o in self.objects
+            if x >= o.x and
+            y >= o.y and
+            x < o.x + o.width and
+            y < o.y + o.height
+            ]
 
     def get_object_by_name(self, name):
         """
