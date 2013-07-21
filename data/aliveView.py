@@ -780,9 +780,9 @@ class GraphicalView(object):
         """
 
         outlines = []
-        for line in message.lstrip('\n').split('\n\n'):
+        for line in message.lstrip('\n').split('\n'):
             outlines.extend(textwrap.wrap(line, maxlength))
-            outlines.append(' ')
+            #outlines.append(' ')
         return outlines
 
     def draw_text(
