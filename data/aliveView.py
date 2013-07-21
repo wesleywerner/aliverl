@@ -1207,19 +1207,19 @@ class GraphicalView(object):
         help_transition.waitforkey = True
         self.transition_queue.insert(0, help_transition)
 
-        # add subsequent screens as static (no animation required)
-        help_2 = StaticScreen(
-            size=self.game_area.size,
-            background_color=color.magenta,
-            fps=FPS,
-            font=self.largefont,
-            words=None,
-            word_color=color.green,
-            words_x_offset=0,
-            words_y_offset=0,
-            background=help_screen
-            )
-        self.transition_queue.insert(0, help_2)
+        ## add subsequent screens as static (no animation required)
+        #help_2 = StaticScreen(
+            #size=self.game_area.size,
+            #background_color=color.magenta,
+            #fps=FPS,
+            #font=self.largefont,
+            #words=None,
+            #word_color=color.green,
+            #words_x_offset=0,
+            #words_y_offset=0,
+            #background=help_screen
+            #)
+        #self.transition_queue.insert(0, help_2)
 
         # add a closing transition
         close_transition = SlideinTransition(
