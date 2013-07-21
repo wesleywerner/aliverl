@@ -532,7 +532,10 @@ class GameEngine(object):
 
         """
 
-        self.level.matrix['block'][x][y] = value
+        if value:
+            self.level.matrix['block'][x][y] = int(value)
+        else:
+            self.level.matrix['block'][x][y] = 0
 
     def location_inside_map(self, x, y):
         """
@@ -655,33 +658,35 @@ class GameEngine(object):
                 for obj in objects:
                     obj.in_range = False
 
-        # we only need to scan for seen tiles and objects in our RANGE vicinity
-        # look around the map at what is in view range
-        # FIXME call rlhelper.cover_area(). it may need to return dist though.
-        for y in range(py - RANGE, py + RANGE):
-            for x in range(px - RANGE, px + RANGE):
+        # DEBUG printout the blocked matrix
+        for v in range(0, h):
+            for u in range(0, w):
+                print(blocked_mx[u][v]),
+            print()
 
-                # constrain our view to the level boundaries
-                if x < 0 or y < 0 or x > w - 1 or y > h - 1:
-                    continue
+        for x, y in rlhelper.cover_area(px, py, self.player.view_range, w, h):
 
-                # the distance will round our view to a nice ellipse
-                dist = rlhelper.distance(px, py, x, y)
-                if dist <= RANGE:
+            # test if we also have line of sight to this position
+            # FIXME the get line segments gives an inconsistent effect:
+            #       positions to our left use points asymetrical to the right
+            #       resulting in the block matrix checking cells with twisted
+            #       positions. bottom-right corners appear out of sight
+            #       when the top-left counterparts are in view.
+            #       This can be seen by uncommenting the DEBUG print loop
+            #       above and comparing the top and bottom line segments
+            #       that are checked against the blocked matrix.
+            #       -- see print in line_of_sight() too.
+            if (rlhelper.line_of_sight(blocked_mx, px, py, x, y)):
 
-                    # test if we also have line of sight to this position
-                    if (dist <= 1.5 or
-                        rlhelper.line_of_sight(blocked_mx, px, py, x, y)):
+                # mark this matrix tile as in view
+                seen_mx[x][y] = 2
 
-                        # mark this matrix tile as in view
-                        seen_mx[x][y] = 2
-
-                        # and any objects too
-                        objects = self.get_object_by_xy(x, y)
-                        for obj in objects:
-                            # mark object is in_range
-                            obj.in_range = True
-                            obj.seen = True
+                # and any objects too
+                objects = self.get_object_by_xy(x, y)
+                for obj in objects:
+                    # mark object is in_range
+                    obj.in_range = True
+                    obj.seen = True
 
     def get_object_by_id(self, objectid):
         """

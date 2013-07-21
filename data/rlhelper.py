@@ -83,6 +83,7 @@ def line_of_sight(matrix, x1, y1, x2, y2):
     # affect the LOS between you and it, you should see that wall.
     segs = segs[1:-1]
     hits = [matrix[x][y] for x, y in segs]
+    print(x1, y1, x2, y2, segs, hits)
     amt = hits.count(1)
     return amt == 0
 
@@ -140,9 +141,9 @@ def cover_area(origin_x, origin_y, reach, max_width, max_height):
     """
 
     int_reach = int(round(reach))
-    for y in range(origin_y - int_reach, origin_y + int_reach):
-        for x in range(origin_x - int_reach, origin_x + int_reach):
-            if x > 0 and y > 0 and x < max_width and y < max_height:
+    for y in range(origin_y - int_reach, origin_y + int_reach + 1):
+        for x in range(origin_x - int_reach, origin_x + int_reach + 1):
+            if x >= 0 and y >= 0 and x <= max_width and y < max_height:
                 if distance(origin_x, origin_y, x, y) <= reach:
                     yield (x, y)
 
