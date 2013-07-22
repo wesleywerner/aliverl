@@ -12,6 +12,8 @@
 
 * smooth sprite and viewport movement
 
+* remove unused bitwise.ttf
+
 * configure list of songs to loop during play. see if we can pause when switching to the main menu while a game is in progress.
 
 * site upload issue: find scp does not do directory structure :(
@@ -21,3 +23,9 @@
 ## achievements
 
 * "cyber ghost": level 4 deserialization allows passing through walls.
+
+## list of mods to track down
+
+* critical.it
+* darkness.s3m
+* d-base.xm
