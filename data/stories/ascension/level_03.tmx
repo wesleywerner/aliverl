@@ -3,17 +3,67 @@
  <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
   <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
  </tileset>
+ <layer name="Floor" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjaIBKIw9CwO4X6w6jgLmxmImMvLHo8cYhjAx44xKKIsBuEo3Ho9yRSPzZ3RuEwl1j3IwNsdkYQcD+ldtJaPyxu3Cg0h5oAAKeEFUk=
+  </data>
+ </layer>
  <layer name="Walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFMGBKJMYGVEmwB5vaUf2U6QcBSuJvpAIA0GUF4Q==
+   eJxjYBhYIArEpmhYjAT9qkSKkaLfBIubsGGQO9UYMN2sQobdyGxK9RMLaKWfiQz9oHCEhSE5+mFmgOLCjAF3mkJOb+pE2oNsF7b4JsetpIY3zF5y3I4PAABmuQnu
   </data>
  </layer>
  <objectgroup draworder="topdown" name="Objects" width="16" height="16">
-  <object name="player" type="player" gid="393" x="192" y="288"/>
-  <object gid="175" x="288" y="288">
+  <object name="player" type="player" gid="393" x="32" y="128"/>
+  <object gid="274" x="448" y="352"/>
+  <object gid="223" x="96" y="288"/>
+  <object gid="223" x="96" y="256"/>
+  <object gid="280" x="192" y="192"/>
+  <object gid="280" x="384" y="192"/>
+  <object gid="280" x="256" y="192">
    <properties>
-    <property name="trig" value="@exit"/>
+    <property name="trig1" value="@dialogue act 3 server output"/>
    </properties>
   </object>
+  <object gid="283" x="320" y="192"/>
+  <object gid="173" x="288" y="192"/>
+  <object gid="173" x="224" y="192"/>
+  <object name="mail term" type="term" gid="177" x="352" y="192">
+   <properties>
+    <property name="trig1" value="@dialogue act 3 checking my mail"/>
+    <property name="trig2" value="@give %dialogue act 3 checking my forum posts"/>
+   </properties>
+  </object>
+  <object gid="173" x="416" y="192"/>
+  <object gid="275" x="384" y="352"/>
+  <object gid="277" x="320" y="352"/>
+  <object gid="274" x="256" y="352"/>
+  <object gid="276" x="192" y="352"/>
+  <object gid="240" x="416" y="448"/>
+  <object name="double door" type="door" gid="124" x="160" y="256">
+   <properties>
+    <property name="trig" value="@transmute 127"/>
+   </properties>
+  </object>
+  <object name="double door" type="door" gid="124" x="160" y="288">
+   <properties>
+    <property name="trig" value="@transmute 127"/>
+   </properties>
+  </object>
+  <object name="double door switch" type="switch" gid="188" x="160" y="224">
+   <properties>
+    <property name="trig1" value="@message *bzzzt*"/>
+    <property name="trig2" value="@give %message nothing happens"/>
+   </properties>
+  </object>
+  <object gid="173" x="32" y="192"/>
+  <object name="blue ice" type="friend" gid="427" x="128" y="128">
+   <properties>
+    <property name="modes" value=""/>
+   </properties>
+  </object>
+  <object gid="190" x="160" y="128"/>
+  <object gid="157" x="160" y="96"/>
+  <object gid="172" x="128" y="96"/>
  </objectgroup>
 </map>

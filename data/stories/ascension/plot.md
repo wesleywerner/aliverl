@@ -32,7 +32,7 @@
 * A message from security says an anomaly was detected. Expect node malfunctions and bizarre behaviour. It says you must report to the diagnostics node for a code scan.
 * you comment you'd rather catch up on some forum posts.
 * actioning the terminal again, you read a reply post about implementing a snargle-function in a foo module. "ha, of course!" you think.
-* actioning the terminal again, you read a news post about the new quantum cpu's.
+* actioning some of the servers show logs and process stats.
 * You set off to the next node: diagnostics.
 * <filler>
 
