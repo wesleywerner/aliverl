@@ -312,6 +312,12 @@ Also noteworthy is that interactions triggered indirectly via @ontrigger ignore 
 
 # FAQ
 
-#### Q: Why does my upgrade ability not act upon any AI?
+## The AI in my map do not move around. Are they broken?
+
+A: For AI to take move turns they need a few things: A "type" of either "ai" or "friend", a "modes" of movement, and "speed".
+
+These can be set either on the map level by giving these as object properties with corresponding values, or by giving it a name that matches a character definition in your story.conf.
+
+## Why does my upgrade ability not act upon any AI?
 
     Your upgrade config needs the use_targeting value set True. If you have max_targets set to more than 1 then you also need to set the reach value.
