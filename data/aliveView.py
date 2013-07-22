@@ -664,7 +664,7 @@ class GraphicalView(object):
                     'connecting . . .', background)
             # follow up with a terminal printer
             text_color = getattr(color, datas['color'])
-            words = self.wrap_text(datas['datas'], 30)
+            words = self.wrap_text(datas['datas'], 44)
             new_transition = TerminalPrinter(
                 size=self.game_area.size,
                 background_color=color.magenta,
@@ -1154,7 +1154,7 @@ class GraphicalView(object):
 
             # load resources
             self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
-            self.largefont = pygame.font.Font('bitwise.ttf', 30)
+            self.largefont = pygame.font.Font('DejaVuSansMono-Bold.ttf', 16)
             self.button_font = pygame.font.Font('UbuntuMono-B.ttf', 24)
             self.defaultbackground = image.load(
                 'images/background.png').convert()
