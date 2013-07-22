@@ -13,6 +13,7 @@
 
 import os
 import sys
+import random
 import textwrap
 import pygame
 from pygame import image
@@ -905,7 +906,7 @@ class GraphicalView(object):
         # apply animation defs
         if anims:
             obj.frames = map(int, anims['frames'])
-            obj.fps = anims.as_float('fps')
+            obj.fps = anims.as_float('fps') + round(random.random() - 0.5, 1)
             obj.loop = anims.as_int('loop')
 
         # ensure at least 1 frame
