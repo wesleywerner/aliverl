@@ -850,9 +850,10 @@ class GameEngine(object):
                 if '@dialogue' in commands:
                     self.show_dialogue(user_data)
                 if '@give' in commands:
+                    rnd_name = self.random_identifier(obj.name)
                     trace.write('giving "%s" interaction "%s"' %
-                        (obj.name, name))
-                    obj.properties[self.random_identifier(obj.name)] = (
+                        (obj.name, rnd_name))
+                    obj.properties[rnd_name] = (
                         user_data.replace('%', '@'))
                 if '@transmute' in commands:
                     gid_list = [int(i)
