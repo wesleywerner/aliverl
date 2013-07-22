@@ -321,3 +321,11 @@ These can be set either on the map level by giving these as object properties wi
 ## Why does my upgrade ability not act upon any AI?
 
     Your upgrade config needs the use_targeting value set True. If you have max_targets set to more than 1 then you also need to set the reach value.
+
+## Why do doors not open or close when I trigger them from a switch?
+
+    Make sure you give them the @ontrigger and @transmute commands. Their names must also match exactly to what the switch is triggering.
+
+## Why do my doors open or close only once?
+
+    Give them the @repeat command, and to the switch that trigger them too.
