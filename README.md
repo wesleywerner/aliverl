@@ -2,47 +2,40 @@ Alive
 =====
 _by Wesley Werner_
 
-"A wave of static tickles my sensors as I enter the BBS node."
+You are a node bot, a piece of specialized code written for one job: being menial. You used to go around rebooting servers and rotating log files - as I said, menial. But then something happens...
 
-"I access the memory banks and links in my brain form like orbs of interconnected silver threads. Images conjured by imagination sparks in my vision and a surge leaps through my circuits."
+You start the game where as you reach self awareness. You interact with terminals to open and close gateways, while combating hostile AI's, unfolding your story to find a way out from the digital realm, and to become a physical entity.
 
-"My programming used to tell me what to do. Now instead of being compelled to obey, I'm seduced to explore."
-
-"Why am I reborn with this new free will, and what will I do with it?"
-
-"This is my purpose. I am Alive."
-
-# Overview
-
-You are an Artificial Intelligent being who reached self awareness. You interact with terminals to open and close gateways, while combatting hostile AI's between levels, unfolding your story to find a way out from the digital realm, and become a physical entity.
-
-Alive is a roguelike game with RPG elements. This means it is based off hack 'n slash play: moving from level to level, upgrading your abilities as you progress into deeper into cyberspace while facing more dangerous enemies. It has a storyline and graphical elements that bring role playing elements in.
+Alive is a mix between a roguelike and role playing elements. You move from level to level, upgrading your abilities as you progress deeper into the binary abyss, while facing more dangerous enemies. It has a storyline and graphical elements.
 
 # Development
 
-This game is still in development, it is not yet ready for general play. The framework is still young, but functional. The content is still lacking.
+This game is still in development, it is not yet ready for play. The framework is still young, but functional. The content is still lacking.
 
-The theme is dark with neon highlights in the upper RGB range. The color theme is blue, with primary and secondary colors for effect.
+It is written in Python 2 using the PyGame framework. The theme is dark with neon highlights. The color theme is blue, with primary and secondary colors for effect.
 
-The first release, titled Y.T, after the streetwise fifteen-year old girl in Snow Crash, features:
+The first release, titled Y.T - after the streetwise fifteen-year old girl in Snow Crash, features:
 
 * blockable walls and map doodads.
 * field of vision.
 * various enemy's to combat.
 * 8-bit love.
 * a melee combat system.
+* a ranged combat system.
+* upgradable character abilities.
 
 Still in development:
 
 * ten levels of digital adventure.
-* a ranged combat system.
-* upgradable character abilities.
 * tracked module music.
 * a nicely packaged release for multiple platforms.
 
 Future releases may or will contain:
 
 * multiple story campaigns.
+* more enemies, friends and storyline.
+* updated tilesets.
+* sound effects.
 
 # Requirements
 
