@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
+  <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
+ </tileset>
+ <layer name="Walls" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFMGBKJMYGVEmwB5vaUf2U6QcBSuJvpAIA0GUF4Q==
+  </data>
+ </layer>
+ <objectgroup draworder="topdown" name="Objects" width="16" height="16">
+  <object name="player" type="player" gid="393" x="192" y="288"/>
+  <object gid="175" x="288" y="288">
+   <properties>
+    <property name="trig" value="@exit"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
