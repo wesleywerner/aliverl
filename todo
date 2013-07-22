@@ -2,6 +2,10 @@
 
 * auto save the current game.
 
+* create @ontrigger @set or @counters that increment. during the trigger then test for @oncounter and if the value equals.
+
+* need a @command to change an object property values, like "type" and "modes".
+
 * create the menu with story selection, or resume a previously saved game.
 
 * smooth sprite and viewport movement
