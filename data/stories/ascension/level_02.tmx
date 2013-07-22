@@ -10,7 +10,7 @@
  </layer>
  <layer name="Walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJydUgEKwCAIlL6w1QeG9YHa/v+zbWAksitZcAidl6cWiagBHBPuRXrA9P/wQr96e6WvNHxGGr53pc+E+9skXqAOm3fRbGyd5PCfpa7uo6M4+9c+0T3ioqpvc4JDrzmbwx85f/Vof8WpR/vTc64Sm0Q9F8/8rUfv/sKE6/rZ/z0nXPdxAwVvFvM=
+   eJytkkkKgDAMRT9ewWGhS3FAXTqA3v9ettBijCYtovAJJDzzkyYHsAiqlZpVYdTg+9cE+NC/Q/yMy2eOy3dG+BbyfKmLm9DH5kqj3mhnqgjD+xQkPwjeR9eXzuHVRfDcp5SX+JL053wSwQ+4z//m5w/e7unAc/9TJE/vgsvveXZxcZHuJeb++Y3R99P4RKl5XrvfVal5Hye1CxdV
   </data>
  </layer>
  <objectgroup draworder="topdown" name="objects" width="16" height="16">
@@ -178,19 +178,7 @@
     <property name="pop" value="@ontrigger @transmute 235"/>
    </properties>
   </object>
-  <object name="cap 4" gid="231" x="32" y="320">
-   <properties>
-    <property name="msg" value="@ontrigger @message *pop*"/>
-    <property name="pop" value="@ontrigger @transmute 235"/>
-   </properties>
-  </object>
   <object name="cap 3" gid="231" x="32" y="288">
-   <properties>
-    <property name="msg" value="@ontrigger @message *pop*"/>
-    <property name="pop" value="@ontrigger @transmute 235"/>
-   </properties>
-  </object>
-  <object name="cap 2" gid="231" x="32" y="256">
    <properties>
     <property name="msg" value="@ontrigger @message *pop*"/>
     <property name="pop" value="@ontrigger @transmute 235"/>
