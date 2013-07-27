@@ -89,6 +89,9 @@ class GameEngine(object):
     store (dict)
         Temporary storage for transient player states.
 
+    can_warp (bool)
+        True if a level is done and the player can warp to the next level.
+
     """
 
     def __init__(self, evManager):
@@ -114,6 +117,7 @@ class GameEngine(object):
         self.trigger_queue = None
         self.target_object = None
         self.store = None
+        self.can_warp = False
 
     def notify(self, event):
         """
@@ -188,6 +192,7 @@ class GameEngine(object):
         if self.load_story(self.settings.storyname):
             self.turn = 0
             self.level = None
+            self.can_warp = True
             self.warp_level()
             self.game_in_progress = True
 
@@ -232,6 +237,8 @@ class GameEngine(object):
         Proceed to the next level.
         """
 
+        if not restart and not self.can_warp:
+            return
         if self.level:
             nextlevel = self.level.number
             if not restart:
@@ -245,6 +252,7 @@ class GameEngine(object):
             trace.write('Warning! There is no map for level %s. '
                         'I guess I am stuck here.' % (nextlevel))
             return False
+        self.can_warp = False
         self.store = {}
         self.trigger_queue = []
         self.event_queue = {}
@@ -841,7 +849,10 @@ class GameEngine(object):
                             (obj.name))
                         self.trigger_object(_trig_object, False)
                 if '@exit' in commands:
-                    self.warp_level()
+                    #self.warp_level()
+                    self.can_warp = True
+                    self.post_msg('press > to warp to the next level',
+                        color.message)
                     return
                 if '@message' in commands:
                     self.post_msg(user_data)
@@ -1278,6 +1289,7 @@ class GameEngine(object):
         """
 
         if event.request_type == 'warp to next level':
+            self.can_warp = True
             self.warp_level()
         elif event.request_type == 'restart level':
             self.player = self.store['player copy']

@@ -119,6 +119,8 @@ class KeyboardMouse(object):
             self.evManager.Post(PlayerMoveRequestEvent(movement[event.key]))
         elif event.key == pygame.K_TAB:
             self.evManager.Post(TargetTileEvent())
+        elif event.unicode == '>':
+            self.model.warp_level()
         elif mods & pygame.KMOD_CTRL:
             if event.key in debug_keys.keys():
                 self.evManager.Post(DebugEvent(debug_keys[event.key]))
