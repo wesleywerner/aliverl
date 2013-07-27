@@ -32,6 +32,8 @@
    <properties>
     <property name="trig1" value="@dialogue act 3 checking my mail"/>
     <property name="trig2" value="@give %dialogue act 3 checking my forum posts"/>
+    <property name="trig3" value="@exit"/>
+    <property name="trig7" value="@give %transmute 173"/>
    </properties>
   </object>
   <object gid="173" x="416" y="192"/>
@@ -65,5 +67,16 @@
   <object gid="190" x="160" y="128"/>
   <object gid="157" x="160" y="96"/>
   <object gid="172" x="128" y="96"/>
+  <object name="green ice" type="friend" gid="461" x="448" y="224">
+   <properties>
+    <property name="modes" value="updown"/>
+    <property name="speed" value="5"/>
+   </properties>
+  </object>
+  <object gid="188" x="480" y="224"/>
+  <object gid="188" x="480" y="256"/>
+  <object gid="188" x="480" y="288"/>
+  <object gid="188" x="480" y="320"/>
+  <object gid="283" x="448" y="192"/>
  </objectgroup>
 </map>
