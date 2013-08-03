@@ -473,7 +473,7 @@ class GraphicalView(object):
             self.image.blit(pix, (370, 70))
             values = '%s\n%s\n%s\n%s\n%s\n%s\n%s' % (
                 self.model.turn,
-                self.model.level.number,
+                self.model.level_number,
                 self.model.player.health,
                 self.model.player.power,
                 self.model.player.attack,
@@ -1439,7 +1439,7 @@ class GraphicalView(object):
             player_list = [u.name for u in self.model.player.upgrades]
             # grab the available upgrades for this level
             available_list = [u['name']
-                for u in alu.from_level(self.model.level.number)]
+                for u in alu.from_level(self.model.level_number)]
             # merge the lists
             upgrade_list = sorted(set(player_list + available_list))
 

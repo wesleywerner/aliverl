@@ -16,6 +16,7 @@ import sys
 import math
 import copy
 import random
+import pickle
 import traceback
 from const import *
 import color
@@ -77,6 +78,9 @@ class GameEngine(object):
         The list of level objects the player can interact with.
         This includes the player itself, other AI, terminals and doors.
 
+    level_number (int)
+        The current level the player is on
+
     turn (int)
         A counter of the current turn number.
 
@@ -109,6 +113,7 @@ class GameEngine(object):
         self.settings = Settings()
         self.game_in_progress = False
         self.level = None
+        self.level_number = 0
         self.story = None
         self.player = None
         self.upgrades_available = 0
@@ -126,6 +131,7 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.engine_pumping = False
+            self.save_game()
 
         elif isinstance(event, StateChangeEvent):
             self.change_state(event.state)
@@ -180,18 +186,20 @@ class GameEngine(object):
                 else:
                     self.event_queue[event] = delay
 
-
     def begin_game(self):
         """
         Begins a new game.
         event.story contains the campaign to play.
         """
 
-        #TODO allow selecting the storyline, pass it in here
-        self.settings.storyname = 'ascension'
-        if self.load_story(self.settings.storyname):
-            self.turn = 0
-            self.level = None
+        # set first game defaults
+        self.story_name = 'ascension'
+        self.turn = 0
+        self.level = None
+        self.level_number = 0
+        # load any saved game over these defaults
+        self.load_game()
+        if self.load_story(self.story_name):
             self.can_warp = True
             self.warp_level()
             self.game_in_progress = True
@@ -229,7 +237,7 @@ class GameEngine(object):
 
         """
 
-        self.player = self.store['player copy']
+        self.player = copy.deepcopy(self.store['player copy'])
         self.warp_level(restart=True)
 
     def warp_level(self, restart=False):
@@ -239,24 +247,20 @@ class GameEngine(object):
 
         if not restart and not self.can_warp:
             return
-        if self.level:
-            nextlevel = self.level.number
-            if not restart:
-                nextlevel += 1
-        else:
-            nextlevel = 1
+        if not restart:
+            self.level_number += 1
 
-        trace.write('warping to level: %s ' % (nextlevel,))
-        level_filename = self.story.level_file(nextlevel)
+        trace.write('warping to level: %s ' % self.level_number)
+        level_filename = self.story.level_file(self.level_number)
         if not level_filename or not os.path.exists(level_filename):
             trace.write('Warning! There is no map for level %s. '
-                        'I guess I am stuck here.' % (nextlevel))
+                        'I guess I am stuck here.' % self.level_number)
             return False
         self.can_warp = False
         self.store = {}
         self.trigger_queue = []
         self.event_queue = {}
-        self.level = GameLevel(nextlevel, level_filename)
+        self.level = GameLevel(level_filename)
         self.load_objects()
         self.load_matrix()
         self.look_around()
@@ -266,10 +270,10 @@ class GameEngine(object):
         # refresh any listeners before we post entry messages
         self.post(TickEvent())
         # show any level entry messages defined in the story
-        entry_message = self.story.entry_message(nextlevel)
+        entry_message = self.story.entry_message(self.level_number)
         if entry_message:
             self.post_msg(entry_message)
-        entry_dialogue = self.story.entry_dialogue(nextlevel)
+        entry_dialogue = self.story.entry_dialogue(self.level_number)
         if entry_dialogue:
             self.show_dialogue(entry_dialogue)
         # apply any special upgrades
@@ -1295,8 +1299,7 @@ class GameEngine(object):
             self.can_warp = True
             self.warp_level()
         elif event.request_type == 'restart level':
-            self.player = self.store['player copy']
-            self.warp_level(restart=True)
+            self.restart_level()
         elif event.request_type == 'reveal map':
             self.level.matrix['seen'] = rlhelper.make_matrix(
                 self.level_width, self.level_height, 1)
@@ -1309,6 +1312,35 @@ class GameEngine(object):
             self.player.health = self.player.max_health
             self.player.power = self.player.max_power
 
+    def save_game(self):
+        """
+        Saves the current game to a disk file.
+        """
+
+        trace.write('saving game')
+        if self.game_in_progress:
+            jar = pickle.Pickler(open('savegame', 'w'))
+            jar.dump(self.story_name)
+            jar.dump(self.level_number - 1)
+            jar.dump(self.turn)
+            jar.dump(self.upgrades_available)
+            jar.dump(self.store['player copy'])
+            jar = None
+
+    def load_game(self):
+        """
+        Loads a saved game from a disk file.
+        """
+
+        if os.path.exists('savegame'):
+            trace.write('loading saved game')
+            jar = pickle.Unpickler(open('savegame', 'r'))
+            self.story_name = jar.load()
+            self.level_number = jar.load()
+            self.turn = jar.load()
+            self.upgrades_available = jar.load()
+            self.player = jar.load()
+            jar = None
 
     @property
     def tile_width(self):
@@ -1355,16 +1387,14 @@ class GameLevel(object):
     Nothing here should persist across levels.
     """
 
-    def __init__(self, number, filename):
+    def __init__(self, filename):
         """
         Attributes:
 
-        number (int): the current level number.
         filename (str): relative path to the level file.
         data (TMXParser): tmx file data.
         """
 
-        self.number = number
         self.filename = filename
         self.tmx = TMXParser(filename)
         trace.write('loaded tmx data OK')
@@ -1462,4 +1492,4 @@ class Settings(object):
 
         """
 
-        self.storyname = None
+        pass

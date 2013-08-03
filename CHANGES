@@ -9,3 +9,4 @@
 * Active upgrades that have a one-time or a timed effect.
 * Upgrades that target specific enemies.
 * buttery smooth sprite and viewport movement
+* auto save and restore the game from the beginning of the level.
