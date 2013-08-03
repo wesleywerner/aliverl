@@ -126,7 +126,6 @@ class GraphicalView(object):
         self.windowsize = None
         self.sprites = {}
         self.message_sprites = []
-        self.messages = []
         self.last_tip_pos = 0
         self.transition_queue = []
         self.ui = None
@@ -195,7 +194,6 @@ class GraphicalView(object):
                 self.update_button_borders()
 
             elif isinstance(event, MessageEvent):
-                self.messages.append(event.message)
                 self.create_floating_tip(event.message,
                     event.color and event.color or color.message)
 
@@ -780,12 +778,11 @@ class GraphicalView(object):
 
         """
 
-        if self.messages:
-            if amount:
-                amount *= -1
-            pix = self.draw_text(
-                self.messages[amount:], self.smallfont, False, message_color)
-            self.image.blit(pix, (x, y))
+        if amount:
+            amount *= -1
+        pix = self.draw_text(
+            self.model.recent_messages[amount:], self.smallfont, False, message_color)
+        self.image.blit(pix, (x, y))
 
     def wrap_text(self, message, maxlength):
         """

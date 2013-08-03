@@ -96,6 +96,9 @@ class GameEngine(object):
     can_warp (bool)
         True if a level is done and the player can warp to the next level.
 
+    recent_messages (list)
+        A list of game messages.
+
     """
 
     def __init__(self, evManager):
@@ -123,6 +126,7 @@ class GameEngine(object):
         self.target_object = None
         self.store = None
         self.can_warp = False
+        self.recent_messages = []
 
     def notify(self, event):
         """
@@ -197,6 +201,7 @@ class GameEngine(object):
         self.turn = 0
         self.level = None
         self.level_number = 0
+        self.recent_messages = []
         # load any saved game over these defaults
         self.load_game()
         if self.load_story(self.story_name):
@@ -1270,6 +1275,7 @@ class GameEngine(object):
 
         """
 
+        self.recent_messages.append(message)
         self.evManager.Post(MessageEvent(message, color))
 
     def queue_event(self, event, seconds_delay):
@@ -1324,6 +1330,7 @@ class GameEngine(object):
             jar.dump(self.level_number - 1)
             jar.dump(self.turn)
             jar.dump(self.upgrades_available)
+            jar.dump(self.recent_messages)
             jar.dump(self.store['player copy'])
             jar = None
 
@@ -1339,6 +1346,7 @@ class GameEngine(object):
             self.level_number = jar.load()
             self.turn = jar.load()
             self.upgrades_available = jar.load()
+            self.recent_messages = jar.load()
             self.player = jar.load()
             jar = None
 
