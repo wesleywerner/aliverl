@@ -10,8 +10,6 @@
 
 * create the menu with story selection, or resume a previously saved game.
 
-* smooth sprite and viewport movement
-
 * remove unused bitwise.ttf
 
 * configure list of songs to loop during play. see if we can pause when switching to the main menu while a game is in progress.

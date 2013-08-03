@@ -38,6 +38,8 @@ class Sprite(pygame.sprite.Sprite):
         self._hasframes = False
         self.fps = 1
         self.loop = -1
+        self.shift_speed = 0
+        self.destination = None
 
     def addimage(self, image, fps, loop):
         """
@@ -77,6 +79,7 @@ class Sprite(pygame.sprite.Sprite):
     def update(self, t):
         """
         Update the sprite animation if enough time has passed.
+        Also update the position if it has a shift_speed and destination set.
         Called by the sprite group draw().
         """
 
@@ -94,32 +97,29 @@ class Sprite(pygame.sprite.Sprite):
                     self._frame = -1
             self.image = self._images[self._frame]
 
-
-class MovingSprite(Sprite):
-    """
-    A sprite with a vector that slides it to a destination.
-    """
-
-    def __init__(self, name, rect, destination, speed, *groups):
-        super(MovingSprite, self).__init__(name, rect, *groups)
-        self.destination = destination
-        self.speed = speed
-        self.done = False
-
-    def update(self, t):
-        # update location
-        super(MovingSprite, self).update(t)
-        if self.canupdate(t):
-            self._last_update = t
+        if self.shift_speed and self.destination:
             if self.rect.left < self.destination[0]:
-                self.rect.left += self.speed
+                self.rect.left += self.shift_speed
             if self.rect.left > self.destination[0]:
-                self.rect.left -= self.speed
+                self.rect.left -= self.shift_speed
             if self.rect.top < self.destination[1]:
-                self.rect.top += self.speed
+                self.rect.top += self.shift_speed
             if self.rect.top > self.destination[1]:
-                self.rect.top -= self.speed
-            self.done = self.rect.topleft == self.destination
+                self.rect.top -= self.shift_speed
+
+    def set_position(self, x, y, shift_speed=0):
+        """
+        Set the sprite position.
+        shift_speed determines the amount of pixels to shift the sprite to
+        it's new location. 0 is an instant jump.
+        """
+
+        if shift_speed == 0:
+            self.shift_speed = 0
+            self.rect.topleft = (x, y)
+        else:
+            self.shift_speed = shift_speed
+            self.destination = (x, y)
 
 
 class TransitionBase(object):

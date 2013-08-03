@@ -1036,8 +1036,9 @@ class GraphicalView(object):
 
         sprite = self.sprites.get(id(event.obj), None)
         if sprite:
-            sprite.rect.topleft = ((event.obj.x * self.tile_w),
-                                    (event.obj.y * self.tile_h))
+            sprite.set_position(event.obj.x * self.tile_w,
+                                event.obj.y * self.tile_h,
+                                10)
             return
 
     def kill_sprite(self, obj):
