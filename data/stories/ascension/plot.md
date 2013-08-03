@@ -34,7 +34,7 @@
 * actioning the terminal again, you read a reply post about implementing a snargle-function in a foo module. "ha, of course!" you think.
 * actioning some of the servers show logs and process stats.
 * You set off to the next node: diagnostics.
-* <filler>
+* a smaller terminal will issue you an upgrade.
 
 # level four
 
