@@ -180,7 +180,7 @@ class KeyboardMouse(object):
         Handles info screen keys.
         """
 
-        if event.key == pygame.K_ESCAPE:
+        if event.key in (pygame.K_ESCAPE, pygame.K_q):
             self.evManager.Post(StateChangeEvent(None))
         else:
             # pass keys to view listening for ui interaction
