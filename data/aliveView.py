@@ -659,6 +659,7 @@ class GraphicalView(object):
 
         """
 
+        trace.write('showing dialogue "%s"' % dialogue.name)
         # we only need one slide-in transition for many screens.
         terminal_slidein_added = False
         # a dialogue may contain multiple screens. Keep this in mind.
@@ -1170,7 +1171,7 @@ class GraphicalView(object):
             self.image.set_colorkey(color.magenta)
 
             # holding a key will repeat it
-            pygame.key.set_repeat(150, 100)
+            pygame.key.set_repeat(250, 200)
 
             # load resources
             self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
