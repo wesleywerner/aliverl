@@ -76,7 +76,12 @@
   <object gid="188" x="480" y="224"/>
   <object gid="188" x="480" y="256"/>
   <object gid="188" x="480" y="288"/>
-  <object gid="188" x="480" y="320"/>
   <object gid="283" x="448" y="192"/>
+  <object name="upgrade terminal" type="term" gid="192" x="480" y="320">
+   <properties>
+    <property name="trig1" value="@dialogue act 3 upgrade"/>
+    <property name="trig2" value="@upgrade"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
