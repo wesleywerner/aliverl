@@ -3,12 +3,172 @@
  <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
   <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
  </tileset>
- <layer name="Walls" width="32" height="32">
+ <layer name="Floor" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJwTZWBgMCURKxMpRgiLAbEqA+kAmx5yzSFHH7UAufYPtP9H7R+1f9T+UfupYb8JA+n1hjoWs9TIMMecTHdTCwzV+mc42U9O+hPDYpYoGeaQm/6GU/4ftX/U/lH7R+0fCDAY/E9Ou8WMSDFi2lEACXomdQ==
+   eJzVlgEOgzAIRTndnB5gdXr/e8wm/QkhoKjQRRLi1JT3aWv/iJ4b45aTcu+9avVm450W75by3psyvlu+thycmqL5S+OvB5qy+KQ81zRl8a1e97Rm999z/sfGknutV//W/tc0ZfDrXiv03/3v0dSTvxeyztJ0eq93YmS1vOd1VICNuKuh1vucyJWNA3c5WYPrvTqWr+PVHq6EnG+5Hj0CGiLYfO5m8q9b5HcMDWVHw0T6eRPBP9IwkX3eRfEtDWBXLxiUcZF8aKhs+B5nZ/cPv0MOgp3JB0fToPlWJJ/3iP+c8F3LN6P4ki33n9QQzUcd6QOWhgy+5UGahmj+kf8V9lv6fm/fiY4fPgKJ7w==
   </data>
  </layer>
- <objectgroup draworder="topdown" name="Player" width="32" height="32">
+ <layer name="Walls" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztlg0KgCAMRncJu0BYFyi9/80qKCgbbeYfkw2GMPJ7bYqbAYA10kdmjPJhdwvxhu35qyORv8C7lr4iP5el5n9Z7fxbn7/yld8LH3vLwr4C8OwvM6I1ETqYlmf8tw3WFAu1OPUv8T5L5JeqP3X/3Pmtu8UGRNsQOpgW5/595UHFODrKl8dvPf/kMqnzb+vzV34/fM7cgvURTozyY47aAJxcKhk=
+  </data>
+ </layer>
+ <objectgroup draworder="topdown" name="Diagnostics" width="32" height="32"/>
+ <objectgroup draworder="topdown" name="Storage" width="32" height="32">
+  <object gid="274" x="96" y="160"/>
+  <object gid="274" x="96" y="352"/>
+  <object gid="274" x="320" y="128"/>
+  <object gid="274" x="320" y="320"/>
+  <object gid="275" x="320" y="192"/>
+  <object gid="275" x="96" y="288"/>
+  <object gid="276" x="320" y="256"/>
+  <object gid="276" x="96" y="224"/>
+  <object gid="277" x="320" y="384"/>
+  <object gid="277" x="96" y="96"/>
+  <object gid="274" x="160" y="288"/>
+  <object gid="274" x="256" y="192"/>
+  <object gid="275" x="160" y="96"/>
+  <object gid="275" x="256" y="384"/>
+  <object gid="276" x="160" y="352"/>
+  <object gid="276" x="256" y="128"/>
+  <object gid="277" x="160" y="224"/>
+  <object gid="277" x="256" y="320"/>
+  <object gid="276" x="256" y="256"/>
+  <object gid="274" x="160" y="160"/>
+  <object gid="280" x="128" y="320"/>
+  <object gid="278" x="288" y="160"/>
+  <object gid="282" x="128" y="128"/>
+  <object gid="279" x="288" y="352"/>
+  <object gid="173" x="128" y="224"/>
+  <object gid="173" x="288" y="256"/>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="Build Lab" width="32" height="32">
+  <object gid="280" x="128" y="768"/>
+  <object gid="280" x="128" y="896"/>
+  <object gid="280" x="288" y="768"/>
+  <object gid="280" x="192" y="928"/>
+  <object gid="280" x="352" y="832"/>
+  <object gid="280" x="352" y="960"/>
+  <object gid="280" x="96" y="992"/>
+  <object gid="280" x="32" y="736"/>
+  <object gid="280" x="192" y="640"/>
+  <object gid="240" x="192" y="832"/>
+  <object gid="240" x="224" y="800"/>
+  <object gid="244" x="192" y="800"/>
+  <object gid="240" x="224" y="832"/>
+  <object gid="231" x="0" y="672"/>
+  <object gid="231" x="0" y="832"/>
+  <object gid="231" x="0" y="992"/>
+  <object gid="214" x="128" y="1024"/>
+  <object gid="214" x="256" y="1024"/>
+  <object gid="279" x="256" y="896"/>
+  <object gid="279" x="224" y="704"/>
+  <object gid="278" x="96" y="832"/>
+  <object gid="283" x="32" y="896"/>
+  <object gid="282" x="352" y="704"/>
+  <object gid="281" x="96" y="704"/>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="The Conduit" width="32" height="32">
+  <object gid="223" x="672" y="96"/>
+  <object gid="223" x="768" y="96"/>
+  <object gid="223" x="800" y="96"/>
+  <object gid="223" x="896" y="96"/>
+  <object gid="223" x="704" y="128"/>
+  <object gid="223" x="672" y="160"/>
+  <object gid="223" x="704" y="192"/>
+  <object gid="223" x="672" y="224"/>
+  <object gid="223" x="768" y="160"/>
+  <object gid="223" x="800" y="160"/>
+  <object gid="223" x="800" y="224"/>
+  <object gid="223" x="768" y="224"/>
+  <object gid="223" x="768" y="288"/>
+  <object gid="223" x="800" y="352"/>
+  <object gid="223" x="768" y="352"/>
+  <object gid="223" x="896" y="160"/>
+  <object gid="223" x="960" y="192"/>
+  <object gid="223" x="896" y="224"/>
+  <object gid="223" x="960" y="256"/>
+  <object gid="223" x="896" y="288"/>
+  <object gid="223" x="960" y="320"/>
+  <object gid="223" x="896" y="352"/>
+  <object gid="223" x="960" y="384"/>
+  <object gid="223" x="704" y="256"/>
+  <object gid="223" x="672" y="288"/>
+  <object gid="223" x="704" y="320"/>
+  <object gid="223" x="672" y="352"/>
+  <object gid="223" x="704" y="384"/>
+  <object gid="230" x="960" y="128"/>
+  <object gid="230" x="800" y="288"/>
+  <object gid="188" x="992" y="288"/>
+  <object gid="188" x="992" y="160"/>
+  <object gid="171" x="864" y="32"/>
+  <object gid="173" x="704" y="32"/>
+  <object name="blue ice" type="friend" gid="427" x="928" y="288">
+   <properties>
+    <property name="modes" value="random"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="704" y="64">
+   <properties>
+    <property name="modes" value="random"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="Transport Hub" width="32" height="32">
   <object name="player" type="player" gid="393" x="448" y="544"/>
+  <object gid="190" x="416" y="384"/>
+  <object gid="188" x="576" y="256"/>
+  <object gid="188" x="416" y="736"/>
+  <object gid="171" x="384" y="608"/>
+  <object gid="171" x="768" y="448"/>
+  <object gid="173" x="800" y="608"/>
+  <object gid="278" x="448" y="640"/>
+  <object gid="280" x="640" y="576"/>
+  <object gid="279" x="416" y="480"/>
+  <object name="blue ice" type="friend" gid="427" x="672" y="576">
+   <properties>
+    <property name="modes" value="leftright"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="384" y="480">
+   <properties>
+    <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="448" y="352">
+   <properties>
+    <property name="modes" value="updown,random"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="448" y="672">
+   <properties>
+    <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="448" y="256">
+   <properties>
+    <property name="modes" value="leftright"/>
+   </properties>
+  </object>
+  <object gid="278" x="448" y="192"/>
+  <object gid="283" x="832" y="576"/>
+  <object name="blue ice" type="friend" gid="427" x="288" y="320">
+   <properties>
+    <property name="modes" value=""/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="160" y="128">
+   <properties>
+    <property name="modes" value=""/>
+   </properties>
+  </object>
+  <object gid="175" x="480" y="512"/>
+  <object gid="175" x="512" y="512"/>
+  <object gid="192" x="480" y="544"/>
+  <object gid="192" x="512" y="544"/>
+  <object gid="192" x="480" y="512"/>
+  <object gid="192" x="512" y="512"/>
+  <object gid="175" x="480" y="544"/>
+  <object gid="175" x="512" y="544"/>
  </objectgroup>
 </map>
