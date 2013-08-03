@@ -125,8 +125,7 @@ class GraphicalView(object):
         self.viewport_shift = None
         self.windowsize = None
         self.sprites = {}
-        # TODO replace scrollertext with a list (like we do with sprites dict)
-        self.scrollertexts = None
+        self.message_sprites = []
         self.messages = []
         self.last_tip_pos = 0
         self.transition_queue = []
@@ -251,7 +250,7 @@ class GraphicalView(object):
                     self.show_help_screens()
                 elif event.state == STATE_LEVEL_FAIL:
                     # housekeeping: reset some things for level restart
-                    self.scrollertexts.empty()
+                    self.message_sprites = []
                     self.queue_slide_transition('', None, color.ai_crash)
 
             elif isinstance(event, RefreshUpgradesEvent):
@@ -585,15 +584,17 @@ class GraphicalView(object):
         Draw any scrolling text sprites.
         """
 
-        if not self.scrollertexts:
-            return
         ticks = pygame.time.get_ticks()
-        for sprite in self.scrollertexts:
-            if sprite.done:
-                self.scrollertexts.remove(sprite)
-            else:
+        for sprite in self.message_sprites:
+            # utilize the sprite's fps attribute to determine update speed.
+            if sprite.canupdate(ticks):
                 sprite.update(ticks)
-                self.play_image.blit(sprite.image, sprite.rect)
+            if not sprite.is_moving:
+                self.message_sprites.remove(sprite)
+            else:
+                new_rect = sprite.rect.move(
+                    -self.viewport.left, -self.viewport.top)
+                self.play_image.blit(sprite.image, new_rect)
 
     def step_transitions(self):
         """
@@ -941,6 +942,7 @@ class GraphicalView(object):
         """
 
         self.sprites = {}
+        self.message_sprites = []
 
         for obj in [o for o in self.model.objects if o.gid > -1]:
             x = (obj.x * self.tile_w)
@@ -988,10 +990,6 @@ class GraphicalView(object):
 
         """
 
-        if not self.scrollertexts:
-            self.scrollertexts = pygame.sprite.Group()
-            self.scrollertexts.empty()
-
         bmp = self.draw_outlined_text(self.smallfont, message,
                                         fontcolor, color.black)
         # limit the message position within sane boundaries
@@ -1002,12 +1000,10 @@ class GraphicalView(object):
         if pos[0] < 1:
             pos = (2, pos[1])
             dest = (2, dest[1])
-        s = MovingSprite('',
-                        pygame.Rect(pos, bmp.get_size()),
-                        dest,
-                        1,
-                        self.scrollertexts)
-        s.addimage(bmp, 10, 0)
+        s = Sprite('scoller message', pygame.Rect(pos, bmp.get_size()))
+        s.addimage(bmp, 8, 0)
+        s.set_position(dest[0], dest[1], 1)
+        self.message_sprites.append(s)
 
     def create_floating_tip(self, message, fontcolor):
         """
@@ -1038,7 +1034,7 @@ class GraphicalView(object):
         if sprite:
             sprite.set_position(event.obj.x * self.tile_w,
                                 event.obj.y * self.tile_h,
-                                10)
+                                8)
             return
 
     def kill_sprite(self, obj):

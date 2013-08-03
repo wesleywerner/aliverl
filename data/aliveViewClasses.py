@@ -41,6 +41,15 @@ class Sprite(pygame.sprite.Sprite):
         self.shift_speed = 0
         self.destination = None
 
+    @property
+    def is_moving(self):
+        """
+        Test if this sprite is busy moving to a destination position.
+        """
+
+        if self.shift_speed and self.destination:
+            return self.rect.topleft != self.destination
+
     def addimage(self, image, fps, loop):
         """
         Allows adding of a animated sprite image.
@@ -48,7 +57,7 @@ class Sprite(pygame.sprite.Sprite):
         """
 
         self._images.append(image)
-        self._hasframes = len(self._images) > 1
+        self._hasframes = len(self._images) > 0
         if len(self._images) > 0:
             self.image = self._images[0]
         if fps <= 0:
@@ -83,20 +92,6 @@ class Sprite(pygame.sprite.Sprite):
         Called by the sprite group draw().
         """
 
-        if not self._hasframes:
-            return
-        if self.canupdate(t):
-            self._last_update = t
-            self._frame += 1
-            if self._frame >= len(self._images):
-                self._frame = 0
-                if self.loop > 0:
-                    self.loop -= 1
-                if self.loop == 0:
-                    self._hasframes = False
-                    self._frame = -1
-            self.image = self._images[self._frame]
-
         if self.shift_speed and self.destination:
             if self.rect.left < self.destination[0]:
                 self.rect.left += self.shift_speed
@@ -106,6 +101,19 @@ class Sprite(pygame.sprite.Sprite):
                 self.rect.top += self.shift_speed
             if self.rect.top > self.destination[1]:
                 self.rect.top -= self.shift_speed
+
+        if self.canupdate(t):
+            self._last_update = t
+            if self._hasframes:
+                self._frame += 1
+                if self._frame >= len(self._images):
+                    self._frame = 0
+                    if self.loop > 0:
+                        self.loop -= 1
+                    if self.loop == 0:
+                        self._hasframes = False
+                        self._frame = -1
+                self.image = self._images[self._frame]
 
     def set_position(self, x, y, shift_speed=0):
         """
