@@ -777,7 +777,7 @@ class GameEngine(object):
 
         """
 
-        trace.write(('trigger "%s"%s' %
+        trace.write(('interact with "%s"%s' %
                     (obj.name, (direct) and (' directly') or (' indirctly'))))
         for key in obj.properties.keys():
             prop = obj.properties[key]
@@ -803,6 +803,7 @@ class GameEngine(object):
                         'delay': delay and int(delay[0].split('=')[1]) or 0,
                         'user_data': user_data,
                         })
+                    trace.write('\t"%s" added to trigger queue' % key)
 
     def random_identifier(self, prefix=''):
         """
@@ -831,13 +832,14 @@ class GameEngine(object):
         while self.trigger_queue:
             trig = self.trigger_queue.pop()
             name = trig['name']
+            trace.write('processing the "%s" trigger' % name)
             direct = trig['direct']
             obj = trig['obj']
             commands = trig['commands']
             user_data = trig['user_data']
             delay = trig['delay']
             if delay > 0:
-                trace.write('interaction "%s" delayed %s turn(s)' %
+                trace.write('\t"%s" trigger delayed %s turn(s)' %
                     (name, delay))
                 trig['delay'] = delay - 1
                 requeue.append(trig)
@@ -845,40 +847,41 @@ class GameEngine(object):
                 if '@trigger' in commands and direct:
                     _object_list = self.get_object_by_name(user_data)
                     for _trig_object in _object_list:
-                        trace.write('"%s" triggers another object:' %
-                            (obj.name))
+                        trace.write('\t"%s" triggers "%s"' %
+                            (obj.name, _trig_object.name))
                         self.trigger_object(_trig_object, False)
                 if '@exit' in commands:
                     #self.warp_level()
+                    trace.write('\tplayer can now warp to the next level')
                     self.can_warp = True
                     self.post_msg('press > to warp to the next level',
                         color.message)
-                    return
                 if '@message' in commands:
                     self.post_msg(user_data)
                 if '@upgrade' in commands:
+                    trace.write('giving player an upgrade token')
                     self.allow_upgrade()
                 if '@dialogue' in commands:
                     self.show_dialogue(user_data)
                 if '@give' in commands:
                     rnd_name = self.random_identifier(obj.name)
-                    trace.write('giving "%s" interaction "%s"' %
-                        (obj.name, rnd_name))
-                    obj.properties[rnd_name] = (
-                        user_data.replace('%', '@'))
+                    give_data = user_data.replace('%', '@')
+                    trace.write('\tgiving "%s" interaction "%s" -> "%s"' %
+                        (obj.name, rnd_name, give_data))
+                    obj.properties[rnd_name] = (give_data)
                 if '@transmute' in commands:
                     gid_list = [int(i)
                         for i in user_data.replace(' ', '').split(',')]
                     self.transmute_object(obj, gid_list)
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
-                    trace.write('kill interaction "%s" on "%s"' %
+                    trace.write('\tkill interaction "%s" on "%s"' %
                         (name, obj.name))
                     if name in obj.properties.keys():
                         del obj.properties[name]
                     else:
                         trace.write(
-                            'Property %s on Object %s already deleted.' %
+                            '\tProperty "%s" on "%s" already deleted.' %
                             (name, obj.name))
         self.trigger_queue = requeue
 
