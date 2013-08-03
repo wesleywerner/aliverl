@@ -4,8 +4,6 @@
 
 * need a @command to change an object property values, like "type" and "modes".
 
-* show the level title on the main screen, or the info screen.
-
 * create the menu with story selection, or resume a previously saved game.
 
 * remove unused bitwise.ttf

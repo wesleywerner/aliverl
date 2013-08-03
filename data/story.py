@@ -113,6 +113,18 @@ class StoryData(object):
             if 'entry message' in level.keys():
                 return level['entry message']
 
+    def level_title(self, level_number):
+        """
+        Return the title for a level, or None if empty.
+
+        """
+
+        key = self.level_key(level_number)
+        if key:
+            level = self.conf['levels'][key]
+            if 'title' in level.keys():
+                return level['title']
+
     def entry_dialogue(self, level_number):
         """
         Get the entry dialogue for a level, or None if empty.

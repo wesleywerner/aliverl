@@ -463,7 +463,12 @@ class GraphicalView(object):
             # a helpful message
             pix = self.largefont.render(
                 'you are alive!', False, color.message)
-            self.image.blit(pix, (28, 75))
+            self.image.blit(pix, (28, 70))
+            # the level name
+            pix = self.largefont.render(
+                self.model.story.level_title(self.model.level_number),
+                False, color.message)
+            self.image.blit(pix, (28, 90))
             # column of stats titles
             titles = 'turn\nlevel\nhealth\npower\nattack\nspeed\nview'
             pix = self.draw_text_block(
