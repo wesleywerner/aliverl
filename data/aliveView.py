@@ -79,6 +79,11 @@ class GraphicalView(object):
         It moves around with the player character via the
         update_viewport() call.
 
+    viewport_shift (Rect):
+        On each game tick the viewport will shift to lean towards the same
+        position ast his virtual viewport.
+        This gives a gradual moving like motion.
+
     sprites (Dict):
         A sprite lookup by object id.
 
@@ -117,6 +122,7 @@ class GraphicalView(object):
         self.play_area = None
         self.statsarea = None
         self.viewport = None
+        self.viewport_shift = None
         self.windowsize = None
         self.sprites = {}
         # TODO replace scrollertext with a list (like we do with sprites dict)
@@ -285,6 +291,8 @@ class GraphicalView(object):
             import traceback
             print('\n' + str(traceback.format_exc()))
             sys.exit(1)
+
+        self.shift_viewport()
 
         # reset the main image by painting a background over it
         self.image.blit(self.defaultbackground, (0, 0))
@@ -1052,56 +1060,59 @@ class GraphicalView(object):
         Auto center the viewport if the player gets too close to any edge.
         """
 
-        # make some values easier to read
         px, py = self.model.player.getpixelxy()
-        vp = self.viewport
 
-        # how close to edges we need to be to shfit the view (in tiles)
-        A = 4 * self.tile_w
-        B = 4 * self.tile_h
+        # distance from the edges before we shift (in tiles)
+        tolerance = 6 * self.tile_w
 
-        x_min, y_min = (vp.left + A, vp.top + B)
-        x_max, y_max = (vp.left + vp.width - A, vp.top + vp.height - B)
-
-        if px < x_min:
-            self.viewport = self.viewport.move(-A, 0)
-        if px > x_max:
-            self.viewport = self.viewport.move(A, 0)
-        if py < y_min:
-            self.viewport = self.viewport.move(0, -A)
-        if py > y_max:
-            self.viewport = self.viewport.move(0, A)
-
+        # shrink the viewport to create a buffer so we can detect a shift
+        # a few tiles away from the edge
         # if the player is not inside the viewport, center her.
         # this may occur on level warps.
-        if not self.viewport.collidepoint(px, py):
-            self.viewport.center = (px, py)
+        intolerant_viewport = self.viewport_shift.inflate(-tolerance, -tolerance)
+        if not intolerant_viewport.collidepoint(px, py):
+            self.viewport_shift.center = (px, py)
 
-        # snap to top-left edges
-        if self.viewport.left < 0:
-            self.viewport.left = 0
-        if self.viewport.top < 0:
-            self.viewport.top = 0
-        # and the bottom-right edges
-        if self.viewport.right > self.tmx.width * self.tile_w:
-            self.viewport.right = self.tmx.width * self.tile_w
-        if self.viewport.bottom > self.tmx.height * self.tile_h:
-            self.viewport.bottom = self.tmx.height * self.tile_h
+        # snap to top and left edges
+        if self.viewport_shift.left < 0:
+            self.viewport_shift.left = 0
+        if self.viewport_shift.top < 0:
+            self.viewport_shift.top = 0
+
+        # snap to the bottom and right edges
+        map_width = self.tmx.width * self.tile_w
+        map_height = self.tmx.height * self.tile_h
+        if self.viewport_shift.right > map_width:
+            self.viewport_shift.right = map_width
+        if self.viewport_shift.bottom > map_height:
+            self.viewport_shift.bottom = map_height
 
         # center viewport left if the map fits in snuggly
-        vp = self.viewport
-        if self.tmx.width * self.tile_w <= vp.width:
-            self.viewport.left = (self.tmx.width * self.tile_w - vp.width) / 2
+        if map_width <= self.viewport_shift.width:
+            self.viewport_shift.left = (map_width - self.viewport_shift.width) / 2
         # center viewport top if the map fits in snuggly
-        if self.tmx.height * self.tile_h <= vp.height:
-            self.viewport.top = (self.tmx.height * self.tile_h - vp.height) / 2
+        if map_height <= self.viewport_shift.height:
+            self.viewport_shift.top = (map_height - self.viewport_shift.height) / 2
 
-    def adjust_viewport(self, event):
+
+    def shift_viewport(self):
+        """
+        Shift the actual viewport over time to match our virtual one, giving
+        a motion like effect.
         """
 
-        """
-
-        pass
+        # note that shifts need to happen in multiples of 2 since the viewport
+        # shifts by tile size
+        x_diff = self.viewport.left - self.viewport_shift.left
+        y_diff = self.viewport.top - self.viewport_shift.top
+        if x_diff < 0:
+            self.viewport.left += 8
+        if x_diff > 0:
+            self.viewport.left -= 8
+        if y_diff < 0:
+            self.viewport.top += 8
+        if y_diff > 0:
+            self.viewport.top -= 8
 
     def play_music(self, level):
         playlist = [
@@ -1131,6 +1142,7 @@ class GraphicalView(object):
 
             # the viewport is a shifting area within the game map
             self.viewport = pygame.Rect(0, 0, 512, 512)
+            self.viewport_shift = self.viewport.copy()
 
             # the on-screen area for drawing game play action
             self.play_area = pygame.Rect((75, 66), self.viewport.size)
@@ -1159,7 +1171,7 @@ class GraphicalView(object):
             self.image.set_colorkey(color.magenta)
 
             # holding a key will repeat it
-            pygame.key.set_repeat(200, 150)
+            pygame.key.set_repeat(150, 100)
 
             # load resources
             self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
