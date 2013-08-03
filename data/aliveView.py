@@ -510,8 +510,10 @@ class GraphicalView(object):
         if target:
             sprite = self.sprites.get(id(target), None)
             if sprite:
+                new_rect = sprite.rect.move(
+                    -self.viewport.left, -self.viewport.top)
                 pygame.draw.rect(self.play_image,
-                                color.target_selection, sprite.rect, 1)
+                                color.target_selection, new_rect, 1)
 
     def draw_sprites(self):
         """
