@@ -119,6 +119,7 @@ class GraphicalView(object):
         self.play_image = None
         #TODO remove statscanvas ?
         self.statscanvas = None
+        self.graphs = {}
         self.play_area = None
         self.statsarea = None
         self.viewport = None
@@ -192,6 +193,7 @@ class GraphicalView(object):
             elif isinstance(event, PlayerMovedEvent):
                 self.update_viewport()
                 self.update_button_borders()
+                self.update_graphs()
 
             elif isinstance(event, MessageEvent):
                 self.create_floating_tip(event.message,
@@ -731,10 +733,26 @@ class GraphicalView(object):
 
         self.image.blit(self.borders, (0, 0))
 
+    def update_graphs(self):
+        """
+        Update graphs to reflect player stats.
+
+        """
+
+        print(self.model.player.health_history)
+        self.graphs['health'].set_values(
+            self.model.player.health_history,
+            self.model.player.max_health)
+
     def draw_player_stats(self):
         """
         Draw the player stats onto statscanvas.
         """
+
+        ticks = pygame.time.get_ticks()
+        for key, graph in self.graphs.items():
+            graph.update(ticks)
+            graph.draw(self.image)
 
         def _colorband(ratio):
             # gradient green for healthy and red for hurt
@@ -1194,6 +1212,16 @@ class GraphicalView(object):
 
             # set up all our ui buttons
             self.setup_ui_manager()
+
+            # set up graph objects
+            self.graphs['health'] = GraphDisplay(
+                fps=30,
+                base_color=color.green,
+                title='health',
+                font=self.smallfont,
+                rect=(180, 23, 80, 40),
+                background_image=None
+                )
 
         except Exception, e:
             # these lines pose an interesting problem:
