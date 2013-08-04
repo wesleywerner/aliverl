@@ -1492,7 +1492,7 @@ class GraphicalView(object):
                     new_color = color.green
                 elif upgrade.is_cooling:
                     new_color = color.yellow
-                button.enabled = upgrade.ready
+                #button.enabled = upgrade.ready
                 button.border_color = new_color
 
     def ui_click_event(self, context, ux):
