@@ -670,15 +670,15 @@ class GraphicalView(object):
             datas = dialogue[dialogue_screen]
             # terminal type defaults
             set_background = self.terminal_bg
-            set_wrap = 44
-            set_x_offset = 80
-            set_y_offset = 80
+            set_wrap = 43
+            set_x_offset = 55
+            set_y_offset = 55
             # override story types
             if datas['type'] == 'story':
                 set_background = self.dialogue_bg
-                set_wrap = 50
-                set_x_offset = 40
-                set_y_offset = 40
+                #set_wrap = 45
+                #set_x_offset = 55
+                #set_y_offset = 55
             # start with a Slide-in Transition
             if not terminal_slidein_added:
                 terminal_slidein_added = True
@@ -1176,8 +1176,8 @@ class GraphicalView(object):
             pygame.key.set_repeat(250, 200)
 
             # load resources
-            self.smallfont = pygame.font.Font('UbuntuMono-B.ttf', 16)
-            self.largefont = pygame.font.Font('DejaVuSansMono-Bold.ttf', 16)
+            self.smallfont = pygame.font.Font('DejaVuSansMono-Bold.ttf', 16)
+            self.largefont = pygame.font.Font('DejaVuSansMono-Bold.ttf', 20)
             self.button_font = pygame.font.Font('UbuntuMono-B.ttf', 24)
             self.defaultbackground = image.load(
                 'images/background.png').convert()
