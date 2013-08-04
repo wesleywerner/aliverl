@@ -459,21 +459,17 @@ class GraphicalView(object):
         self.image.blit(self.info_screen, (0, 0))
 
         if game_state == STATE_INFO_HOME:
-            self.draw_action_shot(28, 122)
-            # a helpful message
-            pix = self.largefont.render(
-                'you are alive!', False, color.message)
-            self.image.blit(pix, (28, 70))
+            self.draw_action_shot(220, 94)
             # the level name
             pix = self.largefont.render(
                 self.model.story.level_title(self.model.level_number),
                 False, color.message)
-            self.image.blit(pix, (28, 90))
+            self.image.blit(pix, (28, 55))
             # column of stats titles
             titles = 'turn\nlevel\nhealth\npower\nattack\nspeed\nview'
             pix = self.draw_text_block(
-                titles, self.largefont, False, color.desaturated_cyan)
-            self.image.blit(pix, (370, 70))
+                titles, self.largefont, False, color.desaturated_green)
+            self.image.blit(pix, (28, 94))
             values = '%s\n%s\n%s\n%s\n%s\n%s\n%s' % (
                 self.model.turn,
                 self.model.level_number,
@@ -485,7 +481,7 @@ class GraphicalView(object):
                 )
             pix = self.draw_text_block(
                 values, self.largefont, False, color.desaturated_yellow)
-            self.image.blit(pix, (490, 70))
+            self.image.blit(pix, (140, 94))
             self.draw_messages(28, 290, amount=15)
 
         elif game_state == STATE_INFO_UPGRADES:
