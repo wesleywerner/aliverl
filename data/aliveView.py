@@ -424,7 +424,7 @@ class GraphicalView(object):
         snap_rect = snap_rect.move(-self.viewport.left, -self.viewport.top)
         self.image.blit(self.play_image, (x, y), snap_rect)
         # surround with a nice rectangle
-        pygame.draw.rect(self.image, color.blue,
+        pygame.draw.rect(self.image, color.darkest_green,
             (x, y, snap_rect[2], snap_rect[3]), 2)
 
     def draw_level_fail_screen(self):
