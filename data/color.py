@@ -218,12 +218,12 @@ magenta = (255, 0, 255)
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-player_text = desaturated_green
+player_text = lighter_green
 ai_text = desaturated_cyan
-terminal_text = gray
+terminal_text = green
 message = lighter_blue
 tip = gray
 upgrade_tip = lighter_green
 target_selection = cyan
-combat_message = desaturated_yellow
-ai_crash = desaturated_red
+combat_message = yellow
+ai_crash = red
