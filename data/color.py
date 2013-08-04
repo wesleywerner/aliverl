@@ -218,7 +218,7 @@ magenta = (255, 0, 255)
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-player_text = lighter_green
+player_text = lighter_blue
 ai_text = desaturated_cyan
 terminal_text = green
 message = lighter_blue
