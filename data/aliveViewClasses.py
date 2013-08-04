@@ -461,3 +461,115 @@ class TerminalPrinter(TransitionBase):
                 self.xposition += glyphx
             self.charindex += 1
         return self.done
+
+
+class GraphDisplay(object):
+    """
+    Draws a graph-like object from a given list of values.
+
+    """
+
+    def __init__(self,
+                fps=30,
+                base_color=color.green,
+                title='spam',
+                font=None,
+                rect=(0, 0, 80, 40),
+                background_image=None
+                ):
+        """
+        beware: spam lives here.
+        """
+
+        # convert rect to pygame object
+        if type(rect) is tuple:
+            self.rect = pygame.Rect(rect)
+        else:
+            self.rect = rect
+        # store the title as a image to overlay later
+        if not font:
+            font = pygame.font.Font(None, 16)
+        self.title_bmp = font.render(title, False, base_color, color.magenta)
+        self.title_bmp.set_colorkey(color.magenta)
+        self.base_color = base_color
+        self.image = pygame.Surface(self.rect.size)
+        self.delay = 1000 / fps
+        self.lasttime = 0
+        # the actual graph values
+        self.poly_points = None
+        # the displayed graph values.
+        # gets shifted towards poly_ponts on each update() call
+        # to give a slide-like motion effect.
+        self.display_points = None
+
+    def set_values(self, value_list, maximum):
+        """
+        Set the list of values to plot, with the maximum value to scale.
+
+        """
+
+        # how do we calculate where to draw the graph points?
+        # 1. calculate the x and y dist between points in relation to our size
+        # 2. build a list of polygon points relative to the maximum
+        #    and scaled to our size
+        #
+        # x_dist = width / len(values)
+        # y_dist = height / max
+        #
+        # where n is the index of each value v
+        # p1x = n * x_dist
+        # p1y = abs(((v1 / max) * height) - height)
+        # note: abs(-height) inverts the graph so that the origin is top-left.
+
+        if len(value_list) < 2:
+            return
+        width = self.rect.width
+        height = self.rect.height
+        x_dist = float(width) / (len(value_list) - 1)
+        y_dist = float(height) / maximum
+        # to align the start and end points for nice closure
+        self.poly_points = [(0, height)]
+        for n, v in enumerate(value_list):
+            px = n * x_dist
+            py = abs(((float(v) / maximum) * height) - height)
+            self.poly_points.append((int(px), int(py)))
+        # to align the start and end points for nice closure
+        self.poly_points.append((width, height))
+        # initially the display matches the real values
+        if not self.display_points:
+            self.display_points = list(self.poly_points)
+
+    def can_update(self, time):
+        """
+        Tests if it is time to update again. time is the current game ticks.
+
+        """
+
+        if time - self.lasttime > self.delay:
+            self.lasttime = time
+            return True
+
+    def update(self, time):
+        """
+        Draw the image if the fps allows us.
+
+        """
+
+        if self.can_update(time) and self.poly_points and len(self.poly_points) > 2:
+            # shift display points towards real values
+            if self.display_points[0][0] != self.poly_points[0][0]:
+                for p in self.display_points:
+                    p[0] -= 1
+            # draw the graph
+            # TODO fill graph with a darkened base_color
+            self.image.fill(color.black)
+            pygame.draw.polygon(
+                self.image, self.base_color, self.poly_points)
+
+    def draw(self, surface):
+        """
+        Draw the graph on the given surface.
+
+        """
+
+        surface.blit(self.image, self.rect)
