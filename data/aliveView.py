@@ -670,7 +670,7 @@ class GraphicalView(object):
             datas = dialogue[dialogue_screen]
             # terminal type defaults
             set_background = self.terminal_bg
-            set_wrap = 43
+            set_wrap = 40
             set_x_offset = 55
             set_y_offset = 55
             # override story types
