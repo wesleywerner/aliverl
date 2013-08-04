@@ -1276,7 +1276,7 @@ class GraphicalView(object):
             rect=BT_HOME_DST,
             image_rect=BT_HOME_SRC,
             code='goto home',
-            hotkey='@',
+            hotkey='~',
             enabled=True,
             border_color=None,
             context=STATE_PLAY
