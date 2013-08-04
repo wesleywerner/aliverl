@@ -739,7 +739,6 @@ class GraphicalView(object):
 
         """
 
-        print(self.model.player.health_history)
         self.graphs['health'].set_values(
             self.model.player.health_history,
             self.model.player.max_health)
@@ -753,7 +752,7 @@ class GraphicalView(object):
         for key, graph in self.graphs.items():
             graph.update(ticks)
             graph.draw(self.image)
-
+        return
         def _colorband(ratio):
             # gradient green for healthy and red for hurt
             if ratio > 0.8:
