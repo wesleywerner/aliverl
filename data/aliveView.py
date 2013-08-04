@@ -497,11 +497,12 @@ class GraphicalView(object):
                 status = 'You can install 1 upgrade.'
             else:
                 status = 'You can install %s upgrades.' % amt
-            pix = self.draw_text([status], self.smallfont, False, color.white)
-            self.image.blit(pix, (140, 65))
+            pix = self.draw_text([status], self.smallfont, False,
+                color.lighter_blue)
+            self.image.blit(pix, (140, 70))
             # show chosen upgrade details
             if self.chosen_upgrade_details:
-                self.image.blit(self.chosen_upgrade_details, (45, 100))
+                self.image.blit(self.chosen_upgrade_details, (45, 120))
 
     def draw_target(self):
         """
@@ -1338,18 +1339,15 @@ class GraphicalView(object):
             )
         self.ui.add(button, hide_hotkey=True)
 
-        ## prepare the default upgrade screen message
-        #the_message = 'Select an upgrade to view more about it.'
-        #self.chosen_upgrade_details = self.draw_text_block(
-            #the_message,
-            #self.smallfont,
-            #False,
-            #color.cyan,
-            #colorize=None,
-            #background=None,
-            #wrap_width=50
-            #)
-
+        # prepare the default upgrade screen message
+        the_message = 'Select an upgrade to view more about it.'
+        self.chosen_upgrade_details = self.draw_text(
+            lines=[the_message],
+            font=self.smallfont,
+            antialias=False,
+            fontcolor=color.lighter_green,
+            background=color.magenta,
+            )
     def reposition_upgrade_buttons(self, game_state):
         """
         Reposition the ui buttons that display the player's upgrades.
@@ -1552,7 +1550,6 @@ class GraphicalView(object):
                         v_string = ' version: %s' % (plr_upgrade.version)
                         data = plr_upgrade
                     data_lines = [
-                        '',
                         '%s%s' % (data.name.upper(), v_string),
                         'reach: %s' % (data.reach),
                         'targets: %s' % (data.max_targets),
@@ -1566,7 +1563,7 @@ class GraphicalView(object):
                         lines=data_lines,
                         font=self.smallfont,
                         antialias=False,
-                        fontcolor=color.cyan,
+                        fontcolor=color.lighter_green,
                         background=color.magenta,
                         )
                     name_h = name_img.get_height()
@@ -1574,7 +1571,7 @@ class GraphicalView(object):
                         text=data.description,
                         font=self.smallfont,
                         antialias=False,
-                        fontcolor=color.darker_cyan,
+                        fontcolor=color.lighter_green,
                         colorize=None,
                         background=color.magenta,
                         wrap_width=50,
