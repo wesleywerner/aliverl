@@ -269,6 +269,9 @@ class GameEngine(object):
         self.load_objects()
         self.load_matrix()
         self.look_around()
+        # ensure the player health history has some data
+        if len(self.player.health_history) < 3:
+            self.player.health_history = [self.player.health] * 3
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
