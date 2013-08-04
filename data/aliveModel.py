@@ -135,7 +135,7 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.engine_pumping = False
-            self.save_game()
+            #self.save_game()
 
         elif isinstance(event, StateChangeEvent):
             self.change_state(event.state)
@@ -352,6 +352,7 @@ class GameEngine(object):
                 obj.upgrades = []
                 obj.trail = []
                 obj.modes = []
+                obj.health_history = []
 
                 # apply character stats from the story config
                 stats = self.story.char_stats(obj.name)
@@ -452,6 +453,11 @@ class GameEngine(object):
                 self.look_around()
                 self.look_at_target()
                 self.post(RefreshUpgradesEvent())
+
+        # track player health history
+        self.player.health_history.append(self.player.health)
+        if len(self.player.health_history) > 10:
+            self.player.health_history = self.player.health_history[-10:]
 
         # notify the view to update it's visible sprites
         self.post(PlayerMovedEvent())
@@ -769,8 +775,7 @@ class GameEngine(object):
             # health
             if npc.health < npc.max_health:
                 if (npc.heal_rate > 0) and (self.turn % npc.heal_rate == 0):
-                    npc.health = rlhelper.clamp(
-                        npc.health + 1, 0, npc.max_health)
+                    self.adjust_character_health(npc, 1)
                     trace.write('%s heals to %s hp' %
                         (npc.name, npc.health))
             # mana
@@ -977,11 +982,11 @@ class GameEngine(object):
             d_verb = 'echo back'
         # damage
         if a_atk:
-            d.health -= a_atk
+            self.adjust_character_health(d, -a_atk)
             self.post_msg('%s %s %s for %s' %
                 (a_name, a_verb, d_name, a_atk), color.combat_message)
         if d_atk:
-            a.health -= d_atk
+            self.adjust_character_health(a, -d_atk)
             self.post_msg('%s %s %s for %s' %
                 (d_name, d_verb, a_name, d_atk), color.combat_message)
         # traces
@@ -999,6 +1004,15 @@ class GameEngine(object):
             else:
                 self.kill_character(d)
         self.look_at_target()
+
+    def adjust_character_health(self, character, amount):
+        """
+        Adjust a character health.
+
+        """
+
+        character.health = rlhelper.clamp(
+            character.health + amount, 0, character.max_health)
 
     def kill_character(self, character):
         """
