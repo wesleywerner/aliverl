@@ -489,7 +489,7 @@ class GraphDisplay(object):
         # store the title as a image to overlay later
         if not font:
             font = pygame.font.Font(None, 16)
-        self.title_bmp = font.render(title, False, base_color, color.magenta)
+        self.title_bmp = font.render(title, False, color.white, color.magenta)
         self.title_bmp.set_colorkey(color.magenta)
         self.base_color = base_color
         self.image = pygame.Surface(self.rect.size)
@@ -565,6 +565,8 @@ class GraphDisplay(object):
             self.image.fill(color.black)
             pygame.draw.polygon(
                 self.image, self.base_color, self.poly_points)
+            pygame.draw.rect(self.image, self.base_color,
+                pygame.Rect((0, 0), self.rect.size), 1)
 
     def draw(self, surface):
         """
@@ -573,3 +575,4 @@ class GraphDisplay(object):
         """
 
         surface.blit(self.image, self.rect)
+        surface.blit(self.title_bmp, self.rect)
