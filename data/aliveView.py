@@ -486,13 +486,13 @@ class GraphicalView(object):
             pix = self.draw_text_block(
                 values, self.largefont, False, color.desaturated_yellow)
             self.image.blit(pix, (490, 70))
-            self.draw_messages(28, 290, amount=17)
+            self.draw_messages(28, 290, amount=15)
 
         elif game_state == STATE_INFO_UPGRADES:
             # display the amount of upgrades the player can install
             amt = self.model.upgrades_available
             if amt == 0:
-                status = 'You cannot install any upgrades at this time.'
+                status = 'No upgrades points to spend.'
             elif amt == 1:
                 status = 'You can install 1 upgrade.'
             else:
@@ -501,7 +501,7 @@ class GraphicalView(object):
             self.image.blit(pix, (140, 65))
             # show chosen upgrade details
             if self.chosen_upgrade_details:
-                self.image.blit(self.chosen_upgrade_details, (140, 85))
+                self.image.blit(self.chosen_upgrade_details, (45, 100))
 
     def draw_target(self):
         """
@@ -1338,17 +1338,17 @@ class GraphicalView(object):
             )
         self.ui.add(button, hide_hotkey=True)
 
-        # prepare the default upgrade screen message
-        the_message = "Select an upgrade to view more about it. "
-        self.chosen_upgrade_details = self.draw_text_block(
-            the_message,
-            self.smallfont,
-            False,
-            color.cyan,
-            colorize=None,
-            background=None,
-            wrap_width=60
-            )
+        ## prepare the default upgrade screen message
+        #the_message = 'Select an upgrade to view more about it.'
+        #self.chosen_upgrade_details = self.draw_text_block(
+            #the_message,
+            #self.smallfont,
+            #False,
+            #color.cyan,
+            #colorize=None,
+            #background=None,
+            #wrap_width=50
+            #)
 
     def reposition_upgrade_buttons(self, game_state):
         """
@@ -1430,9 +1430,9 @@ class GraphicalView(object):
             # position buttons for the upgrade screen
 
             butt_x = 30
-            butt_y = 340
+            butt_y = 420
             butt_size = (57, 45)
-            butt_padding = 24
+            butt_padding = 12
 
             #TODO build a ui label that we can use here to tell
             #   our player if they can choose an upgrade.
