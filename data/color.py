@@ -59,7 +59,7 @@ red = (255, 0, 0)
 #lighter_orange = (255, 210, 166)
 #light_orange = (255, 185, 115)
 #orange = (255, 127, 0)
-#dark_orange = (191, 95, 0)
+dark_orange = (191, 95, 0)
 #darker_orange = (128, 64, 0)
 #darkest_orange = (64, 32, 0)
 
@@ -226,4 +226,4 @@ tip = gray
 upgrade_tip = lighter_green
 target_selection = cyan
 combat_message = yellow
-ai_crash = red
+ai_crash = dark_orange
