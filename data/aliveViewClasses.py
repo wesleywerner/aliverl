@@ -501,6 +501,11 @@ class GraphDisplay(object):
         # gets shifted towards poly_ponts on each update() call
         # to give a slide-like motion effect.
         self.display_points = None
+        # calculate our graph colors
+        self.fill_color = pygame.Color(*self.base_color)
+        hsva = self.fill_color.hsva
+        self.fill_color.hsva = (hsva[0], hsva[1], hsva[2] * 0.25, hsva[3])
+
 
     def set_values(self, value_list, maximum):
         """
@@ -563,8 +568,12 @@ class GraphDisplay(object):
             # draw the graph
             # TODO fill graph with a darkened base_color
             self.image.fill(color.black)
+            # draw graph outline
             pygame.draw.polygon(
-                self.image, self.base_color, self.poly_points)
+                self.image, self.base_color, self.poly_points, 3)
+            # fill graph
+            pygame.draw.polygon(
+                self.image, self.fill_color, self.poly_points, 0)
             pygame.draw.rect(self.image, self.base_color,
                 pygame.Rect((0, 0), self.rect.size), 1)
 
