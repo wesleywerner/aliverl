@@ -449,7 +449,7 @@ class GraphicalView(object):
             wrap_width=40,
             )
         self.image.blit(pix, (180, 122))
-        self.draw_messages(18, 184, amount=20)
+        self.draw_messages(28, 184, amount=20)
 
     def draw_info_screen(self, game_state):
         """
