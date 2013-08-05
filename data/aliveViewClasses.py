@@ -486,11 +486,6 @@ class GraphDisplay(object):
             self.rect = pygame.Rect(rect)
         else:
             self.rect = rect
-        # store the title as a image to overlay later
-        if not font:
-            font = pygame.font.Font(None, 16)
-        self.title_bmp = font.render(title, False, color.white, color.magenta)
-        self.title_bmp.set_colorkey(color.magenta)
         self.base_color = base_color
         self.image = pygame.Surface(self.rect.size)
         self.delay = 1000 / fps
@@ -501,11 +496,24 @@ class GraphDisplay(object):
         # gets shifted towards poly_ponts on each update() call
         # to give a slide-like motion effect.
         self.display_points = None
-        # calculate our graph colors
+        # the graph fill color is a darker base color
         self.fill_color = pygame.Color(*self.base_color)
         hsva = self.fill_color.hsva
         self.fill_color.hsva = (hsva[0], hsva[1], hsva[2] * 0.25, hsva[3])
-
+        # the title font color is a desaturated, darker base color
+        font_color = pygame.Color(*self.base_color)
+        hsva = font_color.hsva
+        font_color.hsva = (hsva[0], hsva[1] * 0.3, hsva[2] * 0.6, hsva[3])
+        # store the title as a image to overlay later
+        if not font:
+            font = pygame.font.Font(None, 16)
+        self.title_bmp = font.render(title, False, font_color, color.magenta)
+        self.title_bmp.set_colorkey(color.magenta)
+        # center the title words
+        self.title_rect = self.rect.move(
+            (self.rect.width - self.title_bmp.get_width()) / 2,
+            (self.rect.height - self.title_bmp.get_height()) / 2
+            )
 
     def set_values(self, value_list, maximum):
         """
@@ -584,4 +592,4 @@ class GraphDisplay(object):
         """
 
         surface.blit(self.image, self.rect)
-        surface.blit(self.title_bmp, self.rect)
+        surface.blit(self.title_bmp, self.title_rect)
