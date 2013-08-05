@@ -492,10 +492,6 @@ class GraphDisplay(object):
         self.lasttime = 0
         # the actual graph values
         self.poly_points = None
-        # the displayed graph values.
-        # gets shifted towards poly_ponts on each update() call
-        # to give a slide-like motion effect.
-        self.display_points = None
         # the graph fill color is a darker base color
         self.fill_color = pygame.Color(*self.base_color)
         hsva = self.fill_color.hsva
@@ -548,9 +544,6 @@ class GraphDisplay(object):
             self.poly_points.append((int(px), int(py)))
         # to align the start and end points for nice closure
         self.poly_points.append((width, height))
-        # initially the display matches the real values
-        if not self.display_points:
-            self.display_points = list(self.poly_points)
 
     def can_update(self, time):
         """
@@ -568,11 +561,7 @@ class GraphDisplay(object):
 
         """
 
-        if self.can_update(time) and self.poly_points and len(self.poly_points) > 2:
-            # shift display points towards real values
-            if self.display_points[0][0] != self.poly_points[0][0]:
-                for p in self.display_points:
-                    p[0] -= 1
+        if self.can_update(time) and self.poly_points:
             # draw the graph
             self.image.fill(color.black)
             # draw graph outline
