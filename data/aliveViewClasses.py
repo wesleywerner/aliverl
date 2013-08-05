@@ -503,7 +503,7 @@ class GraphDisplay(object):
         # the title font color is a desaturated, darker base color
         font_color = pygame.Color(*self.base_color)
         hsva = font_color.hsva
-        font_color.hsva = (hsva[0], hsva[1] * 0.3, hsva[2] * 0.6, hsva[3])
+        font_color.hsva = (hsva[0], hsva[1] * 0.3, hsva[2] * 0.4, hsva[3])
         # store the title as a image to overlay later
         if not font:
             font = pygame.font.Font(None, 16)
@@ -574,7 +574,6 @@ class GraphDisplay(object):
                 for p in self.display_points:
                     p[0] -= 1
             # draw the graph
-            # TODO fill graph with a darkened base_color
             self.image.fill(color.black)
             # draw graph outline
             pygame.draw.polygon(
