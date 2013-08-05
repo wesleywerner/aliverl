@@ -272,6 +272,8 @@ class GameEngine(object):
         # ensure the player health history has some data
         if len(self.player.health_history) < 3:
             self.player.health_history = [self.player.health] * 3
+        if len(self.player.power_history) < 3:
+            self.player.power_history = [self.player.power] * 3
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
@@ -356,6 +358,7 @@ class GameEngine(object):
                 obj.trail = []
                 obj.modes = []
                 obj.health_history = []
+                obj.power_history = []
 
                 # apply character stats from the story config
                 stats = self.story.char_stats(obj.name)
@@ -461,6 +464,9 @@ class GameEngine(object):
         self.player.health_history.append(self.player.health)
         if len(self.player.health_history) > 10:
             self.player.health_history = self.player.health_history[-10:]
+        self.player.power_history.append(self.player.power)
+        if len(self.player.power_history) > 10:
+            self.player.power_history = self.player.power_history[-10:]
 
         # notify the view to update it's visible sprites
         self.post(PlayerMovedEvent())
