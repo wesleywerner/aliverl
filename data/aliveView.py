@@ -238,6 +238,9 @@ class GraphicalView(object):
                         model_state)
                     self.ui.set_context(model_state)
 
+                # build main menu items
+                self.build_menu(self.model.state.peek())
+
                 if event.state == STATE_HELP:
                     self.show_help_screens()
                 elif event.state == STATE_LEVEL_FAIL:
@@ -291,7 +294,7 @@ class GraphicalView(object):
         if state == STATE_INTRO:
             pass
 
-        elif state == STATE_MENU:
+        elif state in (STATE_MENU_MAIN, STATE_MENU_STORIES, STATE_MENU_OPTIONS):
             self.draw_menu()
 
         elif state in (STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS):
@@ -395,12 +398,108 @@ class GraphicalView(object):
         self.create_floating_tip(
             'saved animation cheatsheet as ' + image_filename, color.white)
 
+    def build_menu(self, state):
+        """
+        Build a main screen menu from a dict.
+        The item draw positions determine selection positions.
+        This will reset the selection to the first item.
+
+        """
+
+        if state == STATE_MENU_MAIN:
+            key_values = (
+                ('game slot 1', 'ascension, level 4 [2 hours ago]'),
+                ('game slot 2', 'new game slot'),
+                ('game slot 3', 'new game slot'),
+                ('', ''),
+                ('options', 'options'),
+                ('about', 'about'),
+                ('exit', 'exit'),
+                )
+        elif state == STATE_MENU_STORIES:
+            key_values = (
+                ('story 1', 'ascension'),
+                ('story 2', 'snargle: another chapter'),
+                ('story 3', 'spam: now with extra spam'),
+                )
+        elif state == STATE_MENU_OPTIONS:
+            key_values = (
+                ('spam', 'spam'),
+                )
+        else:
+            return
+
+        # clear the menu image
+        self.menu_item_image = pygame.Surface(self.game_area.size)
+        self.menu_item_image.set_colorkey(color.magenta)
+        self.menu_item_image.fill(color.magenta)
+        self.menu_item_positions = []
+        self.menu_item_keys = []
+        self.menu_selected_index = 0
+        width = self.game_area.width
+        y_position = 245
+        # draw menu items
+        for n in key_values:
+            pix = self.largefont.render(n[1], False, color.green, color.magenta)
+            size = pix.get_size()
+            # center
+            left = (width - size[0]) / 2
+            self.menu_item_image.blit(pix, (left, y_position))
+            # store the item selection rectangle
+            self.menu_item_positions.append(
+                pygame.Rect((left, y_position), size))
+            self.menu_item_keys.append(n[0])
+            # up the y offset
+            y_position += size[1]
+        self.menu_target_rect = self.menu_item_positions[0]
+        self.menu_selected_rect = self.menu_target_rect.copy()
+
+    def select_menu_item(self, previous=False):
+        """
+        Select the next menu item, or the previous if given.
+
+        """
+
+        while True:
+            if previous:
+                self.menu_selected_index -= 1
+            else:
+                self.menu_selected_index +=1
+            if self.menu_selected_index < 0:
+                self.menu_selected_index = len(self.menu_item_positions) - 1
+            elif self.menu_selected_index > len(self.menu_item_positions) - 1:
+                self.menu_selected_index = 0
+            if len(self.menu_item_keys[self.menu_selected_index]) > 1:
+                break
+        self.menu_target_rect = self.menu_item_positions[self.menu_selected_index]
+
+    def selected_menu_key(self):
+        """
+        Return the key of the selected menu item.
+
+        """
+
+        return self.menu_item_keys[self.menu_selected_index]
+
     def draw_menu(self):
         """
         Draw the main menu.
         """
 
         self.image.blit(self.menubackground, (0, 0))
+        self.image.blit(self.menu_item_image, (0, 0))
+
+        # update and draw menu item selection rectangle
+        o = self.menu_selected_rect.centerx - self.menu_target_rect.centerx
+        self.menu_selected_rect.centerx -= (o * 0.7)
+
+        o = self.menu_selected_rect.centery - self.menu_target_rect.centery
+        self.menu_selected_rect.centery -= (o * 0.4)
+
+        o = self.menu_selected_rect.width - self.menu_target_rect.width
+        self.menu_selected_rect.width -= (o * 0.7)
+
+        pygame.draw.rect(self.image, color.green, self.menu_selected_rect, 2)
 
     def draw_action_shot(self, x, y):
         """

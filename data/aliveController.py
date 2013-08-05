@@ -47,7 +47,9 @@ class KeyboardMouse(object):
                         if state == STATE_INTRO:
                             self.intro_keys(event)
 
-                        elif state == STATE_MENU:
+                        elif state in (STATE_MENU_MAIN,
+                                        STATE_MENU_STORIES,
+                                        STATE_MENU_OPTIONS):
                             self.menu_keys(event)
 
                         elif state == STATE_PLAY:
@@ -163,9 +165,19 @@ class KeyboardMouse(object):
         """
 
         if event.key in (pygame.K_SPACE, pygame.K_RETURN):
-            self.evManager.Post(StateChangeEvent(STATE_PLAY))
+            key = self.view.selected_menu_key()
+            if key == 'exit':
+                self.evManager.Post(StateChangeEvent(None))
+            elif key.startswith('game slot'):
+                self.evManager.Post(StateChangeEvent(STATE_MENU_STORIES))
+                # self.evManager.Post(StateChangeEvent(STATE_PLAY))
+        elif event.key in (pygame.K_DOWN, pygame.K_j):
+            self.view.select_menu_item()
+        elif event.key in (pygame.K_UP, pygame.K_k):
+            self.view.select_menu_item(previous=True)
         elif event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
+
 
     def intro_keys(self, event):
         """
