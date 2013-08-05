@@ -52,11 +52,6 @@ class GraphicalView(object):
     largefont (Font):
         A larger font.
 
-    map_image (Surface):
-        A prerendered image of the level map static tiles that do not need
-        to animate. It may be larger than our play area, and we only draw
-        the map area under our viewport.
-
     play_image (Surface):
         An image of the game play area, excluding game borders.
         All sprites and other game action is drawn here.
@@ -115,7 +110,6 @@ class GraphicalView(object):
         self.smallfont = None
         self.largefont = None
         self.image = None
-        self.map_image = None
         self.play_image = None
         self.graphs = {}
         self.play_area = None
@@ -521,37 +515,49 @@ class GraphicalView(object):
         """
 
         # start by drawing the level map on our play image.
-        self.play_image.blit(self.map_image, (0, 0), self.viewport)
         ticks = pygame.time.get_ticks()
         # for each sprite in our viewport range
-        for x, y in rlhelper.remap_coords(
-                self.viewport, self.tile_w, self.tile_h):
-            object_list = self.model.get_object_by_xy(x, y)
-            for obj in object_list:
-                # grab the sprite that match this object id
-                sprite = self.sprites.get(id(obj), None)
-                # test if this is a character within view range
-                if obj.type in ('ai', 'friend', 'player'):
-                    if obj.in_range:
+        for y in range(0, self.tmx.height):
+            for x in range(0, self.tmx.width):
+
+                # draw static map tiles
+                if self.model.seen_tile(x, y):
+                    for layer in self.tmx.tilelayers:
+                        gid = layer.at((x, y))
+                        tile = self.tsp[gid]
+                        if tile:
+                            new_rect = (
+                                x * self.tile_w - self.viewport.left,
+                                y * self.tile_h - self.viewport.top)
+                            self.play_image.blit(tile, new_rect)
+
+                # draw movable sprite objects at this location
+                object_list = self.model.get_object_by_xy(x, y)
+                for obj in object_list:
+                    # grab the sprite that match this object id
+                    sprite = self.sprites.get(id(obj), None)
+                    # test if this is a character within view range
+                    if obj.type in ('ai', 'friend', 'player'):
+                        if obj.in_range:
+                            visible = True
+                        else:
+                            visible = False
+                    # or not a character, but has been seen before
+                    elif obj.seen:
                         visible = True
                     else:
                         visible = False
-                # or not a character, but has been seen before
-                elif obj.seen:
-                    visible = True
-                else:
-                    visible = False
-                # draw if both are happy
-                if sprite:
-                    # update the sprite animation.
-                    sprite.update(ticks)
-                    if visible:
-                        # because our play_image is only the size of the screen
-                        # we accommodate sprite positions, which are relative
-                        # to entire map, by subtracting the viewport location.
-                        new_rect = sprite.rect.move(
-                            -self.viewport.left, -self.viewport.top)
-                        self.play_image.blit(sprite.image, new_rect)
+                    # draw if both are happy
+                    if sprite:
+                        # update the sprite animation.
+                        sprite.update(ticks)
+                        if visible:
+                            # because our play_image is only the size of the screen
+                            # we accommodate sprite positions, which are relative
+                            # to entire map, by subtracting the viewport location.
+                            new_rect = sprite.rect.move(
+                                -self.viewport.left, -self.viewport.top)
+                            self.play_image.blit(sprite.image, new_rect)
 
     def draw_fog(self):
         """
@@ -576,7 +582,8 @@ class GraphicalView(object):
 
                 # not yet seen
                 if seen == 0:
-                    self.play_image.blit(unseen_sprite, new_rect)
+                    # self.play_image.blit(unseen_sprite, new_rect)
+                    self.play_image.blit(fog_sprite, new_rect)
                 # seen but out of range
                 elif seen == 1:
                     self.play_image.blit(fog_sprite, new_rect)
@@ -849,27 +856,6 @@ class GraphicalView(object):
                         background=background
                         )
 
-    def draw_map_image(self):
-        """
-        Prerender the level onto an image for easier use.
-        This only draws non-animation map tiles.
-
-        """
-
-        self.map_image = pygame.Surface(
-            (self.tmx.px_width, self.tmx.px_height))
-        self.map_image.set_colorkey(color.magenta)
-        self.map_image.fill(color.magenta)
-        for y in range(self.tmx.height):
-            for x in range(self.tmx.width):
-                for layer in self.tmx.tilelayers:
-                    gid = layer.at((x, y))
-                    tile = self.tsp[gid]
-                    if tile:
-                        self.map_image.blit(tile,
-                            (x * self.tile_w,
-                            y * self.tile_h))
-
     def load_level(self):
         """
         Load the map data and prepare some resources for drawing the game.
@@ -884,7 +870,6 @@ class GraphicalView(object):
                                 (self.tile_w, self.tile_h),
                                 color.magenta
                                 )
-        self.draw_map_image()
 
     def set_sprite_defaults(self, obj):
         """
