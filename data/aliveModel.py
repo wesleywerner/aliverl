@@ -728,6 +728,16 @@ class GameEngine(object):
                     obj.in_range = True
                     obj.seen = True
 
+    def seen_tile(self, x, y):
+        """
+        Returns if the tile at x, y has been seen by the player.
+
+        """
+
+        seen_mx = self.level.matrix['seen']
+        if x < len(seen_mx) and y < len(seen_mx[0]):
+            return seen_mx[x][y]
+
     def get_object_by_id(self, objectid):
         """
         Get characters object by it's id().
