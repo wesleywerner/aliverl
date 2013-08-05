@@ -1139,7 +1139,6 @@ class GraphicalView(object):
             # load resources
             self.smallfont = pygame.font.Font('DejaVuSansMono-Bold.ttf', 16)
             self.largefont = pygame.font.Font('DejaVuSansMono-Bold.ttf', 20)
-            self.button_font = pygame.font.Font('UbuntuMono-B.ttf', 24)
             self.defaultbackground = image.load(
                 'images/background.png').convert()
             self.info_screen = image.load(
@@ -1246,7 +1245,7 @@ class GraphicalView(object):
 
         self.ui = ui.UxManager(self.game_area.size,
             image_filename='images/ui.png',
-            font=self.button_font,
+            font=self.largefont,
             click_callback=self.ui_click_event,
             colorkey=color.magenta
             )
