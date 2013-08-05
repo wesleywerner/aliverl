@@ -742,6 +742,9 @@ class GraphicalView(object):
         self.graphs['health'].set_values(
             self.model.player.health_history,
             self.model.player.max_health)
+        self.graphs['power'].set_values(
+            self.model.player.power_history,
+            self.model.player.max_power)
 
     def draw_player_stats(self):
         """
@@ -1219,6 +1222,16 @@ class GraphicalView(object):
                 title='health',
                 font=self.smallfont,
                 rect=(180, 23, 80, 40),
+                background_image=None
+                )
+
+            # set up graph objects
+            self.graphs['power'] = GraphDisplay(
+                fps=30,
+                base_color=color.white,
+                title='power',
+                font=self.smallfont,
+                rect=(260, 23, 80, 40),
                 background_image=None
                 )
 
