@@ -173,10 +173,10 @@ class GameEngine(object):
         The loop ends when this object hears a QuitEvent in notify().
         """
 
-        self.post(StateChangeEvent(STATE_MENU))
+        self.post(InitializeEvent())
+        self.post(StateChangeEvent(STATE_MENU_MAIN))
         #self.post(StateChangeEvent(STATE_INTRO))
         # tell all listeners to prepare themselves before we start
-        self.post(InitializeEvent())
         while self.engine_pumping:
             newTick = TickEvent()
             self.evManager.Post(newTick)
