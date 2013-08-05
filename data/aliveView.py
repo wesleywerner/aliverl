@@ -447,7 +447,7 @@ class GraphicalView(object):
             self.menu_item_image.blit(pix, (left, y_position))
             # store the item selection rectangle
             self.menu_item_positions.append(
-                pygame.Rect((left, y_position), size))
+                pygame.Rect((left - 5, y_position), (size[0] + 15, size[1])))
             self.menu_item_keys.append(n[0])
             # up the y offset
             y_position += size[1]
@@ -491,15 +491,15 @@ class GraphicalView(object):
 
         # update and draw menu item selection rectangle
         o = self.menu_selected_rect.centerx - self.menu_target_rect.centerx
-        self.menu_selected_rect.centerx -= (o * 0.7)
+        self.menu_selected_rect.centerx -= (o * 0.2)
 
         o = self.menu_selected_rect.centery - self.menu_target_rect.centery
         self.menu_selected_rect.centery -= (o * 0.4)
 
         o = self.menu_selected_rect.width - self.menu_target_rect.width
-        self.menu_selected_rect.width -= (o * 0.7)
+        self.menu_selected_rect.width -= (o * 0.3)
 
-        pygame.draw.rect(self.image, color.green, self.menu_selected_rect, 2)
+        pygame.draw.rect(self.image, color.green, self.menu_selected_rect, 4)
 
     def draw_action_shot(self, x, y):
         """
