@@ -117,8 +117,6 @@ class GraphicalView(object):
         self.image = None
         self.map_image = None
         self.play_image = None
-        #TODO remove statscanvas ?
-        self.statscanvas = None
         self.graphs = {}
         self.play_area = None
         self.statsarea = None
@@ -307,13 +305,14 @@ class GraphicalView(object):
 
         elif state == STATE_LEVEL_FAIL:
             self.draw_level_fail_screen()
+            self.draw_graphs()
 
         elif state == STATE_PLAY:
             # draw all the game play images on to play_image and
             # merge that into our main image at the relevant position
             self.play_image.fill(color.magenta)
             self.draw_borders()
-            self.draw_player_stats()
+            self.draw_graphs()
             self.draw_sprites()
             self.draw_target()
             self.draw_fog()
@@ -438,8 +437,7 @@ class GraphicalView(object):
         self.image.blit(self.failed_background, (0, 0))
         self.draw_action_shot(14, 14)
         fail_words = (
-            'Your health dropped too low and your core became unstable :-( '
-            'Sadly you lost all data you collected for this level. '
+            'Your core became unstable :-( '
             'Press spacebar to try that level again. '
             'Good luck!'
             )
@@ -448,10 +446,10 @@ class GraphicalView(object):
             font=self.smallfont,
             antialias=False,
             fontcolor=color.gray,
-            wrap_width=45,
+            wrap_width=40,
             )
-        self.image.blit(pix, (200, 90))
-        self.draw_messages(18, 184, amount=23)
+        self.image.blit(pix, (180, 122))
+        self.draw_messages(18, 184, amount=20)
 
     def draw_info_screen(self, game_state):
         """
@@ -746,52 +744,15 @@ class GraphicalView(object):
             self.model.player.power_history,
             self.model.player.max_power)
 
-    def draw_player_stats(self):
+    def draw_graphs(self):
         """
-        Draw the player stats onto statscanvas.
+        Draw the stats graphs.
         """
 
         ticks = pygame.time.get_ticks()
         for key, graph in self.graphs.items():
             graph.update(ticks)
             graph.draw(self.image)
-        return
-        def _colorband(ratio):
-            # gradient green for healthy and red for hurt
-            if ratio > 0.8:
-                return color.green
-            elif ratio > 0.5:
-                return color.yellow
-            else:
-                return color.red
-
-        self.statscanvas.fill(color.magenta)
-
-        player = self.model.player
-
-        # health
-        xposition = 0
-        yposition = 0
-        health = 0
-        if player.max_health > 0:
-            health = player.health / player.max_health
-        mana = 0
-        if player.max_power > 0:
-            mana = player.power / player.max_power
-
-        phealth = self.smallfont.render(
-                                str(player.health) + ' health',
-                                False,
-                                _colorband(health))
-        self.statscanvas.blit(phealth, (xposition, yposition))
-        # mana
-        pmana = self.smallfont.render(
-                                str(player.power) + ' mana',
-                                False,
-                                _colorband(mana))
-        self.statscanvas.blit(
-            pmana, (xposition + (phealth.get_width() * 1.5), yposition))
-        self.image.blit(self.statscanvas, self.statsarea)
 
     def draw_messages(self, x, y,
         message_color=color.message, amount=None):
@@ -1184,8 +1145,6 @@ class GraphicalView(object):
             # create drawing surfaces which are reused
             self.play_image = pygame.Surface(self.play_area.size)
             self.play_image.set_colorkey(color.magenta)
-            self.statscanvas = pygame.Surface(self.statsarea.size)
-            self.statscanvas.set_colorkey(color.magenta)
             self.image = pygame.Surface(self.game_area.size)
             self.image.set_colorkey(color.magenta)
 
@@ -1221,7 +1180,7 @@ class GraphicalView(object):
                 base_color=color.green,
                 title='health',
                 font=self.smallfont,
-                rect=(180, 23, 80, 40),
+                rect=(180, 23, 140, 40),
                 background_image=None
                 )
 
@@ -1231,7 +1190,7 @@ class GraphicalView(object):
                 base_color=color.white,
                 title='power',
                 font=self.smallfont,
-                rect=(260, 23, 80, 40),
+                rect=(322, 23, 140, 40),
                 background_image=None
                 )
 
