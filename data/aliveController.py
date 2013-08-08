@@ -48,6 +48,7 @@ class KeyboardMouse(object):
                             self.intro_keys(event)
 
                         elif state in (STATE_MENU_MAIN,
+                                        STATE_MENU_SAVED,
                                         STATE_MENU_STORIES,
                                         STATE_MENU_OPTIONS):
                             self.menu_keys(event)
@@ -164,9 +165,7 @@ class KeyboardMouse(object):
         Handles menu keys.
         """
 
-        if event.key in (pygame.K_SPACE, pygame.K_RETURN):
-            self.model.begin_game()
-        elif event.key == pygame.K_ESCAPE:
+        if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
         else:
             inEvent = InputEvent(char=event.unicode, clickpos=None)
