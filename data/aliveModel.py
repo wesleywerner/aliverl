@@ -276,6 +276,8 @@ class GameEngine(object):
             self.player.health_history = [self.player.health] * 10
         if len(self.player.power_history) < 10:
             self.player.power_history = [self.player.power] * 10
+        if self.state.peek() != STATE_PLAY:
+            self.evManager.Post(StateChangeEvent(STATE_PLAY))
         self.post(NextLevelEvent(None))
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
@@ -1073,9 +1075,9 @@ class GameEngine(object):
         # push or pop the given state
         if not self.state.process(state):
             self.post(QuitEvent())
-        if state == STATE_PLAY and not self.game_in_progress:
-            # start a new game
-            self.begin_game()
+        #if state == STATE_PLAY and not self.game_in_progress:
+            ## start a new game
+            #self.begin_game()
 
     def show_dialogue(self, key):
         """
