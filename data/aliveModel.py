@@ -18,6 +18,7 @@ import copy
 import random
 import pickle
 import traceback
+import datetime
 from const import *
 import color
 import trace
@@ -127,6 +128,7 @@ class GameEngine(object):
         self.store = None
         self.can_warp = False
         self.recent_messages = []
+        self.game_slot = 1
 
     def notify(self, event):
         """
@@ -135,7 +137,7 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.engine_pumping = False
-            #self.save_game()
+            self.save_game()
 
         elif isinstance(event, StateChangeEvent):
             self.change_state(event.state)
@@ -1351,37 +1353,103 @@ class GameEngine(object):
             self.player.health = self.player.max_health
             self.player.power = self.player.max_power
 
+    def saved_games_list(self):
+        """
+        Gets the list of saved games available.
+        Returns a (key, title) list.
+
+        """
+
+        if self.game_in_progress:
+            return [('continue game', 'continue game')]
+        games_list = []
+        has_new_game = False
+        for n in range(1, 4):
+            title = self.load_savegame_title(n)
+            if (not has_new_game and title is None):
+                games_list.append(('new game slot %s' % (n), 'new game'))
+                has_new_game = True
+            else:
+                games_list.append(('load game slot %s' % (n), title))
+        return games_list
+
+    def load_savegame_title(self, slot_number):
+        """
+        Build a savegame slot title from it's stored info.
+        Returns None if there is no save game for that slot.
+
+        """
+
+        fn = 'savedgame%s' % (slot_number)
+        if os.path.exists(fn):
+            values = {}
+            jar = pickle.Unpickler(open(fn, 'r'))
+            saved_time = jar.load()
+            values['time'] = self.human_friendly_timespan(saved_time)
+            values['story'] = jar.load()
+            values['level'] = jar.load() + 1
+            jar = None
+            return '%(story)s, level %(level)s [%(time)s]' % (values)
+
+    def human_friendly_timespan(self, past_date):
+        """
+        Give a human readable time difference from now.
+        """
+
+        human = 'infinity'
+        delta_time = datetime.datetime.now() - past_date
+        if delta_time.days > 60:
+            human = '%s months ago' % (delta_time.days / 90)
+        elif delta_time.days > 2:
+            human = '%s days ago' % (delta_time.days)
+        else:
+            mins = int(delta_time.total_seconds() / 60)
+            hrs = int(mins / 60)
+            if hrs > 1:
+                human = '%s hours ago' % (hrs)
+            elif mins > 2:
+                human = '%s minutes ago' % (mins)
+            else:
+                human = 'just now'
+        return human
+
     def save_game(self):
         """
         Saves the current game to a disk file.
         """
 
-        trace.write('saving game')
-        if self.game_in_progress:
-            jar = pickle.Pickler(open('savegame', 'w'))
-            jar.dump(self.story_name)
-            jar.dump(self.level_number - 1)
-            jar.dump(self.turn)
-            jar.dump(self.upgrades_available)
-            jar.dump(self.recent_messages)
-            jar.dump(self.store['player copy'])
-            jar = None
+        if self.game_slot > 0:
+            fn = 'savedgame%s' % (self.game_slot)
+            trace.write('writing %s' % fn)
+            if self.game_in_progress:
+                jar = pickle.Pickler(open(fn, 'w'))
+                jar.dump(datetime.datetime.now())
+                jar.dump(self.story_name)
+                jar.dump(self.level_number - 1)
+                jar.dump(self.turn)
+                jar.dump(self.upgrades_available)
+                jar.dump(self.recent_messages)
+                jar.dump(self.store['player copy'])
+                jar = None
 
     def load_game(self):
         """
         Loads a saved game from a disk file.
         """
 
-        if os.path.exists('savegame'):
-            trace.write('loading saved game')
-            jar = pickle.Unpickler(open('savegame', 'r'))
-            self.story_name = jar.load()
-            self.level_number = jar.load()
-            self.turn = jar.load()
-            self.upgrades_available = jar.load()
-            self.recent_messages = jar.load()
-            self.player = jar.load()
-            jar = None
+        if self.game_slot > 0:
+            fn = 'savedgame%s' % (self.game_slot)
+            if os.path.exists(fn):
+                trace.write('loading %s' % (fn))
+                jar = pickle.Unpickler(open(fn, 'r'))
+                saved_time = jar.load()
+                self.story_name = jar.load()
+                self.level_number = jar.load()
+                self.turn = jar.load()
+                self.upgrades_available = jar.load()
+                self.recent_messages = jar.load()
+                self.player = jar.load()
+                jar = None
 
     @property
     def tile_width(self):

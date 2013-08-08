@@ -168,9 +168,17 @@ class KeyboardMouse(object):
             key = self.view.selected_menu_key()
             if key == 'exit':
                 self.evManager.Post(StateChangeEvent(None))
-            elif key.startswith('game slot'):
+            elif key == 'continue game':
+                self.evManager.Post(StateChangeEvent(STATE_PLAY))
+            elif key.startswith('story 1'):
+                self.evManager.Post(StateChangeEvent(STATE_PLAY))
+            elif key.startswith('new game slot'):
+                self.model.game_slot = int(key.split()[-1])
                 self.evManager.Post(StateChangeEvent(STATE_MENU_STORIES))
-                # self.evManager.Post(StateChangeEvent(STATE_PLAY))
+            elif key.startswith('load game slot'):
+                self.model.game_slot = int(key.split()[-1])
+                self.evManager.Post(StateChangeEvent(STATE_PLAY))
+
         elif event.key in (pygame.K_DOWN, pygame.K_j):
             self.view.select_menu_item()
         elif event.key in (pygame.K_UP, pygame.K_k):

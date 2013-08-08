@@ -407,25 +407,23 @@ class GraphicalView(object):
         """
 
         if state == STATE_MENU_MAIN:
-            key_values = (
-                ('game slot 1', 'ascension, level 4 [2 hours ago]'),
-                ('game slot 2', 'new game slot'),
-                ('game slot 3', 'new game slot'),
+            key_values = self.model.saved_games_list()
+            key_values.extend ([
                 ('', ''),
                 ('options', 'options'),
                 ('about', 'about'),
                 ('exit', 'exit'),
-                )
+                ])
         elif state == STATE_MENU_STORIES:
-            key_values = (
+            key_values = [
                 ('story 1', 'ascension'),
                 ('story 2', 'snargle: another chapter'),
                 ('story 3', 'spam: now with extra spam'),
-                )
+                ]
         elif state == STATE_MENU_OPTIONS:
-            key_values = (
+            key_values = [
                 ('spam', 'spam'),
-                )
+                ]
         else:
             return
 
