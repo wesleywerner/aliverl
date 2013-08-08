@@ -402,7 +402,6 @@ class UxManager(object):
                 ux.draw(self.source, self.image)
                 if self.click_callback is not None:
                     self.click_callback(self.context, ux)
-                return
 
     def unclick(self):
         """
