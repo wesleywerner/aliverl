@@ -157,6 +157,59 @@ class UxButton(object):
             pygame.draw.rect(target, self.border_color, self.rect, 1)
 
 
+class UxMovingButton(UxButton):
+    """
+    A button that has a destination position, and an update() method to step
+    towards this position to give a motion effect.
+
+    """
+
+    def __init__(self,
+                rect=None,
+                image_rect=None,
+                code='',
+                hotkey=None,
+                enabled=True,
+                border_color=None,
+                context=None,
+                ):
+        super(UxMovingButton, self).__init__(
+            rect, image_rect, code, hotkey, enabled, border_color, context)
+        self.destination = None
+        self.destinations = {}
+
+    def store_destination(self, x, y, key):
+        """
+        Store a destination to move towards as a key.
+        You may pass None to x or y to preserve the button's current value for it.
+
+        """
+
+        self.destinations[key] = pygame.Rect(
+            (x is None and self.rect.left or x,
+            y is None and self.rect.top or y),
+            self.rect.size)
+
+    def recall_destination(self, key):
+        """
+        Recall a previously stored destination.
+
+        """
+
+        if self.destinations.has_key(key):
+            self.destination = self.destinations[key]
+
+    def update(self):
+        """
+        Step the button position towards destination.
+
+        """
+
+        if self.destination:
+            x_diff = self.destination.left - self.rect.left
+            y_diff = self.destination.top - self.rect.top
+            self.rect = self.rect.move(int(x_diff / 10), int(y_diff / 10))
+
 class UxTabButton(UxButton):
     """
     A button that acts like a tab control.
@@ -371,6 +424,8 @@ class UxManager(object):
 
         self.image.fill(self.colorkey)
         for ux in self.context_elements:
+            if type(ux) is UxMovingButton:
+                ux.update()
             ux.draw(self.source, self.image)
 
     def alter_hue(self, hue, surface_to_clone):
