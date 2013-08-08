@@ -125,6 +125,7 @@ class GraphicalView(object):
         self.chosen_upgrade = None
         self.chosen_upgrade_details = None
         self.last_info_state = STATE_INFO_HOME
+        self.menu_buttons = None
 
     @property
     def tmx(self):
@@ -231,15 +232,12 @@ class GraphicalView(object):
 
             elif (isinstance(event, StateChangeEvent) or
                     isinstance(event, StateSwapEvent)):
+                model_state = self.model.state.peek()
                 if self.ui:
-                    model_state = self.model.state.peek()
                     self.reposition_upgrade_buttons(model_state)
                     trace.write('set ui context to game state %s' %
                         model_state)
                     self.ui.set_context(model_state)
-
-                # build main menu items
-                self.build_menu(self.model.state.peek())
 
                 if event.state == STATE_HELP:
                     self.show_help_screens()
@@ -247,6 +245,21 @@ class GraphicalView(object):
                     # housekeeping: reset some things for level restart
                     self.message_sprites = []
                     self.queue_slide_transition('', None, color.ai_crash)
+
+                if model_state == STATE_MENU_MAIN:
+                    # show main menu buttons and hide the rest
+                    for k, v in self.menu_buttons.items():
+                        if k in ('play', 'options', 'about', 'quit'):
+                            v.recall_destination('show')
+                        else:
+                            v.recall_destination('hide')
+                elif model_state == STATE_MENU_SAVED:
+                    # show saved game buttons and hide the rest
+                    for k, v in self.menu_buttons.items():
+                        if k.startswith('load game'):
+                            v.recall_destination('show')
+                        else:
+                            v.recall_destination('hide')
 
             elif isinstance(event, RefreshUpgradesEvent):
                 model_state = self.model.state.peek()
@@ -294,9 +307,6 @@ class GraphicalView(object):
         if state == STATE_INTRO:
             pass
 
-        elif state in (STATE_MENU_MAIN, STATE_MENU_STORIES, STATE_MENU_OPTIONS):
-            self.draw_menu()
-
         elif state in (STATE_INFO_HOME, STATE_INFO_UPGRADES, STATE_INFO_WINS):
             self.draw_info_screen(state)
 
@@ -315,6 +325,12 @@ class GraphicalView(object):
             self.draw_fog()
             self.draw_scroller_text()
             self.image.blit(self.play_image, self.play_area)
+
+        elif state in (STATE_MENU_MAIN,
+                        STATE_MENU_SAVED,
+                        STATE_MENU_STORIES,
+                        STATE_MENU_OPTIONS):
+            self.draw_menu()
 
         # NOTE: no need to handle drawing for HELP or DIALOGUE states
         #       since those use the TransitionBase, which draws itself below.
@@ -398,106 +414,12 @@ class GraphicalView(object):
         self.create_floating_tip(
             'saved animation cheatsheet as ' + image_filename, color.white)
 
-    def build_menu(self, state):
-        """
-        Build a main screen menu from a dict.
-        The item draw positions determine selection positions.
-        This will reset the selection to the first item.
-
-        """
-
-        if state == STATE_MENU_MAIN:
-            key_values = self.model.saved_games_list()
-            key_values.extend ([
-                ('', ''),
-                ('options', 'options'),
-                ('about', 'about'),
-                ('exit', 'exit'),
-                ])
-        elif state == STATE_MENU_STORIES:
-            key_values = [
-                ('story 1', 'ascension'),
-                ('story 2', 'snargle: another chapter'),
-                ('story 3', 'spam: now with extra spam'),
-                ]
-        elif state == STATE_MENU_OPTIONS:
-            key_values = [
-                ('spam', 'spam'),
-                ]
-        else:
-            return
-
-        # clear the menu image
-        self.menu_item_image = pygame.Surface(self.game_area.size)
-        self.menu_item_image.set_colorkey(color.magenta)
-        self.menu_item_image.fill(color.magenta)
-        self.menu_item_positions = []
-        self.menu_item_keys = []
-        self.menu_selected_index = 0
-        width = self.game_area.width
-        y_position = 245
-        # draw menu items
-        for n in key_values:
-            pix = self.largefont.render(n[1], False, color.green, color.magenta)
-            size = pix.get_size()
-            # center
-            left = (width - size[0]) / 2
-            self.menu_item_image.blit(pix, (left, y_position))
-            # store the item selection rectangle
-            self.menu_item_positions.append(
-                pygame.Rect((left - 5, y_position), (size[0] + 15, size[1])))
-            self.menu_item_keys.append(n[0])
-            # up the y offset
-            y_position += size[1]
-        self.menu_target_rect = self.menu_item_positions[0]
-        self.menu_selected_rect = self.menu_target_rect.copy()
-
-    def select_menu_item(self, previous=False):
-        """
-        Select the next menu item, or the previous if given.
-
-        """
-
-        while True:
-            if previous:
-                self.menu_selected_index -= 1
-            else:
-                self.menu_selected_index +=1
-            if self.menu_selected_index < 0:
-                self.menu_selected_index = len(self.menu_item_positions) - 1
-            elif self.menu_selected_index > len(self.menu_item_positions) - 1:
-                self.menu_selected_index = 0
-            if len(self.menu_item_keys[self.menu_selected_index]) > 1:
-                break
-        self.menu_target_rect = self.menu_item_positions[self.menu_selected_index]
-
-    def selected_menu_key(self):
-        """
-        Return the key of the selected menu item.
-
-        """
-
-        return self.menu_item_keys[self.menu_selected_index]
-
     def draw_menu(self):
         """
         Draw the main menu.
         """
 
         self.image.blit(self.menubackground, (0, 0))
-        self.image.blit(self.menu_item_image, (0, 0))
-
-        # update and draw menu item selection rectangle
-        o = self.menu_selected_rect.centerx - self.menu_target_rect.centerx
-        self.menu_selected_rect.centerx -= (o * 0.2)
-
-        o = self.menu_selected_rect.centery - self.menu_target_rect.centery
-        self.menu_selected_rect.centery -= (o * 0.4)
-
-        o = self.menu_selected_rect.width - self.menu_target_rect.width
-        self.menu_selected_rect.width -= (o * 0.3)
-
-        pygame.draw.rect(self.image, color.green, self.menu_selected_rect, 4)
 
     def draw_action_shot(self, x, y):
         """
@@ -1347,6 +1269,86 @@ class GraphicalView(object):
             colorkey=color.magenta
             )
 
+        # add main menu buttons
+        self.menu_buttons = {}
+        menu_states = [STATE_MENU_MAIN,
+                        STATE_MENU_SAVED,
+                        STATE_MENU_OPTIONS,
+                        STATE_MENU_STORIES]
+        # play button
+        button = ui.UxMovingButton(
+            rect=(-160, 200, 150, 64),
+            image_rect=(650, 4, 150, 64),
+            code='menu play',
+            hotkey='p',
+            enabled=True,
+            border_color=None,
+            context=menu_states
+            )
+        self.menu_buttons['play'] = button
+        self.ui.add(button, hide_hotkey=True)
+        button.store_destination(None, None, 'hide')
+        button.store_destination(40, None, 'show')
+        # options button
+        button = ui.UxMovingButton(
+            rect=(-200, 280, 150, 64),
+            image_rect=(650, 69, 150, 64),
+            code='menu options',
+            hotkey='o',
+            enabled=True,
+            border_color=None,
+            context=menu_states
+            )
+        self.menu_buttons['options'] = button
+        self.ui.add(button, hide_hotkey=True)
+        button.store_destination(None, None, 'hide')
+        button.store_destination(40, None, 'show')
+        # about button
+        button = ui.UxMovingButton(
+            rect=(-240, 360, 150, 64),
+            image_rect=(650, 134, 150, 64),
+            code='menu about',
+            hotkey='a',
+            enabled=True,
+            border_color=None,
+            context=menu_states
+            )
+        self.menu_buttons['about'] = button
+        self.ui.add(button, hide_hotkey=True)
+        button.store_destination(None, None, 'hide')
+        button.store_destination(40, None, 'show')
+        # quit button
+        button = ui.UxMovingButton(
+            rect=(-280, 440, 150, 64),
+            image_rect=(650, 199, 150, 64),
+            code='menu quit',
+            hotkey='q',
+            enabled=True,
+            border_color=None,
+            context=menu_states
+            )
+        self.menu_buttons['quit'] = button
+        self.ui.add(button, hide_hotkey=True)
+        button.store_destination(None, None, 'hide')
+        button.store_destination(40, None, 'show')
+        # saved game buttons
+        y_pos = 200
+        for n, slot in enumerate(self.model.saved_games_list()):
+            button = ui.UxMovingButton(
+                rect=(self.game_area.width + 20 + (40 * n), y_pos, 150, 64),
+                image_rect=(650, 199, 150, 64),
+                code=slot[0],
+                hotkey=str(n + 1),
+                enabled=True,
+                border_color=None,
+                context=menu_states
+                )
+            self.menu_buttons[slot[0]] = button
+            self.ui.add(button, hide_hotkey=True)
+            button.store_destination(None, None, 'hide')
+            button.store_destination(self.game_area.width - 180, None, 'show')
+            y_pos += 80
+
         # add the "goto home screen" button
         button = ui.UxButton(
             rect=BT_HOME_DST,
@@ -1424,6 +1426,7 @@ class GraphicalView(object):
             fontcolor=color.lighter_green,
             background=color.magenta,
             )
+
     def reposition_upgrade_buttons(self, game_state):
         """
         Reposition the ui buttons that display the player's upgrades.
@@ -1587,6 +1590,11 @@ class GraphicalView(object):
             else:
                 self.model.use_upgrade(ux.code)
                 self.update_button_borders()
+
+        # main menu buttons
+        if context == STATE_MENU_MAIN:
+            if ux.code == 'menu play':
+                self.post(StateChangeEvent(STATE_MENU_SAVED))
 
         # handle info screen menus
         if context in tab_states:
