@@ -177,6 +177,7 @@ class UxMovingButton(UxButton):
             rect, image_rect, code, hotkey, enabled, border_color, context)
         self.destination = None
         self.destinations = {}
+        self.overlay = None
 
     def store_destination(self, x, y, key):
         """
@@ -209,6 +210,16 @@ class UxMovingButton(UxButton):
             x_diff = self.destination.left - self.rect.left
             y_diff = self.destination.top - self.rect.top
             self.rect = self.rect.move(int(x_diff / 10), int(y_diff / 10))
+
+    def draw(self, source, target):
+        """
+        Draw ourselves onto target from the source surface.
+        """
+
+        this_rect = self.calculated_rect()
+        target.blit(source, self.rect, this_rect)
+        if self.overlay:
+            target.blit(self.overlay, self.rect)
 
 class UxTabButton(UxButton):
     """
