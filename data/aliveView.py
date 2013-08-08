@@ -1277,8 +1277,8 @@ class GraphicalView(object):
                         STATE_MENU_STORIES]
         # play button
         button = ui.UxMovingButton(
-            rect=(-160, 200, 150, 64),
-            image_rect=(650, 4, 150, 64),
+            rect=(-160, 200, 151, 64),
+            image_rect=(650, 4, 151, 64),
             code='menu play',
             hotkey='p',
             enabled=True,
@@ -1291,8 +1291,8 @@ class GraphicalView(object):
         button.store_destination(40, None, 'show')
         # options button
         button = ui.UxMovingButton(
-            rect=(-200, 280, 150, 64),
-            image_rect=(650, 69, 150, 64),
+            rect=(-200, 280, 151, 64),
+            image_rect=(650, 69, 151, 64),
             code='menu options',
             hotkey='o',
             enabled=True,
@@ -1305,8 +1305,8 @@ class GraphicalView(object):
         button.store_destination(40, None, 'show')
         # about button
         button = ui.UxMovingButton(
-            rect=(-240, 360, 150, 64),
-            image_rect=(650, 134, 150, 64),
+            rect=(-240, 360, 151, 64),
+            image_rect=(650, 134, 151, 64),
             code='menu about',
             hotkey='a',
             enabled=True,
@@ -1319,8 +1319,8 @@ class GraphicalView(object):
         button.store_destination(40, None, 'show')
         # quit button
         button = ui.UxMovingButton(
-            rect=(-280, 440, 150, 64),
-            image_rect=(650, 199, 150, 64),
+            rect=(-280, 440, 151, 64),
+            image_rect=(650, 199, 151, 64),
             code='menu quit',
             hotkey='q',
             enabled=True,
@@ -1607,6 +1607,13 @@ class GraphicalView(object):
                     self.post(StateChangeEvent(STATE_PLAY))
                 else:
                     self.post(StateChangeEvent(STATE_MENU_SAVED))
+            elif ux.code == 'menu about':
+                #self.show_about_screens()
+                pass
+            elif ux.code == 'menu options':
+                pass
+            elif ux.code == 'menu quit':
+                self.post(QuitEvent())
         elif context == STATE_MENU_SAVED:
             if ux.code.startswith('load game'):
                 self.model.game_slot = int(ux.code.split()[-1])
