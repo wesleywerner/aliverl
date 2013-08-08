@@ -1286,7 +1286,7 @@ class GraphicalView(object):
             context=menu_states
             )
         self.menu_buttons['play'] = button
-        self.ui.add(button, hide_hotkey=True)
+        self.ui.add(button, hide_hotkey=False)
         button.store_destination(None, None, 'hide')
         button.store_destination(40, None, 'show')
         # options button
@@ -1335,18 +1335,27 @@ class GraphicalView(object):
         y_pos = 200
         for n, slot in enumerate(self.model.saved_games_list()):
             button = ui.UxMovingButton(
-                rect=(self.game_area.width + 20 + (40 * n), y_pos, 150, 64),
-                image_rect=(650, 199, 150, 64),
+                rect=(self.game_area.width + 20 + (40 * n), y_pos, 500, 64),
+                image_rect=(300, 264, 500, 64),
                 code=slot[0],
                 hotkey=str(n + 1),
                 enabled=True,
                 border_color=None,
                 context=menu_states
                 )
+            ovl = pygame.Surface((button.rect.size))
+            ovl.set_colorkey(color.magenta)
+            ovl.fill(color.magenta)
+            ovl.blit(self.largefont.render(
+                '%s: game slot' % (n + 1), False, color.white),
+                (10, 5))
+            ovl.blit(self.largefont.render(slot[1], False, color.yellow),
+                (10, 30))
+            button.overlay = ovl
             self.menu_buttons[slot[0]] = button
-            self.ui.add(button, hide_hotkey=True)
+            self.ui.add(button, hide_hotkey=False)
             button.store_destination(None, None, 'hide')
-            button.store_destination(self.game_area.width - 180, None, 'show')
+            button.store_destination(60, None, 'show')
             y_pos += 80
 
         # add the "goto home screen" button
