@@ -261,6 +261,13 @@ class GraphicalView(object):
                             v.recall_destination('show')
                         else:
                             v.recall_destination('hide')
+                elif model_state == STATE_MENU_STORIES:
+                    # show stories selection buttons
+                    for k, v in self.menu_buttons.items():
+                        if (k.startswith('story')):
+                            v.recall_destination('show')
+                        else:
+                            v.recall_destination('hide')
 
             elif isinstance(event, RefreshUpgradesEvent):
                 model_state = self.model.state.peek()
@@ -1280,7 +1287,7 @@ class GraphicalView(object):
         button = ui.UxMovingButton(
             rect=(-160, 200, 151, 64),
             image_rect=(650, 4, 151, 64),
-            code='menu play',
+            code='play',
             hotkey='p',
             enabled=True,
             border_color=None,
@@ -1294,7 +1301,7 @@ class GraphicalView(object):
         button = ui.UxMovingButton(
             rect=(-200, 280, 151, 64),
             image_rect=(650, 69, 151, 64),
-            code='menu options',
+            code='options',
             hotkey='o',
             enabled=True,
             border_color=None,
@@ -1308,7 +1315,7 @@ class GraphicalView(object):
         button = ui.UxMovingButton(
             rect=(-240, 360, 151, 64),
             image_rect=(650, 134, 151, 64),
-            code='menu about',
+            code='about',
             hotkey='a',
             enabled=True,
             border_color=None,
@@ -1322,7 +1329,7 @@ class GraphicalView(object):
         button = ui.UxMovingButton(
             rect=(-280, 440, 151, 64),
             image_rect=(650, 199, 151, 64),
-            code='menu quit',
+            code='quit',
             hotkey='q',
             enabled=True,
             border_color=None,
@@ -1350,14 +1357,45 @@ class GraphicalView(object):
             ovl.blit(self.largefont.render(
                 '%s: game slot' % (n + 1), False, color.white),
                 (10, 5))
-            ovl.blit(self.smallfont.render(slot[1], False, color.yellow),
+            ovl.blit(self.smallfont.render(slot[1], False,
+                color.yellow, color.magenta),
                 (10, 30))
             button.overlay = ovl
-            self.menu_buttons[slot[0]] = button
+            self.menu_buttons[button.code] = button
             self.ui.add(button, hide_hotkey=False)
             button.store_destination(None, None, 'hide')
             button.store_destination(60, None, 'show')
             y_pos += 80
+        # story buttons
+        y_pos = 200
+        for n, slot in enumerate(self.model.stories_list()):
+            button = ui.UxMovingButton(
+                rect=(-500 - (40 * n), y_pos, 500, 64),
+                image_rect=(300, 264, 500, 64),
+                code='story %s' % (n),
+                hotkey=str(n + 1),
+                enabled=True,
+                border_color=None,
+                context=menu_states
+                )
+            # store the story name in button data
+            button.data = slot[0]
+            ovl = pygame.Surface((button.rect.size))
+            ovl.set_colorkey(color.magenta)
+            ovl.fill(color.magenta)
+            ovl.blit(self.largefont.render(
+                '%s: %s' % (n + 1, slot[0]), False, color.white),
+                (10, 5))
+            ovl.blit(self.smallfont.render(slot[1], False,
+                color.yellow, color.magenta),
+                (10, 30))
+            button.overlay = ovl
+            self.menu_buttons[button.code] = button
+            self.ui.add(button, hide_hotkey=False)
+            button.store_destination(None, None, 'hide')
+            button.store_destination(60, None, 'show')
+            y_pos += 80
+
 
         # add the "goto home screen" button
         button = ui.UxButton(
@@ -1603,22 +1641,33 @@ class GraphicalView(object):
 
         # main menu buttons
         if context == STATE_MENU_MAIN:
-            if ux.code == 'menu play':
+            if ux.code == 'play':
                 if self.model.game_in_progress:
                     self.post(StateChangeEvent(STATE_PLAY))
                 else:
                     self.post(StateChangeEvent(STATE_MENU_SAVED))
-            elif ux.code == 'menu about':
+            elif ux.code == 'about':
                 #self.show_about_screens()
                 pass
-            elif ux.code == 'menu options':
+            elif ux.code == 'options':
                 pass
-            elif ux.code == 'menu quit':
+            elif ux.code == 'quit':
                 self.post(QuitEvent())
         elif context == STATE_MENU_SAVED:
             if ux.code.startswith('load game'):
                 self.model.game_slot = int(ux.code.split()[-1])
                 trace.write('save game slot %s selected' % self.model.game_slot)
+                self.post(StateChangeEvent(None))
+                self.model.begin_game()
+            elif ux.code.startswith('new game'):
+                self.model.game_slot = int(ux.code.split()[-1])
+                trace.write('save game slot %s selected' % self.model.game_slot)
+                self.post(StateSwapEvent(STATE_MENU_STORIES))
+        elif context == STATE_MENU_STORIES:
+            print(ux.code)
+            if ux.code.startswith('story'):
+                self.model.story_name = ux.data
+                trace.write('selected story "%s"' % (self.model.story_name))
                 self.post(StateChangeEvent(None))
                 self.model.begin_game()
 
