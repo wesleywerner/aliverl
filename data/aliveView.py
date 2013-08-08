@@ -256,7 +256,8 @@ class GraphicalView(object):
                 elif model_state == STATE_MENU_SAVED:
                     # show saved game buttons and hide the rest
                     for k, v in self.menu_buttons.items():
-                        if k.startswith('load game'):
+                        if (k.startswith('load game') or
+                                                    k.startswith('new game')):
                             v.recall_destination('show')
                         else:
                             v.recall_destination('hide')
@@ -1349,7 +1350,7 @@ class GraphicalView(object):
             ovl.blit(self.largefont.render(
                 '%s: game slot' % (n + 1), False, color.white),
                 (10, 5))
-            ovl.blit(self.largefont.render(slot[1], False, color.yellow),
+            ovl.blit(self.smallfont.render(slot[1], False, color.yellow),
                 (10, 30))
             button.overlay = ovl
             self.menu_buttons[slot[0]] = button
