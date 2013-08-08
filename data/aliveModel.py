@@ -1360,12 +1360,10 @@ class GameEngine(object):
         """
 
         games_list = []
-        has_new_game = False
         for n in range(1, 4):
             title = self.load_savegame_title(n)
-            if (not has_new_game and title is None):
-                games_list.append(('new game slot %s' % (n), 'new game'))
-                has_new_game = True
+            if title is None:
+                games_list.append(('load game slot %s' % (n), 'new game'))
             else:
                 games_list.append(('load game slot %s' % (n), title))
         return games_list
@@ -1386,7 +1384,7 @@ class GameEngine(object):
             values['story'] = jar.load()
             values['level'] = jar.load() + 1
             jar = None
-            return '%(story)s, level %(level)s [%(time)s]' % (values)
+            return '%(story)s, level %(level)s, %(time)s' % (values)
 
     def human_friendly_timespan(self, past_date):
         """
