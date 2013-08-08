@@ -129,6 +129,7 @@ class GameEngine(object):
         self.can_warp = False
         self.recent_messages = []
         self.game_slot = 0
+        self.story_name = 'ascension'
 
     def notify(self, event):
         """
@@ -198,8 +199,6 @@ class GameEngine(object):
         event.story contains the campaign to play.
         """
 
-        # set first game defaults
-        self.story_name = 'ascension'
         self.turn = 0
         self.level = None
         self.level_number = 0
@@ -1351,6 +1350,14 @@ class GameEngine(object):
             self.upgrades_available = 10
             self.player.health = self.player.max_health
             self.player.power = self.player.max_power
+
+    def stories_list(self):
+        """
+        Gets the list of playable stories.
+
+        """
+
+        return [('ascension', 'You awaken to the smell of waffles.')]
 
     def saved_games_list(self):
         """
