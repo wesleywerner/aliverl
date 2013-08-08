@@ -1594,7 +1594,16 @@ class GraphicalView(object):
         # main menu buttons
         if context == STATE_MENU_MAIN:
             if ux.code == 'menu play':
-                self.post(StateChangeEvent(STATE_MENU_SAVED))
+                if self.model.game_in_progress:
+                    self.post(StateChangeEvent(STATE_PLAY))
+                else:
+                    self.post(StateChangeEvent(STATE_MENU_SAVED))
+        elif context == STATE_MENU_SAVED:
+            if ux.code.startswith('load game'):
+                self.model.game_slot = int(ux.code.split()[-1])
+                trace.write('save game slot %s selected' % self.model.game_slot)
+                self.post(StateChangeEvent(None))
+                self.model.begin_game()
 
         # handle info screen menus
         if context in tab_states:
