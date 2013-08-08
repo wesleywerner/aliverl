@@ -128,7 +128,7 @@ class GameEngine(object):
         self.store = None
         self.can_warp = False
         self.recent_messages = []
-        self.game_slot = 1
+        self.game_slot = 0
 
     def notify(self, event):
         """
@@ -1075,9 +1075,6 @@ class GameEngine(object):
         # push or pop the given state
         if not self.state.process(state):
             self.post(QuitEvent())
-        #if state == STATE_PLAY and not self.game_in_progress:
-            ## start a new game
-            #self.begin_game()
 
     def show_dialogue(self, key):
         """
@@ -1362,8 +1359,6 @@ class GameEngine(object):
 
         """
 
-        if self.game_in_progress:
-            return [('continue game', 'continue game')]
         games_list = []
         has_new_game = False
         for n in range(1, 4):
