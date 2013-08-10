@@ -1369,11 +1369,12 @@ class GraphicalView(object):
         # story buttons
         y_pos = 200
         for n, slot in enumerate(self.model.stories_list()):
+            hotkey = chr(ord('a') + n)
             button = ui.UxMovingButton(
                 rect=(-500 - (40 * n), y_pos, 500, 64),
                 image_rect=(300, 264, 500, 64),
                 code='story %s' % (n),
-                hotkey=str(n + 1),
+                hotkey=hotkey,
                 enabled=True,
                 border_color=None,
                 context=menu_states
@@ -1384,7 +1385,7 @@ class GraphicalView(object):
             ovl.set_colorkey(color.magenta)
             ovl.fill(color.magenta)
             ovl.blit(self.largefont.render(
-                '%s: %s' % (n + 1, slot[0]), False, color.white),
+                '%s: %s' % (hotkey, slot[0]), False, color.white),
                 (10, 5))
             ovl.blit(self.smallfont.render(slot[1], False,
                 color.yellow, color.magenta),
@@ -1664,7 +1665,6 @@ class GraphicalView(object):
                 trace.write('save game slot %s selected' % self.model.game_slot)
                 self.post(StateSwapEvent(STATE_MENU_STORIES))
         elif context == STATE_MENU_STORIES:
-            print(ux.code)
             if ux.code.startswith('story'):
                 self.model.story_name = ux.data
                 trace.write('selected story "%s"' % (self.model.story_name))
