@@ -1262,6 +1262,9 @@ class GraphicalView(object):
             )
         self.transition_queue.insert(0, close_transition)
 
+        # handle keys like it was a dialogue for help screen state
+        self.post(StateChangeEvent(STATE_DIALOG))
+
     def setup_ui_manager(self):
         """
         Setup the UxManager which handles clickable buttons.
