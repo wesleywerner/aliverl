@@ -10,11 +10,11 @@
  </tileset>
  <layer name="walls" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJztlwEKgCAMRf8ZgrxAWheo7n+0kohC2jQm4soHg82PsI+K2gNYiBiIPKXWEGYPBxpH5Cm1Bhz4vsdbPj3M5WoNxPzH5nK1Bt7673CdnXA/2FxNFUSy/l+g+W/+m///0vwDM477DODfwKF+jpuC/eYmZf0p3UV0DUj824iuAYn/VL1mfO/+j8P9EVehXnP4N/wGe/IkAA==
+   eJztlwEKgCAMRf8ZgrxAWheo7n+0kohCmlMXscoHg/0+wj4WaQtgIqoj+hKtscxaDjSO6Eu0Rhzic/anfrhYm6M1wuXn1uZojeTmb3B8O+H7YBmtEcn+f4Gav+av+f9LzQ+M2P5nQPwMHPr7c/PgvHeTsv+U7xj/DUjyW8Z/A5L8qb5m/Oz+jhO7I85CX3P5M/wC8fQkgQ==
   </data>
  </layer>
  <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
-  <object name="player" type="player" gid="393" x="32" y="64"/>
+  <object name="player" type="player" gid="393" x="640" y="128"/>
  </objectgroup>
  <objectgroup draworder="topdown" name="welcome messages [0,0]" width="64" height="16">
   <object gid="155" x="0" y="32">
@@ -128,7 +128,7 @@
     <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
    </properties>
   </object>
-  <object x="352" y="64" width="96" height="64">
+  <object x="320" y="96" width="32" height="32">
    <properties>
     <property name="spam" value="@message line of sight test"/>
    </properties>
@@ -155,6 +155,37 @@
   <object x="480" y="64" width="96" height="64">
    <properties>
     <property name="spam" value="@message hit the corner switch to unlock the terminal"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="Object counters" width="64" height="16">
+  <object name="counter capacitor" gid="206" x="640" y="64">
+   <properties>
+    <property name="bar" value="@ontrigger @repeat @ifcounter=2 @message counter reached 2"/>
+    <property name="foo" value="@ontrigger @repeat @ifcounter=2 @transmute 214"/>
+    <property name="spam" value="@ontrigger @repeat @addcounter"/>
+    <property name="test" value="@repeat @ifcounter=2 @clearcounter @message hit!"/>
+   </properties>
+  </object>
+  <object name="counter switch 2" type="switch" gid="188" x="608" y="96">
+   <properties>
+    <property name="spam" value="@trigger counter capacitor"/>
+   </properties>
+  </object>
+  <object name="counter switch 1" type="switch" gid="188" x="608" y="128">
+   <properties>
+    <property name="spam" value="@trigger counter capacitor"/>
+   </properties>
+  </object>
+  <object x="608" y="128" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message @repeat object counters test"/>
+   </properties>
+  </object>
+  <object name="counter terminal" type="term" gid="194" x="704" y="96">
+   <properties>
+    <property name="foo" value="@repeat @ifcounter=5 @message terminal hit 5 times"/>
+    <property name="spam" value="@repeat @addcounter"/>
    </properties>
   </object>
  </objectgroup>
