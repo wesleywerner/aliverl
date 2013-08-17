@@ -26,6 +26,7 @@ import story
 import rlhelper
 import aliveUpgrades as alu
 from tmxparser import TMXParser
+from configobj4 import ConfigObj
 from eventmanager import *
 
 
@@ -1452,6 +1453,20 @@ class GameEngine(object):
                 self.recent_messages = jar.load()
                 self.player = jar.load()
                 jar = None
+
+    def about_game_data(self):
+        """
+        Get the about game config data.
+
+        """
+
+        conf = ConfigObj('./alive.conf', file_error=True)
+        data = conf['about']
+        for screen_key in data.keys():
+            stripped = '\n'.join([s.lstrip() for s
+                            in data[screen_key]['datas'].split('\n')])
+            data[screen_key]['datas'] = stripped
+        return conf['about']
 
     @property
     def tile_width(self):
