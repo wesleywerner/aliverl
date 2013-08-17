@@ -859,17 +859,25 @@ class GameEngine(object):
                 user_data = ' '.join([v for v in values
                     if not v.startswith('@')])
                 on_trigger = '@ontrigger' in commands
+                has_counter = '@addcounter' in commands
                 #delay = [cmd for cmd in commands if cmd.startswith('@delay=')]
                 if (direct and not on_trigger) or (not direct and on_trigger):
                     delay = self.split_command(commands, '@delay', 0)
-                    self.trigger_queue.append({
+                    command_data = {
                         'name': key,
                         'obj': obj,
                         'direct': direct,
                         'commands': commands,
                         'delay': delay and int(delay) or 0,
                         'user_data': user_data,
-                        })
+                        }
+                    # we order commands with @addcounter first to let
+                    # other @ifcounter tests get fresh counter values.
+                    # the list processes from bottom out.
+                    if has_counter:
+                        self.trigger_queue.append(command_data)
+                    else:
+                        self.trigger_queue.insert(0, command_data)
                     trace.write('\t"%s" added to trigger queue' % key)
 
     def random_identifier(self, prefix=''):
@@ -916,7 +924,7 @@ class GameEngine(object):
                 ifcounter = self.split_command(commands, '@ifcounter', None)
                 counter_value = obj.properties.get('counter', 0)
                 if ifcounter and int(ifcounter) != int(counter_value):
-                    trace.write('counter "%s" on "%s" does not match expected "%s"' %
+                    trace.write('\tcounter "%s" on "%s" != expected "%s"' %
                         (counter_value, obj.name, ifcounter))
                     continue
                     # NOTE: side effects from continue?
@@ -952,11 +960,11 @@ class GameEngine(object):
                 if '@addcounter' in commands:
                     counter_value = obj.properties.get('counter', 0)
                     counter_value += 1
-                    trace.write('add counter on "%s" to %s' %
+                    trace.write('\tadd counter on "%s" to %s' %
                         (obj.name, counter_value))
                     obj.properties['counter'] = counter_value
                 if '@clearcounter' in commands:
-                    trace.write('clearing counter on "%s"' % obj.name)
+                    trace.write('\tclearing counter on "%s"' % obj.name)
                     obj.properties['counter'] = 0
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
