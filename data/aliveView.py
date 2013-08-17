@@ -320,15 +320,15 @@ class GraphicalView(object):
         # NOTE: no need to handle drawing for HELP or DIALOGUE states
         #       since those use the TransitionBase, which draws itself below.
 
-        # update the ui and draw it to the main image
-        self.ui.update()
-        self.image.blit(self.ui.image, (0, 0))
-
         # apply any transitions (including dialogues and help screens)
         if self.transition:
             self.transition.update(pygame.time.get_ticks())
             self.image.blit(self.transition.image, (0, 0))
         self.step_transitions()
+
+        # update the ui and draw it to the main image
+        self.ui.update()
+        self.image.blit(self.ui.image, (0, 0))
 
         # finally draw our composed image onto the screen
         self.screen.blit(self.image, self.game_area)
