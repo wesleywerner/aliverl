@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Floor" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJytk9ENgCAMRDudFAZQlP330A8vNKUUiF5ykTS+HraR6B/tytmoSSfBxsfFeHpiJ18qT/KjnFNlhEXeq0dqZ8PGez2eRQ+wuO9G9k6C4lmdrXzvfL19ywIDgYXLBLO6vy88ZnlQnZ3eX2pRN0d/P3pr9+qj/2NWN8DxIaY=
+   eJylk90JgDAMhLOL4ApuYH8G0Nruv4d9aDCENE3w4LCcfDlpEMCvTcgu5iJk6L07dx+DTd1NeGqKSj9VMfKrnod1BCev5YnNzuS9hY9kBrL4vSfIOwmMj+ws9WvnOuY2B4NCFt0MjHd/f3i8yxu+u+P7y4b+WV7JbO5Zvvo/rHoBXQAh0A==
   </data>
  </layer>
  <layer name="Walls" width="16" height="16">
@@ -21,7 +21,7 @@
    </properties>
   </object>
   <object name="player" type="player" gid="393" x="96" y="480"/>
-  <object x="128" y="416" width="32" height="64">
+  <object x="160" y="416" width="32" height="64">
    <properties>
     <property name="spam" value="@message all these nodes look the same"/>
    </properties>
@@ -39,9 +39,10 @@
   </object>
   <object name="core switch" gid="188" x="224" y="224">
    <properties>
-    <property name="msg" value="@dialogue act 2 terminal unresponsive"/>
-    <property name="trig1" value="@ontrigger @give %trigger core door"/>
-    <property name="trig2" value="@ontrigger @transmute 192"/>
+    <property name="count" value="@repeat @ontrigger @addcounter"/>
+    <property name="open the door" value="@repeat @ifcounter=3 @trigger core door"/>
+    <property name="transmute" value="@repeat @ontrigger @ifcounter=3 @transmute 192"/>
+    <property name="unresponsive message" value="@dialogue act 2 terminal unresponsive"/>
    </properties>
   </object>
   <object gid="274" x="384" y="288"/>
@@ -50,6 +51,8 @@
   <object gid="188" x="288" y="256"/>
   <object name="secret switch" type="switch" gid="188" x="288" y="352">
    <properties>
+    <property name="give secret message" value="@ontrigger @give %message you hear a pop around the corner"/>
+    <property name="transmure" value="@ontrigger @transmute 192"/>
     <property name="unlock secret" value="@ontrigger @give %trigger failing capacitor"/>
    </properties>
   </object>
@@ -66,23 +69,11 @@
     <property name="modes" value="updown"/>
    </properties>
   </object>
-  <object name="switch 2" type="switch" gid="192" x="320" y="160">
-   <properties>
-    <property name="trig1" value="@ontrigger @give %trigger switch 3"/>
-    <property name="trig2" value="@ontrigger @give %message override #2 OK. 1 more to go..."/>
-   </properties>
-  </object>
-  <object name="switch 1" type="switch" gid="177" x="352" y="416">
-   <properties>
-    <property name="trig1" value="@trigger switch 2"/>
-    <property name="trig2" value="@message override #1 OK. 2 more to go..."/>
-   </properties>
-  </object>
   <object name="switch 3" type="switch" gid="175" x="256" y="128">
    <properties>
-    <property name="secret" value="@ontrigger @give %trigger secret switch"/>
-    <property name="trig1" value="@ontrigger @give %trigger core switch"/>
-    <property name="trig2" value="@ontrigger @give %message override complete. core switch restarting..."/>
+    <property name="activate secret switch" value="@trigger secret switch"/>
+    <property name="trig1" value="@trigger core switch"/>
+    <property name="trig2" value="@message core door override OK."/>
    </properties>
   </object>
   <object name="failing capacitor" gid="223" x="224" y="64">
@@ -124,7 +115,7 @@
     <property name="trig1" value="@message hey I found a hidden area!"/>
    </properties>
   </object>
-  <object x="160" y="32" width="32" height="96">
+  <object x="96" y="64" width="32" height="32">
    <properties>
     <property name="trig1" value="@message so much hardware..."/>
    </properties>
@@ -143,8 +134,6 @@
   <object gid="279" x="160" y="64"/>
   <object gid="279" x="32" y="64"/>
   <object gid="173" x="256" y="32"/>
-  <object gid="171" x="384" y="192"/>
-  <object gid="171" x="352" y="128"/>
   <object gid="155" x="320" y="128"/>
   <object gid="283" x="32" y="128"/>
   <object x="64" y="224" width="96" height="96">
@@ -190,5 +179,18 @@
     <property name="pop" value="@ontrigger @transmute 235"/>
    </properties>
   </object>
+  <object name="switch 3" type="switch" gid="175" x="352" y="192">
+   <properties>
+    <property name="trig1" value="@trigger core switch"/>
+    <property name="trig2" value="@message core door override OK."/>
+   </properties>
+  </object>
+  <object name="switch 3" type="switch" gid="175" x="352" y="416">
+   <properties>
+    <property name="trig1" value="@trigger core switch"/>
+    <property name="trig2" value="@message core door override OK."/>
+   </properties>
+  </object>
+  <object gid="206" x="448" y="64"/>
  </objectgroup>
 </map>
