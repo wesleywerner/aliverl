@@ -1172,7 +1172,7 @@ class GraphicalView(object):
             # set up graph objects
             self.graphs['health'] = GraphDisplay(
                 fps=30,
-                base_color=color.green,
+                base_color=color.lighter_green,
                 title='health',
                 font=self.smallfont,
                 rect=(180, 23, 140, 40),
@@ -1182,7 +1182,7 @@ class GraphicalView(object):
             # set up graph objects
             self.graphs['power'] = GraphDisplay(
                 fps=30,
-                base_color=color.white,
+                base_color=color.lighter_blue,
                 title='power',
                 font=self.smallfont,
                 rect=(322, 23, 140, 40),
@@ -1219,19 +1219,20 @@ class GraphicalView(object):
         help_transition.waitforkey = True
         self.transition_queue.insert(0, help_transition)
 
-        ## add subsequent screens as static (no animation required)
-        #help_2 = StaticScreen(
-            #size=self.game_area.size,
-            #background_color=color.magenta,
-            #fps=FPS,
-            #font=self.largefont,
-            #words=None,
-            #word_color=color.green,
-            #words_x_offset=0,
-            #words_y_offset=0,
-            #background=help_screen
-            #)
-        #self.transition_queue.insert(0, help_2)
+        # add subsequent screens as static (no animation required)
+        help_screen2 = pygame.image.load('images/help-2.png').convert()
+        help_2 = StaticScreen(
+            size=self.game_area.size,
+            background_color=color.magenta,
+            fps=FPS,
+            font=self.largefont,
+            words=None,
+            word_color=color.green,
+            words_x_offset=0,
+            words_y_offset=0,
+            background=help_screen2
+            )
+        self.transition_queue.insert(0, help_2)
 
         # add a closing transition
         close_transition = SlideinTransition(
@@ -1359,11 +1360,12 @@ class GraphicalView(object):
         # story buttons
         y_pos = 200
         for n, slot in enumerate(self.model.stories_list()):
+            hotkey = chr(ord('a') + n)
             button = ui.UxMovingButton(
                 rect=(-500 - (40 * n), y_pos, 500, 64),
                 image_rect=(300, 264, 500, 64),
                 code='story %s' % (n),
-                hotkey=str(n + 1),
+                hotkey=hotkey,
                 enabled=True,
                 border_color=None,
                 context=STATE_MENU_STORIES
@@ -1374,7 +1376,7 @@ class GraphicalView(object):
             ovl.set_colorkey(color.magenta)
             ovl.fill(color.magenta)
             ovl.blit(self.largefont.render(
-                '%s: %s' % (n + 1, slot[0]), False, color.white),
+                '%s: %s' % (hotkey, slot[0]), False, color.white),
                 (10, 5))
             ovl.blit(self.smallfont.render(slot[1], False,
                 color.yellow, color.magenta),

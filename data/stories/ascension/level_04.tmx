@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
-  <image source="../../../../../../../../home/kbmonkey/coding/games/aliverl/data/stories/ascension/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
+  <image source="../../images/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
  </tileset>
  <layer name="Floor" width="32" height="32">
   <data encoding="base64" compression="zlib">
@@ -10,11 +10,11 @@
  </layer>
  <layer name="Walls" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJztlg0KgCAMRncJu0BYFyi9/80qKCgbbeYfkw2GMPJ7bYqbAYA10kdmjPJhdwvxhu35qyORv8C7lr4iP5el5n9Z7fxbn7/yld8LH3vLwr4C8OwvM6I1ETqYlmf8tw3WFAu1OPUv8T5L5JeqP3X/3Pmtu8UGRNsQOpgW5/595UHFODrKl8dvPf/kMqnzb+vzV34/fM7cgvURTozyY47aAJxcKhk=
+   eJztVgEOwiAMvPgEM/yATj+g2/9/pk1m3CppbxtCMFzSkJByx0EDDQAeK+NMznlxekWP9Yit2cpTo/4d32c5ZtRPhb3+38jtv/T96zVH5PUv5985e/qlfvO/RM3+Y2+Z/leA5f8S83p1OGJcI7HvXo2CC2PO4JiPrP4WSF2Iz5uxn5T6AZ8z1/WxV3+ed3ByWS6m/oYpd4Bdf0HlMFxM/Vk+vDmGp+nXp1+6/0mFWvvf0vff9P9H3+pbrH+EmfNC+oInGVYsfw==
   </data>
  </layer>
- <objectgroup draworder="topdown" name="Diagnostics" width="32" height="32"/>
- <objectgroup draworder="topdown" name="Storage" width="32" height="32">
+ <objectgroup name="Diagnostics" width="32" height="32"/>
+ <objectgroup name="Storage" width="32" height="32">
   <object gid="274" x="96" y="160"/>
   <object gid="274" x="96" y="352"/>
   <object gid="274" x="320" y="128"/>
@@ -41,8 +41,18 @@
   <object gid="279" x="288" y="352"/>
   <object gid="173" x="128" y="224"/>
   <object gid="173" x="288" y="256"/>
+  <object name="blue ice" type="friend" gid="427" x="288" y="320">
+   <properties>
+    <property name="modes" value=""/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="160" y="128">
+   <properties>
+    <property name="modes" value=""/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="Build Lab" width="32" height="32">
+ <objectgroup name="Build Lab" width="32" height="32">
   <object gid="280" x="128" y="768"/>
   <object gid="280" x="128" y="896"/>
   <object gid="280" x="288" y="768"/>
@@ -68,7 +78,7 @@
   <object gid="282" x="352" y="704"/>
   <object gid="281" x="96" y="704"/>
  </objectgroup>
- <objectgroup draworder="topdown" name="The Conduit" width="32" height="32">
+ <objectgroup name="The Conduit" width="32" height="32">
   <object gid="223" x="672" y="96"/>
   <object gid="223" x="768" y="96"/>
   <object gid="223" x="800" y="96"/>
@@ -114,17 +124,14 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="Transport Hub" width="32" height="32">
+ <objectgroup name="Transport Hub" width="32" height="32">
   <object name="player" type="player" gid="393" x="448" y="544"/>
   <object gid="190" x="416" y="384"/>
-  <object gid="188" x="576" y="256"/>
+  <object gid="188" x="576" y="288"/>
   <object gid="188" x="416" y="736"/>
   <object gid="171" x="384" y="608"/>
   <object gid="171" x="768" y="448"/>
   <object gid="173" x="800" y="608"/>
-  <object gid="278" x="448" y="640"/>
-  <object gid="280" x="640" y="576"/>
-  <object gid="279" x="416" y="480"/>
   <object name="blue ice" type="friend" gid="427" x="672" y="576">
    <properties>
     <property name="modes" value="leftright"/>
@@ -135,40 +142,41 @@
     <property name="modes" value="updown"/>
    </properties>
   </object>
-  <object name="blue ice" type="friend" gid="427" x="448" y="352">
-   <properties>
-    <property name="modes" value="updown,random"/>
-   </properties>
-  </object>
   <object name="blue ice" type="friend" gid="427" x="448" y="672">
    <properties>
     <property name="modes" value="updown"/>
    </properties>
   </object>
-  <object name="blue ice" type="friend" gid="427" x="448" y="256">
+  <object name="blue ice" type="friend" gid="427" x="480" y="256">
    <properties>
-    <property name="modes" value="leftright"/>
+    <property name="modes" value="leftright,random"/>
    </properties>
   </object>
-  <object gid="278" x="448" y="192"/>
-  <object gid="283" x="832" y="576"/>
-  <object name="blue ice" type="friend" gid="427" x="288" y="320">
-   <properties>
-    <property name="modes" value=""/>
-   </properties>
-  </object>
-  <object name="blue ice" type="friend" gid="427" x="160" y="128">
-   <properties>
-    <property name="modes" value=""/>
-   </properties>
-  </object>
-  <object gid="175" x="480" y="512"/>
-  <object gid="175" x="512" y="512"/>
-  <object gid="192" x="480" y="544"/>
-  <object gid="192" x="512" y="544"/>
-  <object gid="192" x="480" y="512"/>
-  <object gid="192" x="512" y="512"/>
-  <object gid="175" x="480" y="544"/>
-  <object gid="175" x="512" y="544"/>
+  <object gid="175" x="448" y="480"/>
+  <object gid="175" x="544" y="480"/>
+  <object gid="192" x="448" y="576"/>
+  <object gid="192" x="544" y="576"/>
+  <object gid="192" x="448" y="480"/>
+  <object gid="192" x="544" y="480"/>
+  <object gid="175" x="448" y="576"/>
+  <object gid="175" x="544" y="576"/>
+  <object gid="124" x="320" y="512"/>
+  <object gid="124" x="320" y="544"/>
+  <object gid="124" x="864" y="512"/>
+  <object gid="124" x="864" y="544"/>
+  <object gid="120" x="480" y="768"/>
+  <object gid="120" x="512" y="768"/>
+  <object gid="120" x="480" y="192"/>
+  <object gid="120" x="512" y="192"/>
+  <object gid="120" x="896" y="608"/>
+  <object gid="120" x="896" y="448"/>
+  <object gid="120" x="288" y="448"/>
+  <object gid="120" x="288" y="608"/>
+  <object gid="124" x="416" y="800"/>
+  <object gid="124" x="576" y="800"/>
+  <object gid="124" x="576" y="160"/>
+  <object gid="124" x="416" y="160"/>
+  <object gid="188" x="416" y="256"/>
+  <object gid="190" x="576" y="352"/>
  </objectgroup>
 </map>

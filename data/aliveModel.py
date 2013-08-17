@@ -101,6 +101,13 @@ class GameEngine(object):
     recent_messages (list)
         A list of game messages.
 
+    game_slot (int)
+        The slot number for loading or saving the current game to.
+        
+    story_name (string)
+        The name of the story currently played. This value determines the path
+        to the story config files and map data.
+
     """
 
     def __init__(self, evManager):
