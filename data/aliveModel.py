@@ -103,7 +103,7 @@ class GameEngine(object):
 
     game_slot (int)
         The slot number for loading or saving the current game to.
-        
+
     story_name (string)
         The name of the story currently played. This value determines the path
         to the story config files and map data.
@@ -815,6 +815,28 @@ class GameEngine(object):
                     npc.power = rlhelper.clamp(
                         npc.power + 1, 0, npc.max_power)
 
+    def split_command(self, command_list, find_command, default=None):
+        """
+        Find and split the given command from a list.
+        The command is expected in the format @name=value.
+        Returns a tuple of the command values, or default if the command
+        is not found in the list.
+
+        """
+
+        matches = [cmd for cmd in command_list if cmd.startswith(find_command)]
+        if matches:
+            # remember: the first value is our command itself
+            values = matches[0].split('=')
+            if len(values) == 2:
+                # return the only value not as a list
+                return values[1]
+            else:
+                # return values minus the command
+                return values[1:]
+        else:
+            return default
+
     def trigger_object(self, obj, direct):
         """
         Push any triggers from an object into the trigger_queue.
@@ -837,14 +859,15 @@ class GameEngine(object):
                 user_data = ' '.join([v for v in values
                     if not v.startswith('@')])
                 on_trigger = '@ontrigger' in commands
-                delay = [cmd for cmd in commands if cmd.startswith('@delay=')]
+                #delay = [cmd for cmd in commands if cmd.startswith('@delay=')]
                 if (direct and not on_trigger) or (not direct and on_trigger):
+                    delay = self.split_command(commands, '@delay', 0)
                     self.trigger_queue.append({
                         'name': key,
                         'obj': obj,
                         'direct': direct,
                         'commands': commands,
-                        'delay': delay and int(delay[0].split('=')[1]) or 0,
+                        'delay': delay and int(delay) or 0,
                         'user_data': user_data,
                         })
                     trace.write('\t"%s" added to trigger queue' % key)
@@ -888,6 +911,15 @@ class GameEngine(object):
                 trig['delay'] = delay - 1
                 requeue.append(trig)
             else:
+                # conditional: if the object counter matches this test allow
+                #       the other commands to process. Otherwise delay them.
+                ifcounter = self.split_command(commands, '@ifcounter', None)
+                counter_value = obj.properties.get('counter', 0)
+                if ifcounter and int(ifcounter) != int(counter_value):
+                    trace.write('counter "%s" on "%s" does not match expected "%s"' %
+                        (counter_value, obj.name, ifcounter))
+                    continue
+                    # NOTE: side effects from continue?
                 if '@trigger' in commands and direct:
                     _object_list = self.get_object_by_name(user_data)
                     for _trig_object in _object_list:
@@ -917,6 +949,15 @@ class GameEngine(object):
                     gid_list = [int(i)
                         for i in user_data.replace(' ', '').split(',')]
                     self.transmute_object(obj, gid_list)
+                if '@addcounter' in commands:
+                    trace.write('add counter on "%s" to %s' %
+                        (obj.name, counter_value))
+                    counter_value = obj.properties.get('counter', 0)
+                    counter_value += 1
+                    obj.properties['counter'] = counter_value
+                if '@clearcounter' in commands:
+                    trace.write('clearing counter on "%s"' % obj.name)
+                    obj.properties['counter'] = 0
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
                     trace.write('\tkill interaction "%s" on "%s"' %
