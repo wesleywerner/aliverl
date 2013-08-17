@@ -12,4 +12,4 @@
 * auto save and restore the game from the beginning of the level.
 * show the level title in the info screen.
 * menu with story selection, or resume a previously saved game.
-
+* objects have internal counters used for arbitrary command triggers

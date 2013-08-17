@@ -1,7 +1,5 @@
 # RELEASE Y.T.
 
-* create @ontrigger @set or @counters that increment. during the trigger then test for @oncounter and if the value equals.
-
 * need a @command to change an object property values, like "type" and "modes".
 
 * configure list of songs to loop during play. see if we can pause when switching to the main menu while a game is in progress.
