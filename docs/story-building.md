@@ -248,6 +248,9 @@ Optional commands are indicated by [].
     @delay=n
         occurs after n turns.
 
+    @ifcounter=n
+        this command will only trigger if the object's internal counter reaches n.
+
 @command can be **one** of:
 
     @message
@@ -271,6 +274,12 @@ Optional commands are indicated by [].
         this can be a single number one-way transmute, or a
         comma separated list of GID's to rotate between each trigger
         (assuming @repeat is specified).
+
+    @addcounter
+        add 1 to the object's internal counter.
+
+    @clearcounter
+        resets the object's internal counter to 0.
 
 @option can **any** of:
 
@@ -307,8 +316,26 @@ A more complex example: A computer shows story dialogue and unlocks a door, afte
 
 It is worth noting that the order of interactions is arbitrary, from the player perspective all actions happen at the same turn.
 
-Also noteworthy is that interactions triggered indirectly via @ontrigger ignore calling @trigger commands themselves. This is to prevent infinite recursion. For more on this, see Re
+Also noteworthy is that interactions triggered indirectly via @ontrigger ignore calling @trigger commands themselves. This is to prevent infinite recursion. For more on this, see Recursion.
 
+Object counters allow you to trigger commands after an arbitrary amount of times, in any order. Consider an object with these properties:
+
+    @repeat @addcounter
+    @repeat @ifcounter=5 @message muffins for everyone!
+
+On every interaction with this object it adds to the counter. When it reaches 5 it will announce free muffins. A more complex and realistic example can simulate needing to toggle 5 switches scattered on a map, in any order, before a computer terminal can be accessed. This is done by letting each of the switches @trigger the terminal, who then @addcounter @ontrigger. The actual command to use the terminal does a @ifcounter=n test. Naturally since counters are useless without repetition, all of the counting object's commands need the @repeat option to be of any use.
+
+
+switches 1 to 5:
+
+    @trigger that_terminal
+
+the terminal:
+
+    @repeat @ontrigger @addcounter
+    @repeat @ifcounter=5 @clearcounter @dialogue win the cookie
+
+The @clearcounter is used to ensure that particular command only gets actioned once, if that is your intent. You can very well omit it, in which case that trigger will get hit repeatedly on every interact if the counter is the correct value. You can also replace the clear with a @addcounter to keep on counting.
 
 # FAQ
 
