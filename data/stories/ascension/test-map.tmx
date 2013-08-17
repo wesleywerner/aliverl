@@ -164,7 +164,6 @@
     <property name="bar" value="@ontrigger @repeat @ifcounter=2 @message counter reached 2"/>
     <property name="foo" value="@ontrigger @repeat @ifcounter=2 @transmute 214"/>
     <property name="spam" value="@ontrigger @repeat @addcounter"/>
-    <property name="test" value="@repeat @ifcounter=2 @clearcounter @message hit!"/>
    </properties>
   </object>
   <object name="counter switch 2" type="switch" gid="188" x="608" y="96">
@@ -184,7 +183,7 @@
   </object>
   <object name="counter terminal" type="term" gid="194" x="704" y="96">
    <properties>
-    <property name="foo" value="@repeat @ifcounter=5 @message terminal hit 5 times"/>
+    <property name="foo" value="@repeat @ifcounter=5 @clearcounter @message terminal hit 5 times"/>
     <property name="spam" value="@repeat @addcounter"/>
    </properties>
   </object>
