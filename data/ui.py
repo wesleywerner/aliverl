@@ -428,7 +428,7 @@ class UxManager(object):
         Mark all ux elements as unclicked. Used on MOUSEUP events.
         """
 
-        for ux in self.context_elements:
+        for ux in self.elements:
             if not isinstance(ux, UxTabButton):
                 if ux.isclicked:
                     ux.isclicked = False
