@@ -56,6 +56,12 @@ class UxButton(object):
         It may be a single value, or a list of values. Your value will be
         converted to a list if it is not one already.
 
+    data:
+        Stores custom user data.
+
+    visible:
+        Determines if the widget will draw itself.
+
     """
 
     def __init__(self,
@@ -87,6 +93,7 @@ class UxButton(object):
         self.isclicked = False
         self.hotkey_image = None
         self.data = None
+        self.visible = True
 
     def _istarget(self, position):
         """
@@ -200,7 +207,7 @@ class UxMovingButton(UxButton):
         if self.destinations.has_key(key):
             self.destination = self.destinations[key]
 
-    def update(self):
+    def update(self, manager_context):
         """
         Step the button position towards destination.
 
@@ -210,6 +217,9 @@ class UxMovingButton(UxButton):
             x_diff = self.destination.left - self.rect.left
             y_diff = self.destination.top - self.rect.top
             self.rect = self.rect.move(int(x_diff / 10), int(y_diff / 10))
+
+        if not manager_context in self.context and self.visible:
+            self.visible = self.rect != self.destination
 
     def draw(self, source, target):
         """
@@ -328,8 +338,18 @@ class UxManager(object):
         Rebuild the list of context elements.
         """
 
-        self.context_elements = [e for e in self.elements
-                                    if self.context in e.context]
+        self.context_elements = []
+        for ux in self.elements:
+            if self.context in ux.context:
+                self.context_elements.append(ux)
+                ux.visible = True
+                if type(ux) is UxMovingButton:
+                    ux.recall_destination('show')
+            else:
+                if type(ux) is UxMovingButton:
+                    ux.recall_destination('hide')
+                else:
+                    ux.visible = False
 
     def set_context(self, context):
         """
@@ -433,10 +453,11 @@ class UxManager(object):
         """
 
         self.image.fill(self.colorkey)
-        for ux in self.context_elements:
+        for ux in self.elements:
             if type(ux) is UxMovingButton:
-                ux.update()
-            ux.draw(self.source, self.image)
+                ux.update(self.context)
+            if ux.visible:
+                ux.draw(self.source, self.image)
 
     def alter_hue(self, hue, surface_to_clone):
         """ This cleverness rotates the pixel rgb values through
