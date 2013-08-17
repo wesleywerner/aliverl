@@ -950,10 +950,10 @@ class GameEngine(object):
                         for i in user_data.replace(' ', '').split(',')]
                     self.transmute_object(obj, gid_list)
                 if '@addcounter' in commands:
-                    trace.write('add counter on "%s" to %s' %
-                        (obj.name, counter_value))
                     counter_value = obj.properties.get('counter', 0)
                     counter_value += 1
+                    trace.write('add counter on "%s" to %s' %
+                        (obj.name, counter_value))
                     obj.properties['counter'] = counter_value
                 if '@clearcounter' in commands:
                     trace.write('clearing counter on "%s"' % obj.name)
