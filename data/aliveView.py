@@ -1246,6 +1246,16 @@ class GraphicalView(object):
             )
         self.transition_queue.insert(0, close_transition)
 
+    def show_about_screens(self):
+        """
+        Shows about screens.
+
+        """
+
+        data = self.model.about_game_data()
+        self.post(DialogueEvent(data))
+        self.post(StateChangeEvent(STATE_DIALOG))
+
     def setup_ui_manager(self):
         """
         Setup the UxManager which handles clickable buttons.
@@ -1625,8 +1635,7 @@ class GraphicalView(object):
                 else:
                     self.post(StateChangeEvent(STATE_MENU_SAVED))
             elif ux.code == 'about':
-                #self.show_about_screens()
-                pass
+                self.show_about_screens()
             elif ux.code == 'options':
                 pass
             elif ux.code == 'quit':
