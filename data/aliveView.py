@@ -1661,6 +1661,7 @@ class GraphicalView(object):
                 self.model.story_name = ux.data
                 trace.write('selected story "%s"' % (self.model.story_name))
                 self.post(StateChangeEvent(None))
+                self.post(StateChangeEvent(None))
                 self.model.begin_game()
 
         # handle info screen menus
