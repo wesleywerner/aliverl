@@ -326,12 +326,13 @@ class GraphicalView(object):
             self.image.blit(self.transition.image, (0, 0))
         self.step_transitions()
 
-        # update the ui and draw it to the main image
-        self.ui.update()
-        self.image.blit(self.ui.image, (0, 0))
-
         # finally draw our composed image onto the screen
         self.screen.blit(self.image, self.game_area)
+
+        # update the ui and draw it to the main image
+        self.ui.update()
+        self.screen.blit(self.ui.image, (0, 0))
+
         pygame.display.flip()
 
     def draw_animations_cheatsheet(self):
