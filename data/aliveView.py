@@ -557,9 +557,9 @@ class GraphicalView(object):
                         # update the sprite animation.
                         sprite.update(ticks)
                         if visible:
-                            # because our play_image is only the size of the screen
-                            # we accommodate sprite positions, which are relative
-                            # to entire map, by subtracting the viewport location.
+                            # our play_image is only the size of the screen
+                            # we update sprite positions, which are relative to
+                            # entire map, by subtracting the viewport location.
                             new_rect = sprite.rect.move(
                                 -self.viewport.left, -self.viewport.top)
                             self.play_image.blit(sprite.image, new_rect)
@@ -776,7 +776,11 @@ class GraphicalView(object):
         if amount:
             amount *= -1
         pix = self.draw_text(
-            self.model.recent_messages[amount:], self.smallfont, False, message_color)
+            self.model.recent_messages[amount:],
+            self.smallfont,
+            False,
+            message_color
+            )
         self.image.blit(pix, (x, y))
 
     def wrap_text(self, message, maxlength):
@@ -1039,7 +1043,8 @@ class GraphicalView(object):
         # a few tiles away from the edge
         # if the player is not inside the viewport, center her.
         # this may occur on level warps.
-        intolerant_viewport = self.viewport_shift.inflate(-tolerance, -tolerance)
+        intolerant_viewport = self.viewport_shift.inflate(
+            -tolerance, -tolerance)
         if not intolerant_viewport.collidepoint(px, py):
             self.viewport_shift.center = (px, py)
 
@@ -1059,11 +1064,12 @@ class GraphicalView(object):
 
         # center viewport left if the map fits in snuggly
         if map_width <= self.viewport_shift.width:
-            self.viewport_shift.left = (map_width - self.viewport_shift.width) / 2
+            self.viewport_shift.left = (map_width -
+                                        self.viewport_shift.width) / 2
         # center viewport top if the map fits in snuggly
         if map_height <= self.viewport_shift.height:
-            self.viewport_shift.top = (map_height - self.viewport_shift.height) / 2
-
+            self.viewport_shift.top = (map_height -
+                                        self.viewport_shift.height) / 2
 
     def shift_viewport(self):
         """
@@ -1370,7 +1376,6 @@ class GraphicalView(object):
             button.store_destination(60, None, 'show')
             y_pos += 80
 
-
         # add the "goto home screen" button
         button = ui.UxButton(
             rect=BT_HOME_DST,
@@ -1613,7 +1618,6 @@ class GraphicalView(object):
                 self.model.use_upgrade(ux.code)
                 self.update_button_borders()
 
-        # main menu buttons
         if context == STATE_MENU_MAIN:
             if ux.code == 'play':
                 if self.model.game_in_progress:
@@ -1627,18 +1631,21 @@ class GraphicalView(object):
                 pass
             elif ux.code == 'quit':
                 self.post(QuitEvent())
+
         elif context == STATE_MENU_SAVED:
             if ux.code.startswith('load game'):
                 self.model.game_slot = int(ux.code.split()[-1])
-                trace.write('save game slot %s selected' % self.model.game_slot)
+                trace.write('save game slot %s selected' %
+                    self.model.game_slot)
                 self.post(StateChangeEvent(None))
                 self.model.begin_game()
             elif ux.code.startswith('new game'):
                 self.model.game_slot = int(ux.code.split()[-1])
-                trace.write('save game slot %s selected' % self.model.game_slot)
+                trace.write('save game slot %s selected' %
+                    self.model.game_slot)
                 self.post(StateChangeEvent(STATE_MENU_STORIES))
+
         elif context == STATE_MENU_STORIES:
-            print(ux.code)
             if ux.code.startswith('story'):
                 self.model.story_name = ux.data
                 trace.write('selected story "%s"' % (self.model.story_name))
