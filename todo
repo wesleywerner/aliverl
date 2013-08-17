@@ -1,17 +1,8 @@
 # RELEASE Y.T.
 
-* ui rework
-    - need to separate widget drawing from context. some widgets have move-to destinations and still need drawing even outside of context.
-    - use a visible attribute to decide if a widget should draw.
-    - context swithcing sets widgets invisible who are outside of context, unless they are busy moving.
-    - widgets set themselves invisible when finished moving and are outside of context.
-    - clicking only triggers widgets in context.
-
 * create @ontrigger @set or @counters that increment. during the trigger then test for @oncounter and if the value equals.
 
 * need a @command to change an object property values, like "type" and "modes".
-
-* create the menu with story selection, or resume a previously saved game.
 
 * configure list of songs to loop during play. see if we can pause when switching to the main menu while a game is in progress.
 
