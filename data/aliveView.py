@@ -246,29 +246,6 @@ class GraphicalView(object):
                     self.message_sprites = []
                     self.queue_slide_transition('', None, color.ai_crash)
 
-                if model_state == STATE_MENU_MAIN:
-                    # show main menu buttons and hide the rest
-                    for k, v in self.menu_buttons.items():
-                        if k in ('play', 'options', 'about', 'quit'):
-                            v.recall_destination('show')
-                        else:
-                            v.recall_destination('hide')
-                elif model_state == STATE_MENU_SAVED:
-                    # show saved game buttons and hide the rest
-                    for k, v in self.menu_buttons.items():
-                        if (k.startswith('load game') or
-                                                    k.startswith('new game')):
-                            v.recall_destination('show')
-                        else:
-                            v.recall_destination('hide')
-                elif model_state == STATE_MENU_STORIES:
-                    # show stories selection buttons
-                    for k, v in self.menu_buttons.items():
-                        if (k.startswith('story')):
-                            v.recall_destination('show')
-                        else:
-                            v.recall_destination('hide')
-
             elif isinstance(event, RefreshUpgradesEvent):
                 model_state = self.model.state.peek()
                 self.reposition_upgrade_buttons(model_state)
@@ -1279,10 +1256,6 @@ class GraphicalView(object):
 
         # add main menu buttons
         self.menu_buttons = {}
-        menu_states = [STATE_MENU_MAIN,
-                        STATE_MENU_SAVED,
-                        STATE_MENU_OPTIONS,
-                        STATE_MENU_STORIES]
         # play button
         button = ui.UxMovingButton(
             rect=(-160, 200, 151, 64),
@@ -1291,7 +1264,7 @@ class GraphicalView(object):
             hotkey='p',
             enabled=True,
             border_color=None,
-            context=menu_states
+            context=STATE_MENU_MAIN
             )
         self.menu_buttons['play'] = button
         self.ui.add(button, hide_hotkey=False)
@@ -1305,7 +1278,7 @@ class GraphicalView(object):
             hotkey='o',
             enabled=True,
             border_color=None,
-            context=menu_states
+            context=STATE_MENU_MAIN
             )
         self.menu_buttons['options'] = button
         self.ui.add(button, hide_hotkey=True)
@@ -1319,7 +1292,7 @@ class GraphicalView(object):
             hotkey='a',
             enabled=True,
             border_color=None,
-            context=menu_states
+            context=STATE_MENU_MAIN
             )
         self.menu_buttons['about'] = button
         self.ui.add(button, hide_hotkey=True)
@@ -1333,7 +1306,7 @@ class GraphicalView(object):
             hotkey='q',
             enabled=True,
             border_color=None,
-            context=menu_states
+            context=STATE_MENU_MAIN
             )
         self.menu_buttons['quit'] = button
         self.ui.add(button, hide_hotkey=True)
@@ -1349,7 +1322,7 @@ class GraphicalView(object):
                 hotkey=str(n + 1),
                 enabled=True,
                 border_color=None,
-                context=menu_states
+                context=STATE_MENU_SAVED
                 )
             ovl = pygame.Surface((button.rect.size))
             ovl.set_colorkey(color.magenta)
@@ -1376,7 +1349,7 @@ class GraphicalView(object):
                 hotkey=str(n + 1),
                 enabled=True,
                 border_color=None,
-                context=menu_states
+                context=STATE_MENU_STORIES
                 )
             # store the story name in button data
             button.data = slot[0]
