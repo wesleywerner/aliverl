@@ -1636,7 +1636,7 @@ class GraphicalView(object):
             elif ux.code.startswith('new game'):
                 self.model.game_slot = int(ux.code.split()[-1])
                 trace.write('save game slot %s selected' % self.model.game_slot)
-                self.post(StateSwapEvent(STATE_MENU_STORIES))
+                self.post(StateChangeEvent(STATE_MENU_STORIES))
         elif context == STATE_MENU_STORIES:
             print(ux.code)
             if ux.code.startswith('story'):
