@@ -40,6 +40,7 @@
   <object name="core switch" gid="188" x="224" y="224">
    <properties>
     <property name="count" value="@repeat @ontrigger @addcounter"/>
+    <property name="msg on override complete" value="@repeat @ontrigger @ifcounter=3 @message core access reset OK."/>
     <property name="open the door" value="@repeat @ifcounter=3 @trigger core door"/>
     <property name="transmute" value="@repeat @ontrigger @ifcounter=3 @transmute 192"/>
     <property name="unresponsive message" value="@dialogue act 2 terminal unresponsive"/>
@@ -56,8 +57,8 @@
     <property name="unlock secret" value="@ontrigger @give %trigger failing capacitor"/>
    </properties>
   </object>
-  <object gid="206" x="384" y="416"/>
-  <object gid="206" x="320" y="416"/>
+  <object gid="206" x="448" y="512"/>
+  <object gid="206" x="384" y="512"/>
   <object name="blue ice" type="friend" gid="427" x="352" y="384">
    <properties>
     <property name="modes" value="leftright"/>
@@ -73,7 +74,7 @@
    <properties>
     <property name="activate secret switch" value="@trigger secret switch"/>
     <property name="trig1" value="@trigger core switch"/>
-    <property name="trig2" value="@message core door override OK."/>
+    <property name="trig2" value="@message core override toggled"/>
    </properties>
   </object>
   <object name="failing capacitor" gid="223" x="224" y="64">
@@ -105,7 +106,7 @@
     <property name="speed" value="1.4"/>
    </properties>
   </object>
-  <object x="320" y="224" width="96" height="32">
+  <object x="384" y="224" width="32" height="32">
    <properties>
     <property name="spam" value="@message whoa this place is busy!"/>
    </properties>
@@ -157,12 +158,9 @@
     <property name="trig1" value="@dialogue act 2 core reboot"/>
     <property name="trig2" value="@trigger @delay=3 cpu"/>
     <property name="trig3" value="@trigger @delay=4 cap 1"/>
-    <property name="trig4" value="@trigger @delay=5 cap 2"/>
     <property name="trig5" value="@trigger @delay=6 cap 3"/>
-    <property name="trig6" value="@trigger @delay=7 cap 4"/>
     <property name="trig7" value="@trigger @delay=8 cap 5"/>
-    <property name="trig8" value="@message @delay=9 Oops. I didn't do it."/>
-    <property name="trig9" value="@message @delay=10 *prepare to deserialize to next node*"/>
+    <property name="trig8" value="@message @delay=9 Oops..."/>
     <property name="trig9b" value="@exit @delay=11"/>
    </properties>
   </object>
@@ -187,15 +185,19 @@
   <object name="switch 3" type="switch" gid="175" x="352" y="192">
    <properties>
     <property name="trig1" value="@trigger core switch"/>
-    <property name="trig2" value="@message core door override OK."/>
+    <property name="trig2" value="@message core override toggled"/>
    </properties>
   </object>
   <object name="switch 3" type="switch" gid="175" x="352" y="416">
    <properties>
     <property name="trig1" value="@trigger core switch"/>
-    <property name="trig2" value="@message core door override OK."/>
+    <property name="trig2" value="@message core override toggled"/>
    </properties>
   </object>
   <object gid="206" x="448" y="64"/>
+  <object gid="274" x="320" y="416"/>
+  <object gid="274" x="384" y="416"/>
+  <object gid="206" x="320" y="512"/>
+  <object gid="206" x="256" y="512"/>
  </objectgroup>
 </map>
