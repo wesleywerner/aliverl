@@ -41,7 +41,10 @@ class StoryData(object):
         for dialogue_key in dialogues.keys():
             data = dialogues[dialogue_key]
             for screen in data.keys():
-                stripped = '\n'.join([s.lstrip() for s
+                #stripped = '\n'.join([s.lstrip() for s
+                #                in data[screen]['datas'].split('\n')])
+                # remove the first 16 characters: dialogue indent.
+                stripped = '\n'.join([s[16:] for s
                                 in data[screen]['datas'].split('\n')])
                 data[screen]['datas'] = stripped
 
