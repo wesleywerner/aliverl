@@ -46,14 +46,9 @@
     * A bunch of capacitors.
 * Storage:
     * A bunch of blinken servers.
-    * Acting on some of the terminals gives you upgrades:
-        --upgrade server--
-        Status: online
-        $: sudo apt-get upgrade
-        password for #00022: *******
-        issuing new upgrades.... Success.
 * Build lab:
     * A bunch of servers processing stuff.
+    * Acting on some of the terminals gives you upgrades.
 * Diagnostics:
     * The door closes behind you as you enter.
     * There are AI working around other broken AI - they do not animate too well.
