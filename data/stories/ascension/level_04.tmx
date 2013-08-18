@@ -5,178 +5,316 @@
  </tileset>
  <layer name="Floor" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzVlgEOgzAIRTndnB5gdXr/e8wm/QkhoKjQRRLi1JT3aWv/iJ4b45aTcu+9avVm450W75by3psyvlu+thycmqL5S+OvB5qy+KQ81zRl8a1e97Rm999z/sfGknutV//W/tc0ZfDrXiv03/3v0dSTvxeyztJ0eq93YmS1vOd1VICNuKuh1vucyJWNA3c5WYPrvTqWr+PVHq6EnG+5Hj0CGiLYfO5m8q9b5HcMDWVHw0T6eRPBP9IwkX3eRfEtDWBXLxiUcZF8aKhs+B5nZ/cPv0MOgp3JB0fToPlWJJ/3iP+c8F3LN6P4ki33n9QQzUcd6QOWhgy+5UGahmj+kf8V9lv6fm/fiY4fPgKJ7w==
+   eJzFVwGOwyAM43Ud6wO6sv7/HysS1iwrCbD2dJHQoITYARKylP5O9kn959m2s61BX/X1G0umfml8HgP6OeirfpZxIYzSeO/t99V+1ReMM62DjVl8HVvrrG/vsy2Ny4O4cx/zmzHHY+YO27yu7scRcGI/LHuRv5b/Hs4I/pXzr37jnPmu8ve78XlcMY9AN4lu7/w1dmb8z22MWFhIb2s8777/6r/1q/YszDvOX2OI/Y/wr9z/Wf8Rp0fQj/CrHuc49Nn2QnNRLu4JfPNiyRMv9n/BhsxwsPDxvo22g9ZxTlG9NX33P4neanwbbYzJXDwszf3WXZoR3W89D0/KRVyLwyh2JHz+exrb+ypWvMPG7vQ9O1j7CjhwjWLhz+RPy07EYU39fDeTvyw7Hgdgcy628CPRGFcuyqFiLwZ2L99796ZX96KVhovGNd2v9dbIHPtocWCOHn6Ux/QN9d5t1CkVt94B1CUj+JFE769i6/1TDh5+9J8J9QfeZOv+6f55HDz8KOZ75++dncXBw0d9eUgfc14e7b1/XNPou6+5/+2s897w/5YP3airxA==
   </data>
  </layer>
  <layer name="Walls" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJztVgEOwiAMvPgEM/yATj+g2/9/pk1m3CppbxtCMFzSkJByx0EDDQAeK+NMznlxekWP9Yit2cpTo/4d32c5ZtRPhb3+38jtv/T96zVH5PUv5985e/qlfvO/RM3+Y2+Z/leA5f8S83p1OGJcI7HvXo2CC2PO4JiPrP4WSF2Iz5uxn5T6AZ8z1/WxV3+ed3ByWS6m/oYpd4Bdf0HlMFxM/Vk+vDmGp+nXp1+6/0mFWvvf0vff9P9H3+pbrH+EmfNC+oInGVYsfw==
+   eJztVtsOgyAM7TdM3euWKO7Np6mP+7T9+mwiGZ5BKeCSmaxJAxTo4ZRyaYhoTNQ2YEMdI+V5UUPp4ptjoG7A3nlK7ruv69gTPzTGN4f1mYjPa8b4z9Bv29I6DG1jtadg/CX8XP5WJP49bfO1hTk5+Kn7PwfsufHH8Sf65F9B2wrHowb8nPjXYNPyxzF7xD+Fvw8/Nf6/zp/3eHLaEn/uuyXia/i7IvH33WX4rhBtz7Bvvb3gowr4sudfEs09FhP04ZZa/BzhvPDF61v4Db1jjvlRiq99T1N8afLPnqPJsfn+Cw2M0fjS5J/EI2bT+PnjHw8/9v8JiXs+S/IvVxjrsuhj0SuV8w/9fyX8Ya0PBfi5+99B+6j5l4uPb/T//pP/LdI7orHFlP8FL4JwOMM=
   </data>
  </layer>
- <objectgroup name="Diagnostics" width="32" height="32"/>
- <objectgroup name="Storage" width="32" height="32">
-  <object gid="274" x="96" y="160"/>
-  <object gid="274" x="96" y="352"/>
-  <object gid="274" x="320" y="128"/>
-  <object gid="274" x="320" y="320"/>
-  <object gid="275" x="320" y="192"/>
-  <object gid="275" x="96" y="288"/>
-  <object gid="276" x="320" y="256"/>
-  <object gid="276" x="96" y="224"/>
-  <object gid="277" x="320" y="384"/>
-  <object gid="277" x="96" y="96"/>
-  <object gid="274" x="160" y="288"/>
-  <object gid="274" x="256" y="192"/>
-  <object gid="275" x="160" y="96"/>
-  <object gid="275" x="256" y="384"/>
-  <object gid="276" x="160" y="352"/>
-  <object gid="276" x="256" y="128"/>
-  <object gid="277" x="160" y="224"/>
-  <object gid="277" x="256" y="320"/>
-  <object gid="276" x="256" y="256"/>
-  <object gid="274" x="160" y="160"/>
-  <object gid="280" x="128" y="320"/>
-  <object gid="278" x="288" y="160"/>
-  <object gid="282" x="128" y="128"/>
-  <object gid="279" x="288" y="352"/>
-  <object gid="173" x="128" y="224"/>
-  <object gid="173" x="288" y="256"/>
-  <object name="blue ice" type="friend" gid="427" x="288" y="320">
+ <objectgroup draworder="topdown" name="Diagnostics" width="32" height="32">
+  <object gid="120" x="896" y="608"/>
+  <object name="close door" x="608" y="736" width="32" height="96">
    <properties>
-    <property name="modes" value=""/>
+    <property name="close door behind" value="@trigger diagnostics west door"/>
+    <property name="spam" value="@message (diagnostics)"/>
    </properties>
   </object>
-  <object name="blue ice" type="friend" gid="427" x="160" y="128">
+  <object name="blue ice sick" gid="445" x="640" y="928"/>
+  <object name="green virus sick" gid="513" x="736" y="928"/>
+  <object gid="173" x="736" y="960"/>
+  <object gid="173" x="640" y="960"/>
+  <object name="green ice sick" gid="479" x="640" y="672"/>
+  <object name="green virus sick" gid="513" x="736" y="672"/>
+  <object gid="173" x="832" y="640"/>
+  <object gid="173" x="736" y="640"/>
+  <object gid="173" x="640" y="640"/>
+  <object name="blue ice" type="friend" gid="427" x="928" y="896">
    <properties>
-    <property name="modes" value=""/>
+    <property name="modes" value="magnet"/>
+    <property name="speed" value="1"/>
+    <property name="talk" value="@dialogue act 4 doctor"/>
+   </properties>
+  </object>
+  <object x="608" y="864" width="192" height="32">
+   <properties>
+    <property name="spam" value="@message whoa these are sick bots!"/>
+   </properties>
+  </object>
+  <object x="608" y="672" width="192" height="32">
+   <properties>
+    <property name="spam" value="@message what could have done this?"/>
+   </properties>
+  </object>
+  <object name="green ice sick" gid="479" x="832" y="672"/>
+  <object gid="177" x="928" y="800">
+   <properties>
+    <property name="scanbot dlg" value="@dialogue act 4 scanbox"/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="Build Lab" width="32" height="32">
-  <object gid="280" x="128" y="768"/>
-  <object gid="280" x="128" y="896"/>
-  <object gid="280" x="288" y="768"/>
-  <object gid="280" x="192" y="928"/>
-  <object gid="280" x="352" y="832"/>
-  <object gid="280" x="352" y="960"/>
-  <object gid="280" x="96" y="992"/>
-  <object gid="280" x="32" y="736"/>
-  <object gid="280" x="192" y="640"/>
+ <objectgroup draworder="topdown" name="Build Lab" width="32" height="32">
+  <object gid="280" x="320" y="928"/>
+  <object gid="280" x="384" y="992"/>
+  <object gid="280" x="32" y="992"/>
+  <object gid="280" x="160" y="864"/>
   <object gid="240" x="192" y="832"/>
-  <object gid="240" x="224" y="800"/>
-  <object gid="244" x="192" y="800"/>
+  <object gid="240" x="192" y="800"/>
+  <object name="pink cpu" gid="244" x="224" y="800">
+   <properties>
+    <property name="become green" value="@ontrigger @transmute 240"/>
+   </properties>
+  </object>
   <object gid="240" x="224" y="832"/>
-  <object gid="231" x="0" y="672"/>
-  <object gid="231" x="0" y="832"/>
-  <object gid="231" x="0" y="992"/>
-  <object gid="214" x="128" y="1024"/>
-  <object gid="214" x="256" y="1024"/>
-  <object gid="279" x="256" y="896"/>
-  <object gid="279" x="224" y="704"/>
-  <object gid="278" x="96" y="832"/>
-  <object gid="283" x="32" y="896"/>
-  <object gid="282" x="352" y="704"/>
-  <object gid="281" x="96" y="704"/>
+  <object gid="231" x="32" y="704"/>
+  <object gid="231" x="32" y="800"/>
+  <object gid="231" x="32" y="928"/>
+  <object gid="279" x="384" y="640"/>
+  <object type="term" gid="278" x="256" y="768">
+   <properties>
+    <property name="get upgrade" value="@give %upgrade"/>
+    <property name="patch server" value="@dialogue act 4 patch build server"/>
+    <property name="touch pink cpu" value="@trigger pink cpu"/>
+    <property name="transmute" value="@give %transmute 283"/>
+    <property name="upgrde msg" value="@give %dialogue upgrade station"/>
+   </properties>
+  </object>
+  <object gid="283" x="96" y="928"/>
+  <object gid="281" x="32" y="640"/>
+  <object gid="280" x="256" y="864"/>
+  <object name="blue ice" type="friend" gid="427" x="320" y="832">
+   <properties>
+    <property name="modes" value="updown,random"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="96" y="768">
+   <properties>
+    <property name="modes" value="updown,random"/>
+    <property name="speed" value="1.3"/>
+   </properties>
+  </object>
+  <object name="processing north door" gid="120" x="288" y="608">
+   <properties>
+    <property name="open me" value="@transmute 123"/>
+   </properties>
+  </object>
+  <object name="processing east door" gid="124" x="416" y="800">
+   <properties>
+    <property name="open me" value="@transmute 127"/>
+   </properties>
+  </object>
+  <object gid="231" x="32" y="832"/>
+  <object name="diagnostics west door" gid="132" x="576" y="800">
+   <properties>
+    <property name="close" value="@ontrigger @transmute 132"/>
+    <property name="open" value="@transmute 135"/>
+   </properties>
+  </object>
+  <object gid="283" x="320" y="704"/>
+  <object gid="280" x="160" y="768"/>
+  <object gid="280" x="96" y="704"/>
+  <object x="256" y="608" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message (build lab)"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup name="The Conduit" width="32" height="32">
-  <object gid="223" x="672" y="96"/>
-  <object gid="223" x="768" y="96"/>
-  <object gid="223" x="800" y="96"/>
-  <object gid="223" x="896" y="96"/>
-  <object gid="223" x="704" y="128"/>
-  <object gid="223" x="672" y="160"/>
-  <object gid="223" x="704" y="192"/>
-  <object gid="223" x="672" y="224"/>
-  <object gid="223" x="768" y="160"/>
-  <object gid="223" x="800" y="160"/>
-  <object gid="223" x="800" y="224"/>
-  <object gid="223" x="768" y="224"/>
-  <object gid="223" x="768" y="288"/>
-  <object gid="223" x="800" y="352"/>
-  <object gid="223" x="768" y="352"/>
-  <object gid="223" x="896" y="160"/>
-  <object gid="223" x="960" y="192"/>
-  <object gid="223" x="896" y="224"/>
-  <object gid="223" x="960" y="256"/>
-  <object gid="223" x="896" y="288"/>
-  <object gid="223" x="960" y="320"/>
-  <object gid="223" x="896" y="352"/>
-  <object gid="223" x="960" y="384"/>
-  <object gid="223" x="704" y="256"/>
-  <object gid="223" x="672" y="288"/>
-  <object gid="223" x="704" y="320"/>
-  <object gid="223" x="672" y="352"/>
-  <object gid="223" x="704" y="384"/>
-  <object gid="230" x="960" y="128"/>
-  <object gid="230" x="800" y="288"/>
+ <objectgroup draworder="topdown" name="Storage" width="32" height="32">
+  <object gid="274" x="128" y="96"/>
+  <object gid="274" x="128" y="384">
+   <properties>
+    <property name="spam" value="@message *blinks*"/>
+   </properties>
+  </object>
+  <object gid="274" x="320" y="128"/>
+  <object gid="274" x="320" y="352"/>
+  <object gid="275" x="320" y="192">
+   <properties>
+    <property name="spam" value="@message *blips*"/>
+   </properties>
+  </object>
+  <object gid="275" x="128" y="256">
+   <properties>
+    <property name="spam" value="@message *meeps*"/>
+   </properties>
+  </object>
+  <object gid="276" x="320" y="320"/>
+  <object gid="276" x="128" y="224"/>
+  <object gid="277" x="320" y="384"/>
+  <object gid="277" x="224" y="96">
+   <properties>
+    <property name="spam" value="@message *blinks*"/>
+   </properties>
+  </object>
+  <object gid="274" x="224" y="224">
+   <properties>
+    <property name="spam" value="@message *blinks*"/>
+   </properties>
+  </object>
+  <object gid="274" x="224" y="352">
+   <properties>
+    <property name="spam" value="@message *boops*"/>
+   </properties>
+  </object>
+  <object gid="275" x="224" y="128">
+   <properties>
+    <property name="blinkenpush" value="@message *beeps*"/>
+   </properties>
+  </object>
+  <object gid="275" x="224" y="384"/>
+  <object gid="276" x="128" y="352"/>
+  <object gid="276" x="320" y="96"/>
+  <object gid="277" x="128" y="192"/>
+  <object gid="277" x="224" y="320"/>
+  <object gid="276" x="320" y="256"/>
+  <object gid="274" x="224" y="192"/>
+  <object gid="173" x="224" y="32"/>
+  <object gid="173" x="128" y="32"/>
+  <object name="blue ice" type="friend" gid="427" x="352" y="320">
+   <properties>
+    <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="256" y="128">
+   <properties>
+    <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object gid="194" x="32" y="384"/>
+  <object gid="190" x="32" y="320"/>
+  <object gid="190" x="32" y="288"/>
+  <object gid="190" x="32" y="224"/>
+  <object type="term" gid="194" x="32" y="192">
+   <properties>
+    <property name="spam" value="@dialogue act 4 storage status"/>
+   </properties>
+  </object>
+  <object gid="190" x="32" y="128"/>
+  <object gid="177" x="320" y="32"/>
+  <object name="blue ice" type="friend" gid="427" x="96" y="384">
+   <properties>
+    <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="160" y="96">
+   <properties>
+    <property name="modes" value="updown"/>
+   </properties>
+  </object>
+  <object name="storage north east door" gid="124" x="416" y="160">
+   <properties>
+    <property name="open me" value="@transmute 127"/>
+   </properties>
+  </object>
+  <object name="storage south door" gid="120" x="288" y="448">
+   <properties>
+    <property name="open me" value="@transmute 123"/>
+   </properties>
+  </object>
+  <object gid="276" x="320" y="224"/>
+  <object gid="276" x="128" y="320"/>
+  <object gid="275" x="224" y="256"/>
+  <object gid="275" x="128" y="128"/>
+  <object x="384" y="96" width="32" height="96">
+   <properties>
+    <property name="spam" value="@message (storage)"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="The Conduit" width="32" height="32">
   <object gid="188" x="992" y="288"/>
-  <object gid="188" x="992" y="160"/>
-  <object gid="171" x="864" y="32"/>
-  <object gid="173" x="704" y="32"/>
-  <object name="blue ice" type="friend" gid="427" x="928" y="288">
-   <properties>
-    <property name="modes" value="random"/>
-   </properties>
-  </object>
-  <object name="blue ice" type="friend" gid="427" x="704" y="64">
-   <properties>
-    <property name="modes" value="random"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup name="Transport Hub" width="32" height="32">
-  <object name="player" type="player" gid="393" x="448" y="544"/>
-  <object gid="190" x="416" y="384"/>
-  <object gid="188" x="576" y="288"/>
-  <object gid="188" x="416" y="736"/>
-  <object gid="171" x="384" y="608"/>
-  <object gid="171" x="768" y="448"/>
-  <object gid="173" x="800" y="608"/>
-  <object name="blue ice" type="friend" gid="427" x="672" y="576">
+  <object gid="188" x="832" y="128"/>
+  <object gid="171" x="928" y="128"/>
+  <object gid="173" x="736" y="32"/>
+  <object name="blue ice" type="friend" gid="427" x="864" y="128">
    <properties>
     <property name="modes" value="leftright"/>
+    <property name="speed" value="4"/>
    </properties>
   </object>
-  <object name="blue ice" type="friend" gid="427" x="384" y="480">
+  <object gid="231" x="672" y="96"/>
+  <object gid="231" x="608" y="64"/>
+  <object gid="231" x="672" y="352"/>
+  <object gid="231" x="672" y="224"/>
+  <object gid="132" x="768" y="96"/>
+  <object gid="214" x="832" y="320"/>
+  <object gid="189" x="992" y="416"/>
+  <object name="green ice" type="friend" gid="461" x="832" y="288">
    <properties>
-    <property name="modes" value="updown"/>
+    <property name="modes" value="random,leftright"/>
+    <property name="speed" value="1.3"/>
    </properties>
   </object>
-  <object name="blue ice" type="friend" gid="427" x="448" y="672">
+  <object name="conduit east door" gid="120" x="928" y="192">
    <properties>
-    <property name="modes" value="updown"/>
+    <property name="open me" value="@transmute 123"/>
    </properties>
   </object>
-  <object name="blue ice" type="friend" gid="427" x="480" y="256">
+  <object name="conduit north west door" gid="124" x="576" y="160">
    <properties>
-    <property name="modes" value="leftright,random"/>
+    <property name="open me" value="@transmute 127"/>
    </properties>
   </object>
-  <object gid="175" x="448" y="480"/>
-  <object gid="175" x="544" y="480"/>
-  <object gid="192" x="448" y="576"/>
-  <object gid="192" x="544" y="576"/>
-  <object gid="192" x="448" y="480"/>
-  <object gid="192" x="544" y="480"/>
-  <object gid="175" x="448" y="576"/>
-  <object gid="175" x="544" y="576"/>
+  <object gid="214" x="768" y="416"/>
+  <object gid="214" x="736" y="384"/>
+  <object gid="214" x="768" y="352"/>
+  <object gid="214" x="736" y="320"/>
+  <object gid="214" x="768" y="288"/>
+  <object gid="214" x="736" y="256"/>
+  <object gid="214" x="768" y="224"/>
+  <object gid="214" x="832" y="384"/>
+  <object gid="214" x="832" y="256"/>
+  <object gid="231" x="672" y="288"/>
+  <object gid="231" x="672" y="160"/>
+  <object gid="231" x="640" y="64"/>
+  <object gid="231" x="608" y="384"/>
+  <object gid="231" x="608" y="256"/>
+  <object gid="231" x="768" y="512"/>
+  <object gid="231" x="608" y="192"/>
+  <object gid="238" x="608" y="320"/>
+  <object x="864" y="384" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message (the conduit)"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="Transport Hub" width="32" height="32">
+  <object name="player" type="player" gid="393" x="640" y="832"/>
+  <object gid="175" x="480" y="512"/>
+  <object gid="175" x="512" y="512"/>
+  <object gid="192" x="480" y="544"/>
+  <object gid="192" x="512" y="544"/>
+  <object gid="192" x="480" y="512"/>
+  <object gid="192" x="512" y="512"/>
+  <object gid="175" x="480" y="544"/>
+  <object gid="175" x="512" y="544"/>
   <object gid="124" x="320" y="512"/>
   <object gid="124" x="320" y="544"/>
-  <object gid="124" x="864" y="512"/>
-  <object gid="124" x="864" y="544"/>
+  <object name="conduit entry door" type="door" gid="124" x="864" y="544">
+   <properties>
+    <property name="open me" value="@ontrigger @transmute 127"/>
+   </properties>
+  </object>
   <object gid="120" x="480" y="768"/>
   <object gid="120" x="512" y="768"/>
   <object gid="120" x="480" y="192"/>
   <object gid="120" x="512" y="192"/>
-  <object gid="120" x="896" y="608"/>
-  <object gid="120" x="896" y="448"/>
-  <object gid="120" x="288" y="448"/>
-  <object gid="120" x="288" y="608"/>
-  <object gid="124" x="416" y="800"/>
-  <object gid="124" x="576" y="800"/>
-  <object gid="124" x="576" y="160"/>
-  <object gid="124" x="416" y="160"/>
-  <object gid="188" x="416" y="256"/>
-  <object gid="190" x="576" y="352"/>
+  <object name="conduit south door" gid="120" x="896" y="448">
+   <properties>
+    <property name="open me" value="@transmute 123"/>
+   </properties>
+  </object>
+  <object gid="172" x="768" y="512"/>
+  <object type="switch" gid="192" x="864" y="576">
+   <properties>
+    <property name="open door" value="@trigger conduit entry door"/>
+   </properties>
+  </object>
+  <object name="conduit entry door" type="door" gid="124" x="864" y="512">
+   <properties>
+    <property name="open me" value="@ontrigger @transmute 127"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
