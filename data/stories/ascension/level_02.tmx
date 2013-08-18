@@ -136,7 +136,7 @@
   <object gid="279" x="32" y="64">
    <properties>
     <property name="free upgrade" value="@upgrade"/>
-    <property name="upgrade output" value="@dialogue act 3 upgrade"/>
+    <property name="upgrade output" value="@dialogue upgrade station"/>
    </properties>
   </object>
   <object gid="173" x="256" y="32"/>
