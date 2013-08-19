@@ -5,52 +5,75 @@
  </tileset>
  <layer name="Floor" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzFVwGOwyAM43Ud6wO6sv7/HysS1iwrCbD2dJHQoITYARKylP5O9kn959m2s61BX/X1G0umfml8HgP6OeirfpZxIYzSeO/t99V+1ReMM62DjVl8HVvrrG/vsy2Ny4O4cx/zmzHHY+YO27yu7scRcGI/LHuRv5b/Hs4I/pXzr37jnPmu8ve78XlcMY9AN4lu7/w1dmb8z22MWFhIb2s8777/6r/1q/YszDvOX2OI/Y/wr9z/Wf8Rp0fQj/CrHuc49Nn2QnNRLu4JfPNiyRMv9n/BhsxwsPDxvo22g9ZxTlG9NX33P4neanwbbYzJXDwszf3WXZoR3W89D0/KRVyLwyh2JHz+exrb+ypWvMPG7vQ9O1j7CjhwjWLhz+RPy07EYU39fDeTvyw7Hgdgcy628CPRGFcuyqFiLwZ2L99796ZX96KVhovGNd2v9dbIHPtocWCOHn6Ux/QN9d5t1CkVt94B1CUj+JFE769i6/1TDh5+9J8J9QfeZOv+6f55HDz8KOZ75++dncXBw0d9eUgfc14e7b1/XNPou6+5/+2s897w/5YP3airxA==
+   eJy1VwmShDAI5HWa8QEe4///saYq1PT2AgmrQ1VKooRuQg4U+Z7sSfvX1darLYHO9vwOpYB+ND7zgH0JdLYv1D8A42i89/bc2pNj0X6Bceoji899a5z17n21qXGZgTvq+n01vmEfuatvHFfn4ww4YRyWvyheK34PZwT/Tv5r3JpnXKv4/ml87FfMM7AVsu3ln/dOJv7S+roXJrBbG8+n1z/Hbz3Zn4X5RP55D2H8Ef6d9Z+NX/fpGegRfrXDM0519D3Bt+gs7onG5u0lT7y9/x9slQwHC1/vt9F2wjg8U9hukc/8C9ktxrvRhpjIxcPis99aSxnh+eZ8eHLcxLU4jGJHgvnfZWzuq/D+U8nkUP0ohy3ggDWKhX8446w2G34iDov0z7tM/JizIjEHxcazOMIX+V379urgIn851DGTgT0S/6vxX0gfwT8arjas6Ubnf+TutPAVx+KAHHv4I3cX42OMWgtv8qlLMvhZYWxef8zhaXz1w+e1x8HDz/6/oR/vDrI4ePjZ+k2ld/9hTcP3Pvf138bTvy1v0DfSNQaUHw97ptM=
   </data>
  </layer>
  <layer name="Walls" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJztVtsOgyAM7TdM3euWKO7Np6mP+7T9+mwiGZ5BKeCSmaxJAxTo4ZRyaYhoTNQ2YEMdI+V5UUPp4ptjoG7A3nlK7ruv69gTPzTGN4f1mYjPa8b4z9Bv29I6DG1jtadg/CX8XP5WJP49bfO1hTk5+Kn7PwfsufHH8Sf65F9B2wrHowb8nPjXYNPyxzF7xD+Fvw8/Nf6/zp/3eHLaEn/uuyXia/i7IvH33WX4rhBtz7Bvvb3gowr4sudfEs09FhP04ZZa/BzhvPDF61v4Db1jjvlRiq99T1N8afLPnqPJsfn+Cw2M0fjS5J/EI2bT+PnjHw8/9v8JiXs+S/IvVxjrsuhj0SuV8w/9fyX8Ya0PBfi5+99B+6j5l4uPb/T//pP/LdI7orHFlP8FL4JwOMM=
+   eJzNVksSwiAMzRls61IX/bjUhW2P59UtMzLSZ0gTpJ/MZCgB8nhpgFRE1Bu1jthQ+4X2PGlLduHWtPDdgr1hWjf2/OwjJ35sDrfG6cuI7/aM8R9h3PelfbQ0j1VOwfhL+Kn8vUj8O5rnaw1rUvCt/3+M2FPjj/NP9Mu/gL4XF48S8FPiX4JNyx/n5Ii/hT+Hb43/0fm7fzwEfYm/G7sZ8TX8Q5H4c3cZvitE8zPM7bcTfBQRX/78S6K5x5YEfYStFj9FXF5w8VoLv6JvzDE//sXXvqcWX5r88+doCGxcvVDBHI0vTf5JPNB2nfRi9JMT/57gJyf+g/bj7/OIq41jZyIVX6p/LP7WqP22wJfq3y3wpfqvYca2xF+SKvjOff9Y1+7B/2j4Ut0ivSMa29JaVxe8AcXSOXs=
   </data>
  </layer>
  <objectgroup draworder="topdown" name="Diagnostics" width="32" height="32">
   <object gid="120" x="896" y="608"/>
-  <object name="close door" x="608" y="736" width="32" height="96">
+  <object name="close door" x="608" y="832" width="32" height="32">
    <properties>
     <property name="close door behind" value="@trigger diagnostics west door"/>
     <property name="spam" value="@message (diagnostics)"/>
    </properties>
   </object>
-  <object name="blue ice sick" gid="445" x="640" y="928"/>
-  <object name="green virus sick" gid="513" x="736" y="928"/>
-  <object gid="173" x="736" y="960"/>
-  <object gid="173" x="640" y="960"/>
-  <object name="green ice sick" gid="479" x="640" y="672"/>
-  <object name="green virus sick" gid="513" x="736" y="672"/>
-  <object gid="173" x="832" y="640"/>
-  <object gid="173" x="736" y="640"/>
-  <object gid="173" x="640" y="640"/>
-  <object name="blue ice" type="friend" gid="427" x="928" y="896">
+  <object name="sick blue ice" gid="445" x="640" y="960"/>
+  <object name="sick green virus" gid="513" x="832" y="960"/>
+  <object gid="173" x="736" y="992"/>
+  <object gid="173" x="640" y="992"/>
+  <object name="sick green ice" gid="479" x="736" y="960"/>
+  <object name="sick green virus" gid="513" x="704" y="800"/>
+  <object gid="173" x="832" y="992"/>
+  <object gid="173" x="800" y="768"/>
+  <object gid="173" x="704" y="768"/>
+  <object name="the doctor" type="friend" gid="427" x="768" y="672">
    <properties>
     <property name="modes" value="magnet"/>
     <property name="speed" value="1"/>
     <property name="talk" value="@dialogue act 4 doctor"/>
    </properties>
   </object>
-  <object x="608" y="864" width="192" height="32">
+  <object x="672" y="832" width="32" height="96">
    <properties>
     <property name="spam" value="@message whoa these are sick bots!"/>
    </properties>
   </object>
-  <object x="608" y="672" width="192" height="32">
+  <object x="768" y="832" width="32" height="96">
    <properties>
     <property name="spam" value="@message what could have done this?"/>
    </properties>
   </object>
-  <object name="green ice sick" gid="479" x="832" y="672"/>
-  <object gid="177" x="928" y="800">
+  <object name="sick green ice" gid="479" x="800" y="800"/>
+  <object gid="194" x="608" y="672">
    <properties>
-    <property name="scanbot dlg" value="@dialogue act 4 scanbox"/>
+    <property name="call security" value="@trigger diagnostics security bay door"/>
+    <property name="scan dlg" value="@dialogue act 4 scanbox"/>
+   </properties>
+  </object>
+  <object gid="280" x="672" y="704"/>
+  <object name="diagnostics security bay door" gid="128" x="960" y="896">
+   <properties>
+    <property name="open" value="@ontrigger @transmute 131"/>
+   </properties>
+  </object>
+  <object name="diagnostics security bay door" gid="128" x="928" y="896">
+   <properties>
+    <property name="open" value="@ontrigger @transmute 131"/>
+   </properties>
+  </object>
+  <object gid="214" x="608" y="768"/>
+  <object name="green ice" type="ai" gid="461" x="960" y="928">
+   <properties>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="hostile doctor morph area" x="672" y="608" width="96" height="96">
+   <properties>
+    <property name="make hostiles" value="@ontrigger @setattr type_filter=friend name_filter=&quot;the doctor&quot; type=ai"/>
    </properties>
   </object>
  </objectgroup>
@@ -280,7 +303,7 @@
   </object>
  </objectgroup>
  <objectgroup draworder="topdown" name="Transport Hub" width="32" height="32">
-  <object name="player" type="player" gid="393" x="640" y="832"/>
+  <object name="player" type="player" gid="393" x="544" y="800"/>
   <object gid="175" x="480" y="512"/>
   <object gid="175" x="512" y="512"/>
   <object gid="192" x="480" y="544"/>
