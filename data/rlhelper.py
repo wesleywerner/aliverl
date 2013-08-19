@@ -154,9 +154,9 @@ def iterate_square(x, y, width, height):
 
     """
 
-    for y in range(y, y + height):
-        for x in range(x, x + width):
-            yield (x, y)
+    for u in range(y, y + height):
+        for v in range(x, x + width):
+            yield (v, u)
 
 
 def clamp(n, minn, maxn):
