@@ -148,6 +148,17 @@ def cover_area(origin_x, origin_y, reach, max_width, max_height):
                     yield (x, y)
 
 
+def iterate_square(x, y, width, height):
+    """
+    Yields a (x, y) pair for each cell in a rectangular region.
+
+    """
+
+    for y in range(y, y + height):
+        for x in range(x, x + width):
+            yield (x, y)
+
+
 def clamp(n, minn, maxn):
     """
     Constrain a value within a range.
