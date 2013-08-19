@@ -14,7 +14,7 @@
   </data>
  </layer>
  <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
-  <object name="player" type="player" gid="393" x="640" y="128"/>
+  <object name="player" type="player" gid="393" x="64" y="224"/>
  </objectgroup>
  <objectgroup draworder="topdown" name="welcome messages [0,0]" width="64" height="16">
   <object gid="155" x="0" y="32">
@@ -39,9 +39,9 @@
     <property name="spam" value="@upgrade @repeat"/>
    </properties>
   </object>
-  <object x="96" y="32" width="96" height="64">
+  <object name="upgrade station" x="96" y="32" width="96" height="64">
    <properties>
-    <property name="spam" value="@message @repeat upgrade station"/>
+    <property name="spam" value="@message upgrade station"/>
    </properties>
   </object>
  </objectgroup>
@@ -87,9 +87,9 @@
     <property name="modes" value="leftright"/>
    </properties>
   </object>
-  <object x="32" y="320" width="96" height="32">
+  <object name="bestiary" x="32" y="320" width="96" height="32">
    <properties>
-    <property name="spam" value="@message @repeat the friendly bestiary"/>
+    <property name="spam" value="@message the friendly bestiary"/>
    </properties>
   </object>
   <object name="blue ice" type="friend" gid="427" x="224" y="448">
@@ -106,9 +106,9 @@
    </properties>
   </object>
   <object name="green virus" type="ai" gid="495" x="480" y="480"/>
-  <object x="288" y="320" width="96" height="32">
+  <object name="hostile bestiary" x="288" y="320" width="96" height="32">
    <properties>
-    <property name="spam" value="@message @repeat hostile bestiary"/>
+    <property name="spam" value="@message hostile bestiary"/>
    </properties>
   </object>
  </objectgroup>
@@ -128,7 +128,7 @@
     <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
    </properties>
   </object>
-  <object x="320" y="96" width="32" height="32">
+  <object name="los test" x="320" y="96" width="64" height="32">
    <properties>
     <property name="spam" value="@message line of sight test"/>
    </properties>
@@ -152,14 +152,14 @@
     <property name="spam" value="@trigger unlock test terminal"/>
    </properties>
   </object>
-  <object x="480" y="64" width="96" height="64">
+  <object name="unlock terminals" x="480" y="64" width="96" height="64">
    <properties>
     <property name="spam" value="@message hit the corner switch to unlock the terminal"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup draworder="topdown" name="Object counters" width="64" height="16">
-  <object name="counter capacitor" gid="206" x="640" y="64">
+  <object name="counter capacitor" gid="206" x="608" y="64">
    <properties>
     <property name="bar" value="@ontrigger @repeat @ifcounter=2 @message counter reached 2"/>
     <property name="foo" value="@ontrigger @repeat @ifcounter=2 @transmute 214"/>
@@ -176,7 +176,7 @@
     <property name="spam" value="@trigger counter capacitor"/>
    </properties>
   </object>
-  <object x="608" y="128" width="96" height="32">
+  <object name="counter test area" x="608" y="128" width="96" height="32">
    <properties>
     <property name="spam" value="@message @repeat object counters test"/>
    </properties>
