@@ -10,11 +10,11 @@
  </tileset>
  <layer name="walls" width="64" height="16">
   <data encoding="base64" compression="zlib">
-   eJztlwEKgCAMRf8ZgrxAWheo7n+0kohCmlMXscoHg/0+wj4WaQtgIqoj+hKtscxaDjSO6Eu0Rhzic/anfrhYm6M1wuXn1uZojeTmb3B8O+H7YBmtEcn+f4Gav+av+f9LzQ+M2P5nQPwMHPr7c/PgvHeTsv+U7xj/DUjyW8Z/A5L8qb5m/Oz+jhO7I85CX3P5M/wC8fQkgQ==
+   eJztl10KgCAQhOcMQV5Aty5Q3f9oJT0k0rr+EGzlB0O7DAsOFukIYGVkmbqm1yhziMBDTF3Ta4SQXucU1PPNbEmvESm/NFvSa6Q0/4Dr24nfByf0GmnZ/y/Q8/f8Pf9/6fmBBef/DEifgWPfRs9QHvP88pvJ2X/Op0xfMy35neB/Pb/kvyW/v+Ok7ohbpS/NaZA/w++ktiXo
   </data>
  </layer>
  <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
-  <object name="player" type="player" gid="393" x="64" y="224"/>
+  <object name="player" type="player" gid="393" x="672" y="320"/>
  </objectgroup>
  <objectgroup draworder="topdown" name="welcome messages [0,0]" width="64" height="16">
   <object gid="155" x="0" y="32">
@@ -111,6 +111,12 @@
     <property name="spam" value="@message hostile bestiary"/>
    </properties>
   </object>
+  <object name="green ice" type="ai" gid="461" x="672" y="480">
+   <properties>
+    <property name="modes" value=""/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup draworder="topdown" name="line of sight test [12, 2]" width="64" height="16">
   <object name="los_doors" type="door" gid="120" x="384" y="64">
@@ -158,7 +164,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup draworder="topdown" name="Object counters" width="64" height="16">
+ <objectgroup draworder="topdown" name="object counters" width="64" height="16">
   <object name="counter capacitor" gid="206" x="608" y="64">
    <properties>
     <property name="bar" value="@ontrigger @repeat @ifcounter=2 @message counter reached 2"/>
@@ -185,6 +191,24 @@
    <properties>
     <property name="foo" value="@repeat @ifcounter=5 @clearcounter @message terminal hit 5 times"/>
     <property name="spam" value="@repeat @addcounter"/>
+   </properties>
+  </object>
+  <object name="object alter area" x="640" y="320" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message alter object attributes"/>
+   </properties>
+  </object>
+  <object name="call ice" type="switch" gid="192" x="544" y="448">
+   <properties>
+    <property name="switch" value="@trigger object alter magnetize ice"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="object alters" width="64" height="16">
+  <object name="object alter magnetize ice" x="608" y="448" width="128" height="32">
+   <properties>
+    <property name="alter the ice" value="@ontrigger @setattr name_filter=&quot;ice&quot; modes=magnet"/>
+    <property name="make him angry" value="@ontrigger @setattr type_filter=friend type=ai"/>
    </properties>
   </object>
  </objectgroup>
