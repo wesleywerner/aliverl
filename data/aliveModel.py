@@ -12,6 +12,7 @@
 #  along with this program. If not, see http://www.gnu.org/licenses/.
 
 import os
+import re
 import sys
 import math
 import copy
@@ -815,6 +816,16 @@ class GameEngine(object):
                     npc.power = rlhelper.clamp(
                         npc.power + 1, 0, npc.max_power)
 
+    def split_value_pairs(self, string_value):
+        """
+        Split a @key=@value pair and return as a list.
+        If the value is wrapped in quotes those will be stripped.
+
+        """
+
+        values = string_value.split('=')
+        return [e.strip('"') for e in values]
+
     def split_command(self, command_list, find_command, default=None):
         """
         Find and split the given command from a list.
@@ -827,7 +838,7 @@ class GameEngine(object):
         matches = [cmd for cmd in command_list if cmd.startswith(find_command)]
         if matches:
             # remember: the first value is our command itself
-            values = matches[0].split('=')
+            values = self.split_value_pairs(matches[0])
             if len(values) == 2:
                 # return the only value not as a list
                 return values[1]
@@ -966,6 +977,10 @@ class GameEngine(object):
                 if '@clearcounter' in commands:
                     trace.write('\tclearing counter on "%s"' % obj.name)
                     obj.properties['counter'] = 0
+                if '@setattr' in commands:
+                    trace.write('altering objects within "%s"' % (obj.name))
+                    self.alter_object_attributes(
+                        obj.x, obj.y, obj.width, obj.height, user_data)
                 # do we repeat this interaction next time
                 if not '@repeat' in commands:
                     trace.write('\tkill interaction "%s" on "%s"' %
@@ -977,6 +992,53 @@ class GameEngine(object):
                             '\tProperty "%s" on "%s" already deleted.' %
                             (name, obj.name))
         self.trigger_queue = requeue
+
+    def alter_object_attributes(self, x, y, width, height, option_data):
+        """
+        Alter game object attributes as defined by the options given.
+        Options is a string as define on a map object property.
+        The region (x, y, width, height) is measured in map tiles.
+
+        example options: type_filter=friend name_filter="the doctor" type=ai
+        """
+
+        # split options by space, preserving quoted values
+        options = re.split(r''' (?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', option_data)
+
+        # separate filters from attribute alters
+        filters = []
+        alters = []
+        # these are stored as [key, value] lists
+        for option in options:
+            if '_filter' in option:
+                filters.append(self.split_value_pairs(option))
+            else:
+                alters.append(self.split_value_pairs(option))
+
+        # get objects within the region
+        objects = []
+        for x, y in rlhelper.iterate_square(x, y, width, height):
+            map_objects = self.get_object_by_xy(x, y)
+            for mo in map_objects:
+                # ignore non gid objects (like rect regions) and the player.
+                if mo.gid != -1 and mo is not self.player:
+                    for f in filters:
+                        # fuzzy match by name
+                        if f[0] == 'name_filter' and f[1] in mo.name:
+                            objects.append(mo)
+                        # strict match by type
+                        elif f[0] == 'type_filter' and f[1] == mo.type:
+                            objects.append(mo)
+
+        # apply attributes to objects found
+        for map_object in objects:
+            for alter_data in alters:
+                trace.write('\talter "%s": %s' % (map_object.name, alter_data))
+                # we know the 'modes' attribute is a list
+                if alter_data[0] == 'modes':
+                    alter_data[1] = alter_data[1].split(',')
+                setattr(map_object, alter_data[0], alter_data[1])
+
 
     def transmute_object(self, obj, gid_list):
         """
