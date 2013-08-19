@@ -207,7 +207,7 @@ Once your animation config is set up, re-run ^F2 so that the second image, `aliv
 * Place walls and doodads "map" tile layer.
 * Place interactable game objects on the "objects" Object Layer.
 
-### Object Reference
+## Object Reference
 
 You may apply these properties to level objects for more effect.
 
@@ -228,7 +228,6 @@ You may apply these properties to level objects for more effect.
 _these are added via the Name-Value property list._
 
 * none as of yet
-
 
 ## Object Interactions
 
@@ -281,6 +280,9 @@ Optional commands are indicated by [].
     @clearcounter
         resets the object's internal counter to 0.
 
+    @setattr
+        alter the attributes of any objects within the containing rectangle.
+
 @option can **any** of:
 
     @repeat
@@ -318,13 +320,14 @@ It is worth noting that the order of interactions is arbitrary, from the player 
 
 Also noteworthy is that interactions triggered indirectly via @ontrigger ignore calling @trigger commands themselves. This is to prevent infinite recursion. For more on this, see Recursion.
 
+### addcounter and clearcounter example
+
 Object counters allow you to trigger commands after an arbitrary amount of times, in any order. Consider an object with these properties:
 
     @repeat @addcounter
     @repeat @ifcounter=5 @message muffins for everyone!
 
 On every interaction with this object it adds to the counter. When it reaches 5 it will announce free muffins. A more complex and realistic example can simulate needing to toggle 5 switches scattered on a map, in any order, before a computer terminal can be accessed. This is done by letting each of the switches @trigger the terminal, who then @addcounter @ontrigger. The actual command to use the terminal does a @ifcounter=n test. Naturally since counters are useless without repetition, all of the counting object's commands need the @repeat option to be of any use.
-
 
 switches 1 to 5:
 
@@ -336,6 +339,28 @@ the terminal:
     @repeat @ifcounter=5 @clearcounter @dialogue win the cookie
 
 The @clearcounter is used to ensure that particular command only gets actioned once, if that is your intent. You can very well omit it, in which case that trigger will get hit repeatedly on every interact if the counter is the correct value. You can also replace the clear with a @addcounter to keep on counting.
+
+### setattr example
+
+Usually applied to a rectangle object that has a width and height, any objects within its region, and match set filters, have their attributes altered as per the user data. The format for this command is:
+
+    @setattr [type_filter=ai|friend|term|switch|door] [name_filter="object name"] attribute=value
+
+A real example to make any objects called "the doctor" within the region fast and follow you:
+
+    @setattr name_filter="the doctor" speed=1 modes=magnet
+
+A real example tob change all friend AI within the region, hostile:
+
+    @setattr type_filter=friend type=ai
+
+Filter objects match by type_filter (strict), or by name_filter (fuzzy). The filters are exclusive so only specify one or the other.
+
+The rest of the command will set object attributes to the key=value pairs. More on what these attributes are in the "character stats explained" section.
+
+Any values that contain spaces are to be quoted.
+
+Be careful of side effects, like changing an object's type could make it fail any following @setattr commands that may rely on an object's type.
 
 # FAQ
 
@@ -356,3 +381,7 @@ These can be set either on the map level by giving these as object properties wi
 ## Why do my doors open or close only once?
 
     Give them the @repeat command, and to the switch that trigger them too.
+
+## Why do some of my @setattr commands work but not others?
+
+    If you are altering an object's type then subsequent filters will not detect that object anymore, if these rely on a type_filter match. Try match on the name in these cases.

@@ -114,7 +114,7 @@
   <object name="green ice" type="ai" gid="461" x="672" y="480">
    <properties>
     <property name="modes" value=""/>
-    <property name="speed" value="1"/>
+    <property name="speed" value="10"/>
    </properties>
   </object>
  </objectgroup>
@@ -208,7 +208,7 @@
   <object name="object alter magnetize ice" x="608" y="448" width="128" height="32">
    <properties>
     <property name="alter the ice" value="@ontrigger @setattr name_filter=&quot;ice&quot; modes=magnet"/>
-    <property name="make him angry" value="@ontrigger @setattr type_filter=friend type=ai"/>
+    <property name="make him angry" value="@ontrigger @setattr name_filter=ice type=ai speed=1"/>
    </properties>
   </object>
  </objectgroup>
