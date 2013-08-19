@@ -1037,7 +1037,11 @@ class GameEngine(object):
                 # we know the 'modes' attribute is a list
                 if alter_data[0] == 'modes':
                     alter_data[1] = alter_data[1].split(',')
-                setattr(map_object, alter_data[0], alter_data[1])
+                try:
+                    setattr(map_object, alter_data[0], float(str(alter_data[1])))
+                except ValueError:
+                    # that did not work, keep it a string
+                    setattr(map_object, alter_data[0], alter_data[1])
 
 
     def transmute_object(self, obj, gid_list):
