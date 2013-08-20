@@ -32,6 +32,7 @@
   <object gid="173" x="704" y="768"/>
   <object name="the doctor" type="friend" gid="427" x="768" y="672">
    <properties>
+    <property name="attack" value="1"/>
     <property name="modes" value="magnet"/>
     <property name="speed" value="1"/>
     <property name="talk" value="@dialogue act 4 doctor"/>
@@ -51,6 +52,8 @@
   <object gid="194" x="608" y="672">
    <properties>
     <property name="call security" value="@trigger diagnostics security bay door"/>
+    <property name="enable floor alerts" value="@trigger system alerts"/>
+    <property name="hostilze doc" value="@trigger hostile doctor morph area"/>
     <property name="scan dlg" value="@dialogue act 4 scanbox"/>
    </properties>
   </object>
@@ -71,9 +74,39 @@
     <property name="speed" value="1"/>
    </properties>
   </object>
-  <object name="hostile doctor morph area" x="672" y="608" width="96" height="96">
+  <object name="hostile doctor morph area" x="672" y="608" width="64" height="96">
    <properties>
-    <property name="make hostiles" value="@ontrigger @setattr type_filter=friend name_filter=&quot;the doctor&quot; type=ai"/>
+    <property name="make hostiles" value="@ontrigger @setattr type_filter=friend type=ai"/>
+   </properties>
+  </object>
+  <object name="system alerts" x="768" y="608" width="32" height="96">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message ** alert! **"/>
+   </properties>
+  </object>
+  <object name="system alerts" x="832" y="608" width="32" height="96">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message ** anomaly on the loose! **"/>
+   </properties>
+  </object>
+  <object name="system alerts" x="800" y="608" width="32" height="96">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message ** alert! **"/>
+   </properties>
+  </object>
+  <object name="system alerts" x="864" y="608" width="32" height="96">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message ** hide your floppys! **"/>
+   </properties>
+  </object>
+  <object name="system alerts" x="896" y="768" width="96" height="32">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message &quot;Halt! Anomaly #00022!&quot;"/>
    </properties>
   </object>
  </objectgroup>
@@ -303,7 +336,7 @@
   </object>
  </objectgroup>
  <objectgroup draworder="topdown" name="Transport Hub" width="32" height="32">
-  <object name="player" type="player" gid="393" x="544" y="800"/>
+  <object name="player" type="player" gid="393" x="640" y="672"/>
   <object gid="175" x="480" y="512"/>
   <object gid="175" x="512" y="512"/>
   <object gid="192" x="480" y="544"/>
