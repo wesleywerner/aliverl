@@ -199,8 +199,8 @@ class KeyboardMouse(object):
         """
 
         if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
-            self.model.restart_level()
             self.evManager.Post(StateChangeEvent(None))
+            self.model.restart_level()
 
     def crash_keys(self, event):
         """
