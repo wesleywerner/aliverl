@@ -805,16 +805,17 @@ class GameEngine(object):
                             and not e.dead]:
             # health
             if npc.health < npc.max_health:
-                if (npc.heal_rate > 0) and (self.turn % npc.heal_rate == 0):
-                    self.adjust_character_health(npc, 1)
+                if (npc.heal_rate > 0):
+                    self.adjust_character_health(npc, npc.heal_rate)
                     trace.write('%s heals to %s hp' %
                         (npc.name, npc.health))
             # mana
             if npc.power < npc.max_power:
-                if ((npc.power_restore_rate > 0) and
-                        (self.turn % npc.power_restore_rate == 0)):
+                if npc.power_restore_rate > 0:
                     npc.power = rlhelper.clamp(
-                        npc.power + 1, 0, npc.max_power)
+                        npc.power + npc.power_restore_rate, 0, npc.max_power)
+                    trace.write('%s heals power to %s hp' %
+                        (npc.name, npc.power))
 
     def split_value_pairs(self, string_value):
         """
