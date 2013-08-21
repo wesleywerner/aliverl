@@ -30,6 +30,10 @@ from tmxparser import TMXParser
 from configobj4 import ConfigObj
 from eventmanager import *
 
+VERSION = 0.1
+
+# version history tracker
+# 0.1 - 2013-08-21
 
 class GameEngine(object):
     """
@@ -1510,6 +1514,7 @@ class GameEngine(object):
         if os.path.exists(fn):
             values = {}
             jar = pickle.Unpickler(open(fn, 'r'))
+            saved_version = jar.load()
             saved_time = jar.load()
             values['time'] = self.human_friendly_timespan(saved_time)
             values['story'] = jar.load()
@@ -1549,6 +1554,7 @@ class GameEngine(object):
             trace.write('writing %s' % fn)
             if self.game_in_progress:
                 jar = pickle.Pickler(open(fn, 'w'))
+                jar.dump(VERSION)
                 jar.dump(datetime.datetime.now())
                 jar.dump(self.story_name)
                 jar.dump(self.level_number - 1)
@@ -1568,6 +1574,7 @@ class GameEngine(object):
             if os.path.exists(fn):
                 trace.write('loading %s' % (fn))
                 jar = pickle.Unpickler(open(fn, 'r'))
+                saved_version = jar.load()
                 saved_time = jar.load()
                 self.story_name = jar.load()
                 self.level_number = jar.load()
