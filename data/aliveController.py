@@ -115,6 +115,7 @@ class KeyboardMouse(object):
                     pygame.K_F4: 'warp to next level',
                     pygame.K_F5: 'reveal map',
                     pygame.K_F6: 'heal all',
+                    pygame.K_F7: 'demo map',
                     }
         if event.key == pygame.K_ESCAPE:
             self.evManager.Post(StateChangeEvent(None))
@@ -134,6 +135,7 @@ class KeyboardMouse(object):
                 trace.write('^F4=warp to the next level')
                 trace.write('^F5=reveal the map')
                 trace.write('^F6=heal health, power, and give 10 free upgrades')
+                trace.write('^F7=warp to map building demo')
         elif event.key == pygame.K_F1:
             self.evManager.Post(StateChangeEvent(STATE_HELP))
         else:

@@ -1478,6 +1478,13 @@ class GameEngine(object):
             self.upgrades_available = 10
             self.player.health = self.player.max_health
             self.player.power = self.player.max_power
+        elif event.request_type == 'demo map':
+            # get the level number with the demo map name
+            level_index = self.story.level_number('demo-map.tmx')
+            if level_index:
+                self.level_number = level_index
+                self.warp_level(restart=True)
+
 
     def stories_list(self):
         """
