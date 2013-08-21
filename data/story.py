@@ -163,6 +163,19 @@ class StoryData(object):
         if level_number <= len(level_keys):
             return level_keys[level_number - 1]
 
+    def level_number(self, level_name):
+        """
+        Returns the number of a level by file name.
+        Returns None if the file name is not in the story config.
+        Level numbers are not zero based, fyi.
+
+        """
+
+        keys = self.conf['levels'].keys()
+        if level_name in keys:
+            return keys.index(level_name) + 1
+
+
     def tile_blocks(self, gid):
         """
         Returns True if the given tile id is in our blocklist.
