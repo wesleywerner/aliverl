@@ -136,20 +136,20 @@ You may have many level objects that share the same name, and hence share these 
 * health
     * starting health of a character
     * if this drops to zero the character dies
-* maxhealth
+* max_health
     * maximum health this character can heal up to
-* healrate
-    * heal 1 point of health every x turns
+* heal_rate
+    * health to restore each turn
 * speed
     * move this character every x turns (computer characters only)
 * stealth
     * unused
-* mana
-    * starting mana of a character
-* maxmana
-    * maximum mana this character can heal up to
-* manarate
-    * heal 1 point of mana every x turns
+* power
+    * starting power of a character
+* max_power
+    * maximum power this character can heal up to
+* power_restore_rate
+    * power to restore each turn
 * modes
     * a list of computer controlled movement behaviours
         * random: moves in random directions.
