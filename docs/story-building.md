@@ -281,7 +281,8 @@ Optional commands are indicated by [].
         resets the object's internal counter to 0.
 
     @setattr
-        alter the attributes of any objects within the containing rectangle.
+        usually set on a rectangle object, as this alters the attributes of
+        any objects within the rectangle region.
 
 @option can **any** of:
 
@@ -344,19 +345,19 @@ The @clearcounter is used to ensure that particular command only gets actioned o
 
 Usually applied to a rectangle object that has a width and height, any objects within its region, and match set filters, have their attributes altered as per the user data. The format for this command is:
 
-    @setattr [type_filter=ai|friend|term|switch|door] [name_filter="object name"] attribute=value
+    @setattr [type_filter=ai|friend|term|switch|door || name_filter="object name"] attribute=value
 
-A real example to make any objects called "the doctor" within the region fast and follow you:
+Make all objects named "the doctor" within the region or the rectangle fast and follow you:
 
     @setattr name_filter="the doctor" speed=1 modes=magnet
 
-A real example to change all friend AI within the region, hostile:
+To change all friend `type` AI within the region hostile:
 
     @setattr type_filter=friend type=ai
 
-Filter objects match by type_filter (strict), or by name_filter (fuzzy). The filters are exclusive so only specify one or the other.
+Filter objects match by type_filter (strict), or by name_filter (fuzzy). The filters are exclusive so only specify one or the other. If no filter is given then any object will match. The player is never matched though.
 
-The rest of the command will set object attributes to the key=value pairs. More on what these attributes are in the "character stats explained" section.
+The rest of the command will set object attributes to a `key=value` pair. More on what these attributes are in the "character stats explained" section.
 
 Any values that contain spaces are to be quoted.
 
