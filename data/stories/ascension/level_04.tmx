@@ -71,6 +71,7 @@
   <object gid="214" x="608" y="768"/>
   <object name="green ice" type="ai" gid="461" x="960" y="928">
    <properties>
+    <property name="attack" value="0.5"/>
     <property name="speed" value="1"/>
    </properties>
   </object>
