@@ -12,5 +12,5 @@
 * auto save and restore the game from the beginning of the level.
 * show the level title in the info screen.
 * menu with story selection, or resume a previously saved game.
-* objects have internal counters used for arbitrary command triggers
-* a command to change the attributes of any AI within a region
+* objects have internal counters used for arbitrary command triggers.
+* added the @setattr map command to change the attributes of any AI within a region. See the setattr section in "story building".
