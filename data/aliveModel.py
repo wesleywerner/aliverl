@@ -283,6 +283,7 @@ class GameEngine(object):
         self.load_objects()
         self.load_matrix()
         self.look_around()
+
         # ensure the player health history has some data
         if len(self.player.health_history) < 10:
             self.player.health_history = [self.player.health] * 10
@@ -291,17 +292,28 @@ class GameEngine(object):
         if self.state.peek() != STATE_PLAY:
             self.evManager.Post(StateChangeEvent(STATE_PLAY))
         self.post(NextLevelEvent(None))
+
         # trigger move events for any viewers to update their views
         self.post(PlayerMovedEvent())
+
         # refresh any listeners before we post entry messages
         self.post(TickEvent())
-        # show any level entry messages defined in the story
+
+        # show the level title if there is one
+        level_title = self.story.level_title(self.level_number)
+        if level_title:
+            self.post_msg('[%s]' % level_title)
+
+        # show a level entry message
         entry_message = self.story.entry_message(self.level_number)
         if entry_message:
             self.post_msg(entry_message)
+
+        # show a level entry dialogue
         entry_dialogue = self.story.entry_dialogue(self.level_number)
         if entry_dialogue:
             self.show_dialogue(entry_dialogue)
+
         # apply any special upgrades
         regen = alu.from_list(self.player.upgrades, alu.REGEN)
         if regen:
