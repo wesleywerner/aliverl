@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="9" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
+  <image source="../../images/alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
+ </tileset>
+ <layer name="Floor" width="40" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhaIAyII6D0YAUeA2CnJwMkTEDYC4t8BJI4svuioHLRNBSD2ekJdQN6+EQCsRsUhyHRYTj4lIq5M2ACDzSMDsKR/IQs7wmV86KhGMzOKKgbCKWvgUh/ILfBwhc97pEBSD6cYXDnX2IBzL+0BACA0B5l
+  </data>
+ </layer>
+ <layer name="Walls" width="40" height="9">
+  <data encoding="base64" compression="zlib">
+   eJwTZWBgMB2kWAyIVRnwA3kgtgdiBRqKieJxGyH36aHR1BYDuc0ci72qSFgKiCUJuJNWQI2BsPu06Ooi4gCy+7QZBi78iIlffIAHjaa2GDHxiw8YMEDymyENxUBuRM+/6lC3YZMbLBjkRgAYWh7h
+  </data>
+ </layer>
+ <objectgroup draworder="topdown" name="Objects" width="40" height="9">
+  <object name="sick blue ice" gid="445" x="448" y="96"/>
+  <object name="sick green virus" gid="513" x="448" y="224"/>
+  <object name="sick green ice" type="idle" gid="479" x="288" y="224"/>
+  <object name="sick green virus" gid="513" x="608" y="96"/>
+  <object gid="173" x="704" y="32"/>
+  <object gid="173" x="608" y="32"/>
+  <object name="the doctor" type="friend" gid="427" x="96" y="160">
+   <properties>
+    <property name="attack" value="1"/>
+    <property name="modes" value="magnet"/>
+    <property name="speed" value="1"/>
+    <property name="talk" value="@dialogue act 4 doctor"/>
+   </properties>
+  </object>
+  <object name="sick green ice" type="friend" gid="479" x="768" y="224"/>
+  <object gid="194" x="32" y="160">
+   <properties>
+    <property name="enable floor alerts" value="@trigger system alerts"/>
+    <property name="hostilze doc" value="@trigger hostile morph"/>
+    <property name="scan dlg" value="@dialogue act 4 scanbox"/>
+   </properties>
+  </object>
+  <object name="player" type="player" gid="393" x="1152" y="160"/>
+  <object gid="132" x="1024" y="64"/>
+  <object gid="192" x="800" y="224"/>
+  <object gid="192" x="960" y="224"/>
+  <object gid="192" x="960" y="96"/>
+  <object gid="192" x="800" y="96"/>
+  <object gid="192" x="640" y="96"/>
+  <object gid="192" x="640" y="224"/>
+  <object gid="192" x="480" y="224"/>
+  <object gid="192" x="480" y="96"/>
+  <object gid="192" x="320" y="96"/>
+  <object gid="192" x="320" y="224"/>
+  <object gid="277" x="192" y="64"/>
+  <object gid="276" x="128" y="256"/>
+  <object gid="275" x="128" y="64"/>
+  <object gid="274" x="192" y="256"/>
+  <object gid="280" x="160" y="64"/>
+  <object gid="280" x="160" y="256"/>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="Triggers" width="40" height="9">
+  <object name="system alerts" x="320" y="32" width="32" height="224">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message *Anomaly Escaped!*"/>
+   </properties>
+  </object>
+  <object name="hostile morph" x="96" y="96" width="64" height="96">
+   <properties>
+    <property name="make hostiles" value="@ontrigger @setattr type_filter=friend type=ai"/>
+   </properties>
+  </object>
+  <object x="800" y="96" width="32" height="96">
+   <properties>
+    <property name="spam" value="@message You see a broken bot. It seems unstable."/>
+   </properties>
+  </object>
+  <object name="system alerts" x="192" y="32" width="32" height="224">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message *Alert*"/>
+   </properties>
+  </object>
+  <object name="halt alert" x="544" y="96" width="64" height="96">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message &quot;Halt #00022!&quot;"/>
+   </properties>
+  </object>
+  <object name="system alerts" x="352" y="32" width="32" height="224">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message *Protect Your Floppys*"/>
+   </properties>
+  </object>
+  <object x="928" y="96" width="32" height="96">
+   <properties>
+    <property name="spam" value="@message Diagnostic stations line the walls."/>
+   </properties>
+  </object>
+  <object name="system alerts" x="256" y="32" width="32" height="224">
+   <properties>
+    <property name="enable" value="@ontrigger @addcounter"/>
+    <property name="spam" value="@ifcounter=1 @message *Alert*"/>
+   </properties>
+  </object>
+  <object name="hostile morph" x="288" y="192" width="32" height="32">
+   <properties>
+    <property name="make hostile" value="@ontrigger @setattr type=ai"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
