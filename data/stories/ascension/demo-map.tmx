@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="64" height="16" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="alive-tileset" tilewidth="32" tileheight="32">
+  <image source="alive-tileset.png" trans="ff00ff" width="544" height="1344"/>
+  <tile id="7">
+   <properties>
+    <property name="spam" value="@message upgrade station"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Walls" width="64" height="16">
+  <data encoding="base64" compression="zlib">
+   eJztV8EOgjAM7c27iSh6BBTxqh7g0zxy8LelEeKsa7eyETj4koa9voHrNtduAwA3xjKm7cu3ndWGpZ2VFr9W58artaSzAngUTHsMH7ASfi+GrkEBcvxHo32yvKvhAyqjjeuM65kavifpT+OtIB5c8bve1fABdPxSfDg/O/ienznjX8Pnv0P3Q0447p3E8g06fhe/dHYQ9BCErL/v9ynOSo6oHPpYTB0/rt1wdrf9s2F4zfDW8KV9Oxamjn/p+Mc/bfx7+N3/JcNrCy+NfqYvFuY4/2i+k7jtrI9d/1zhnc8eINfAVM/I07RH76c5EqHJfzT32fqHwGf9Ob3w1Cno+Gk+W1r9w+m5Q/etfzGfSfWvND+hCInfpXN+V/0SqmuAY8Q6Vboj3kfq6LfdfxuLX6vHuv/i+fQCESM57g==
+  </data>
+ </layer>
+ <objectgroup draworder="topdown" name="player [1, 1]" width="64" height="16">
+  <object name="player" type="player" gid="393" x="704" y="288"/>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="welcome messages [0,0]" width="64" height="16">
+  <object gid="155" x="0" y="32">
+   <properties>
+    <property name="spam" value="@message @repeat welcome to the alive map demo!"/>
+   </properties>
+  </object>
+  <object gid="192" x="0" y="64">
+   <properties>
+    <property name="spam" value="@message @repeat showcasing level building features..."/>
+   </properties>
+  </object>
+  <object gid="192" x="0" y="96">
+   <properties>
+    <property name="spam" value="@message @repeat have fun exploring :-)"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="upgrade station [4,1]" width="64" height="16">
+  <object gid="177" x="128" y="64">
+   <properties>
+    <property name="spam" value="@upgrade @repeat"/>
+   </properties>
+  </object>
+  <object name="upgrade station" x="96" y="32" width="96" height="64">
+   <properties>
+    <property name="spam" value="@message upgrade station"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="door demo [8, 2]" width="64" height="16">
+  <object gid="274" x="256" y="64">
+   <properties>
+    <property name="spam" value="@message congrats on openening that door :p"/>
+   </properties>
+  </object>
+  <object gid="274" x="288" y="64"/>
+  <object name="demo door 2" type="door" gid="120" x="256" y="96">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 120,123"/>
+   </properties>
+  </object>
+  <object name="demo door 2" type="door" gid="120" x="288" y="96">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 120,123"/>
+   </properties>
+  </object>
+  <object name="door demo switch bar" type="switch" gid="161" x="320" y="96">
+   <properties>
+    <property name="more spam" value="@trigger @repeat demo door 2"/>
+    <property name="spam" value="@trigger @repeat demo door 1"/>
+   </properties>
+  </object>
+  <object name="door demo switch foo" type="switch" gid="159" x="224" y="96">
+   <properties>
+    <property name="more spam" value="@trigger @repeat demo door 2"/>
+    <property name="spam" value="@trigger @repeat demo door 1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="friendly bestiary {2, 11]" width="64" height="16">
+  <object name="blue ice" type="friend" gid="427" x="32" y="416">
+   <properties>
+    <property name="modes" value="updown"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="128" y="480">
+   <properties>
+    <property name="modes" value="leftright"/>
+   </properties>
+  </object>
+  <object name="bestiary" x="32" y="320" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message the friendly bestiary"/>
+   </properties>
+  </object>
+  <object name="blue ice" type="friend" gid="427" x="224" y="448">
+   <properties>
+    <property name="modes" value="random"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="hostile bestiary [10, 11]" width="64" height="16">
+  <object name="green ice" type="ai" gid="461" x="416" y="448">
+   <properties>
+    <property name="modes" value="updown,magnet"/>
+    <property name="speed" value="1"/>
+   </properties>
+  </object>
+  <object name="green virus" type="ai" gid="495" x="480" y="480"/>
+  <object name="hostile bestiary" x="288" y="320" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message hostile bestiary"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="line of sight test [12, 2]" width="64" height="16">
+  <object name="los_doors" type="door" gid="120" x="384" y="64">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 120, 123"/>
+   </properties>
+  </object>
+  <object name="los_doors" type="door" gid="124" x="352" y="96">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
+   </properties>
+  </object>
+  <object name="los_doors" type="door" gid="124" x="416" y="96">
+   <properties>
+    <property name="spam" value="@ontrigger @repeat @transmute 124, 127"/>
+   </properties>
+  </object>
+  <object name="los test" x="320" y="96" width="64" height="32">
+   <properties>
+    <property name="spam" value="@message line of sight test"/>
+   </properties>
+  </object>
+  <object name="los test term" type="term" gid="177" x="384" y="128">
+   <properties>
+    <property name="spam" value="@trigger @repeat los_doors"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="unlock terminals" width="64" height="16">
+  <object name="unlock test terminal" gid="173" x="512" y="32">
+   <properties>
+    <property name="foo" value="@ontrigger @give %message This terminal is now active"/>
+    <property name="spam" value="@ontrigger @transmute 177"/>
+   </properties>
+  </object>
+  <object name="unlock test switch" gid="158" x="576" y="32">
+   <properties>
+    <property name="bar" value="@message unlocked"/>
+    <property name="spam" value="@trigger unlock test terminal"/>
+   </properties>
+  </object>
+  <object name="unlock terminals" x="480" y="64" width="96" height="64">
+   <properties>
+    <property name="spam" value="@message hit the corner switch to unlock the terminal"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="object counters" width="64" height="16">
+  <object name="counter capacitor" gid="206" x="608" y="64">
+   <properties>
+    <property name="bar" value="@ontrigger @repeat @ifcounter=2 @message counter reached 2"/>
+    <property name="foo" value="@ontrigger @repeat @ifcounter=2 @transmute 214"/>
+    <property name="spam" value="@ontrigger @repeat @addcounter"/>
+   </properties>
+  </object>
+  <object name="counter switch 2" type="switch" gid="188" x="608" y="96">
+   <properties>
+    <property name="spam" value="@trigger counter capacitor"/>
+   </properties>
+  </object>
+  <object name="counter switch 1" type="switch" gid="188" x="608" y="128">
+   <properties>
+    <property name="spam" value="@trigger counter capacitor"/>
+   </properties>
+  </object>
+  <object name="counter test area" x="608" y="128" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message @repeat object counters test"/>
+   </properties>
+  </object>
+  <object name="counter terminal" type="term" gid="194" x="704" y="96">
+   <properties>
+    <property name="foo" value="@repeat @ifcounter=5 @clearcounter @message terminal hit 5 times"/>
+    <property name="spam" value="@repeat @addcounter"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="object alters" width="64" height="16">
+  <object name="object alter magnetize ice" x="608" y="448" width="128" height="32">
+   <properties>
+    <property name="alter the ice" value="@ontrigger @setattr name_filter=&quot;ice&quot; modes=magnet"/>
+    <property name="make him angry" value="@ontrigger @setattr name_filter=ice type=ai speed=1"/>
+   </properties>
+  </object>
+  <object name="object alter area" x="640" y="320" width="96" height="32">
+   <properties>
+    <property name="spam" value="@message alter object attributes"/>
+   </properties>
+  </object>
+  <object name="call ice" type="switch" gid="192" x="544" y="448">
+   <properties>
+    <property name="switch" value="@trigger object alter magnetize ice"/>
+   </properties>
+  </object>
+  <object name="green ice" type="ai" gid="461" x="672" y="480">
+   <properties>
+    <property name="modes" value=""/>
+    <property name="speed" value="10"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="topdown" name="Combat Zone" width="64" height="16">
+  <object x="768" y="224" width="32" height="64">
+   <properties>
+    <property name="spam" value="@message &quot;combat zone&quot;"/>
+   </properties>
+  </object>
+  <object type="door" gid="128" x="832" y="320">
+   <properties>
+    <property name="open me" value="@transmute 131"/>
+   </properties>
+  </object>
+  <object type="door" gid="128" x="832" y="224">
+   <properties>
+    <property name="open me" value="@transmute 131"/>
+   </properties>
+  </object>
+  <object type="door" gid="128" x="960" y="224">
+   <properties>
+    <property name="open me" value="@transmute 131"/>
+   </properties>
+  </object>
+  <object type="door" gid="128" x="960" y="320">
+   <properties>
+    <property name="open me" value="@transmute 131"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
