@@ -350,7 +350,7 @@ A real example to make any objects called "the doctor" within the region fast an
 
     @setattr name_filter="the doctor" speed=1 modes=magnet
 
-A real example tob change all friend AI within the region, hostile:
+A real example to change all friend AI within the region, hostile:
 
     @setattr type_filter=friend type=ai
 
