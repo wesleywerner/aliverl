@@ -1039,6 +1039,9 @@ class GameEngine(object):
             for mo in map_objects:
                 # ignore non gid objects (like rect regions) and the player.
                 if mo.gid != -1 and mo is not self.player:
+                    # no filters grabs any object
+                    if not filters:
+                        objects.append(mo)
                     for f in filters:
                         # fuzzy match by name
                         if f[0] == 'name_filter' and f[1] in mo.name:
